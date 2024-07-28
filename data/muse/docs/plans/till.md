@@ -1,0 +1,2 @@
+--:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- **Till One Layer** -> muse/docs/plans/till.md      
+--:+ _Plan prototype loaded by `field.plan` with bounds. Returns plans with paths from `field.paths`. Turtle needs hoe._  

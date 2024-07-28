@@ -1,0 +1,10 @@
+--:~ field.plot() <- **Create Tree Farm Spacing Trees by Threes and Harvest Them** -> muse/docs/fields/trees.md    
+--:+ _Loaded by `field.make` with operation name, span of plots for the operation, and field bounds._    
+--:+ _Calls `field.plot` with specified plot span, field operation function, and total field plots for that operation._    
+--:+ **Supported operations are `quarry`, `layer`, `cover`, `finish`, `harvest`, `path`, and `test`**    
+--:+ _Operation functions call `field.plan` with plot bounds, xyz offset, and prototype plan for the operation._    
+--:+ _Harvesting along tree lines starts above trees. Adjacent blocks are broken to get saplings from leaves._    
+--:+ _Makes and harvests the fields for the tree farm: excavates and fills with dirt. Then covers and finishes with sand._    
+--:+ _The cover and finish operations replace dirt and grass with two block wide strips of sand in the x and z directions._    
+--:+ _Result is blocks of dirt three blocks apart in horizontal directions with sand elsewhere to restrict planting._    
+--:+ _Planting (`plan.puts` as `minecraft:sapling`) only succeeds above dirt/grass/podzol._  

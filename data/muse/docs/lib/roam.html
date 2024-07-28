@@ -1,0 +1,29 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {roam: []: (:)} <- <b>Command Line Library for Turtle Movement</b> -> muse/docs/lib/roam.md      
+--:| roam: <i>Server (turtle) side support for</i> <code>come</code> <i>and</i> <code>tail</code>, <i>chained motion commands, motion to or tracing.</i> -> roam  
+
+--:: roam.come(:xyz:) -> <i>Server side: move turtle (close to) player's GPS</i> <code>xyz</code> <i>from</i> <code>remote.come. -> </code>":" &:`  
+
+--:: roam.tail(:xyz:) -> <i>Server side: move turtle (close to) player's GPS</i> <code>xyz</code> (<i>from</i> <code>remote.tail)</code> -> <code>":" &:</code>  
+
+--:- to place | x y z face?-> <i>To named place or position and face. Retry for different first direction.</i>   
+
+--:- trace trailname ->  <i>Move turtle along traced situations in named trail from one end of trail to the other.</i>  
+
+--:# Movements are <code>r[ight], l[eft], f[orward], b[ack], u[p], d[own], n[orth], e[ast], s[outh], w[est]</code>.  
+
+--:- go <i>(first letter of) directions followed by optional counts, e.g. <code>r 10 u east 3 u 4 d n</code>.</i> -> <i>Chained movement.</i>  
+
+--:: roam.op(arguments: ":"[]) -> <i>Move turtle:</i> -> <code>":" &:</code>  
+
+    </pre>
+  </body> 
+</html>
+

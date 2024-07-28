@@ -1,0 +1,75 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Exec: Command Computer Operations CLL: ComputerCraft Position and Chunk Activation</h2>
+<pre><code class="language-markdown">
+--:! {exec: []: (:)} <- <b>Command Computer Command Line Library</b> -> muse/docs/lib/exec.md
+--:| exec: <i>CLL to align MUSE location with Minecraft coordinates and activate a range as a Minecraft chunk.</i> -> exec
+</code></pre>
+The <code>exec</code> library provides CLL support for selected commands as alternatives to directly using Minecraft 'cheats'. A number of the commands make it easier to setup a Muse environment. They count on a command computer enabled for use outside Minecraft's creative mode.
+</code></pre>
+The library preface is as expected. The only new thing is mocking some command computer operations so development and debug can be done outside the game environment.
+<pre><code class="language-lua">
+local exec = {}; exec.hints = exec.hints or {} ---@module "signs.exec"-- for functions exported from library
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local places = require("places"); local place = places.place ---@module "signs.places"
+local maps = require("map"); local map = maps.map ---@module "signs.map"
+
+---@diagnostic disable-next-line: undefined-field
+local commands = _G.rednet and _G.commands or require("mock").commands -- for out-game testing
+</code></pre>
+<h1> CLI support for <code>locate</code> command to align a turtle's dead reckoning with Minecraft coordinates for launch.</h1>
+<pre><code class="language-lua">
+--:# <b>Before GPS launch, set Muse dead reckoning coordinates for turtle sitting on <code>porter</code> to be its Minecraft coordinates</b>
+--:+ The turtle will generally be <code>rover</code> for launch. Named point will be launch base. Only runs on command computer in-game.
+
+local function locate(name, label, tx, ty, tz, blockAboveTest) -- <code>t*</code> (x, y, z as numbers) and <code>blockAboveTest</code> are test inputs
+  --:- locate name label? -> <i>Create launch point having Minecraft coordinates above <code>porter</code>.</i>
+  --:+ blockAboveTest: <i>For testing</i> -> <code>{nbt: {Label: ":"}, state: {facing: ":"}}</code>
+  assert(commands, "exec.locate: not a command computer") -- mocked out-of-game
+  assert(name, "exec.locate: needs name for new point")
+  local x, y, z = commands.getBlockPosition(tx, ty, tz)   -- <code>getBlockPosition</code> and <code>getBlockInfo</code> mocked for test
+  local blockAbove = commands.getBlockInfo(x, y + 1, z, blockAboveTest)
+  if not blockAbove then return "Nothing above" end       -- Aligned for dead reckoning but no <code>launch</code> turtle
+  local state = assert(blockAbove.state, "exec.locate: no state above")
+  local facing = assert(state.facing, "exec.locate: no face above")
+  map.set(name, label or "locate", x, y + 1, z, facing)
+  local nbt = assert(blockAbove.nbt, "exec.locate: no nbt above")
+  local museRole = assert(nbt.Label, "exec.locate: no role above")
+  return museRole .. " at " .. place.qualify(name) .. " facing " .. facing
+end; exec.hints["locate"] = { ["?name ??label"] = {} }
+</code></pre>
+<h1> CLI support for <code>activate</code> command: <code>/forceload add</code> area specified by a <code>range</code></h1>
+<pre><code class="language-lua">
+local function activate(range)
+  --:- activate range -> <i>Add borders from west and north to east and south of range for Minecraft forceload.</i>
+  assert(commands, "exec.activate: not a command computer")
+  local borders = map.borders(assert(range, "exec.activate: need range for borders"))
+  local fx, fz, tx, tz = borders.west, borders.north, borders.east, borders.south
+  local stringBorders = tostring(fx) .. " " .. tostring(fz) .. " " .. tostring(tx) .. " " .. tostring(tz)
+  local OK, message = commands.exec("forceload add " .. stringBorders); assert(OK, message)
+  return "Activated chunk " .. stringBorders
+end
+exec.hints["activate"] = { ["?range"] = {} }
+</code></pre>
+<h1>Dispatch operations and catch errors for remote operation</h1>
+<pre><code class="language-lua">
+--:# Dispatch for <code>exec</code> commands: <code>locate</code>, <code>activate</code>
+local ops = { locate = locate, activate = activate, }
+
+function exec.op(commandLine)                                            --:: exec.op(commandLine: :[command: ":", ...]) -> <i>CLI for Command Computer commands</i> -> <code>":" &:</code>
+  local ok, report = core.pass(pcall(ops[commandLine[1]], table.unpack(commandLine, 2)))
+  if ok then return report else return "exec: " .. core.string(report) end -- report failure for error
+end
+
+return { exec = exec }
+
+  </body> 
+</html>
+

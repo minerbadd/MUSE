@@ -1,0 +1,22 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Command Establish Wait for Rednet (Local on Turtle)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/wait.txt <- <b>Rednet Message Wait Command Line Interface</b> -> muse/docs/programs/wait.md  
+--:- wait -> <i>Locally on turtle, wait for rednet message. Useful as recovery for uncaught turtle error.</i>  
+</code></pre>
+<pre><code class="language-lua">
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+
+print("Waiting for rednet"); remote.wait()
+
+  </body> 
+</html>
+

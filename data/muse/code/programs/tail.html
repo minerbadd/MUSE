@@ -1,0 +1,23 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Command to Tail <code>player</code> with <code>rover</code> (Local and Remote)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/tail.txt <- <b>Remote <code>rover</code> Tail Command Line Interface</b> -> muse/docs/programs/tail.md 
+--:- tail rate? -> <i>Move <code>rover</code> every rate (default 5) seconds towards GPS player position.</i>
+</code></pre>
+<pre><code class="language-lua">
+
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+local rates = ... -- optional as string; tonumber in remote.tail; default 0.5 seconds
+remote.tail("rover", "tail", rates)
+
+  </body> 
+</html>
+

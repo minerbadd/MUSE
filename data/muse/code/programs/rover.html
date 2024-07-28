@@ -1,0 +1,28 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Send Command to <code>rover</code>(Remote)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/rover.txt <- <b>Remote Command Line Interface for <code>rover</code></b> -> muse/docs/programs/rover.md  
+--:- rover command argument... -> <i>See <a href="../lib/net.html">muse/docs/lib/net.html</a> for the remote command line interface.</i>
+</code></pre>
+<pre><code class="language-lua">
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+
+local command, arguments = ..., {select(2, ...)} -- -- first, {rest}
+</code></pre>
+There's <a href="https://riptutorial.com/lua/topic/4475/variadic-arguments" target="_blank"> a tutorial </a> on Lua's ... operator and its <code>select</code> function.
+<pre><code class="language-lua">
+-]]
+local ops = {come = remote.come, tail = remote.tail, map = remote.map}
+local op = ops[command] or remote.call; op("rover", command, arguments)
+
+  </body> 
+</html>
+

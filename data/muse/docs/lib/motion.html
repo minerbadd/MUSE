@@ -1,0 +1,121 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {move: []: (:), step: []: (:): (:) } <- <b>Move and Step Function Libraries</b> -> muse/docs/lib/motion.md      
+--:| motion: <i>Libraries to move turtles and move turtles by steps allowing operations at each step.</i> -> motion, move, step    
+--:+ move: <b>Position setting, tracking, and reporting by dead reckoning checked by fuel consumption.</b>      
+--:+ step: <b>Iterators (closures) for moving block by block, potentially doing operations at each block.</b>  
+
+--:# <i>Provide fuel level check to validate a dead reckoning move, can track movement for retracing move as a trail.</i>      
+--:+ <i>Report error conditions <code>"blocked"</code>, <code>"lost"</code> (for apparent but invalid movement), <code>"empty"</code> (for no fuel).</i>      
+--:+ <i>Throw some errors as tables rather than strings to allow for attempted recovery operations.</i>   
+
+--:# <b>State variables for turtle motion:</b> (maintained across programs within session, not persistent beyond that).  
+
+--:> situation: <i>Dead reckoning</i> -> <code>{position:position, facing:facing, fuel: situation.fuel, level: situation.level}</code>  
+
+--:> situation.fuel: <i>Simulated fuel level checked against reported fuel to validate dead reckoning</i> -> <code>#:</code>  
+
+--:> situation.level: <i>For tracking</i> -> <code>"same"|"rise"|"fall"</code>  
+
+--:> position: <i>Computercraft co-ordinates (+x east, +y up, +z south)</i> -> <code>{x: #:, y: #:, z: #:}</code>  
+
+--:> facing: <i>For movement in four NESW cardinal directions</i> -> <code>"north"|"east"|"south"|"west"</code>   
+
+--:> situations: <i>Tracking history</i> -> <code>situation[]</code>  
+
+--:## <b>Some Utilities: position reporting and setting:</b>  
+
+--:: move.get(:situation:?) -> <i>Default current situation.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"</code>  
+
+--:: move.track(enable: ^:) -> <i>Set tracking condition</i> -> <code>enable: ^:</code>  
+
+--:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???) -> <i>Set position, optionally rest of situation.</i> -> <code>nil</code>  
+
+--:: move.situations(:situations:) -> <i>Set <code>_G.Muse.situations</code> to situations.</i> -> situations  
+
+--:: move.clone() -> <i>Clone current situation</i> -> situation  
+
+--:: move.clones() -> <i>Deep copy <code>_G.Muse.situations</code>.</i> ->  situations  
+
+--:: move.at(:situation:?) -> <i>(Current) situation xyzf.</i> -> <code>xyzf</code>  
+
+--:: move.ats(:situation:?) -> <i>(Current) situation position and facing string (<code>""</code> in game if not turtle).</i> -> <code>xyzf: ":"</code>  
+
+--:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ^: ok</code>    
+--:+ <i>If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.</i>  
+
+--:> recovery: <i>For some errors</i> -> <code>{call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"}</code>  
+
+--:# <b>Forward! Up! Down! move, step ... again (raising errors, providing for recovery)</b>  
+
+--:# <b>Tracking Movement: completing movement</b>  
+
+--:# <b>Exposed APIs for move functions: turn left|right or face cardinal if needed, then repeat count forward</b>  
+
+--:: move.moves(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.left(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.right(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.north(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.east(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.south(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.west(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.up(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.down(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.forward(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:: move.back(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code>   
+
+--:# <b>Exposed APIs for step functions: turn or face direction if needed then step count forward in that direction</b>   
+
+--:: step.steps(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:> stepping: <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.left(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.right(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.north(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.east(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.south(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.left(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.up(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.down(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.forward(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:: step.back(count: #:?) -> <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>  
+
+--:# <b>Move or Step to target xyzf position</b>  
+
+--:: move.to(xyzf: xyzf, first: ":"?) -> <i>Current situation to x, z, y, and optionally face.</i> -> <code>"done", #:, xyzf &!recovery</code>     
+--:+ <i>Optional argument</i> <code>first</code> <i>is "x", "y", or "z" to select first move in that direction to deal with blockages.</i>  
+
+--:: step.to(:xyzf:, situation:situation?) -> <i>Step to position from (current) sItuation.</i> -> (<code>:): nil &!recovery</code>    
+--:+ <i>Iterate first in x direction to completion, then z, and finally y. Once complete, each iterator is exhausted.</i>    
+--:+ <i>Finally turn to face if supplied. Returned iterator returns</i> <code>nil</code> <i>when iterators for all directions are exhausted.</i>  
+
+    </pre>
+  </body> 
+</html>
+

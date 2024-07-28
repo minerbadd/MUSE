@@ -1,0 +1,9 @@
+#The disk space limit for computers and turtles, in bytes.
+computer_space_limit = 100000000
+
+#Require players to be in creative mode and be opped in order to interact with
+#command computers. This is the default behaviour for vanilla's Command blocks.
+command_require_creative = false
+
+
+

@@ -1,0 +1,33 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {dds: []: (:)} <- <b>In-game (only) MUSE Discovery Service Library</b> -> muse/docs/lib/dds.md      
+--:| dds: <i>Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet protocol.</i> -> dds  
+
+--:> IDs: <i>Dictionary of ComputerCraft computer IDs keyed by MUSE role</i> -> <code>[role]: ID</code>  
+
+--:> ID: <i>ComputerCraft computer ID</i> -> <code>#:</code>  
+
+--:> roles: <i>Dictionary of Computercraft labels for MUSE roles keyed by Computercraft (string) IDs</i> -> <code>[ID]: ":"</code>  
+
+--:> role: <i>ComputerCraft label as MUSE role</i> -> <code>":"</code>  
+
+--:: dds.roleID(role: ":") -> <i>ID for a Muse role</i> -> <code>ID: #:</code>   
+
+--:: dds.role(ID: ":") ->  <i>Label for a Muse role</i> -> <code>role: ":"</code>  
+
+--:: dds.hosts() -> <i>Populates players IDs and labels using a MQ rednet protocol.</i> -> <code>IDs, roles</code>  
+
+--:: dds.join(role: ":", id: #:?) -> <i>Fix ID role association for next startup, id given by player.</i> -> <code>sitedLabel: ":"</code>  
+
+--:: dds.map() -> <i>Returns associations from Muse roles to ComputerCraft IDs</i> -> <code>IDs</code>  
+
+    </pre>
+  </body> 
+</html>
+

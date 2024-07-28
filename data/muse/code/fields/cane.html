@@ -1,0 +1,105 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Quarry, Layer, Cover, Finish, Harvest, Path, and Test Operations for Cane Fields</h2>
+<pre><code class="language-markdown">
+--:~ field.plot() <- <b>Layer Sand and Reeds, Harvest Cane Field Plots Separated by a Row of Water</b> -> muse/docs/fields/cane.md
+--:+ <i>Loaded by <code>field.make</code> with operation name, span of plots for the operation, and field bounds.</i>
+--:+ <b>Supported operations are <code>quarry</code>, <code>layer</code>, <code>cover</code>, <code>finish</code>, <code>harvest</code>, <code>path</code>, and <code>test</code></b>
+--:+ <i>Calls <code>field.plot</code> with specified plot span, field operation function, and total number of field plots for operation.</i>
+--:+ <i>Operation functions call <code>field.plan</code> with plot bounds, xyz offset, and prototype plan for the operation.</i>
+--:+ <i>Cane fields are built on fields prepared for crops by <code>fields/cane.lua</code>.</i>
+</code></pre>
+<pre><code class="language-lua">
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local fields = require("field"); local field = fields.field ---@module "signs.field"
+
+local vPairs = core.vectorPairs
+
+local commands, bounds, faced = ... -- <b>parameters from the <code>lib/field</code> call of the field function for this file</b> 
+local strides = {quarry = 3, layer = 3, cover = 2 + 1, finish = 2 + 1, harvest = 2 + 1 } -- 2 blocks plus 1 for water strips
+local nplots, slots, stride, run, striding, turn = field.extents(bounds, strides, faced)
+local vW, _, vN, vS = stride[1], stride[2], run[1], run[2] -- vN to vS run axis and vW to VE stride axis for each plot
+local orient = function(xyzAB) return turn and core.orient(xyzAB) or xyzAB end -- transform for turn
+
+local bottom, top = bounds.bottom, bounds.top 
+
+core.status(2, "cane", slots, "slots each plot")
+</code></pre>
+<a id="plots"><IMG SRC="../../drawings/07Cane.png" ALIGN="right" hspace="10" /></a> 
+The field is parcelled into <code>plots</code> appropriate to each <i>field operation</i>. Each <code>plot</code> is generated referencing the virtual <code>stride</code> and  <code>run</code> axes. If there is no <code>turn</code> property, <code>orient</code> performs no transform. The <code>stride</code> axis is then simply west to east in game coordinates and operations will <code>run</code> along north to south game coordinates.
+<p>
+The <code>plots</code> are defined so that <code>quarry</code> operates on the entire three block wide <code>slice</code> from <code>vW</code> to <code>vW+2</code> to let water into the <code>bottom</code> level of field. The dirt <code>layer</code> is at that same level but only on a two block wide part of the slice from <code>vW</code> to <code>vW+1</code>. The sand <code>cover</code> is one level up from the bottom on the same part of the slice. Cane is planted one level above that to <code>finish</code> the field. Finally, to <code>harvest</code> the cane, operations are done at the top of mature cane.
+<pre><code class="language-lua">
+local first = orient { {vW, bottom - 1, vN}, {vW, top, vS} } -- for kelp; runs north - south on virtual west bound for water
+local plots = {-- layer dirt, cover sand, finish cane; allowing water strip between sand plots; first: water
+  quarry = vPairs(orient { {vW + 1, bottom - 1, vN}, {vW + 3, top, vS} }, striding.quarry, nplots.quarry + 1, first), 
+  layer = vPairs(orient { {vW + 1, bottom - 1, vN}, {vW + 2, bottom - 1, vS}}, striding.layer, nplots.layer), --  dirt
+  cover = vPairs(orient { {vW + 1, bottom, vN}, {vW + 2, bottom, vS}}, striding.cover, nplots.cover), -- sand
+  finish = vPairs(orient { {vW, bottom, vN}, {vW, bottom, vS}}, striding.finish, nplots.finish + 1), -- plant
+  harvest = vPairs(orient { {vW, bottom, vN}, {vW, bottom, vS}}, striding.harvest, nplots.harvest + 1), -- harvest
+  path = vPairs(orient { {vW, bottom, vN}, {vW, bottom, vS}}, striding.harvest, nplots.harvest + 1), -- path
+}
+core.status(2, "cane", slots, "slots each plot")
+</code></pre>
+<a id="ops"></a> 
+Each <code>operation</code> supported by this field (<code>quarry</code>, <code>layer</code>, <code>cover</code>, <code>finish</code>, <code>harvest</code>, <code>path</code>, and <code>test</code>) corresponds to a <code>field operation</code> function. These call <code>field.plan</code> with the name of a <i>plan prototype</i> file in the <code>plans</code> directory and the <code>fieldParameters</code> including the <code>plot</code> that the <i>plan prototype</i> will need. 
+<pre><code class="language-lua">
+local function quarryOp(index) -- called by <code>field.make</code>
+  local result = field.plan("quarry", {plots.quarry[index]})
+  core.status(4, "cane", "quarry", index, result)
+  return result
+end
+
+local function layerOp(index) -- called by <code>field.make</code>
+  local result = field.plan("layer", {plots.layer[index], {"minecraft:dirt"}})
+  core.status(4, "cane", "layer", index, result)
+  return result
+end
+
+local function coverOp(index) -- called by <code>field.make</code>
+  local result = field.plan("layer", {plots.cover[index], {"minecraft:sand"}})
+  core.status(4, "cane", "cover", index, result)
+  return result
+end
+
+local function finishOp(index) -- called by <code>field.make</code>
+  local crops = {"minecraft:kelp", "minecraft:reeds", "minecraft:reeds"}; local crop = crops[(index % 3) + 1]
+  local offsets = { {0, 0, 0}, {0, 1, 0}, {0, 1, 0} }; local offset = offsets[(index % 3) + 1]
+  local result = field.plan("layer", {plots.finish[index], {crop} }, offset)
+  core.status(4, "cane", "finish", index, result)
+  return result
+end
+
+local function harvestPath(index, plan) -- called by <code>field.make</code>; harvest one plot of cane field
+  local offsets = { {0, 1, 0}, {0, 4, 0}, {0, 4, 0} }; local offset = offsets[(index % 3) + 1]
+  local result = field.plan(plan, {plots.harvest[index]}, offset)
+  core.status(4, "cane", "harvestPath", index, result)
+  return result
+end
+
+local function harvestOp(index) return harvestPath(index, "cane") end
+local function pathOp(index) return harvestPath(index, "path") end
+
+local function testOp() return "cane "..#plots.harvest.." plots "..(vS - vN + 1).." long" end
+</code></pre>
+<a id="plot"></a> 
+Calling the field function calls <code>field.plot</code> with a <i>field operation</i> callback as well as the number of plots and offsets for the operation.
+<pre><code class="language-lua">
+local fieldOps = {
+  quarry = quarryOp, layer = layerOp, cover = coverOp, finish = finishOp, harvest = harvestOp, path = pathOp; test = testOp,
+  }
+local fieldOpName= commands[1]; local fieldsOp = fieldOps[fieldOpName]; 
+if not fieldsOp then error("cane: doesn't "..fieldOpName) end
+
+return field.plot(commands, fieldsOp, fieldOpName, #plots[fieldOpName]) -- back to <code>field.plot</code> 
+
+  </body> 
+</html>
+

@@ -1,0 +1,22 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Activate Within Borders Using /forceload (with Porter)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/activate.txt <- Command Computer /forceload Activation of Bounds -> muse/docs/programs/activate.md  
+</code></pre>
+<pre><code class="language-lua">
+
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+
+remote.call("porter", "activate", {...}) --:= activate:
+
+  </body> 
+</html>
+

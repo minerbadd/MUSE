@@ -1,0 +1,5 @@
+
+
+view place
+ 
+Report place details including all situations and features.

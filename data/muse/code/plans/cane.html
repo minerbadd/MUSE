@@ -1,0 +1,29 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Plan Prototype for Cane Fields</h2>
+<pre><code class="language-markdown">
+--:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- <b>Start Layer for Farming Cane</b> -> muse/docs/plans/cane.md  
+--:+ <i>Plan protype loaded by <code>field.plan</code> with bounds. Returns <code>field.paths</code>, work as <code>turtle.digs.down</code>.</i>  
+</code></pre>
+<pre><code class="language-lua">
+local fields = require("field"); local field = fields.field ---@module "signs.field"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
+
+local borders = table.unpack(...) -- cane fieldsOpParameters from, to
+local paths, yDelta =  field.paths(borders)
+
+local plans = {start = {name = "cane start", path = paths.start, work = turtle.digs.down} } -- only one layer; note: not front
+  
+return plans, yDelta
+
+
+  </body> 
+</html>
+

@@ -1,0 +1,87 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Turtle Work Functions for Preparing, Planting, Harvesting Fields: lib/farm.lua</h2>
+<pre><code class="language-markdown">
+--:! {farm: []: (:)} <- <b>Turtle Work Functions Support Library</b> -> muse/docs/lib/farm.md  
+--:| farm: <i>Planting through blockages and in several directions. Putting item and replacing blocks.</i>-> farm
+--:> farmOpName: <i>Specifies operation on field</i> -> <code>"quarry"|"layer"|"cover"|"finish"|"fence"|"harvest"|"path"|"test"</code>
+</code></pre>
+<pre><code class="language-lua">
+local farm = {}; farm.hints = {} ---@module "signs.farm" -- for functions exported from library
+
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
+
+local sides = {
+  -- north = {"up"}, east = {"up"}, south = {"up"}, west = {"up"}, up = {"up"}, down = {"up"}, -- for debug: force unblocking
+  north = {"down", "east", "west"}, east = {"down", "south", "north"}, 
+  south = {"down", "east", "west"}, west = {"down", "south", "north"},
+  up = {"north", "south", "east", "west", "up"}, down = {"north", "south", "east", "west", "down"}, 
+}
+
+function farm.logs(seedlings, direction) -- direction of movement
+  --:: farm.logs(seedlings: ":"[], :direction:) -> <i>Logs down and sides, plants found seedlings.</i> -> <code>report: ":" &!</code>
+  turtle.digAround(direction, "logs", sides[direction]); 
+  if not turtle.find(seedlings) then error("farm.logs: Can't find "..core.string(seedlings)) end
+  local plantOK, failure = turtle.puts<a href="">"down"</a>; local report = plantOK and "done" or failure
+  core.status(4, "farm", direction, "tree planting", report); return report
+end
+
+function farm.plant(planting) --:: farm.plant(planting: ":") -> <i>Tills and plants found planting.</i> -> <code>report: ":" &!</code> 
+  turtle.digs<a href="">"down"</a>; if not turtle.find({planting}) then error("farm.plant: Can't find "..planting) end
+  local plantOK, failure = turtle.puts<a href="">"down"</a>; local report = plantOK and "done" or failure
+  core.status(5, "farm:planting", planting, report); return report
+end
+
+function farm.put(putAim, item) -- <code>putAim</code> not direction of travel
+--:: farm.put(putAim: direction, item: ":"[]|":") -> <i>Puts found item in aimed direction.</i> ->  <code>report: ":" &!</code>
+  local items = type(item) == "table" and item or turtle.category(item) -- turtle.find side effects for put
+  if not turtle.find(items) then error("farm.put: Can't find "..core.string(items)) end 
+  local putOK, failure = turtle.puts<a href="">putAim</a>; local report = putOK and "done" or failure
+  core.status(5, "farm:put", item, report); return report
+end
+
+local function replace(direction, putAim, item) 
+  turtle.digAround(direction, "replace", {putAim}); return farm.put(putAim, item) 
+end
+
+function farm.replacer(putAim, item, removables) -- not direction of travel, only replace removables
+  --:: farm.replacer(putAim: direction, item: ":"[]|":", removables: ":"[]) -> <i>Remove, put.</i> -> <code>(:_, :direction:): ":" &!</code> 
+  --:+ <i>Returns a function used by <code>lib/worker</code> to inspect aimed direction, farm out any removeable, replace with found item.</i>
+  --:+ <i>The direction of movement parameter in that function is used to reface turtle after replacement.</i>
+  return function (_, direction) -- ignore <code>plan</code> argument provided by <code>lib/worker.execute</code>
+    local _, detail = turtle.inspects<a href="">putAim</a>; local name = detail and detail.name or ""
+    for _, removable in ipairs(removables) do if name == removable then return replace(direction, putAim, item) end end
+  end
+end
+
+farm.hints["field "] = {["quarry|layer|cover|finish|harvest|path ?range ??first ???last"] = {}}
+--:- field <code>quarry|layer|cover|finish|harvest|path</code> -> <i>Prepare and harvest field for farming.</i> 
+
+farm.hints["quarry "] = {["?range ??first ???last"] = {}}
+farm.hints["layer "] = {["?range ??first ???last"] = {}}
+farm.hints["cover "] = {["?range ??first ???last"] = {}}
+farm.hints["finish "] = {["?range ??first ???last"] = {}}
+farm.hints["harvest "] = {["?range ??first ???last"] = {}}
+farm.hints["path "] = {["?range ??first ???last"] = {}}
+
+--:# <b>Remote Commands for farm operations (<code>fieldOpNames</code>) on plots of fields bounded by ranges</b>
+--:- quarry range firstPlot? lastPlot?? -> <i>Dig out the field to level it.</i>
+--:- layer range firstPlot? lastPlot?? -> <i>Put foundation material in place for field.</i>
+--:- cover range firstPlot? lastPlot?? -> <i>Replace field material (for tree farm grid).</i>
+--:- finish range firstPlot lastPlot?? -> <i>Complete field preparation for farming.</i>
+--:- harvest range firstPlot lastPlot?? -> <i>Harvest (and replant if needed).</i>
+--:- path range firstPlot lastPlot?? -> <i>Test harvest path (safely).</i>
+
+return {farm = farm}
+
+  </body> 
+</html>
+

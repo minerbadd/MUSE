@@ -1,0 +1,117 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {core: []: (:)} <- <b>Core Functions Library</b> -> muse/docs/lib/core.md    
+--:| core: <i>Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support.</i> -> core  
+
+--:# <b>Managing state: clone table, generate closure for session (non-persistent) state, cache loads</b>  
+
+--:: core.clone(source: {:}|any) -> <i>Deep copy source table or return source if not table.</i> -> <code>{:}|any</code>  
+
+--:> closing: <i>Returns value or sets it and optional table entry to non <code>nil</code> <code>value</code>.</i>  -> <code>(value: any): value: any</code>  
+
+--:: core.state(table: {:}?, key: ":"?) -> <i>Returns closure over closure variable</i> -> <code>closing</code>  
+
+--:# <b>Table Utilities: merging tables and finding common items in a pair of tables</b>  
+
+--:: core.merge(...: {:}) -> <i>Merge any number of flat tables into one, allowing repeats.</i> -> <code>{:}</code>  
+
+--:: core.match(tableA: any[], tableB: any[]) -> <i>Find first matching item in pair of item tables.</i> -> <code>nil</code> | <code>any</code>  
+
+--:# <b>Making Strings: both instantiable strings and simple single quoted strings for printing</b>  
+
+--:: core.serialize(input: any) -> <i>Executable string to instantiate input.</i> -> <code>"return "..":" &!</code>  
+
+--:: core.string(...: any) -> <i>Makes string from any inputs, simplifies single entry tables.</i> -> <code>":"</code>  
+
+--:: core.xyzf(:xyzf:) -> <i>Returns specially formatted string for <code>xyzf</code>.</i> -> <code>":"</code>  
+
+--:> xyzf: <i>Position and facing as table</i> -> <code>{x: #:, y: #:, z: #:, facing: ":"}</code>  
+
+--:# <b>Handling errors and reporting operations</b>  
+
+--:: core.pass(ok: ^:, ...: any) -> <i>Pass input but report string if not ok.</i> -> ok: <code>true|false, result: ...|":", any?</code>  
+
+--:: core.where() -> <i>GPS location if available.</i> -> <code>x: #:?, y: #:?, z: #:?</code>  
+
+--:# <b>Logging and Quit Control Globals</b>  
+
+--:- quit message -> <i>Set <code>quit</code> flag to message; next <code>core.status</code> throws <code>error</code> to abort operations.</i>  
+
+--:> core.log: <i>Closure variable</i> -> <code>{level: closing, file: closing, handle: closing}</code>  
+
+--:: core.status(level: #:, ...: any) -> <i>If level less than (elimination) threshold, then report rest as string.</i> -> <code>nil</code>    
+--:+ <i>If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol.</i>    
+--:+ <i>If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.</i>  
+
+--:: core.report(level: #:, ...: any) -> <i>If level less than <code>status</code> threshold, report <code>rest</code> as string.</i> -> <code>nil</code>  
+
+--:: core.logging(arguments: :[level: #:, filename: ":"]) -> <i>Set threshold level [and local log file] for status reports</i> -> <code>nil</code>  
+
+--:: core.record(message: ":") -> <i>Appends (status) message to log file on player.</i> -> <code>nil & !</code>  
+
+--:: core.trace(err: any) -> <i>Reports traceback for xpcalls.</i> -> <code>err: any</code>  
+
+--:# <b>User interface utilities</b>  
+
+--:: core.completer(completions: {:}) -> <i>Register command completions for shell</i> -> <code>(:)</code>  
+
+--:: core.echo(...: any) -> <i>For testing; just returns its arguments.</i> -> ...: <code>any</code>  
+
+--:- echo arguments ... -> <i>For testing: just returns its arguments.</i>  
+
+--:: core.optionals(string: ":"?, number: #:?, ...: any) -> <i>Optional number and/or string.</i> -> <code>string: ":"?, number: #:?, ...: any</code>  
+
+--:# <b>Math utilities</b>  
+
+--:: core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?) -> <i>Make plots.</i> -> <code>bounds[]</code>    
+--:+ <i>Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result.</i>    
+--:+ <i>The number n is the number of bounds in result where each bound is offset by addend from the prior bounds.</i>    
+--:+ <i>Optionally the partial bounds are included as the first bounds in the result.</i>  
+
+--:> bounds: <i>Vector pair defining a rectangular solid</i> -> :<code>[xyz, xyz]</code>  
+
+--:> xyz: <i>Minecraft coordinates: +x: east, +y: up, +z: south</i> -> :[x: #:, y: #:, z: #:]  
+
+--:: core.orient(vectors: xyzMap, face: ":"?, rotate: ":"??) -> <i>Three dimensional rotation</i> -> <code>xyzMap</code>    
+--:+ <i>Turn from up north to face, default for no face is to rotate -90 degrees.</i>  
+
+--:> xyzMap: <i>Table of vectors either an array or dictionary</i> -> <code>xyz[] | [core.faces]: xyz</code>  
+
+--:> core.faces: <i>Key for composed function dictionary</i> -> "north"|"south"|"east"|"west"|"up"|"down"|"rotate"  
+
+--:: core.round(n: #:) -> <i>Next integer down if below half fraction</i> -> <code>#:</code>  
+
+--:# <b>Example iterator, restartable at index</b>  
+
+--:: core.inext(table: {:}, index: #:) -> <i>Iterator over table beginning at index.</i> -> <code>(:), {:}, #:</code>  
+
+--:# <b>Lowest level turtle and mock turtle support used by several libraries including lib/motion</b>  
+
+--:: core.findItems(targets: ":"[]) -> <i>Selects found slot.</i> -> <code>detail?</code>  
+
+--:> detail: <i>Defined by Computercraft</i> -> <code>{name: detail.name, count: detail.count, damage: detail.damage}</code>  
+
+--:> detail.name: <i>Prepended by the mod name <code>"minecraft:"</code>.</i> -> <code>":"</code>  
+
+--:> detail.count: <i>Available in inventory</i> -> <code>#:</code>  
+
+--:> detail.damage: <i>Distinguishing value</i> -> <code>#:</code>  
+
+--:: core.sleep(#:?) -> <i>Mocks sleep as null operation out of game.</i> -> <code>nil</code>  
+
+--:: core.getComputerID(id: #:?) -> <i>Out of game returns id; id ignored in game.</i> -> <code>id: #:</code>  
+
+--:: core.getComputerLabel(label: ":"?) -> <i>Out of game returns label; label ignored in game.</i> -> <code>label: ":"</code>  
+
+--:: core.setComputerLabel(label: ":") -> <i>Sets (out-of game global) label</i> -> <code>label: ":"</code>  
+
+    </pre>
+  </body> 
+</html>
+

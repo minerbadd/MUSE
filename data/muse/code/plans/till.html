@@ -1,0 +1,28 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Plan Prototype for Tilling Fields Along Path of a Rectagular Solid in a Range</h2>
+<pre><code class="language-markdown">
+--:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- <b>Till One Layer</b> -> muse/docs/plans/till.md  
+--:+ <i>Plan prototype loaded by <code>field.plan</code> with bounds. Returns plans with paths from <code>field.paths</code>. Turtle needs hoe.</i>
+</code></pre>
+<pre><code class="language-lua">
+local fields = require("field"); local field = fields.field ---@module "signs.field"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
+
+local bounds = table.unpack(...); local paths, yDelta =  field.paths(bounds) 
+
+local plans = {start = {name = "till start", path = paths.start, work = turtle.digs.down, } } -- only one layer to <code>till</code>
+
+return plans, yDelta
+
+
+  </body> 
+</html>
+

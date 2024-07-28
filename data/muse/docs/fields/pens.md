@@ -1,0 +1,7 @@
+--:~ field.plot() <- **Create Four Animal Pens with Central Access Alley** -> muse/docs/fields/pens.md    
+--:+ _Loaded by `field.make` with operation name, span of plots for the operation, and field bounds._    
+--:+ **Supported operations are `quarry`, `layer`, `finish`, `path`, and `test`**    
+--:+ _Calls `field.plot` with specified plot span, field operation function, and total field plots for that operation._    
+--:+ _Operation functions call `field.plan` with plot bounds, xyz offset, and prototype plan for the operation._    
+--:+ _Leaves margins around finished area fencing, fences quadrants with internal alley, uses `"fence"` material._    
+--:+ _Gates are to be placed by player (replacing fence) as desired._  

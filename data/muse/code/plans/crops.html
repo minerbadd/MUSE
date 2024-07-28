@@ -1,0 +1,34 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Plan Prototype for Common Crop Fields</h2>
+<pre><code class="language-markdown">
+--:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- <b>To Plant and Harvest Crops</b> -> muse/docs/plans/crops.md  
+--:+ <i>Plan prototype given borders, returns plans to harvest and plant with <code>farm.plant</code>.</i>  
+</code></pre>
+Each <code>run</code> is planted and harvested with the crop specified by the <code>plots</code> <code>index</code>. The work function uses the upvalues of the plan prototype rather than the arguments it's called with.
+<pre><code class="language-lua">
+local fields = require("field"); local field = fields.field ---@module "signs.field"
+local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
+
+local bounds, index = table.unpack(...) -- crops <code>fieldsOpParameters</code> bounds:[from: xyz, to: xyz]; index is plot number
+local paths, yDelta =  field.paths(bounds) 
+
+local plots = {"", "minecraft:wheat<i>seeds", "minecraft:potato", "minecraft:carrot", "minecraft:beetroot</i>seeds",
+  "minecraft:wheat<i>seeds", "minecraft:potato", "minecraft:carrot", "minecraft:beetroot</i>seeds"}
+
+local function reap() return farm.plant(plots[(index % #plots) + 1]) end 
+
+local plans = {start = {name = "crops start", path = paths.start, work = reap} } -- only one layer for <code>crops</code>
+ 
+return plans, yDelta
+
+  </body> 
+</html>
+

@@ -1,0 +1,114 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2>Startup Operations for MUSE Computers</h2>
+<pre><code class="language-markdown">
+--:~ parallel.waitForAny(remote.wait) <- <b>MUSE start: Restore Places, DDS, Turtles Wait</b> -> muse/docs/daemons/.start.md  
+--:+ <i>Autorun daemon by <code>startup.lua</code> for all MUSE (not GPS) computers (pocket and command computers, turtles).</i>  
+--:+ <code>startup.lua</code> for MUSE computers is <code>shell.run('rom/modules/.start.lua')</code>  
+</code></pre>
+<pre><code class="language-lua">
+_G.Muse = _G.Muse or {}; 
+_G.Muse.path = "rom/modules/"; local path = _G.Muse.path -- shared across all worlds (most of Muse)
+_G.Muse.charts = _G.Muse.path.."charts/"
+
+---@diagnostic disable-next-line: undefined-field
+local peripheral, parallel = _G.peripheral, _G.parallel -- to supress static analysis lint warnings
+
+---@diagnostic disable-next-line: undefined-field
+local rednet = _G.rednet -- nil for out-game debug
+---@diagnostic disable-next-line: undefined-field
+local player = _G.pocket; -- only the player has a pocket computer
+---@diagnostic disable-next-line: undefined-field
+local turtle = _G.turtle; -- GPS computers are not turtles
+---@diagnostic disable-next-line: undefined-field
+local command = _G.commands -- table or nil (if not a command computer)
+
+--:# <i>Set Configuration Variables: landed turtles, default site, tracking, delays, turtle <code>data</code> directory</i>
+_G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
+_G.Muse.IDs, _G.Muse.roles = {}, {}
+_G.Muse.defaultSite = "base" -- change site with <code>site</code> program
+_G.Muse.tracking = {limit = 500, enabled = nil}; -- _G.Muse.stack = 64 TODO:
+_G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
+_G.Muse.data = "muse/"-- local to turtle/computer
+_G.Muse.map = _G.Muse.data.."map.map" -- name of map in _G.Muse.data
+_G.Muse.log = _G.Muse.data.."log.log"; 
+
+if rednet then package.path = "/rom/modules/lib/?.lua" end
+
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
+local places = require("places"); local place = places.place ---@module "signs.places"
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+local nets = require("net"); local net = nets.net ---@module "signs.net"
+
+--:# <i>Set status and logging control parameters</i>
+local level, file = 5, "status"; core.logging({level, file})
+</code></pre>
+<a id="host"></a> 
+<h3>Register turtles and computers that run this script as Muse Query (<code>MQ</code>) hosts for discovery service.</h3>
+<pre><code class="language-lua">
+local function identity() -- temporary label as computer ID if needed for MQ registration
+  local role = core.getComputerLabel() or (player and "player" or (command and "porter")); core.setComputerLabel(role)
+  local label = core.getComputerLabel(); if label then return label end --maybe not yet sited
+  local id = tostring(core.getComputerID()); core.setComputerLabel(id); return id
+end
+--:# <b>Get ready to run: turn on modems, setup for turtle registration</b>
+peripheral.find("modem", rednet.open); shell.openTab(path..".status.lua"); shell.openTab("bg"); 
+rednet.host("MQ", identity()) -- <b>start dds registration</b>, and give it time to settle
+</code></pre>
+<a id="complete"></a>
+<h3>Set up hints as shell command completions from <code>lib/net</code></h3>
+Using <a href="../lib/core.html#completer" target="_blank"> <code>core.completer</code></a>.
+<pre><code class="language-lua">
+--:# <i>Register completions for local and remote commands</i>
+local function complete(completions)
+  for command, completion in pairs(completions) do 
+    shell.setCompletionFunction(command, core.completer(completion)) 
+  end
+end; complete(net.hints)
+</code></pre>
+<a id="dds"></a> 
+<h3>Create dictionaries associating IDs to (role) labels and associating (role) labels to IDs.</h3>
+<pre><code class="language-lua">
+--:# <i>Setup <code>dds</code> IDs and labels. Needed for remote calls (which can report errors back to player)</i>
+---@diagnostic disable-next-line: undefined-field
+if rednet then os.sleep(_G.Muse.delays.dds); dds.hosts(); os.sleep(0); end -- need os.sleep for gps!
+
+if player or turtle or command then shell.openTab(path..".update.lua"); shell.openTab(path..".erase.lua"); end -- no GPS
+  --os.sleep(_G.Muse.delays.map)
+</code></pre>
+<a id="fix"></a> 
+<h3>Say where command computer and turtles are, store site and map with remote calls (reporting errors)</h3>
+<pre><code class="language-lua">
+--:# <i>Report turtle situations and number of places in map; persist site in site file and places in map (reporting errors)</i>
+
+local site = place.site() or place.site(_G.Muse.defaultSite); 
+print("\n"..site..", <code>site</code> to change")
+
+local function printings(host, id) return function(results) print("\n"..id.." "..host..":\n"..results) end end
+if player then 
+  for host, id in dds.map() do -- for each dds host, <code>fix</code> and <code>store</code> in <code>lib/map</code>
+    remote.call(host, "fix", {}, printings(host, id)) -- printings generates callback
+    remote.call(host, "store", {site}, printings(host, id)) -- new <code>site</code> established in <code>lib.dds</code>, needs persisting
+  end
+end
+---@diagnostic disable-next-line: undefined-field
+os.getComputerLabel() -- to show turtle nameplate
+</code></pre>
+<a id="wait"></a> 
+<h3>Finish startup in-game by putting turtles and command computer in wait loops.</h3>
+(GPS computers have their own startup. They don't run this one.)
+<pre><code class="language-lua">
+--:# <b>Turtles and Command Computer wait for remote command from player</b>
+if rednet and not player then parallel.waitForAny(remote.wait) end-- wait for net command (in game)
+
+  </body> 
+</html>
+

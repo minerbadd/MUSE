@@ -1,0 +1,37 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Plan Prototype for Layering Along Path of a Rectagular Solid in a Range</h2>
+<pre><code class="language-markdown">
+--:~ {start: plan, odd: plan, even: plan, last: plan }, yDelta: #: <- <b>Layer</b> ->  muse/docs/plans/layer.md  
+--:+ <i>Plan prototype loaded by <code>field.plan</code> with bounds, fills, and, optionally, removeables (to be replaced with fills).</i>  
+--:+ <i>Returns plans with paths from <code>field.paths</code> and work as <code>farm.put</code> or <code>farm.replacer</code> (for removeables).</i>  
+</code></pre>
+<pre><code class="language-lua">
+local fields = require("field"); local field = fields.field ---@module "signs.field"
+local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
+
+local bounds, fills, removables = table.unpack(...) -- replace if <code>removeables</code>
+
+local replace = removables and farm.replacer("down", fills, removables) or function() farm.put("down", fills) end
+
+local paths, yDelta = field.paths(bounds) 
+
+local plans = {
+  start = {name = "layer start", path = paths.start, work = replace},
+  odd = {name = "layer odd", path = paths.odd, work = replace},
+  even = {name = "layer even", path = paths.even, work = replace},
+  last = {name = "layer last", path = paths.last},
+}
+return plans, yDelta
+
+
+  </body> 
+</html>
+

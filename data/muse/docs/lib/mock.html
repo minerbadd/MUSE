@@ -1,0 +1,38 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! { turtle: []: (:), commands: []: (:) } <- <b>Mock Functions Library</b> (for out-of-game test) -> muse/docs//lib/mock.md     
+--:| mock: <i>Libraries to provide a limited simulation of turtle and command computer in-game operations.</i> -> mock    
+--:+ turtle: <i>Generally just returns success but allows for simulated blocking, fuel consumption, refueling.</i>      
+--:+ commands: <i>Mock returns from command computer and report success.</i>  
+
+--:# <i>Mock turtle has coal, torches, fences, dirt, ladders, wheat seeds, reeds, sand, and saplings.</i>    
+--:+ <i>As well as barrels, granite, potatoes, carrots, beetroot seeds, and kelp.</i>    
+--:+ <i>And advanced computers, ender modems, disk drives and floppies in its slots.</i>  
+
+--:# <i>Inspection shows dirt for down direction, otherwise nothing.</i>  
+
+--:# turtle.block(blocked: ^:) -> <i>Sets blocked status to <code>blocked</code> for debug</i> -> blocked: <code>^:</code>  
+
+--:# <i>Turns just report success, other motions decrement the simulated fuel and report success unless blocked.</i>    
+--:+ <i>Only forward motion can be blocked in simulation.</i>  
+
+--:# <i>Primitive turtle operations are mocked: attack, dig, place, detect, compare, drop, and suck.</i>  
+
+--:# <i>A few command computer operations are mocked: <code>getBlockPosition</code>, <code>getBlockInfo</code>, and <code>exec</code>.</i>  
+
+--:# commands.getBlockPosition(x: #:, y:, #:, z: #) -> <i>Mock position.</i> -> <code>x: #:, y:, #:, z: #</code>  
+
+--:# commands.getBlockInfo(:_ :_ , :_ :_ ,:_ :_ , resultTable: {:}) -> <i>Mock info.</i> -> <code>resultTable: {:}</code>  
+
+--:# commands.exec(:_ :_, result: any) -> <i>Mock exec command.</i> -> <code>result: any</code>  
+
+    </pre>
+  </body> 
+</html>
+

@@ -1,0 +1,332 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Framework for Field Operations: lib/field.lua</h2>
+<pre><code class="language-markdown">
+--:! {field: []: (:)} <- <b>Field Functions Library: Produce and Execute Field Plans</b> -> muse/docs/lib/field.md  
+--:| field: <i>Fields are rectangular solids defined by a range (a <code>situation</code> pair with <code>field</code> keyed properties).</i> -> field, _field
+--:+ <i>Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations.</i>
+</code></pre>
+<pre><code class="language-lua">
+-- exports, internals, hints 
+local field, _field = {}, {}; field.hints = {} ---@module "signs.field" 
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local moves = require("motion");local move = moves.move ---@module "signs.motion"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
+local places = require("places"); local place = places.place ---@module "signs.places"
+local maps = require("map"); local map = maps.map ---@module "signs.map"
+local planners = require("planner"); local planner = planners.planner ---@module "signs.planner"
+local workers = require("worker"); local worker = workers.worker ---@module "signs.worker"
+</code></pre>
+<a id="volumes"></a> 
+In lieu of a <code>field file</code>, a pair of points as named places will do for simple operations on volumes.
+<pre><code class="language-lua">
+--:# <b>Cut, fill, till, and traverse points defining rectangular volumes</b> using <code>field.plan</code>
+
+local function protect(op, parameters, selector) -- catch bad parameters and other errors
+  local ok, report = core.pass(pcall(op, parameters, selector)) -- finish turtle operation, report failures to player
+  if ok then return report else return "field.protect: Failed operation because "..report end
+end
+
+function _field.makeBounds(nearPlace, farPlace)
+  --:: <code>_field.makeBounds(nearPlace: ":", farPlace: ":")</code> -> <i>Get coordinate pair for named places.</i> -> <code>xyz, xyz, #:, #:</code>
+  local xyzNear, xyzFar = place.xyzf(nearPlace), place.xyzf(farPlace) 
+  assert(xyzNear and xyzFar, "field.makeBounds: "..nearPlace.." or "..farPlace.." place unknown")
+  local xN, yN, zN = table.unpack(xyzNear); local xF, yF, zF = table.unpack(xyzFar)
+  return {xN, yN, zN}, {xF, yF, zF}, yN, yF; -- start, finish
+end
+
+function _field.cut(places)
+  --:: <code>_field.cut(places: :[nearPlace: ":", farPlace: ":"])</code> -> <i>Use plan.quarry to cut.</i> -> <code>report: ":" &:</code>
+  local nearPlace, farPlace = table.unpack(places) -- {"nearPlace", "farPlace"}
+  local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
+  local start, finish = nearY >= farY and near or far, nearY >= farY and far or near
+  local ok, report = core.pass(pcall(field.plan, "quarry", { {start, finish} }, {0, 1, 0}))
+  if ok then return report else return "field.cutPath: Failed because "..report end
+end; 
+
+function field.cut(places) return protect(_field.cut, places) end
+--:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> <i>Quarry out blocks from one place to the other.</i> -> <code>":" &:</code>
+--:- cut point point -> <i>Quarry out blocks bound by named points (defining a rectangular solid).</i>
+field.hints["cut"] = {["?point ?point"] = {}}
+
+function _field.put(thePlan, start, finish, filling, target)
+  --:: <code>_field.put(thePlan: ":", start: #:, finish: #:, filling: ":", target: ":"?)</code> -> <i>Use<code>layer</code> or <code>till</code> plan.</i> -> <code>":" &:</code>
+  local fillings, targets = turtle.category(filling), target and turtle.category(target)
+  local found = turtle.find(fillings); if not found then return ("field.put: can not find "..filling) end
+  local ok, report = core.pass(pcall(field.plan, thePlan, { {start, finish}, {found.name}, targets}, {0, 1, 0})) 
+  if ok then return report else return "field.put: Failed because "..report end
+end 
+
+function _field.fillTill(thePlan, parameters) 
+  --:: <code>_field.fillTill(thePlan: ":", parameters: :[nearPlace: ":", farPlace: ":", filling: ":", target: ":"?])</code>-> <i>To <code>put</code><code>.</i> -> </code>":"`
+  local nearPlace, farPlace, filling, target = table.unpack(parameters);
+  local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
+  local start, finish = nearY <= farY and near or far, nearY <= farY and far or near
+  return _field.put(thePlan, start, finish, filling, target)
+end
+
+function field.fill(parameters) return protect(_field.fillTill, "layer", parameters) end
+--:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> <i>Fill, Till, Replace.</i> -> <code>":" &:</code>
+--:< <i>Filling and target may be one of the turtle categories or a Minecraft detail name without prefix</i> <code>minecraft:</code> 
+--:- fill point point filling [target] -> <i>Layer fill bounds by points; optionally swaps out only target blocks.</i>
+field.hints["fill"] = {["?point ?point ?filling ??target"] = {}}
+
+function field.till(parameters) return protect(_field.fillTill, "till", parameters) end
+--:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> <i>Till the seed from one place to the other.</i> -> <code>":" &:</code>
+--:< <i>Seed may be one of the turtle categories or a Minecraft detail name without the prefix</i> <code>"minecraft:"</code>
+--:- till point point seed -> <i>Till the seed bounds by named points (defining a rectangular solid).</i>
+field.hints["till"] = {["?point ?point ?seed" ] = {}} 
+</code></pre>
+<a id="fences"/a>
+Fences expect a linear traversal between points at the same height. They may be made of any wooden material. Fences will only be placed for ranges whose <code>fields</code> features include <code>fences</code>.
+<pre><code class="language-lua">
+
+local function getSelectorRange(ranger) -- ranger could be site.farm40:canes, farm40:canes, canes
+  local _, _, site, first, second = string.find(ranger, "(%w-)%.?(%w<i>):?(%w</i>)$")
+  local nosite, nosecond = site == "", second == ""; local sited = nosite and first or site.."."..first
+  return not nosecond and sited, nosecond and sited or second -- farm, selector (selector is range name if no farm)
+end
+
+local function fence(parameters)
+  local ranger, fencing = table.unpack(parameters); assert(ranger, "field.fence: need range"); 
+  local farm, selector = getSelectorRange(ranger); -- farm40:canes gets range name
+  local range = farm and map.get(farm, "fields")[selector] or selector -- range from farm fields property
+  local _, features, from, to = map.borders(range) -- got the range from the farm (or given directly)
+  assert(features and features.fences, "field.fence: missing fences feature")
+  local xyzFrom, xyzTo = {from.x, from.y, from.z}, {to.x, to.y, to.z}
+  return _field.put("layer", xyzFrom, xyzTo, fencing or "fence") -- put the fence as filling using <code>layer</code> plan
+end; field.hints["fence"] = {["?range ??fencing"] = {}}
+
+function field.fence(parameters) return protect(fence, parameters) end
+--:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> <i>Put fencing using <code>layer</code> plan.</i> -> <code>":"</code>
+--:- fence range [item] -> <i>Put item or available wooden fence from one point to another in range.</i>
+</code></pre>
+<a id="paths"></a> 
+The <code>field.paths</code> function might be thought of as a utility for a <i>plan prototype</i>. The function uses <code>runElements</code> to figure out how to travel over all of a three dimensional rectangular solid with an efficient path. The details of how to do this are picky. Perhaps <a href="../../drawings/07Paths.pdf" target="_blank"> this drawing </a> will help.
+<pre><code class="language-lua">
+--:# <b>Path generator: flying ox plow paths through given three dimensional rectangular bounds.</b>
+--:+ <i>Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions.</i>
+
+function _field.runElements(bounds) -- run elements, y delta, edge length, and edge direction for <code>plotPath</code>
+  --:: <code>_field.runElements(bounds: :[xyzStart: xyz, xyzFinish: xyz])</code> -> <i>Fly ox.</i> -> <code>runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing</code>
+  --:> <code>_field.runs</code>: <i>Plans for runs at even and odd numbered levels.</i> -> <code>{oddlevel: <i>field.plans, evenlevel: </i>field.plans}</code>
+  --:> <code>_field.plans</code>: <i>At each level, start, even numbered, odd numbered, last run.</i> -> <code>{start: plan, odd: plan, even: plan, last: plan}</code>
+  local xyzstart, xyzFinish = table.unpack(bounds); 
+  local xstart, ystart, zstart = table.unpack(xyzstart); local xFinish, yFinish, zFinish = table.unpack(xyzFinish)
+  local xDelta, yDelta, zDelta = math.abs(xFinish - xstart), yFinish - ystart, math.abs(zFinish - zstart); 
+  local xLonger, goEast, goSouth = xDelta > zDelta, xFinish > xstart, zFinish > zstart
+  local updown = yDelta > 0 and "u1 " or (yDelta < 0 and "d1 " or " ")
+
+  -- <code>xLonger</code> selects to prefer longer runs: <code>true</code> for east|west; <code>false</code> for north|south
+  -- there and back again: east|west <code>xMany[1]</code>, <code>xMany[2]</code>, <code>xMany[1]</code>, ....; north|south <code>zMany[1]</code>, <code>zMany[2]</code>, <code>zMany[1]</code>, ....  
+  -- <code>goEast</code> <code>true</code>: <code>xMany[1] = </code>e<i>|w</i><code> ; </code>xMany[2]: = w<i>|e</i><code>; </code>goSouth<code> </code>true<code>: zMany[1] = </code>s<i>|n</i><code> ; </code>zMany[2] = n<i>|s</i>`
+
+  local xMany = goEast and {"e"..xDelta.." ", "w"..xDelta.." "} or {"w"..xDelta.." ", "e"..xDelta.." "}
+  local xOnce = goEast and {"e1 ", "w1 "} or {"w1 ", "e1 "}
+  local xEdge = goEast and "west" or "east" -- opposite to direction of operation
+
+  local zMany = goSouth and {"s"..zDelta.." ", "n"..zDelta.." "} or {"n"..zDelta.." ", "s"..zDelta.." "}
+  local zOnce = goSouth and {"s1 ", "n1 "} or {"n1 ", "s1 "}
+  local zEdge = goSouth and "north" or "south" -- opposite to direction of operation
+
+-- for odd levels: <code>start</code> (start of plot) or <code>first</code> (just the first at level), <code>evenRun</code>, <code>oddRun</code>, <code>evenRun</code>, ....
+  local oddLevelstart = xLonger and xMany[1] or zMany[1] --  <b>e<i>/w</b></i> or <b>s<i>/n</b></i> (begin plot: no updown for start)
+  local oddLevelFirstRun = xLonger and (updown..xMany[1]) or (updown..zMany[1]) -- <b>u1/d1 e<i>/w</b></i> or <b>u1/d1 s<i>/n</b></i> (first at level)
+  local oddLevelEvenRun = xLonger and (zOnce[1]..xMany[2]) or (xOnce[1]..zMany[2]) -- <b>s1/n1 w<i>/e</b></i> or <b>e1/w1 n<i>/s</b></i>
+  local oddLevelOddRun =  xLonger and (zOnce[1]..xMany[1]) or (xOnce[1]..zMany[1]) --  <b>s1/n1 e<i>/w</b></i> or <b>e1/w1 s<i>/n</b></i>
+  local oddLevel = {
+    start = oddLevelstart, first = oddLevelFirstRun, even = oddLevelEvenRun, odd = oddLevelOddRun
+  }
+-- even levels: crosswise runs even: <code>oddLevelEvenRun</code>, <code>evenLevelOddFirst</code>; odd: <code>oddLevelOddRun</code>, <code>evenLevelEvenFirst</code> (there and back)
+  local evenLevelEvenFirst = xLonger and (updown..xMany[2]) or (updown..zMany[2])-- <b>u1/d1 w<i>/e</b></i> or <b>u1/d1 n<i>/s</b></i> (first at level)
+  local evenLevelOddFirst = xLonger and (updown..xMany[1]) or (updown..zMany[1])-- <b>u1/d1 e<i>/w</b></i> or <b>u1/d1 s<i>/n</b></i>
+  local evenLevelEvenRun = xLonger and (zOnce[2]..xMany[2]) or (xOnce[2]..zMany[2]) -- <b>n1/s1 w<i>/e</b></i> or <b>w1/e1 n<i>/s</b></i>
+  local evenLevelOddRun = xLonger and (zOnce[2]..xMany[1]) or (xOnce[2]..zMany[1]) -- <b>n1/s1 e<i>/w</b></i> or <b>w1/e1 s<i>/n</b></i>
+  local evenLevel = {
+    evenFirst = evenLevelEvenFirst, oddFirst = evenLevelOddFirst, even = evenLevelEvenRun, odd = evenLevelOddRun}
+
+  local xzDelta, xzEdge = xLonger and zDelta or xDelta, xLonger and zEdge or xEdge -- length of runs crosswise for longer runs
+  local runs = {oddLevel = oddLevel, evenLevel = evenLevel, lastLevel = updown} 
+  return runs, yDelta, xzDelta, xzEdge -- 
+end
+
+function field.paths(bounds) -- <code>startPath</code>, <code>evenLevelPath</code>, <code>oddLevelPath</code>, <code>evenLevelPath</code>, <code>oddLevelPath</code>, ..., <code>lastLevelPath</code>
+  --:: field.paths(bounds: xyz[]) -> <i>Called by plan prototype file to generate plans for plot.</i> -> <code>paths, yDelta: #:, xzEdge: facing</code>
+  --:> paths: _Flying ox traverse of three dimensional rectangular solid_ -> <code>{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}</code>
+  --:+ <i>Returns paths, vertical traverse (<code>yDelta: #:</code>), and orientation of longest horizontal edge for bounded block.</i>
+  local runs, yDelta, xzDelta, xzEdge = _field.runElements(bounds); 
+  -- <code>runs.evenLevel.evenFirst</code> and <code>runs.evenLevel.oddFirst</code> for first entry edge cases 
+  local run = 1;  -- runs (odd and even: there and back again) 
+
+  local startPath = {runs.oddLevel.start}; -- first run at odd and even levels has y movement if not beginning of plot
+
+  for _ = 2, xzDelta + 1 do run = run + 1; -- xzDelta + 1 = number of crosswise runs; odd xzDelta => even number of such runs
+    local thisRun = (run % 2 == 0) and runs.oddLevel.even or runs.oddLevel.odd
+    table.insert(startPath, thisRun) -- build up <code>startPath</code>
+  end; run = run + 1; -- for first entry for <code>evenLevelPath; run</code> odd if crosswise length even
+
+  local evenLevelPath = (run % 2 == 0) and {runs.evenLevel.evenFirst} or {runs.evenLevel.oddFirst};  -- first entry
+
+  for _ = 2, xzDelta + 1 do run = run + 1; 
+    local thisRun = (run % 2 == 0) and runs.evenLevel.even or runs.evenLevel.odd
+    table.insert(evenLevelPath, thisRun) -- build up <code>evenLevelPath</code>
+  end; run = run + 1; -- <code>run</code> odd if crosswise length odd
+
+  local oddLevelPath = {runs.oddLevel.first}; -- first entry of <code>oddLevelPath</code>
+
+  for _ = 2, xzDelta + 1 do run = run + 1; 
+    local thisRun = (run % 2 == 0) and runs.oddLevel.even or runs.oddLevel.odd
+    table.insert(oddLevelPath, thisRun) -- build up <code>oddLevelPath</code>
+  end; run = run + 1; -- <code>run</code> odd if crosswise length odd
+
+  local lastLevelPath = {runs.lastLevel} -- just the one run (<code>"u1"</code> or <code>"d1"</code>) at last level
+  local paths = {start = startPath, odd = oddLevelPath, even = evenLevelPath, last = lastLevelPath}
+  return paths, yDelta, xzEdge
+end
+</code></pre>
+<a id="execute"></a> 
+Finally, <code>field.plan</code> calls <code>execute</code> (step 7) to do the work for completed plan that the previous steps have produced and handles any errors.
+<pre><code class="language-lua">
+local function executePlan(thisPlan, level) -- executePlan(thisPlan: plan, level: #:) -> <i>Run plan at level.</i> -> <code>^:, ":" &:</code>
+  local pathOK, pathOperations, fuelOK, pathDistance = core.pass(pcall(planner.make, thisPlan))
+  if not pathOK then return pathOK, pathOperations end -- <code>pathOperations</code> is failure string
+  if level == 1 and pathOperations[1] then -- do work before first step iteration of first level
+    local operation, _, direction = table.unpack(pathOperations[1]) -- direction if "step" operation
+    if operation == "step" and thisPlan.work then thisPlan.work(thisPlan, direction) end 
+  end; local fuel = fuelOK and "fuel OK" or "empty!"
+  core.status(4, "field", "executing", thisPlan.name, "at", level, "for", #pathOperations, "of", pathDistance, fuel)
+  --for debug: core.pass(xpcall(worker.execute, core.trace, thisPlan, pathOperations, fuelOK, pathDistance));
+  return core.pass(pcall(worker.execute,thisPlan, pathOperations, fuelOK, pathDistance)) -- ok, completion or failure report
+end
+
+function _field.execute(plans, levels, fieldings, planName) 
+  --:: <code>_field.execute(plans: <i>field.plans, levels: #:, fieldings: fieldParameters, planName: ":")</code> ->  </i>Run plans for the levels._ -> <code>":" &!</code>
+  local ok, report = executePlan(plans.start, 1); if not ok then error("field.execute: Start "..report) end -- no y
+  for level = 2, levels do 
+    local ok, report = executePlan(level % 2 == 0 and plans.even or plans.odd, level) 
+    if not ok then error("field.execute: "..report) end 
+  end; if plans.last then local ok, report = executePlan(plans.last, levels); 
+    if not ok then error("field.execute: Last "..report) end 
+  end-- finish with y-movement to position for fill (if any)
+  turtle.block(false) -- out-game testing: disable blocking for finish operations 
+  return planName..": "..core.string(fieldings) 
+end
+</code></pre>
+<a id="plan"></a> 
+The <code>field.plan</code> function moves the turtle to the computed start position for the plot (including any offset) and loads the prototype plan to generate the <i>plan function</i>. It calls this function (step 5) with the <code>fieldParameters</code> (including the plot bound). The <i>plan function</i> uses <code>field.paths</code> and the plot bound to compute the <code>start</code>, <code>even</code>, <code>odd</code>, and (optionally) <code>last</code> paths to fill in the rest of the information from the plan prototype (step 6) to produce a complete <code>plan</code> (as we have <a href="#plan" target="_blank"> discussed previously</a>). The computed paths define a "three dimensional ox plow" to minimize turtle motion in moving to every block in the three dimensional rectangular solid defined by the plot <code>bound</code>.
+<pre><code class="language-lua">
+function field.plan(planName, fielding, offset) -- <code>fieldsOp</code> calls <code>field.plan</code> for each plot 
+--:: field.plan(planName: ":", fielding: fieldParameters, offset: xyz?) -> <i>Run plan, default offset {0,0,0}.</i> -> <code>report: ":" &: &!</code>
+--:+ <i>Loads and executes the prototype plan (which calls <code>field.paths</code>) for each (odd, even, or last) level of a plot.</i>
+--:> fieldParameters: <i><code>bounds</code> (and materials to fill and replace)</i> -> :<code>[bounds, fieldParameters.fills?, fieldParameters.removeables??]</code>
+--:> fieldParameters.fills: <i>Group or list of craft items for fill material</i> -> <code>group|craft[]</code>
+--:> fieldParameters.removeables: <i>Material replaced by fill</i> -> <code>group|craft[]</code>
+--:> craft: <i>Minecraft item <code>detail.name</code> without <code>minecraft:</code> prefix</i> -> <code>":"</code>
+  local bound = table.unpack(fielding); -- plot bound for start and finish
+  local sx, sy, sz = table.unpack(bound[1]); local fx, fy, fz = table.unpack(bound[2]); -- s<i>: start, f</i>: finish
+  local ox, oy, oz = table.unpack(offset or {0, 0, 0}) -- offset is optional
+  local start, finish = {sx + ox, sy + oy, sz + oz}, {fx + ox, fy + oy, fz + oz}
+  local xyzfstart, xyzfFinish = core.xyzf(start), core.xyzf(finish) 
+  core.status(4, "field", "plan", planName, xyzfstart, "to", xyzfFinish)
+  local moveOK, moveReport = core.pass(pcall(move.to, start, "y")) 
+  if not moveOK then core.status(2, "field", "plan move.to", moveReport); return moveReport end
+  local planFile = _G.Muse.path.."plans/"..planName..".lua"; 
+  local planFunction = assert(loadfile(planFile), "field.plan: "..planFile.." failed") -- TODO: cache?
+  local plans, yDelta = planFunction(fielding) -- prototype plan file calls <code>field.paths</code>
+  local levels = math.abs(yDelta) + 1; core.status(4, "field", "starting", planName, levels, "levels")
+  turtle.block(turtle.blocking())-- block in next operation if blocking enabled for out-game test
+  return _field.execute(plans, levels, fielding, planName)
+end
+</code></pre>
+<a id="plot"></a> 
+The <code>field.plot</code> function does command line processing to select plots and handles error conditions raised by the <i>field operation</i> it calls for each plot (step 3). The back and forth continues as the <i>field operation</i> for the plot calls <code>field.plan</code> (step 4) to fill in the plan for the prototype plan (for example, <code>plans/quarry.lua</code>) specified by the operation (for example, <code>"quarry"</code>). The <i>field operation</i> call on <code>field.plan</code> includes the <code>fieldParameters</code> that the prototype plan will need.
+<pre><code class="language-lua">
+
+local function home(xyz, result)
+  local OK, failure = core.pass(pcall(turtle.digTo, xyz)); 
+  return OK and result or error("field: can't go home: "..failure)
+end
+
+function field.plot(commands, fieldsOp, fieldOpName, plots, offset) -- <code>field.make</code> -> field -> <code>field.plot</code>
+--:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> <i>Plots</i> -> <code>report: ":" &: &!</code>
+--:+ <i>Called by field files. Calls <code>fieldsOp</code> from field file (which calls <code>field.plan</code>).</i>
+--:> field.plotSpan: <i><code>{}</code> spans all plots; if only first, default plots after first -></i> :<code>[:_, :_, first: #:?, last: #:??]</code>
+  local first, last = table.unpack(commands, 3); local hx, hy, hz = table.unpack(place.xyzf())
+  if not (hx and hy and hz) then error("field.plot: No home") end
+  core.status(4, "field", "plot start", hx, hy, hz, fieldOpName, first, last, plots, offset) 
+  local possibleFirstPlot, possibleLastPlot = tonumber(first) or 1, tonumber(last) or plots 
+  local firstPlot, lastPlot = math.min(possibleFirstPlot, plots), math.min(possibleLastPlot, plots)
+  assert (firstPlot >= 1 and lastPlot >= 1, "field: "..plots.." selected plots less than 1")
+  local results = {}; for i = firstPlot, lastPlot do -- field file provides <code>fieldsOp</code> in call to <code>field.plot</code> 
+    core.status(4, "field", fieldOpName, "plot", i, "begun")
+    local ok, fieldResult = core.pass(pcall(fieldsOp, i, offset)); -- <b>run field's operation</b> (<code>fieldsOp</code> which calls <code>field.plan</code>)
+    if not ok then return home({hx, hy, hz}, "Plot "..i.." failed: "..fieldResult) end -- go back home
+    core.status(4, "field", fieldOpName, "plot", i, "done") 
+    results[#results + 1] = "Plot "..i.." of "..plots.." "..fieldResult.." done"  
+  end; return home({hx, hy, hz}, table.concat(results, "\n")) -- unblocks as needed, done, back to home 
+end
+</code></pre>
+<a id="extents"></a> 
+The <code>field.extents</code> function, a utility for <i>field functions_, defines a (virtual) coordinate system in terms of <code>stride</code> (default shorter) and <code>run</code> (default longer) axes. Defaults are overridden if the extent is <code>faced</code>. Each <code></code>plot<code></code> of a field is positioned relative to the next <code></code>striding<code></code> along the <code>stride</code> axis to encompass the specified <code>bounds</code>. The <code>striding</code> is determined by the size of the <code>stride</code> in the <code>strides</code> dictionary that is keyed by the name of the field operation, the <code>opName</code>. Each </i>field file_ defines its <code>plots</code> in terms of the <code>stride</code> and <code>run</code> coordinate system. The number of plots, <code>nplots</code> in the <code>bounds</code> is computed given the extent along the <code>stride</code> axis and the <code>stride</code> for a given field operation. An indication for the number of turtle <code>slots</code> expected to be involved in each field operation for each <code>plot</code> is also returned. 
+<p>
+As we've said, one reason fields are sliced into <code>plots</code> of a given size is to deal with the limits of turtle inventory. The size of the slices for a field operation is also determined by the geometry needed, for example, to grow specific crops in the field. The number of <code>plots</code> for each operation is determined by the size of the slices for that operation and the extent along the <code>stride</code> axis.
+<pre><code class="language-lua">
+function field.extents(bounds, strides, faced) 
+--:: field.extents(:bounds:, :strides:, faced: ":"?) -> <i>Plots placed</i> -> <code>field.count, field.count , eP, eP, striding, ^:, ^:</code>
+--:+ Returns <code>nplots:[fieldOp #:}, slots:[fieldOp]: #:}, strides: eP, run: eP, striding, turn: ^:, back: ^:</code>
+--:+ <i>Extents for <code>stride</code> (shorter) and <code>run</code> (longer) virtual axes for each <code>opName</code> in the <code>strides</code> entries unless <code>faced</code>.</i>
+--:> field.count: <i>dictionary keyed by 'opName<code> for number of elements in field for that operation</i> -> </code>[fieldOp]: #:`
+--:> strides: <i>dictionary keyed by <code>opName</code> for the distance along the stride axis for a striding</i> -> <code>[fieldOp]: #:</code>
+--:> striding: <i>dictionary keyed by <code>opName</code> of vectors incrementing game coordinate positions</i> -> <code>[fieldOp]: xyz</code>
+--:> eP: <i>pair of coordinates for extents</i>  -> <code>:[xyz, xyz]</code>
+--:> fieldOp: <i>Operation name in the set for a particular kind of field</i> -> ":"
+
+  local west, east, north, south, top, bottom = bounds.west, bounds.east, bounds.north, bounds.south, bounds.top, bounds.bottom 
+  local turn = not faced and (east - west) > (south - north) -- re-orient runs and strides; <code>faced</code> runs: north-south
+  local long = {turn and west or north, turn and east or south} -- extent coordinates of the other, the run axis
+  local short = {turn and north or west, turn and south or east} -- extent coordinates of the other, the stride axis
+  local stacks = ((south - north + 1) <i> (top - bottom + 1) </i> (east - west + 1))/_G.Muse.stack
+
+  local striding, nplots, slots = {}, {}, {}; for opName, stride in pairs(strides) do
+    striding[opName] = turn and {0, 0, stride} or {stride, 0, 0} ; -- xyz for addend; stride stridings
+    nplots[opName]  = (short[2] - short[1] + 1)/stride-- number of plots
+    slots[opName] = stacks/nplots[opName] -- turtle stack fill
+  end; return nplots, slots, short, long, striding, turn
+end
+</code></pre>
+<a id="make"></a> 
+The <code>field.make</code> command interface is called with a command table which specifies(directly or indirctly) a <code>range</code>, a kind of <code>place</code> as described in <a href="../lib/map.html" target="_blank"><code>lib/map</code></a>. The <code>range</code> is used by <code>map.borders</code> to compute the three dimensional <code>bounds</code> of the field and find its <code>features</code>, a dictionary of properties. The operations on a <code>field</code> make use of that dictionary, retrieving the name of a <code>field file</code>, for example, <code>crops</code> as a property accessed by the dictionary's <code>fields</code> key. The <code>field.make</code> function loads the named <i>field file</i> from the <code>fields</code> directory as, for example, <code>fields/crops.lua</code>, to get what we'll call the <i>field function</i>. The <code>fields.make</code> function calls this function with the command table it received and the <code>bounds</code> it computed.
+<p>
+The <i>field function</i> uses the command table and the <code>bounds</code> to compute values it will pass to <code>field.plot</code> back here in <code>lib/field</code>. One of these values is a function we'll call the <i>field operation</i>. It is selected for the operation (for example, farm's <code>quarry</code> operation) specified in the command table and defined in the <i>field file</i>. Another of these values is the number of plots in the field for that operation.
+<pre><code class="language-lua">
+--:# <b>Execution train runs from <code>field.make</code> to <code>field.plot</code> to <code>field.plan</code> to execute the plan</b>
+function field.make(commands, faced) -- loads and runs field file which calls <code>field.plot</code>
+  --:: field.make(commands: fieldCommands, faced: ^:) -> <i>Load field files; return their <code>field.plot</code> calls</i> -> <code>report: ":" &:</code>
+  --:> fieldCommands: <i>For CLI</i> -> :<code>[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]</code>
+  --:+ <i>The second entry, <code>ranger</code> in <code>fieldCommands</code> is a string which may simply be a name for a <code>range</code>, (a kind of <code>place</code>).</i>
+  --:+ <i>If so, the range name gets the range's features dictionary and the field file name to load (keyed as <code>features.fields</code>).</i>
+  --:+ <i>It could also be a string specifying the name of a farm and a field name in that farm (separated by a colon).</i>
+  --:+ <i>If so, the farm name specifies the farm's <code>range</code> and so the farm range's features dictionary.</i>
+  --:+ <i>The <code>fields</code> entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name.</i>
+  --:+ <i>With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified.</i>
+  local _, ranger = table.unpack(commands); local farm, selector = getSelectorRange(ranger) -- if not farm, ranger is range name 
+  local range = farm and map.get(farm, "fields")[selector] or selector -- if farm, field range name is one of the fields
+  local borders, features = map.borders(range); -- features.fields specifies field file
+  local fieldFile = _G.Muse.path.."fields/"..features.fields..".lua"
+  local field = loadfile(fieldFile) -- get the field function (TODO: cache?)
+  local _, report = core.pass(pcall(field, commands, borders, faced)) -- <b>run field file</b> (calling <code>field.plots</code>)
+  return report
+end; 
+
+return {field = field}
+
+  </body> 
+</html>
+

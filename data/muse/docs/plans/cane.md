@@ -1,0 +1,2 @@
+--:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- **Start Layer for Farming Cane** -> muse/docs/plans/cane.md      
+--:+ _Plan protype loaded by `field.plan` with bounds. Returns `field.paths`, work as `turtle.digs.down`._    

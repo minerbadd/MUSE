@@ -1,0 +1,24 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2>Create Range On Player Pocket Computer (Local)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/range.txt <- <b>Range Command Line Interface</b> -> muse/docs/programs/range.md  
+</code></pre>
+<pre><code class="language-lua">
+
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local maps = require("map"); local map = maps.map ---@module "signs.map"
+
+
+print(core.string(map.op({"range", ...}))) --:= range:
+
+  </body> 
+</html>
+

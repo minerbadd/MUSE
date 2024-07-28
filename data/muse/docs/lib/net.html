@@ -1,0 +1,156 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {net: [] (:)} <- <b>Net Remote Command Library</b> -> muse/docs/lib/net.md      
+--:| net: <i>Command Line Library providing turtle operations used by remote library (effectively the UI for Muse).</i> -> net  
+
+--:# <i>Remote commands for turtles need prefixing by <code>farmer</code>, <code>miner</code>, <code>logger</code>,<code>porter</code>,  or <code>rover</code> roles.</i>  
+
+--:# <b>Dispatcher <code>op</code> catches net operations that raise exceptions so turtles report errors, ready for new commandsa.</b>  
+
+--:# <b>Testing, Monitoring, and Control</b> (e.g., <code>farmer echo something something</code>)  
+
+--:- status level [filename] -> <i>Set reporting hurdle and optionally save reporting in log file.</i>  
+
+--:- echo arguments ... -> <i>For testing: just returns its arguments.</i>  
+
+--:- quit message -> <i>Set <code>quit</code> flag to message; next <code>core.status</code> throws <code>error</code> to abort operations.</i>  
+
+--:# <b>Remote Turtle and Task Operations</b> (for turtle API operations, e.g., <code>rover find</code>)  
+
+--:- fueling -> <i>Returns energy available in turtle slots.</i>  
+
+--:- items -> <i>Returns items in turtle inventory as string.</i>  
+
+--:- find name...? -> <i>Report and select first slot found [or if no name, just report inventory].</i>  
+
+--:< <b>Directions are  <i><code>u</code>p, <code>d</code>own, <code>n</code>orth, <code>e</code>ast, <code>w</code>est, <code>s</code>outh, <code>f</code>ront</i></b>  
+
+--:- suck direction quantity? -> <i>Suck quantity items [or all] into available slot.</i>   
+
+--:- drop item direction quantity? -> <i>Drop quantity of selected items [or all].</i>   
+
+--:- look direction -> <i>Detect and inspect direction, return report.</i>  
+
+--:- compare item direction... -> <i>Named item matches block in any of specified directions?</i>  
+
+--:- attack direction -> <i>Attempts attack in specified direction.</i>   
+
+--:- dig direction distance hoeing... -> <i>Direction and distance to (possibly blocked) move, hoeings directions to hoe.</i>  
+
+--:- put filling direction distance putting... -> <i>Direction, distance to move, placing filling in puttings directions.</i>  
+
+--:- change target filling direction distance putting... -> <i>Move distance in direction replacing target with filling.</i>  
+
+--:# <b>Remote Turtle Motion Commands</b> (e.g., <code>farmer come</code>)  
+
+--:- to place | x y z face?-> <i>To named place or position and face. Retry for different first direction.</i>   
+
+--:- go <i>(first letter of) directions followed by optional counts, e.g. <code>r 10 u east 3 u 4 d n</code>.</i> -> <i>Chained movement.</i>  
+
+--:- trace trailname ->  <i>Move turtle along traced situations in named trail from one end of trail to the other.</i>  
+
+--:- come -> <i>rover turtle towards GPS player position.</i>  
+
+--:- tail rate? -> <i>Move <code>rover</code> every rate (default 5) seconds towards GPS player position.</i>  
+
+--:< <b>Places - Points, Locations, Trails, and Ranges of Maps</b>  
+
+--:- trail name label -> <i>Include named point at head and (current situation) tail of a new trail, update map.</i>   
+
+--:- point name label trail? -> <i>Add named labeled point, can start trail, MU updated map. (Player situation needs GPS.)</i>   
+
+--:- range name label point point key? value?? -> <i>Volume by named points, optional key and value for feature.</i>   
+
+--:- chart filename ... -> <i>Loads and runs named file in <code>charts</code> directory to create named point and associated ranges.</i>  
+
+--:< <b>Navigation in Maps: Where Are We, What's Nearby, and Where Are We Heading?</b>  
+
+--:- at -> <i>Report current (dead reckoning) turtle position and facing or player GPS position.</i>   
+
+--:- near place? span?? -> <i>Report points within span blocks (or all) of named place (or current player or turtle position).</i>  
+
+--:- view place -> <i>Report place details including all situations and features.</i>  
+
+--:- where place? count?? -> <i>Report movement direction, distance to named place (or all) three (or count) closest places.</i>   
+
+--:- fix trail? -> <i>Set and report GPS turtle position for dead reckoning. Optionally begin named trailhead.</i>  
+
+--:- headings rate? place? count?? -> <i>Repeated movement report at specified rate (or every five) seconds).</i>  
+
+--:# <b>Map File Operations</b> (e.g., <code>rover site ...</code>)  
+
+--:- erase name -> <i>Remove named place, broadcast Muse eXcise (MX).</i>  
+
+--:- sync -> <i>Muse Update (MU) broadcast local map to (MQ) registered units.</i>  
+
+--:- site name? -> <i>Remote operation to report or change site (persistently) after, e.g., porting <code>rover</code>.</i>  
+
+--:- site name? -> <i>Remote operation to report or change site (persistently) after, e.g., porting <code>rover</code>.</i>  
+
+--:- join site role -> <i>Set site and join landed turtle to it with specified role.</i>  
+
+--:# <b>GPS Launch Command</b> (e.g., <code>rover launch gantry ....</code>)  
+
+--:- launch place yD? -> <i>Deploy GPS launch yD or maximum y above place, report GPS at place.</i>  
+
+--:# <b>Remote Mining Operation Commands</b> (e.g. <code>miner shaft ....</code>)  
+
+--:- shaft minehead levels shaftPlans -> <i>Dig down number of levels under named minehead place using specified plans.</i>  
+
+--:- bore marker borePlans  -> <i>Dig horizontally from marker using saved or specified bore and shaft plans.</i>   
+
+--:- post marker borePlans?  -> <i>Go to marker (and up 1) from current level with saved or specified plans.</i>  
+
+--:- ores marker borePlans?  -> <i>Excavate ores from side tunnel near marker, return up 1 from marker.</i>  
+
+--:# <b>Remote Volume Operations</b> (bound by point pairs, possibly in a <code>range</code>)  
+
+--:- cut point point -> <i>Quarry out blocks bound by named points (defining a rectangular solid).</i>  
+
+--:< <i>Filling and target may be one of the turtle categories or a Minecraft detail name without prefix</i> <code>minecraft:</code>   
+
+--:- fill point point filling [target] -> <i>Layer fill bounds by points; optionally swaps out only target blocks.</i>  
+
+--:< <i>Seed may be one of the turtle categories or a Minecraft detail name without the prefix</i> <code>"minecraft:"</code>  
+
+--:- till point point seed -> <i>Till the seed bounds by named points (defining a rectangular solid).</i>  
+
+--:# <b>Remote Farm Operations</b> (where a range feature value is a <code>fieldName</code> keyed by <code>field</code>, a string literal).    
+--:+ <i>A <code>fieldName</code> is a file name without its suffix, e.g. <code>cane</code> rather than <code>cane.lua</code>, in the <code>fields</code> directory.</i>  
+
+--:- field <code>quarry|layer|cover|finish|harvest|path</code> -> <i>Prepare and harvest field for farming.</i>   
+
+--:- quarry range firstPlot? lastPlot?? -> <i>Dig out the field to level it.</i>  
+
+--:- layer range firstPlot? lastPlot?? -> <i>Put foundation material in place for field.</i>  
+
+--:- cover range firstPlot? lastPlot?? -> <i>Replace field material (for tree farm grid).</i>  
+
+--:- finish range firstPlot lastPlot?? -> <i>Complete field preparation for farming.</i>  
+
+--:- harvest range firstPlot lastPlot?? -> <i>Harvest (and replant if needed).</i>  
+
+--:- path range firstPlot lastPlot?? -> <i>Test harvest path (safely).</i>  
+
+--:- fence range [item] -> <i>Put item or available wooden fence from one point to another in range.</i>  
+
+--:# <b>Command Computer Setup and Port Commands</b> (e.g., <code>locate gantry launch</code>)  
+
+--:- locate name label? -> <i>Create launch point having Minecraft coordinates above <code>porter</code>.</i>  
+
+--:- activate range -> <i>Add borders from west and north to east and south of range for Minecraft forceload.</i>  
+
+--:- book name label from to span? item??... ->  <i>Spanned range with (default) items as properties; return cost less bank.</i>  
+
+--:- port booking -> <i>As provided in booking, consume player inventory to teleport entities from one area to another.</i>  
+
+    </pre>
+  </body> 
+</html>
+

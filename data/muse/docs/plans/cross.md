@@ -1,0 +1,3 @@
+--:~ crossplan <- **Horizontal Tunnels 6 Blocks Apart for One (Odd or Even) Level** -> muse/docs/plans/cross.md      
+--:+ _Markers include shaft plan and bore plan file names in order to provide defaults for mine operations._     
+--:+ _Dig all directions in a cross if movement is horizontal, otherwise just dig vertically._  

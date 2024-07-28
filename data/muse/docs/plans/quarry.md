@@ -1,0 +1,2 @@
+--:~ {start: plan, odd: plan, even: plan, last: plan }, yDelta: #: <- **Quarry** -> muse/docs/plans/quarry.md      
+--:+ _Plan prototype loaded by `field.plan`. Returns `field.paths`. Digs one level with `turtle.unblock("down")`._    

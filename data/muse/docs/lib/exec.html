@@ -1,0 +1,27 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {exec: []: (:)} <- <b>Command Computer Command Line Library</b> -> muse/docs/lib/exec.md    
+--:| exec: <i>CLL to align MUSE location with Minecraft coordinates and activate a range as a Minecraft chunk.</i> -> exec  
+
+--:# <b>Before GPS launch, set Muse dead reckoning coordinates for turtle sitting on <code>porter</code> to be its Minecraft coordinates</b>    
+--:+ The turtle will generally be <code>rover</code> for launch. Named point will be launch base. Only runs on command computer in-game.  
+
+--:- locate name label? -> <i>Create launch point having Minecraft coordinates above <code>porter</code>.</i>    
+--:+ blockAboveTest: <i>For testing</i> -> <code>{nbt: {Label: ":"}, state: {facing: ":"}}</code>  
+
+--:- activate range -> <i>Add borders from west and north to east and south of range for Minecraft forceload.</i>  
+
+--:# Dispatch for <code>exec</code> commands: <code>locate</code>, <code>activate</code>  
+
+--:: exec.op(commandLine: :[command: ":", ...]) -> <i>CLI for Command Computer commands</i> -> <code>":" &:</code>  
+
+    </pre>
+  </body> 
+</html>
+

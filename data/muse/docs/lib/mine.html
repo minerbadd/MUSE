@@ -1,0 +1,92 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {mine: []: (:)} <- <b>Mine Command Line Library</b> -> muse/docs/lib/mine.md      
+--:| mine: <i>CLL operates plan to manage mines: shaft, bore, move to posts (between and within levels), and get ores.</i> -> mine, _mine  
+
+--:# <b>Interface for mining plans: digging and navigating shafts and bores, extracting ore</b>  
+
+--:# <b>Plan elements for digging shafts going down, furnishing them going back up, and moving between levels.</b>   
+
+--:> shafts: <i>Dig</i> -> <code>{shafts.name: ":", shafts.down: downs, shafts.back: levels, shafts.lower: levels, shafts.higher: levels}</code>  
+
+--:> shafts.name: <i>Included in error and status reports</i> -> <code>":"</code>  
+
+--:> shafts.down: <i>Plan for digging shaft one level through even and odd levels</i> -> <code>downs</code>  
+
+--:> shafts.back: <i>Plan for returning to minehead, placing fixtures and safety shelves for player</i> -> <code>levels</code>  
+
+--:> shafts.lower: <i>Plan for navigating from one (even or odd) level to the next lower</i> -> <code>levels</code>  
+
+--:> shafts.higher: <i>Plan for navigating from one (even or odd) level to the next higher</i> -> <code>levels</code>  
+
+--:# <b>Plan definitions for digging shafts down from even to odd and from odd to even levels</b>  
+
+--:> downs: <i>Mark, dig, ladder, and fill one level (for landing platforms)</i>  -> <code>{downs.even: plan, downs.odd: plan, downs.last: plan }</code>  
+
+--:> downs.even: _Mark, dig, ladder, and fill an even level (for landing platforms) -> <code>plan</code>  
+
+--:> downs.odd: <i>Mark, dig, ladder, and fill an odd level (for landing platforms)</i> -> <code>plan</code>  
+
+--:> downs.last: <i>Mark last level dug</i> -> <code>plan</code>  
+
+--:# <b>Plan definitions for just moving between odd and even levels</b>  
+
+--:> levels: <i>Traverse (and fill shelves for  player safety in back plan) shaft</i>  -> <code>{levels.even: plan, levels.odd: plan}</code>  
+
+--:> levels.even: _Plan for navigating from one even level to the next -> <code>plan</code>  
+
+--:> levels.odd: <i>Plan for navigating from one even level to the next</i> -> <code>plan</code>  
+
+--:# <b>Plan elements for boring and furnishing horizontal access tunnels at odd and even levels for mining</b>  
+
+--:> bores: <i>Horizontals</i> -> <code>{bores.name: ":", bores.post: mine.post, bores.even: plan, bores.odd: plan, bores.fix: plan }</code>  
+
+--:> bores.name: <i>Included in error and status reports</i> -> <code>":"</code>  
+
+--:> bores.even: <i>Plan for boring tunnels at even levels</i> -> <code>plan</code>  
+
+--:> bores.odd: <i>Plan for boring tunnels at odd levels</i> -> <code>plan</code>  
+
+--:> bores.fix: <i>Plan for fixtures: shaft area ladders and placing barrel</i> -> <code>plan</code>  
+
+--:# <b>Interface definition for implemented bore navigation functions in mines</b>  
+
+--:> mine.post: <i>Navigate shaft and bores to go to marker.</i> -> (markerName: ":", :bores:):  <code>marking[]</code>  
+
+--:# <b>Go to minehead, dig shaft and return to minehead if no errors.</b>    
+--:+ <i>Start dig down from minehead, finish by placing marker one level below target level, error raised for failure.</i>    
+--:+ <i>Add "shaft" and shaft plans name as key and value to shaft plans for inclusion in marker.</i>    
+--:+ <i>Execute shaft plans back to return to minehead from one below target level</i>    
+--:+ <i>Add "shaft" and shaft plans name as key and value to shaft plans for inclusion in marker</i>  
+
+--:# <b>Do the <code>shaft</code> operation for the command line interface.</b>  
+
+--:- shaft minehead levels shaftPlans -> <i>Dig down number of levels under named minehead place using specified plans.</i>  
+
+--:# <b>Do the <code>post</code> operation for the command line interface</b>.  
+
+--:- post marker borePlans?  -> <i>Go to marker (and up 1) from current level with saved or specified plans.</i>  
+
+--:# <b>Bore horizontal tunnels and mine tunnels branching off the main (inner) tunnel for ore</b>    
+--:+ <i>Use shaft plans and bore plans to navigate to marker, bore horizontal tunnels using bore plans.</i>    
+--:+ <i>Add "bore" and bore plans name as key and value to bore plans for inclusion in marker.</i>    
+--:+ <i>Bores plans at even or odd level, potentially leaves place marks and torches.</i>  
+
+--:- bore marker borePlans  -> <i>Dig horizontally from marker using saved or specified bore and shaft plans.</i>     
+--:+ <i>Use shaft plans and instantiated bore plans to go to marker and execute mining operations</i>  
+
+--:- ores marker borePlans?  -> <i>Excavate ores from side tunnel near marker, return up 1 from marker.</i>  
+
+--:: mine.op(arguments: :[op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]) -> <i>Dig.</i> -> <code>^:, ":", #: &:</code>    
+--:+ <i>Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans.</i>  
+
+    </pre>
+  </body> 
+</html>
+

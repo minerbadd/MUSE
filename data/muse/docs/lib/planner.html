@@ -1,0 +1,55 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {planner: []: (:)} <- <b>Functions Library to Build a Plan</b> -> muse/docs/lib/planner.md    
+--:| planner: <i>Given a</i> <code>plan</code>, <i>create a table of operations to be performed by</i> <code>worker.execute</code>. -> planner, plan, moves, steps  
+
+--:> plan: <i>How to do work</i> -> <code>{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}</code>  
+
+--:> plan.name: <i>for status and error reporting</i>  -> <code>":"</code>  
+
+--:> plan.path: <i>table of space separated character sequence strings describing path</i> -> <code>":"[]</code>  
+
+--:> plan.work: <i>for execution at every</i> <code>step</code> <i>iteration in plan movement direction</i> -> <code>(:plan:, direction: ":"): ":"?</code>  
+
+--:> plan.fixtures: <i>for placement as specified by path elements beginning with a digit</i> -> <code>":"[]</code>  
+
+--:> plan.mark: <i>for execution as specified by</i> <code>plan.path</code> <i>markers</i> -> <code>(:plan:, :marking:): markerName: ":", label: ":", report: ":"</code>  
+
+--:> marking: <i>tuple table of marker parts</i> -> :<code>[prefix: ":", base: ":", label: ":"]</code>  
+
+--:> markings: <i>dictionary of markings keyed by a label</i> -> <code>[label: ":"]: marking</code>  
+
+--:# <b>Plan elements beginning with a letter indicate stepped movement in one of six directions: u, d, n, e, s, or w.</b>    
+--:+ <i>Optionally, the letter may be followed by a number of blocks for the movement. The element ends with a space.</i>    
+--:+ <i>Elements beginning with a digit (indexing plan's fixtures table) are followed by a letter specifying direction.</i>    
+--:+ <i>Plan elements beginning with a colon indicate placement of a <code>mark</code>, a named and labelled <code>place</code>.</i>    
+--:+ The <code>plan.mark</code> function might replace each colon in a marker string prefix with, for example, a shaft name and level.     
+--:+ <i>Characters between the last colon and a</i> "|" <i>vertical bar character are the <code>base</code> argument for <code>plan.mark</code>.</i>    
+--:+ <i>Characters following the</i> "|" <i>are the marker label for `plan.mark.</i>  
+
+--:: planner.load(planFileName: ":") -> <i>Instantiates what is returned from a plan file.</i> -> <code>plan &!</code>   
+
+--:: planner.make(plan:plan) -> <i>Create path operations table for plan.</i> -> <code>pathElements, fuelOK: ^:, pathDistance: #:</code>  
+
+--:> pathElements: <i>Used by <code>worker.execute</code> to run plan</i> -> <code>(stepElement|putElement|markElement)[]</code>  
+
+--:> stepElement: <i>Iterate steps function in direction for distance</i> -> :<code>[op: "step", :stepping:, direction: ":", distance: #:]</code>  
+
+--:> putElement: <i>Put fixture in specified direction</i> -> `:[op: "put", direction: ":", fixture: ":"]  
+
+--:> markElement: <i>Current situation in named places</i> -> <code>:[op: "mark", :marking:]</code>  
+
+--:# <b>Marker parsing utility function</b>  
+
+--:: planner.mark(markerName: ":") -> <i>Parse marker name into parts.</i> -> <code>shaft: ":"?, level: ":"?, tag: ":"?)</code>  
+
+    </pre>
+  </body> 
+</html>
+

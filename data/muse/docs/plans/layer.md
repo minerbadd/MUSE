@@ -1,0 +1,3 @@
+--:~ {start: plan, odd: plan, even: plan, last: plan }, yDelta: #: <- **Layer** ->  muse/docs/plans/layer.md      
+--:+ _Plan prototype loaded by `field.plan` with bounds, fills, and, optionally, removeables (to be replaced with fills)._      
+--:+ _Returns plans with paths from `field.paths` and work as `farm.put` or `farm.replacer` (for removeables)._    

@@ -1,0 +1,21 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Commands <code>roamer</code> to come to <code>player</code> (Local and Remote)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/come.txt <- <b>Remote Come Command Line Interface</b> for <code>roamer</code> -> muse/docs/programs/come.md  
+--:- come -> <i>rover turtle towards GPS player position.</i>
+</code></pre>
+<pre><code class="language-lua">
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+remote.come("rover")
+
+  </body> 
+</html>
+

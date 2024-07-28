@@ -1,0 +1,5 @@
+
+
+wait
+ 
+Locally on turtle, wait for rednet message. Useful as recovery for uncaught turtle error.

@@ -1,0 +1,36 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {grid: []: (:)} <- <b>Grid Mining Functions Library</b> -> muse/docs/lib/grid.md      
+--:| grid: <i>Work functions boring, navigating, and mining ore in a grid of tunnels.</i> -> grid  
+
+--:> crossplan: <i>Bore and mine, minimal movement</i> -> <code>{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }</code>  
+
+--:# <b>Navigation for grids:  use placed markers to find posts for turtles.</b>  
+
+--:: grid.mark(:plan:, :marking:) -> <i>Make place name, report result.</i> -> <code>markerName: ":", label: ":", report: ":"</code>    
+--:+ <i>Called by <code>worker.execute</code> to make marker name and use it to add map point for navigation in mine.</i>    
+--:+ <i>Puts plan name value in marker (keyed by <code>"shaft"</code> or <code>"bore"</code>) so marker is enough for navigating in shaft or bore.</i>    
+--:+ <i>Marker place name formed as <code>head:level:base</code> or <code>head:base</code> or <code>head</code> with place labelled as <code>"outer"|"inner"|"shaft"</code>.</i>    
+--:= mine.post:: grid.post  
+
+--:# <b>Mining Ore: look around for ore and if found, mine adjacent ore as well</b>  
+
+--:# <b>Definitions for finding and extracting ores</b>  
+
+--:> grid.cut: <i>Directions to dig in vein</i> -> <code>"up"|"down"|"north"|"south"</code>  
+
+--:> grid.guide: <i>Instructions for cut</i> -> <code>:[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]</code>  
+
+--:: grid.ores(:plan:, :direction:, guide: grid.guide, :ores:) -> <i>Extract ores.</i> -> <code>"done" &!</code>    
+--:+ <i>Given the guide for a vein, mine ores in each of the guide's cuts for that vein.</i>  
+
+    </pre>
+  </body> 
+</html>
+

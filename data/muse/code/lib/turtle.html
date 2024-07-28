@@ -1,0 +1,223 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Consistency for Turtle Operations: <code>lib/turtle.lua</code> for Turtle Abstractions</h2>
+<pre><code class="language-markdown">
+--:! {turtle: []: (:) } <- <b>Turtle Operations Overlay Library</b> -> muse/docs/lib/turtle.md  
+--:| turtle: <i>Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down.</i> -> turtle
+--:+ <i>Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking.</i>  
+</code></pre>
+The MUSE <code>turtle</code> module introduction is much like any other. One thing is a little different: a <a href="../CodeMark/Annotations.html" target="_blank"> CodeMark </a> <code>VALUE</code> mark, describing <code>direction</code> as a unification of the four cardinal and two vertical directions. We've seen a limited bit of this in <code>lib/motion</code>.  Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by <code>lib/mock</code>) are accessed in the <code>mock</code> table.
+<pre><code class="language-lua">
+local turtle = {}; turtle.hints = {} ---@module "signs.turtle" -- for functions exported from library
+
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
+---@diagnostic disable-next-line: undefined-field
+local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module "signs.mock"
+-- if no _G.turtle then mock turtle: out-of-game
+
+--:> direction: <i>Four compass points and verticals</i> -> <code>"north"|"east"|"south"|"west"|"up"|"down"</code>
+</code></pre>
+<a id="operations"></a>
+Each appropriate turtle operation is redefined to support the new abstraction as a table of functions for that operation in the six possible directions and <code>forward</code>. When the library is loaded, <code>makeOperations</code> makes entries in the table that the <code>turtle</code> library exports. Generating functions for the <code>turtle</code> library with <code>makeOperations(operations, turtle)</code> lets us specify the suite of turtle operations concisely with a table.
+<pre><code class="language-lua">
+--:# <b>Turtle operations north, east, south, west, up, down</b>
+
+local compass = {"north", "east", "south", "west"}
+
+local function makeDirections(front, up, down, op, lib) 
+  lib[op] = {}; for _, cardinal in ipairs(compass) do 
+    lib<a href="0">op][cardinal] = function(q) move[cardinal</a> return front(q) end 
+  end
+  lib[op].front = function(q) return front(q) end; 
+  lib[op].up = function(q) return up(q) end; 
+  lib[op].down = function(q) return down(q) end
+end -- <code>q</code> is quantity argument if needed
+
+local function makeOperations(operations, library)
+  for operation, ops in pairs(operations) do makeDirections(ops.front, ops.up, ops.down, operation, library) end
+end
+
+--:# <b>Operation dictionaries keyed by direction, values are generally functions of no arguments calling which return a boolean.</b>
+
+local operations = {
+  attacks = {up = mock.attackUp, down = mock.attackDown, front = mock.attack}, 
+  --:> turtle.attacks: <i>Attack in direction and return attack success.</i> -> <code>[:direction:]: (): ^:, ":"?</code>
+  compares = {up = mock.compareUp, down = mock.compareDown, front = mock.compare},
+  --:> turtle.compares: <i>Check block in direction has the same ID as selected slot</i> -> <code>[:direction:]: (): same: ^:</code>
+  detects = {up = mock.detectUp, down = mock.detectDown, front = mock.detect},
+  --:> turtle.detects: <i>Check block in direction is solid: not air, mob, liquid or floater.</i> -> <code>[:direction:]: (): ^:</code>
+  digs = {up = mock.digUp, down = mock.digDown, front = mock.dig},
+  --:> turtle.digs: <i>Try to dig block in direction and call</i> suck(). -> <code>[:direction:]: (side: ":"?): ^:, ":"?</code>
+  --:+ <i>Sucked items go to inventory. If a hoe is used to attempt to "dig" a dirt block, it will be tilled instead.</i>
+  --:+ <i>Tilling is also possible if the space in front of the turtle is empty but dirt exists below that point.</i>
+  drops = {up = mock.dropUp, down = mock.dropDown, front = mock.drop},
+  --:> turtle.drops: <i>Drop count [or all] items in selected slot to inventory.</i> -> <code>[:direction:]: (count: #:?): ^:, ":"?</code>
+  --:+ <i>Returned function drops and returns</i> <code>false</code> <i>if there's inventory on the side specified by direction which is full.</i>
+  inspects = {up = mock.inspectUp, down = mock.inspectDown, front = mock.inspect}, --returns <code>false</code> for air
+  --:> turtle.inspects: <i>If true, get detail block information in direction.</i> -> <code>[:direction:]: (): </code>^:<code>, </code>detail?`
+  puts = {up = mock.placeUp, down = mock.placeDown, front = mock.place},
+  --:> turtle.puts:  <i>Attempt placing block of the selected slot in direction.</i> -> <code>[:direction:]: (text: ":"?): ^:, ":"?</code>
+  --:+ <i>Collects water or lava if the currently selected slot is an empty bucket. Text is used for placed sign.</i> 
+  --:+ <i>Value of <code>turtle.puts[:direction:]</code> is a function of one optional argument calling which returns a boolean.</i>
+  sucks = {up = mock.suckUp, down = mock.suckDown, front = mock.suck},
+  --:> turtle.sucks: <i>Move count [or all] from direction to inventory.</i> -> <code>[:direction:]: (count: #:?): ^:, ":"?</code>
+  --:+ <i>Move from ground or first non empty slot of adjacent inventory enabled block to selected or next turtle slot.</i>
+  --:+ <i>Value of <code>turtle.sucks[:direction:]</code> is function of one optional argument calling which returns a boolean.</i>
+}
+makeOperations(operations, turtle) -- fills in the table exported by this <code>turtle</code> library 
+</code></pre>
+<a id="references"></a> 
+Passing interfaces through as if they were part of the <code>turtle</code> library completes the operations abstraction. 
+<pre><code class="language-lua">
+--:# <b>Function References</b>
+turtle.find = core.findItems --:= core.findItems:: turtle.find
+turtle.select = mock.select --:: turtle.select(slot: #:) -> <i>Attempts to select the specified slot.</i> -> <code>selected: ^:</code>
+turtle.item = mock.getItemDetail --:: turtle.item(slot: #:?) ->  <i>Detail of specified or currently selected slot.</i> -> <code>nil | detail</code>
+turtle.detail = mock.getItemDetail --:: turtle.detail(slot: #:?) -> <i>Detail of selected or specified slot.</i> -> <code>detail</code> 
+</code></pre>
+<a id="inventory"></a> 
+More abstractions: categories of items and the detail of which slot of turtle inventory an item is in.
+<pre><code class="language-lua">
+--:# <b>Item name and turtle status utilities</b>
+
+function turtle.inventory() 
+  --:: turtle.inventory() -> <i>Returns currrent turtle inventory as turtle detail table</i>. -> <code>detail[]</code>
+  local inventoryTable = {}; for i = 1, 16 do local detail = mock.getItemDetail(i)
+    if detail then inventoryTable[#inventoryTable + 1] = {detail.name, detail.count, detail.damage} end
+  end; return inventoryTable 
+end;
+
+function turtle.items() return core.string(turtle.inventory()) end --:- items -> <i>Returns items in turtle inventory as string.</i>
+
+function turtle.check(targets, detail) -- item inspected by turtle is in targets?
+  --:: turtle.check(targets: ":"[], :detail:) -> <i>Tries to match each target against</i> <code>detail.name</code>. -> <code></code>matched: ^:`
+  if not detail then return false end
+  for _, target in ipairs(targets) do if detail.name == target then return detail.name end end
+end
+
+--:# <i>Categories provide names for sets of minecraft items.</i>
+
+local fuels = {"minecraft:coal", "minecraft:coal_block", "minecraft:charcoal", "minecraft:lava"} 
+
+local ores = {"minecraft:coal<i>ore", "minecraft:iron</i>ore", "minecraft:lapis<i>ore", "minecraft:gold</i>ore",
+  "minecraft:diamond<i>ore", "minecraft:redstone</i>ore", "minecraft:emerald<i>ore", "minecraft:nether</i>quartz_ore",
+  "minecraft:prismarine", "minecraft:obsidian"}
+
+--:> ore: <i>Minecraft</i> -> <code>"minecraft:coal<i>ore"|"minecraft:iron</i>ore"|"minecraft:lapis<i>ore"|"minecraft:gold</i>ore"|"minecraft:diamond<i>ore"|"minecraft:redstone</i>ore"|"minecraft:emerald<i>ore"|"minecraft:nether</i>quartz_ore"|"minecraft:prismarine"|minecraft:obsidian"</code>
+--:> ores: <i>Category</i> -> <code>ore[]</code>
+--:> minecraft: <i>For Language Server</i> -> ":"
+
+local stones = {
+  "minecraft:diorite", "minecraft:cobblestone", "minecraft:granite", "minecraft:andesite", 
+  "minecraft:sandstone", "minecraft:terracotta", "minecraft:stone",}
+
+local fences = { 
+  "minecraft:birch<i>fence", "minecraft:oak</i>fence", "minecraft:acacia<i>fence", "minecraft:bamboo</i>fence", 
+  "minecraft:cherry<i>fence", "minecraft:chrimson</i>fence", "minecraft:dark<i>oak</i>fence", "minecraft:mangrove_fence", 
+}
+
+local dirts = {"minecraft:dirt", "minecraft:coarse_dirt",}
+local fills, tests = core.merge(stones, dirts), {"found item"}
+
+local categories = {fuel = fuels, ore = ores, fill = fills, dirt = dirts, stone = stones, fence = fences, test = tests}
+--:> group: <i>Materials</i> -> <code>"fuel" | "ore"| "fill" | "dirt" | "stone" | "fence" | "test"</code>
+
+local function qualify(name) local prefix = string.match(name, "(%a<i>):(%a</i>)"); return prefix and name or "minecraft:"..name end
+
+local fencings = { --:# <b>Fence material specified by short name (e.g. <code>oak</code>) along points specified by <code>range</code></b>
+  birch = "minecraft:birch<i>fence", acacia = "minecraft:acacia</i>fence", bamboo = "minecraft:bamboo_fence", 
+  cherry = "minecraft:cherry<i>fence", chrimson = "minecraft:chrimson</i>fence", ["dark oak"] = "minecraft:dark<i>oak</i>fence", 
+  mangrove = "minecraft:mangrove<i>fence", oak = "minecraft:oak</i>fence", 
+} --:> fencings: <i>Wooden materials</i> <code>-> "birch" | "acacia" | "bamboo" | "cherry" | "chrimson" | "dark oak" | "mangrove" | "oak"</code>
+
+function turtle.category(name) return name and (categories[name] or {fencings[name] or qualify(name)}) or {} end
+--:: turtle.category(name: ":") -> <i>Names in category or fencings matching <code>name</code> or</i> <code>{"minecraft:"..name}</code>. -> <code>":"[]</code> 
+
+local fuelEnergy = 
+{["minecraft:coal"] = 80, ["minecraft:coal_block"] = 800, ["minecraft:charcoal"] = 80, ["minecraft:lava"] = 1000} 
+
+function turtle.fuel() --:- fueling -> <i>Returns energy available in turtle slots.</i>
+  --:: turtle.fuel() -> <i>Total energy actually available in turtle slots plus turtle fuel level.</i> -> <code>fuelTotal: #:</code>
+  local fuelTotal =  0; for i = 1, 16 do local detail = mock.getItemDetail(i)
+    if detail then local energy = fuelEnergy[detail.name] or 0; fuelTotal = fuelTotal + (energy * detail.count) end
+  end; return fuelTotal + mock.getFuelLevel()
+end; 
+</code></pre>
+<a id="unblock"></a> 
+Abstracting away the difficulties in moving and digging is also a kind of information hiding.
+<pre><code class="language-lua">
+local undug = {"minecraft:water", "minecraft:lava"} -- cant'dig the undug
+
+local function attemptDig(direction) -- "done if air or the undug, else attack (mob); then return dig success (or not)
+  local inspectOK, found = turtle.inspects<a href="">direction</a>; if found and found.name == "minecraft:bedrock" then 
+    error("turtle.attemptDig: Bedrock at "..move.ats().." "..direction) -- no recovery
+  end; local untarget = turtle.check(undug, found); -- water or lava?
+  if untarget then core.status(4, "turtle", "attempt dig", found, "undug:", untarget) end
+  if not inspectOK or untarget then return "done", "undug" end -- air, water, or lava
+  turtle.attacks<a href="">direction</a>; local dug, report = turtle.digs<a href="">direction</a>; return dug, report or found.name
+end 
+
+function turtle.unblock(direction, limit, attempts) -- returns "done" or raises an error
+  --:: turtle.unblock(direction: ":", limit: #:?) -> <i>Retrys (default 5) dig to limit or bedrock.</i> -> <code>"done", nil|"undug" &!</code> 
+  --:+ <i>Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.</i>
+  limit = limit or 5; attempts = attempts or 0; -- waits, arbitrary default retrys for gravel; attacks
+  if attempts > limit then error("turtle.unblock: Failed at "..move.ats().." "..direction)
+  end; -- failed: not air, water, lava, bedrock, sand, gravel (or succesful attack of mobs)
+  local done, report = attemptDig(direction); if done then return done, report end -- <b>dig succeeded</b>
+  core.status(2, "turtle", "Unblocking", direction, attempts) -- report blockage
+  core.sleep(0.5); -- wait for gravel or sand to finish falling... and then try again
+  return turtle.unblock(direction, limit, attempts + 1) -- try again, dig failure or the undug?
+end
+
+function turtle.digTo(xyzf, limit)
+  --:: turtle.digTo(:xyzf:, limit: #:?) -> <i>Unblocking move.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &: &!</code> 
+  --:+ <i>Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty".</i>
+  --:+ <i>Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason.</i>
+  --:+ <i>Normally return just what a successful move would: "done", 0 remaining, current position.</i>
+  local moveOK, result, condition = core.pass(pcall(move.to, xyzf)); if moveOK then return result end
+  core.status(2, "turtle", "bad move", xyzf, result, condition)
+  if type(condition) ~= "table" then error("turtle.digTo: Unblock failed because "..result) end
+  local _, report, fail, remaining, _, direction, from = table.unpack(condition) -- failures: <code>blocked</code>, <code>lost</code>, <code>empty</code>
+  if fail ~= "blocked" then error("turtle.digTo: Unblock "..remaining.." failed because "..report) end
+  if not direction then error("turtle.digTo: no direction for unblock "..from.." "..report) end
+  core.status(2, "turtle", "Unblocking move", direction, "to", xyzf)
+  return turtle.unblock(direction, limit)  -- returns true or raises error (and a report for bedrock) 
+end
+
+function turtle.digAround(orientation, name, diggings)
+  --:: turtle.digAround(orientation: ":", name: ":", diggings: ":"[]) -> <i>Unblocking dig.</i> -> <code>"done" &: &!</code>
+  --:+ <i>Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.</i>
+  for _, digging in ipairs(diggings) do core.status(5, "turtle", "around", orientation, diggings)
+    local OK, fail = core.pass(pcall(turtle.unblock, digging)); if not OK then
+      move<a href="0">orientation</a>; error("turtle.digAround: "..name.." "..digging.." failed, "..fail..", refacing "..orientation)
+    end
+  end; return "done"
+end
+</code></pre>
+<a id="block"></a> 
+Lastly, allow blocking to be simulated for out-of-game debug.
+<pre><code class="language-lua">
+--:: turtle.block(blocked: ^:) -> <i>Out-of-game debug: sets blocking for simulating turtle being blocked.</i> ->  <code>blocked: ^:</code>
+function turtle.block(blocked) -- enable/disable blocking for out-game test
+---@diagnostic disable-next-line: undefined-field
+  if not _G.turtle then return mock.block(blocked) end 
+end
+--:: turtle.blocking(^:) -> <i>Isolate global to control blocking for out-of-game debug.</i> -> <code>^:</code>
+function turtle.blocking(blocking) _G.Muse.blocking = blocking; return _G.Muse.blocking end
+
+return {turtle = turtle}
+</code></pre>
+And we're done making the new and improved <code>turtle</code>. Return to <a href="../../Mining MUSE.html#UI"> Mining MUSE</a> 
+to look at building <i>thin</i> command interface implementations aimed at maintainability.
+<p>
+  </body> 
+</html>
+

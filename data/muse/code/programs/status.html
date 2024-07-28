@@ -1,0 +1,24 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Command to Control Status Reporting and Logging (Local)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/status.txt <- <b>Status Level and Status Logging Command Line Interface</b> -> muse/docs/programs/status.md  
+</code></pre>
+<pre><code class="language-lua">
+--:- status level [filename] -> <i>Set reporting hurdle and optionally save reporting in log file.</i>
+--:# <i>The status level controls reporting: the higher the level the more detailed the reports.</i>
+--:# <i>Log files are stored locally in a computer's <code>muse</code> directory.</i>
+
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+print(core.logging {...})
+
+  </body> 
+</html>
+

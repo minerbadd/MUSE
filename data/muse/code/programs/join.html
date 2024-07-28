@@ -1,0 +1,27 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Command to Join MQ with Role (Label) and Player's Site (on Player)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/join.txt <- <b>Join Command Line Interface</b> -> muse/docs/programs/join.md  
+</code></pre>
+<pre><code class="language-lua">
+local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+local places = require("places"); local place = places.place ---@module "signs.places"
+
+local role, id = ...; --:- join role id -> <i>Temporarily set mapping for next startup, id from turtle nameplate.</i>
+print (dds.join(role, tonumber(id)).." joining") -- on player
+print(remote.call(role, "join", {place.site(), role}).." joined")
+print("Need to sync map?")
+
+
+  </body> 
+</html>
+

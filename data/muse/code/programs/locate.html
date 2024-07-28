@@ -1,0 +1,21 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Align MUSE Coordinates with Minecraft's for GPS Launch (Porter)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/locate.txt <- <b>Dead reckoning <code>point</code> for turtle on <code>porter</code> as Minecraft coordinates</b> -> muse/docs/programs/locate.md  
+</code></pre>
+<pre><code class="language-lua">
+
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+remote.call("porter", "locate", {...}) --:= locate:
+
+  </body> 
+</html>
+

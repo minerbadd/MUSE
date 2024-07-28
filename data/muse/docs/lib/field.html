@@ -1,0 +1,88 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {field: []: (:)} <- <b>Field Functions Library: Produce and Execute Field Plans</b> -> muse/docs/lib/field.md      
+--:| field: <i>Fields are rectangular solids defined by a range (a <code>situation</code> pair with <code>field</code> keyed properties).</i> -> field, _field    
+--:+ <i>Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations.</i>  
+
+--:# <b>Cut, fill, till, and traverse points defining rectangular volumes</b> using <code>field.plan</code>  
+
+--:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> <i>Quarry out blocks from one place to the other.</i> -> <code>":" &:</code>  
+
+--:- cut point point -> <i>Quarry out blocks bound by named points (defining a rectangular solid).</i>  
+
+--:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> <i>Fill, Till, Replace.</i> -> <code>":" &:</code>  
+
+--:< <i>Filling and target may be one of the turtle categories or a Minecraft detail name without prefix</i> <code>minecraft:</code>   
+
+--:- fill point point filling [target] -> <i>Layer fill bounds by points; optionally swaps out only target blocks.</i>  
+
+--:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> <i>Till the seed from one place to the other.</i> -> <code>":" &:</code>  
+
+--:< <i>Seed may be one of the turtle categories or a Minecraft detail name without the prefix</i> <code>"minecraft:"</code>  
+
+--:- till point point seed -> <i>Till the seed bounds by named points (defining a rectangular solid).</i>  
+
+--:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> <i>Put fencing using <code>layer</code> plan.</i> -> <code>":"</code>  
+
+--:- fence range [item] -> <i>Put item or available wooden fence from one point to another in range.</i>  
+
+--:# <b>Path generator: flying ox plow paths through given three dimensional rectangular bounds.</b>    
+--:+ <i>Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions.</i>  
+
+--:: field.paths(bounds: xyz[]) -> <i>Called by plan prototype file to generate plans for plot.</i> -> <code>paths, yDelta: #:, xzEdge: facing</code>  
+
+--:> paths: _Flying ox traverse of three dimensional rectangular solid_ -> <code>{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}</code>    
+--:+ <i>Returns paths, vertical traverse (<code>yDelta: #:</code>), and orientation of longest horizontal edge for bounded block.</i>  
+
+--:: field.plan(planName: ":", fielding: fieldParameters, offset: xyz?) -> <i>Run plan, default offset {0,0,0}.</i> -> <code>report: ":" &: &!</code>    
+--:+ <i>Loads and executes the prototype plan (which calls <code>field.paths</code>) for each (odd, even, or last) level of a plot.</i>  
+
+--:> fieldParameters: <i><code>bounds</code> (and materials to fill and replace)</i> -> :<code>[bounds, fieldParameters.fills?, fieldParameters.removeables??]</code>  
+
+--:> fieldParameters.fills: <i>Group or list of craft items for fill material</i> -> <code>group|craft[]</code>  
+
+--:> fieldParameters.removeables: <i>Material replaced by fill</i> -> <code>group|craft[]</code>  
+
+--:> craft: <i>Minecraft item <code>detail.name</code> without <code>minecraft:</code> prefix</i> -> <code>":"</code>  
+
+--:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> <i>Plots</i> -> <code>report: ":" &: &!</code>    
+--:+ <i>Called by field files. Calls <code>fieldsOp</code> from field file (which calls <code>field.plan</code>).</i>  
+
+--:> field.plotSpan: <i><code>{}</code> spans all plots; if only first, default plots after first -></i> :<code>[:_, :_, first: #:?, last: #:??]</code>  
+
+--:: field.extents(:bounds:, :strides:, faced: ":"?) -> <i>Plots placed</i> -> <code>field.count, field.count , eP, eP, striding, ^:, ^:</code>    
+--:+ Returns <code>nplots:[fieldOp #:}, slots:[fieldOp]: #:}, strides: eP, run: eP, striding, turn: ^:, back: ^:</code>    
+--:+ <i>Extents for <code>stride</code> (shorter) and <code>run</code> (longer) virtual axes for each <code>opName</code> in the <code>strides</code> entries unless <code>faced</code>.</i>  
+
+--:> field.count: <i>dictionary keyed by 'opName<code> for number of elements in field for that operation</i> -> </code>[fieldOp]: #:`  
+
+--:> strides: <i>dictionary keyed by <code>opName</code> for the distance along the stride axis for a striding</i> -> <code>[fieldOp]: #:</code>  
+
+--:> striding: <i>dictionary keyed by <code>opName</code> of vectors incrementing game coordinate positions</i> -> <code>[fieldOp]: xyz</code>  
+
+--:> eP: <i>pair of coordinates for extents</i>  -> <code>:[xyz, xyz]</code>  
+
+--:> fieldOp: <i>Operation name in the set for a particular kind of field</i> -> ":"  
+
+--:# <b>Execution train runs from <code>field.make</code> to <code>field.plot</code> to <code>field.plan</code> to execute the plan</b>  
+
+--:: field.make(commands: fieldCommands, faced: ^:) -> <i>Load field files; return their <code>field.plot</code> calls</i> -> <code>report: ":" &:</code>  
+
+--:> fieldCommands: <i>For CLI</i> -> :<code>[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]</code>    
+--:+ <i>The second entry, <code>ranger</code> in <code>fieldCommands</code> is a string which may simply be a name for a <code>range</code>, (a kind of <code>place</code>).</i>    
+--:+ <i>If so, the range name gets the range's features dictionary and the field file name to load (keyed as <code>features.fields</code>).</i>    
+--:+ <i>It could also be a string specifying the name of a farm and a field name in that farm (separated by a colon).</i>    
+--:+ <i>If so, the farm name specifies the farm's <code>range</code> and so the farm range's features dictionary.</i>    
+--:+ <i>The <code>fields</code> entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name.</i>    
+--:+ <i>With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified.</i>  
+
+    </pre>
+  </body> 
+</html>
+

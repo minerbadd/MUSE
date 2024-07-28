@@ -1,0 +1,23 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:~ field.plot() <- <b>Create Tree Farm Spacing Trees by Threes and Harvest Them</b> -> muse/docs/fields/trees.md    
+--:+ <i>Loaded by <code>field.make</code> with operation name, span of plots for the operation, and field bounds.</i>    
+--:+ <i>Calls <code>field.plot</code> with specified plot span, field operation function, and total field plots for that operation.</i>    
+--:+ <b>Supported operations are <code>quarry</code>, <code>layer</code>, <code>cover</code>, <code>finish</code>, <code>harvest</code>, <code>path</code>, and <code>test</code></b>    
+--:+ <i>Operation functions call <code>field.plan</code> with plot bounds, xyz offset, and prototype plan for the operation.</i>    
+--:+ <i>Harvesting along tree lines starts above trees. Adjacent blocks are broken to get saplings from leaves.</i>    
+--:+ <i>Makes and harvests the fields for the tree farm: excavates and fills with dirt. Then covers and finishes with sand.</i>    
+--:+ <i>The cover and finish operations replace dirt and grass with two block wide strips of sand in the x and z directions.</i>    
+--:+ <i>Result is blocks of dirt three blocks apart in horizontal directions with sand elsewhere to restrict planting.</i>    
+--:+ <i>Planting (<code>plan.puts</code> as <code>minecraft:sapling</code>) only succeeds above dirt/grass/podzol.</i>  
+
+    </pre>
+  </body> 
+</html>
+

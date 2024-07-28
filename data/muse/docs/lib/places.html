@@ -1,0 +1,84 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {place: []: (:), moves: []: (:), steps: []: (:) } <- <b>Places Functions Library</b> -> muse/docs/lib/places.md      
+--:| places: <i>Naming places at MUSE coordinates, moving there, stepping there for operations.</i> -> places, place, moves, steps    
+--:+ place: <b>Name places (points, trails, ranges); serialize and load serializations for disk and network operations.</b>      
+--:+ moves: <b>Move turtles to named places or along named trails.</b>     
+--:+ steps: <b>Iterator to move block by block to named places or along named trails.</b>  
+
+--:# <b>Type definitions serialized for network tansport and disk storage</b>  
+
+--:> place: <i>A point, trail, or range</i> -> <code>{name: ":", label: ":", :situations:, :features:}</code>  
+
+--:> features: <i>Dictionary of string key, any value pairs</i> -> <code>[key: ":"]: any</code>  
+
+--:# <b>Utilities for places (points, trails, and ranges)</b>  
+
+--:: place.reset() -> <i>Resets places to the empty table.</i> -> <code>nil</code>  
+
+--:: place.count() -> <i>Returns number of places.</i> -> <code>#:</code>  
+
+--:: place.site(value: ":"?) -> <i>Set or return local <code>site</code> (isolates global).</i> -> <code>":"</code>  
+
+--:: place.qualify(name: ":") -> <i>Return already sited name, otherwise prepend site to name</i> -> <code>sitedName: ":"</code>  
+
+--:: place.distance(a: xyzf, b: xyzf) -> <i>Manhattan: abs(delta x) + abs(delta y) + abs(delta z).</i> -> <code>distance: #:</code>  
+
+--:: place.match(name: ":") -> <i>Lookup place qualified by site, return</i> <code>nil</code> <i>if not found.</i> -> <code>index: #:?, place?</code>  
+
+--:: place.xyzf(name: ":"?, number: #:?) -> <i>Looks up name [defaults to current situation].</i> -> <code>xyzf?, index: #:?</code>  
+
+--:: place.name(name: ":", label: ":", supplied: situation?, :features:??) -> <i>Make or update place.</i> -> <code>":", #:</code>    
+--:+ <i>Include current situation or optionally supplied situation in places. Optionally update features with key = value.</i>    
+--:+ <i>Return index of situation in global places and the serialized situation including its features.</i>  
+
+--:: place.add(name: ":", :situation:) -> <i>Add situation to situations of an existing place.</i> -> <code>serialized: ":", index: #:</code>  
+
+--::place.erase(name: ":") -> <i>Removes named place from array of places.</i> -> <code>#:, index: #:</code>    
+--:+ <i>Return new length of places table and the (previous) index of the removed place.</i>  
+
+--:# <b>Answering "where?"</b>  
+
+--:: place.near(span: #:?, reference?: ":"|position) -> _ -> (): <code>name: ":", label: ":", xyz, distance: #:, situations, serial: ":"</code>    
+--:+ <i>If both the span and name or position are specified, return places within a span of blocks of the named place or position.</i>    
+--:+ <i>If only the span is specified, return places within a span of blocks of the current situation or player position.</i>    
+--:+ <i>If neither is specified return each of the named places. In any case, iterator returns include serialized places.</i>  
+
+--:: place.nearby(:xyzf:?, :cardinals:) -> <i>Sorted</i> -> `:[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]  
+
+--:> cardinals: <i>Function to get one of the eight cardinal points of the compass</i> -> (dx: #:, dz: #:): cardinal: ":"    
+--:+ <i>Nearest places to specified xyzf coordinates or current position (as default).</i>     
+--:+ <i>Returned table is sorted by distances and includes the name, label, and xyzf position of each place.</i>    
+--:+ <i>If a <code>cardinals</code> function is supplied, the eight point cardinal direction is also included.</i>  
+
+--:# <b>Support for trails (names and labels for sequences of situations)</b>  
+
+--:: place.fix(:xyzf:, track: ^:?) -> <i>Sets situation position, can start tracking for trail.</i> -> <code>xyzf</code>    
+
+--:: place.trail(headName: ":", tailName: ":", label: ":") -> <i>Makes two places.</i> -> <code>headSerial: ":", tailSerial: ":"</code>    
+--:+ <i>Trail places share a label and represent trails from head to tail and tail to head; head set by</i> <code>place.fix</code>.  
+
+--:: place.track(name: ":") -> <i>Returns trail</i> -> <code>name: ":"?, label: ":"?, situations</code>?  
+
+--:# <b>Moving and stepping for known places: to points or along trails</b>  
+
+--:: moves.along(name: ":") -> <i>Move from first to second situation of place.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &! recovery</code>    
+--:+ <i>If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head.</i>  
+
+--:: steps.along(name: ":") -> <i>Iterator: first to next situation of place.</i> -> <code>(): code: ":", remaining: #:, xyzf: ":" &! recovery</code>    
+--:+ <i>If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head.</i>  
+
+--:: moves.to(target: ":", first: ":") -> <i>Move to target, first along direction.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &! recovery</code>  
+
+--:: steps.to(target: ":") -> <i>Step (iterator) to target place.</i> -> <code>(): code: ":", remaining: #:, xyzf: ":" &! recovery</code>  
+
+    </pre>
+  </body> 
+</html>
+

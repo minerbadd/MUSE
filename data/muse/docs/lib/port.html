@@ -1,0 +1,51 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {port: []: (:)} <- <b>Transport Operations Command Line Library</b> -> muse/docs/lib/port.md      
+--:| port: <i>CLL for <code>book</code> and <code>port</code> commands assessing and clearing player inventory for specified teleport.</i> -> port  
+
+--:# Partially consumed inventory items add to the energy <code>bank</code> used to decrease a future porting cost in a session.  
+
+--:# Default player inventory items are considered for <code>book</code> and <code>port</code> (porting) operations.  
+
+--:> port.item: <i>Short inventory item name for booking</i> -> <code>"iron"|"copper"|"gold"|"redstone"</code>  
+
+--:# Rather arbitrarly, height for porting includes a player standing on a turtle  
+
+--:# <b>Support and test functions for <code>book</code> and <code>port</code> operations.</b>    
+--:+ <i>Assess player inventory considered for energy available to do work.</i>  
+
+--:: port.inventory(costToPay: #:, orderedItems: port.order, playerInventory: [port.item]: #:) -> <i>Testing</i> -> <code>":"[], #:, #:</code>    
+--:+ <i>Returns payment inventory used for <code>costToPay</code>, excess energy to bank, inventory energy used</i>  
+
+--:> port.order: <i>Order in which inventory items will be considered for booking</i> -> <code>port.item[]</code>  
+
+--:: port.available(set: [port.item]: #:) -> <i>For Testing: mock player inventory</i> -> <code>[port.item]: #:</code>  
+
+--:: port.book(name: ":", label: ":", from: place, to: place, span: #:, ordering: port.order) -> <i>Testing</i> -> <code>booking: ":"</code>    
+--:+ <i>Booking (string) names the <code>range</code> entry that will be used to specify a <code>port</code> operation and how to pay for it.</i>    
+--:+ <i>Return needed inventory for booking and bankable if > 0</i>  
+
+--:# <b>Booking from place spanning area to place, offering items for port operation</b>  
+
+--:- book name label from to span? item??... ->  <i>Spanned range with (default) items as properties; return cost less bank.</i>  
+
+--:# Save booking as a <code>range</code> with <code>span</code> and offered or default ordering of items as <code>range</code> properties  
+
+--:# <b>Port operation consuming player inventory offered in booking.</b>  
+
+--:- port booking -> <i>As provided in booking, consume player inventory to teleport entities from one area to another.</i>  
+
+--:# <b>If this is in-game, do the port and if successful, pay for it by clearing counts of selected items</b>  
+
+--:: port.op(commands: ":"[]) -> <i>Command Line Interface for teleport book and trip:</i> -> <code>":" &:</code>  
+
+    </pre>
+  </body> 
+</html>
+

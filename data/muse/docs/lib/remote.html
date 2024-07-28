@@ -1,0 +1,39 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {remote: []: (:) } <- <b>Functions Library for Remote Procedure Calls</b> -> muse/docs/lib/remote.md      
+--:| remote: <i>Client and server side support for RPCs and client (player) side support for</i> <code>come</code> <i>and</i> <code>tail</code>. -> remote, _remote    
+--:+ <b>Test functions are provided for out-of-game, no network operation.</b>  
+
+--:# <b>Server Side Remote Call Operations: Protocols to Receive Muse Calls (MC), Send Muse Responses (MR)</b>  
+
+--:: remote.wait() -> <i>Setup turtle to repeatedly wait for MC network requests, send MR results.</i> -> <code>nil</code>  
+
+--:# <b>Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)</b>  
+
+--:: remote.call(server: ":", command: ":", arguments: any[], callback: (:)?) -> <i>RPC:</i> -> <code>any &: &!</code>    
+--:+ <i>Form serialized request table from command string and arguments. Get server ID from server name.</i>    
+--:+ <i>Send request to server, wait for result, return call (default <code>remote.return</code>) callback function to result.</i>  
+
+--:: remote.returns(results: any[]) -> <i>Default client side handling of server response: just print results as string.</i> -> <code>nil</code>  
+
+--:# <b>Turtle fetch functions:</b> <code>come</code> <b>(once) and</b> <code>tail</code> <b>(repeatedly) to player</b>    
+--:+ <i>Prepare remote call to server turtle by getting player xyz position and forming argument table.</i>  
+
+--:: remote.come(turtle: ":") -> <i>Towards GPS player position.</i> -> <code>report: ":"</code>  
+
+--:- come -> <i>Turtle towards GPS player position.</i>  
+
+--:: remote.tail(turtle: ":", _ : "tail", rates: ":"?) -> _Repeatedly towards player position, default rate 0.5 seconds._ -> <code>nil</code>   
+
+--:- tail rate? -> <i>Turtle every rate seconds towards player.</i>  
+
+    </pre>
+  </body> 
+</html>
+

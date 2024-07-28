@@ -1,0 +1,27 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Send Command to <code>miner</code>(Remote)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/miner.txt <- <b>Remote Operations for Muse Miner</b> -> muse/docs/programs/miner.md  
+--:- <code>miner</code> command argument... -> <i>See <a href="../lib/net.html">muse/docs/lib/net.html</a> for the remote command line interface.</i>
+</code></pre>
+There's <a href="https://riptutorial.com/lua/topic/4475/variadic-arguments" target="_blank"> a tutorial </a> on Lua's ... operator and its <code>select</code> function.
+<pre><code class="language-lua">
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+
+local command, arguments = ..., {select(2, ...)}
+local ops = {come = remote.come, tail = remote.tail}
+
+local op = ops[command] or remote.call; op("miner", command, arguments)
+
+
+  </body> 
+</html>
+

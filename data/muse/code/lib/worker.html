@@ -1,0 +1,130 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Plan Execution: lib/worker.lua from lib/planner.lua</h2>
+<pre><code class="language-markdown">
+--:! {worker:[]: (:)} <- <b>Functions Library to Execute Plans</b> -> muse/docs/lib/worker.md  
+--:| worker: <i>Run what's been created by</i> <code>planner</code> <i>while attempting to deal with a turtle's situational difficulties.</i> -> worker
+</code></pre>
+<pre><code class="language-lua">
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local motion = require("motion"); local move = motion.move ---@module "signs.motion"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
+local places = require("places"); local moves = places.moves ---@module "signs.places"
+
+local worker = {} ---@module "signs.worker" -- for functions exported from library
+</code></pre>
+<a id="failures"></a> 
+Try recovery for 'lost<code> or 'blocked</code> conditions. If successful, <a href="https://dspace.mit.edu/bitstream/handle/1721.1/5753/AIM-443.pdf?sequence=2&isAllowed=y" target="_blank"> go to</a> <code>operate</code> as a<a href="https://en.wikipedia.org/wiki/Tail_call" target="_blank"> tail call</a> with the same index into <code>pathOperations</code> and the <code>remaining</code> blocks for <code>more</code>.
+<pre><code class="language-lua">
+-- # <b>Mutual recursions with <code>operate</code> to attempt recovery from <code>blocked</code> and <code>lost</code> failures.</b> 
+local operate -- declared here for recursion 
+
+local function empty(plan, _, index, direction, remaining, at, movement, motion) 
+  error("worker.empty: no fuel at "..core.string(at, plan.name, index, direction, remaining, movement, motion))
+end -- rescue needed
+
+local function bedrock(plan, _, index, direction, remaining, at, movement, motion)
+  error("worker.bedrock: at "..core.string(at, plan.name, index, direction, remaining, movement, motion))
+end-- can't proceed
+
+local function lost(plan, pathOperations, index, direction, remaining, at, movement, motion) -- get new gps fix, continue 
+  local x, y, z = core.where(); if not (x and y and z) then error("worker.lost: GPS failed, turtle lost in "..
+      plan.name.." plan. Last seen at "..at.. " heading "..direction.." "..plan.name.." "..movement.." "..motion)
+  end; operate(plan, pathOperations, index, remaining)  -- what was lost was found, GPS reset dead reckoning
+end
+
+local function blocked(plan, pathOperations, index, direction, remaining, at, movement, motion) -- attempt unblock
+  core.status(3, "worker", "blocked so unblocking at", at, "for", plan.name,  movement, motion) 
+  turtle.unblock(direction, 5); move<a href="0">direction</a> -- unblocking failure raises error, <code>operate</code> if unblocked
+  -- turned in original direction, work not done, continue current operation for remaining blocks
+  turtle.block(false) -- for out-game operation, imagine that the blockage has been removed
+  return operate(plan, pathOperations, index, remaining) -- plan, pathOperations, index, more; 
+end 
+</code></pre>
+<a id="step"></a> 
+The <code>operateStep</code> function sets up <code>workStep</code>, catches its errors, and dispatches to recovery operations using error conditions for its <a href="#failures"> failures</a>.
+<pre><code class="language-lua">
+local function workStep(plan, stepItem, direction, distance) -- <code>stepItem</code> is iterator (closure)
+  for code, remaining in stepItem(distance) do -- errors to <code>stepOperation</code> if lost, empty, or blocked
+    core.status(5, "work", "step to work", direction, "over", distance, "blocks", code, remaining) 
+    if plan.work then plan.work(plan, direction) end-- <b>do the work here</b>, errors to <code>stepOperation</code> 
+  end; return "done", 0, move.at() -- successfully steped work through path in plan
+end
+
+local failures = {blocked = blocked, lost = lost, empty = empty, bedrock = bedrock,} -- actions to handle failure
+
+-- # <b>Step movement and marker and fixture placement operations. Windup for plan completion.</b>
+
+local function operateStep(elements, plan, index, pathOperations, more) -- step (and work), recovery for failures
+  local _, stepItem, direction, distance  = table.unpack(elements) -- <code>stepItem</code> is iterator (closure)
+  local domore = more or distance; -- <code>more</code> from recovered operation
+  core.status(5, "work", "step", direction, "more", domore, plan.name) 
+  local stepOK, result, condition = core.pass(pcall(workStep, plan, stepItem, direction, domore)) -- <b>work</b>
+
+  if stepOK then return operate(plan, pathOperations, index + 1) end -- ok, continue to <code>operate</code> next path operation
+
+  move<a href="0">direction</a> -- need to handle failure, first turn back toward direction of travel
+  if type(condition) ~= "table" then -- something unrecoverable has happened
+    error("work.operateStep: failed hard "..plan.name.." "..direction.." "..distance.." "..index.." "..result)
+  end -- otherwise get <code>move</code> failure type and remaining blocks for stepping the recovery
+  local _, _, fail, remaining, at, movement, motion = table.unpack(condition) -- handle step failures
+  return failures<a href="plan, pathOperations, index, direction, remaining, at, movement, motion">fail</a>
+end
+
+local function operateMark(elements, plan, index, pathOperations)
+  local _, marks = table.unpack(elements); local markerName, markerLabel = plan.mark(plan, marks); 
+  core.status(3, "worker", "marker", markerName, markerLabel, "added in", plan.name)
+  return operate(plan, pathOperations, index + 1)
+end
+
+local function operatePut(elements, plan, index, pathOperations)
+  local _, direction, item = table.unpack(elements); -- try to find item and if found, select for <code>turtle.puts</code>
+  local items = turtle.category(item) -- <code>turtle.find</code> expects a list
+  if not turtle.find(items) then error("worker.operatePut: no "..item .." found in ".. plan.name.." plan") end
+  turtle.unblock(direction, 5); turtle.puts<a href="">direction</a>; return operate(plan, pathOperations, index +1)
+end
+
+local function finishOperations(plan)
+  if plan.base then local baseOK, report = core.pass(pcall(moves.to, plan.base))-- operations done
+    if not baseOK then error("work.finishOperations: move to base failed at "..move.ats().." in "..plan.name..": "..report) end
+  end; return "done", "Execution of " .. plan.name .. " plan complete." 
+end
+</code></pre>
+<a id="operate"></a> 
+After <code>worker.execute</code> checks for error conditions and attempts to move the turtle to the <code>plan.base</code>, the <code>operate</code> function serves as half of the mutual recursion that drives the work of the plan. A dispatch is made to deal with <code>step</code>, <code>put</code>, and <code>mark</code> operations in the <code>pathOperations</code> for the plan made by <code>lib/planner</code>. If there are no more operations to do, the work of the plan is finished by a call to <code>finishOperations</code> which attempts to move the turtle back to <code>plan.base</code>. Follow the link for the (fairly tricky) operation to <a href="#step"> step</a> movement and deal with <code>blocked</code>, <code>lost</code>, <code>bedrock</code>, and <code>empty</code> conditions.
+<pre><code class="language-lua">
+local operations = {step = operateStep, mark = operateMark, put = operatePut}
+
+function operate(plan, pathOperations, index, more) -- <code>more</code> to continue <code>operate</code> from error condition <code>remaining</code>
+  if index > #pathOperations then return finishOperations(plan) end
+  local elements = pathOperations[index]; local operation = table.unpack(elements)
+  core.status(4, "work", "operate on", index, "of", #pathOperations, "in", plan.name)
+  return operations<a href="elements, plan, index, pathOperations, more">operation</a> -- <b>do</b> <code>step</code>, <code>mark</code>, <code>put</code> 
+end; 
+
+--:: worker.execute(plan, pathOperations, fuelOK: ^:, pathDistance: #:) -> <i>Do plan.</i> ->  <code>"done", report: ":" &: &!</code>
+--:+ <i>Attempt recovery for</i> <code>blocked</code> <i>or</i> <code>lost</code> <i>conditions; raise error for</i> <code>empty</code> <i>or</i> <code>bedrock</code> <i>or if recovery fails.</i>
+function worker.execute(plan, pathOperations, fuelOK, pathDistance)
+  core.status(4, "worker", "execute plan", fuelOK, pathDistance, "blocks")
+  if not fuelOK then error("worker.execute: insufficient fuel for "..pathDistance.." block plan") end 
+  if plan.base then local moveOK, report = core.pass(pcall(moves.to, plan.base)) -- start from base
+    if not moveOK then error("worker.execute: failed at "..move.ats().." for "..plan.name.." because "..report)
+    end; core.status(2, "work", "at plan base") -- couldn't even get to first base
+  end; 
+  turtle.block(turtle.blocking())-- block in next operation if blocking has been enabled for out-game test
+  return operate(plan, pathOperations, 1); -- <b>do it all</b> (uncaught errors thrown if anything fails)
+  -- plan, pathOperations, index, more (<code>more</code> is nil at start of plan operation)
+end
+
+return {worker = worker}
+
+  </body> 
+</html>
+

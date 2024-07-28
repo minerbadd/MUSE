@@ -1,0 +1,167 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2>Work Functions for Navigation and Mining Grid Plans: lib/grid.lua</h2>
+<pre><code class="language-markdown">
+--:! {grid: []: (:)} <- <b>Grid Mining Functions Library</b> -> muse/docs/lib/grid.md  
+--:| grid: <i>Work functions boring, navigating, and mining ore in a grid of tunnels.</i> -> grid
+</code></pre>
+The <code>grid</code> library provides the <i>how</i> extending mining plans run by the <code>lib/mine</code> CLL. It provides the means for <code>worker.execute</code> to bore and mine a grid of tunnels at some level in a mine. Ores are mined in tunnels perpendicular to three bored access tunnels: an <code>inner</code> one to the shaft, <code>outer</code> ones at the edges of the bored area.
+<pre><code class="language-lua">
+local grid = {}; grid.hints = {} ---@module "signs.grid" -- for functions exported from library
+
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local motion = require("motion"); local move = motion.move ---@module "signs.motion"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
+local maps = require("map"); local map = maps.map---@module "signs.map"
+local planners = require("planner"); local planner = planners.planner ---@module "signs.planner"
+local places = require("places") ---@module "signs.places"
+local place, moves = places.place, places.moves
+
+---@module "signs.mine" -- import the interface
+
+--:> crossplan: <i>Bore and mine, minimal movement</i> -> <code>{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }</code>
+
+</code></pre>
+<a id="navigation"></a> 
+Navigating the grid of tunnels is done using markers for named <code>places</code>. The general idea for navigating is to go directly to the shaft between levels or to a (named place) <code>target</code> if is either is <code>reachable</code>, that is if the z coordinate and either the x or z coordinate is within one block of the current turtle <code>position</code>. If this is the case, the turtle has arrived. If that's not possible, go instead to an <code>inner</code> tunnel if that's <code>reachable</code>, to an <code>outer</code> tunnel if that's not. Then try again. Prefer tunnels <code>closer</code> to the <code>target</code>. Here are some utility functions used for navigation: 
+<pre><code class="language-lua">
+--:# <b>Navigation for grids:  use placed markers to find posts for turtles.</b>
+local function reachable(xyzPlace) 
+  local x, y, z = table.unpack(move.at()); -- only grid movement in tunnels; only within level 
+  local xPlace, yPlace, zPlace = table.unpack(xyzPlace)
+  return (math.abs(x - xPlace) <= 1 or math.abs(z - zPlace) <= 1) and math.abs(y - yPlace) <= 1 
+end
+
+local function closer(namePlace, nameMarker, xyzTarget) -- namePlace is tentative replacement
+  local distancePlace = place.distance(place.xyzf(namePlace), xyzTarget)
+  local distanceMarker = place.distance(place.xyzf(nameMarker), xyzTarget)
+  return distancePlace < distanceMarker
+end
+
+local binLabels = {shaft = true, inner = true, outer = true}
+-- examine (marker) place, bin its name as <code>target</code>, <code>inner</code>, or <code>outer</code> 
+-- only if it's <code>reachable</code> and <code>closer</code> than curretly in that bin
+
+local function bin(tagTarget, xyzTarget, namePlace, labelPlace, xyzPlace, markers)
+  if not binLabels[labelPlace] or not reachable(xyzPlace) then return end
+  core.status(5, "grid reachable", namePlace, labelPlace, markers)
+  local _, _, tagPlace = planner.mark(namePlace) -- parse marker; if found target, done
+  if tagTarget == tagPlace or labelPlace == "shaft" then markers.target = namePlace; return markers end 
+  if closer(namePlace, markers[labelPlace], xyzTarget) then markers[labelPlace] = namePlace end
+  return markers -- label: inner (main) hall or outer (back) hall
+end
+
+local function binMarkers(markerName) -- look at all the named <code>places</code> to bin those useful in moving to target
+  local _, _, tagTarget = planner.mark(markerName); local xyzTarget = place.xyzf(markerName)
+  assert(tagTarget and xyzTarget, "grid: binMarkers missing targets for "..markerName)
+  local markers = {}; -- markers.target holds name of target marker or shaft marker
+  for namePlace, labelPlace, xyzPlace in place.near() do 
+    bin(tagTarget, xyzTarget, namePlace, labelPlace, xyzPlace, markers)  
+  end; return markers -- for target, inner, and outer at current level 
+end
+</code></pre>
+<a id="mark"></a>
+Markers are created according to a <code>marking</code> format that includes the name of the shaft for the minehead, the level in the mine, and the rest of the marker name that's specified by the <code>plan</code> file for the mine. The format is used for finding a <code>post</code> for a turtle and going there in the grid of tunnels. The <code>lib/mine</code> library has added supplementary information to the <code>plan</code>. This is used in creating the marker and providing its feature list with the <code>key</code> and <code>value</code> for the <code>plan</code>. A mining turtle uses <code>grid.post</code> to navigate to the <code>post</code> at a given level and wait there for commands from the player. The function adheres to the <code>mine.post</code> interface.
+<pre><code class="language-lua">
+
+function grid.mark(plan, marking) -- called by <code>worker.execute</code>, <b>specified in shaft and bore plans</b> 
+--:: grid.mark(:plan:, :marking:) -> <i>Make place name, report result.</i> -> <code>markerName: ":", label: ":", report: ":"</code>
+--:+ <i>Called by <code>worker.execute</code> to make marker name and use it to add map point for navigation in mine.</i>
+--:+ <i>Puts plan name value in marker (keyed by <code>"shaft"</code> or <code>"bore"</code>) so marker is enough for navigating in shaft or bore.</i>
+--:+ <i>Marker place name formed as <code>head:level:base</code> or <code>head:base</code> or <code>head</code> with place labelled as <code>"outer"|"inner"|"shaft"</code>.</i>
+  local prefix, base, label = table.unpack(marking); local length = string.len(prefix) --shaftName and level
+  local shaftName, level, key, value = plan.head, plan.level, plan.key, plan.value -- <b>added by lib/mine</b>
+  local levelName = length > 1 and string.format("%02d", level) or "" -- more than 1 colon in prefix => put level in name
+  base = (base == "") and "" or ":"..base; local markerName = shaftName..":"..levelName..base; 
+  local report = map.op {"point", markerName, label}; 
+  map.put(markerName, key, value) -- marker gets plan key and value
+  return markerName, label, report 
+end
+
+function grid.post(markerName, borePlans) -- in level, <b>specified by bore plan</b>, <code>mine.post</code> interface --:= mine.post:: grid.post
+  local markers = binMarkers(markerName) -- target (shaft or tag), inner, and outer markers
+  core.status(3, "grid", "binned markers for", markerName, markers) 
+  if markers.target then moves.to(markers.target, "y"); return markers -- <b>at specified post or at shaft within this level</b>
+  elseif markers.inner then moves.to(markers.inner, "y"); return grid.post(markerName, borePlans) -- try for shaft|tag
+  elseif markers.outer then moves.to(markers.outer, "y"); return grid.post(markerName, borePlans) -- try for inner
+  else error("mine.post: Can't navigate to "..markerName.." for "..borePlans.bores.name..
+      " at "..move.ats().." with "..core.string(markers).." markers")
+  end
+end
+</code></pre>
+<a id="ores"></a> 
+The work to be done is factored into functions each of which is intended to convey how it is part of the work.  There's a bunch of tables used to separate out the detail from the procedural flow. The functions support <code>mineVein</code> which is where the work is actually done. The <code>grid.ores</code> function is mostly just an interface for <code>mineVein</code>. 
+<p>
+A <code>guide</code> is used to explore a vein for ore and extract the ore from it. There are four places that are adjacent to a mining  mining turtle and not in the direction a mining turtle is moving. The turtle can rotate and inspect these four for ore without using fuel. There is a excavation <code>guide</code> for each of these four. Each <code>guide</code> specifies where to <code>look</code> for ore, where to <code>dig</code> if it finds it, where to look for more if it does, and where to dig if it does find more. The details of the geometry are the <i>what</i>. The <code>grid</code> library provides the <i>how</i> for mining in the pattern of bores and mining tunnels it supports.
+<pre><code class="language-lua">
+--:# <b>Mining Ore: look around for ore and if found, mine adjacent ore as well</b>
+
+local function digIn(direction) 
+  local digOK, digReport = core.pass(pcall(turtle.unblock, direction)) -- <b>dig found ore</b>
+  if not digOK then error("mine.dig: "..direction.." failed because "..digReport) end
+end
+
+local opposites = {up = "down", down = "up", north = "south", south = "north", east = "west", west = "east" }
+local go = {up = move.up, down = move.down, north = move.north, south = move.south, east = move.east, west = move.west }
+local liquids = {"minecraft:water", "minecraft:lava"}
+
+local function digInspect(ores, direction) -- direction to check, dig if air, water, lava, or ore
+  local notAir, detail = turtle.inspects<a href="">direction</a>; -- <code>notAir</code> <code>false</code> for air 
+  local ore, liquid = turtle.check(ores, detail), turtle.check(liquids, detail); 
+  if notAir and not (liquid or ore) then return false end -- not air, water, lava, or ore
+  digIn(direction); core.status(3, "grid", "inspected ore", ore, direction, notAir, liquid)
+  return ore or not notAir, notAir; -- found ore or air: return <code>true</code>, <code>notAir</code> (not <code>nil</code> if ore, water, or lava)
+end
+
+local function moveIn(direction) -- simple moves (no unblocking)
+  local moveOK, moveCode = core.pass(pcall(go[direction], 1)) -- go is move.xxxx(1) table
+  if not moveOK then error("mine.moveIn: "..direction.." failed because "..moveCode) end
+end
+
+local function backOut(direction) -- use <code>opposites</code> to back out of digging for found ore
+  local backOK, backCode = core.pass(pcall(go[opposites[direction]], 1)) -- back out
+  if not backOK then error("mine.backOut: "..direction.." failed because "..backCode) end
+end
+
+local function digDeep(more, digMore, ores) -- dig and go in <code>more</code> direction, then dig around from there
+  digIn(more); moveIn(more); core.status(3, "grid deep", more, digMore) -- not air
+  for _, direction in ipairs(digMore) do digInspect(ores, direction) -- dig out any ore in digMore directions
+  end; backOut(more); 
+end
+
+--:# <b>Definitions for finding and extracting ores</b>
+--:> grid.cut: <i>Directions to dig in vein</i> -> <code>"up"|"down"|"north"|"south"</code>
+--:> grid.guide: <i>Instructions for cut</i> -> <code>:[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]</code>
+-- + <i><code>look</code>: direction to look for ore; <code>dig</code>: first digs in cut; <code>lookMore</code>: try direction for more ore; <code>digMore</code>: more digs.</i>
+
+local function mineCut(plan, direction, cut, ores) 
+  local look, dig, lookMore, digMore = table.unpack(cut); local digIt, something = digInspect(ores, look)
+  if digIt then moveIn(look); core.status(3, "grid in vein", digIt, look, dig) -- <code>digIt</code>: ore|lava|water|air
+    for _, direction in ipairs(dig) do digInspect(ores, direction) end -- excavate into vein
+    if something then digDeep(lookMore, digMore, ores) end -- found ore|lava|water, dig deeper for potentailly more ore
+    backOut(look) -- back out of excavating cut, cut is done
+  end; core.status(5, "grid cut done", direction, plan.name, look, lookMore)
+  local moveOK, code = core.pass(pcall(moving, 0)) -- need to face in the original direction 
+  if not moveOK then error("grid.mineVein: Can't return "..direction.." while digging because "..code) end
+  return "done"
+end
+
+function grid.ores(plan, direction, guide, ores)
+  --:: grid.ores(:plan:, :direction:, guide: grid.guide, :ores:) -> <i>Extract ores.</i> -> <code>"done" &!</code>
+  --:+ <i>Given the guide for a vein, mine ores in each of the guide's cuts for that vein.</i>
+  for _, cut in ipairs(guide) do mineCut(plan, direction, cut, ores) end 
+  return "done"
+end
+
+return {grid = grid}
+
+  </body> 
+</html>
+

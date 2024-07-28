@@ -1,0 +1,2 @@
+--:~ {start: plan, odd: plan, even: plan, last: plan }, yDelta: #: <- **Path** ->  muse/docs/plans/path.md      
+--:+ _Returns plans with paths from `field.paths` and does no work but may cause damage. Use as check before preparing farm._   

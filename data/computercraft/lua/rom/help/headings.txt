@@ -1,0 +1,5 @@
+
+
+headings rate? place? count??
+ 
+Repeated movement report at specified rate (or every five) seconds).

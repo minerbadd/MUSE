@@ -1,0 +1,9 @@
+
+
+status level [filename]
+ 
+Set reporting hurdle and optionally save reporting in log file.
+
+The status level controls reporting: the higher the level the more detailed the reports.
+
+Log files are stored locally in a computer's `muse` directory.

@@ -1,0 +1,9 @@
+return {"TM.tail21", "trail2021", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"trail2021", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TM.trail20", "test20", {{facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, }, {}, }
+return {"TM.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TM.test3", "label3", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TM.rome", "home", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TM.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TM.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TM.test", "test", {{facing="north", fuel=0, position={y=0, x=0, z=0, }, level="same", }, }, {}, }

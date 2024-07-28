@@ -1,0 +1,41 @@
+<!DOCTYPE html> 
+  <html> 
+    <head> 
+      <link href="../../assets/museMD.css" rel="stylesheet" /> 
+    </head> 
+  <body> 
+    <pre>
+
+--:! {task: []: (:) } <- <b>Command Line Library for Tasks: Low Level Turtle Operations</b> -> muse/docs/lib/task.md      
+--:| task: <i>Dispatch targets for</i> <code>net</code> <i>library.</i> -> task, _task  
+
+--:< <b>Directions are  <i><code>u</code>p, <code>d</code>own, <code>n</code>orth, <code>e</code>ast, <code>w</code>est, <code>s</code>outh, <code>f</code>ront</i></b>  
+
+--:- find name...? -> <i>Report and select first slot found [or if no name, just report inventory].</i>  
+
+--:- attack direction -> <i>Attempts attack in specified direction.</i>   
+
+--:- look direction -> <i>Detect and inspect direction, return report.</i>  
+
+--:- compare item direction... -> <i>Named item matches block in any of specified directions?</i>  
+
+--:- drop item direction quantity? -> <i>Drop quantity of selected items [or all].</i>   
+
+--:- suck direction quantity? -> <i>Suck quantity items [or all] into available slot.</i>   
+
+--:- dig direction distance hoeing... -> <i>Direction and distance to (possibly blocked) move, hoeings directions to hoe.</i>    
+--:+ <i>Dig along trails by specifying <code>direction</code> as <code>along</code> and trailname as <code>distance</code>. Can dig <code>here</code>.</i>    
+--:+ <i>Tilling down, the common case for tilling, requires an air block beneath and a dirt block beneath that.</i>  
+
+--:- put filling direction distance putting... -> <i>Direction, distance to move, placing filling in puttings directions.</i>    
+--:+ <i>Put along trails by specifying <code>direction</code> as <code>along</code> and trailname as <code>distance</code>. Can put <code>here</code>.</i>  
+
+--:- change target filling direction distance putting... -> <i>Move distance in direction replacing target with filling.</i>    
+--:+ <i>Change along trails by specifying <code>direction</code> as <code>along</code> and trailname as <code>distance</code>. Can change <code>here</code>.</i>  
+
+--:: task.op (commands: :[ op: ":", arguments: ":"[] ] ) -> <i>Execute tasks for low level turtle operations:</i> -> <code>":" &:</code>  
+
+    </pre>
+  </body> 
+</html>
+

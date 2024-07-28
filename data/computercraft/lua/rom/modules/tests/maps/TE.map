@@ -1,0 +1,57 @@
+return {"TE:test1", "locate", {{facing="north", fuel=0, position={y=200, x=100, z=300, }, level="same", }, }, {}, }
+return {"TE:test1", "locate", {{facing="north", fuel=0, position={y=200, x=100, z=300, }, level="same", }, }, {}, }
+return {"TE:test1", "located", {{facing="north", fuel=0, position={y=200, x=100, z=300, }, level="same", }, }, {}, }
+return {"TE:test1", "located", {{facing="north", fuel=0, position={y=200, x=100, z=300, }, level="same", }, }, {}, }
+return {"TE:tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE:test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE:test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE:test1", "located", {{facing="north", fuel=0, position={y=200, x=100, z=300, }, level="same", }, }, {}, }
+return {"TE:tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE:test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE:test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE:test1", "located", {{facing="north", fuel=0, position={y=200, x=100, z=300, }, level="same", }, }, {}, }
+return {"TE:tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE:test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE:test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE:test1", "located", {{facing="north", fuel=0, position={y=200, x=100, z=300, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.test1", "located", {{facing="north", fuel=0, position={y=300, x=200, z=0, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.test1", "located", {{facing="north", fuel=0, position={y=300, x=200, z=0, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.test1", "located", {{facing="north", fuel=0, position={y=300, x=200, z=0, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.test1", "located", {{facing="north", fuel=0, position={y=300, x=200, z=0, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.test1", "located", {{facing="north", fuel=0, position={y=300, x=200, z=0, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.test1", "located", {{facing="north", fuel=0, position={y=300, x=200, z=0, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.test1", "located", {{facing="north", fuel=0, position={y=300, x=200, z=0, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields={"trees", }, }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.test1", "located", {{facing="north", fuel=0, position={y=300, x=200, z=0, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields="trees", }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields="trees", }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TE.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields="trees", }, }
+return {"TE.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TE.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }

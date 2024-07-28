@@ -1,0 +1,9 @@
+{
+    "Lua.diagnostics.globals": [
+        "shell",
+        "ide",
+        "peripheral",
+        "rednet",
+        "fs"
+    ]
+}

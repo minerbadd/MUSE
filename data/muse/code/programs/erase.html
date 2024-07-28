@@ -1,0 +1,24 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Command To Erase A Place From Map (Local)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/erase.txt <- <b>Erase Command Line Interface</b> -> muse/docs/programs/erase.md  
+</code></pre>
+<pre><code class="language-lua">
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local maps = require("map"); local map = maps.map
+
+print(core.string(map.op({"erase", ...}))) --:= erase:
+
+
+
+  </body> 
+</html>
+

@@ -1,0 +1,5 @@
+
+
+tail rate?
+ 
+Move `rover` every rate (default 5) seconds towards GPS player position.

@@ -1,0 +1,22 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2>Use Booking *Created With <code>book</code> Command to Do Teleport Operation, Paying With Player Inventory (Porter)</h2>
+<pre><code class="language-markdown">
+--:? rom/help/port.txt <- <b>Muse Teleport with Command Computer to Named Place</b> -> muse/docs/programs/port.md  
+</code></pre>
+<pre><code class="language-lua">
+
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+remote.call("porter", "port", {...}) --:= port: 
+
+
+  </body> 
+</html>
+

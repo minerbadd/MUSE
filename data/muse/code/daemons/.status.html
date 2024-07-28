@@ -1,0 +1,34 @@
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../assets/muse.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../assets/prism.js"></script> 
+
+<h2> Reports and Records Status Message On <code>MS</code> Receive</h2>
+<pre><code class="language-markdown">
+--:~ parallelWaitForAny(status) <- <b>MS Broadcast Handler Daemon Prints and Records Status</b> ->  muse/docs/daemons/.status.md  
+</code></pre>
+<pre><code class="language-lua">
+---@diagnostic disable-next-line: undefined-field
+local rednet, parallel = _G.rednet, _G.parallel
+
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local ddss =  require("dds"); local dds = ddss.dds ---@module "signs.dds"
+
+local function status()
+  while true do local id, message = rednet.receive("MS"); 
+    local taggedMessage = dds.role(id).."> "..message; print(taggedMessage)
+    core.record(taggedMessage) 
+  end
+end
+
+parallel.waitForAny(status)
+
+
+
+  </body> 
+</html>
+

@@ -1,0 +1,1 @@
+MUSE <a href="data/muse/Mining Muse.html"> documentation</a> is in data/muse/Mining Muse.html
