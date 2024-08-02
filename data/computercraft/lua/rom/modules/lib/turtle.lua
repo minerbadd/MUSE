@@ -10,6 +10,7 @@ The MUSE `turtle` module introduction is much like any other. One thing is a lit
 --]]
 local turtle = {}; turtle.hints = {} ---@module "signs.turtle" -- for functions exported from library
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
 ---@diagnostic disable-next-line: undefined-field

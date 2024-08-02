@@ -13,6 +13,7 @@
 --:+ _Planting (`plan.puts` as `minecraft:sapling`) only succeeds above dirt/grass/podzol._
 ```Lua
 --]]
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 

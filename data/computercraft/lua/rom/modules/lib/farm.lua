@@ -8,6 +8,7 @@
 --]]
 local farm = {}; farm.hints = {} ---@module "signs.farm" -- for functions exported from library
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 

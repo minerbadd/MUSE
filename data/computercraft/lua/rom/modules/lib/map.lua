@@ -15,6 +15,7 @@ There is one new thing. The `map` library is a `CLL`, a command line library, a 
 --]]
 local map = {}; map.hints = {} ---@module "signs.map" -- for functions exported from library
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"

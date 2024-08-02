@@ -9,6 +9,7 @@
 --:+ _Cane fields are built on fields prepared for crops by `fields/cane.lua`._
 ```Lua
 --]]
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 

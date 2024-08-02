@@ -386,7 +386,7 @@ When you're ready to try running MUSE in the Minecraft/Computercraft environment
 
 ### Next: ComputerCraft (Tweaked) for Each World You Create
 
-MUSE can help you populate the world you've created. You'll need to enable use of a command computer in survival mode. Change the configuration settings to do this and to increase the storage space on ComputerCraft computers. On Windows, the file to change default settings is at:
+MUSE and Computercraft's Global Positioning System (GPS) can help you navigate in the world you've created. While GPS coordinates need not be aligned with Minecraft coordinates, it helps in using some game facilities if they are. MUSE provides a way to do this. You'll need to enable use of a command computer in survival mode. First up, change the configuration settings and increase the storage space on ComputerCraft computers. On Windows, the file to change default settings is at:
 ```md
 .minecraft\defaultconfigs\computercraft-server.toml
 ```
@@ -400,18 +400,20 @@ The 'default' settings seem actually to override the settings for all worlds. (I
 
 Doing much of anything with MUSE turtles, will need fuel. For a game experience, you can play to acquire fuel and maybe a crafting table (or you can cheat).
 
-Once you have a fuel supply, you can go about setting up (the required) GPS navigation for MUSE. You'll need a pocket computer (the `player`), a command computer (the `porter`), a turtle (the `rover`), and four computers to provide GPS facilities. The GPS computers will need disk drives and a floppy disk. The turtle will need tools. All this lot will need modems. So many parts. Running `muse:base` provides all these parts in player inventory, sets the world spawn, and turns off Minecraft `DaylightCycle` and `WeatherCycle` (as a convenience).
+Once you have a fuel supply, you can go about setting up (the required) GPS navigation for MUSE. You'll need a pocket computer (the `player`), a command computer (the `porter`), a turtle (the `rover`), and four computers to provide GPS facilities. The GPS computers will need disk drives and a floppy disk. The turtle will need tools. All this lot will need modems. So many parts. Running `\function muse:base` provides all these parts in player inventory, sets the world spawn, and turns off Minecraft `DaylightCycle` and `WeatherCycle` (as a convenience).
 
 The next step is putting together those parts to craft what you'll need to start:
 
-- Craft a pocket computer with an ender modem on top.
-- Craft an ender modem to the back of the command computer. 
+- Craft a pocket computer with an ender modem on top. 
 - Craft a turtle with an ender modem on either the left or right side. 
 - Craft a pick axe on the side opposite the modem on that turtle. 
+- (This will be an Advanced Ender Mining Turtle)
+
+In spite of the configuration settings, you may need to go to `/gamemode creative` to place the command computer. Place it, go back to `/gamemode survival` and `sneak` to place an ender modem on its back. 
   
 The rest of the given `base` inventory will be used to setup the GPS computers by using the `launch` command. We'll get to that in a bit. First, `reboot` CraftOS. This registers what you've placed in your world with the MUSE Distributed Discovery Service (DDS) for MQ hosts. 
 
-The next step is setting up the launch of the GPS facility. While GPS coordinates need not be aligned with Minecraft coordinates, it helps in using some game facilities if they are. To do this, place the `porter` somewhere convenient and place the turtle that will be `rover` on top of it (using `sneak`). 
+The next step is setting up the launch of the GPS facility. To align the GPS coordinates with Minecraft coordinates, place the `porter` somewhere convenient and place the turtle that will be `rover` on top of it (using `sneak`). 
 
 When you mouse the turtle, a number should appear above the turtle as its "nameplate". This is its temporary `label`. Let's say it's the number `3`. To assign the role of `rover` to the turtle, run `join rover 3` (or whatever number appears as its nameplate). This enrolls the turtle in DDS. It will be an `MQ` host on the next world startup (or CraftOS `reboot`).
 

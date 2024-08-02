@@ -5,6 +5,7 @@
 ```
 ```Lua
 --]]
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 print(core.echo(...)) --:= echo:
 

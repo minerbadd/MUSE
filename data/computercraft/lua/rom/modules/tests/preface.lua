@@ -20,4 +20,6 @@ _G.Muse.tracking = {limit = 500, enabled = nil};
 _G.Muse.delays = {gps = 1, dds = 3} -- for game setup before running dds
 _G.Muse.stack = 64
 
+package.path = _G.Muse.package
+
 

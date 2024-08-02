@@ -5,6 +5,7 @@
 --:+ _Returns plans with paths from `field.paths` and does no work but may cause damage. Use as check before preparing farm._ 
 ```Lua
 --]]
+package.path = _G.Muse.package
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 
 local bounds = table.unpack(...) 

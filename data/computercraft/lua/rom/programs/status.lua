@@ -9,5 +9,6 @@
 --:# _The status level controls reporting: the higher the level the more detailed the reports._
 --:# _Log files are stored locally in a computer's `muse` directory._
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 print(core.logging {...})

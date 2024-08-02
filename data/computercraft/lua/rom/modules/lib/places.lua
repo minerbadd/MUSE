@@ -18,6 +18,8 @@ All that said, here's the introduction and utilities for the module.
 --]]
 
 local place, moves, steps  = {}, {}, {} ---@module "signs.places"
+
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion") ---@module "signs.motion"
 local move, step = motion.move, motion.step

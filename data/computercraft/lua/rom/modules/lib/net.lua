@@ -29,6 +29,7 @@ hints[path.."porter.lua"] = as;
 The `net` table dispatches commands for each `remote.call` into server libraries. The `exec` and `port` libraries are used by the command computer. The `core` library is for debug.
 ```Lua
 --]]
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core  ---@module "signs/core"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local gpss = require("gps"); local gps = gpss.gps ---@module "signs.gps"

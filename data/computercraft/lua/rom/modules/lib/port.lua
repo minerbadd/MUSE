@@ -8,6 +8,7 @@
 --]]
 local port = {}; port.hints = {} ---@module "signs.port" -- for functions exported from library
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local places = require("places"); local place = places.place ---@module "signs.places"
 local maps = require("map"); local map = maps.map ---@module "signs.map"

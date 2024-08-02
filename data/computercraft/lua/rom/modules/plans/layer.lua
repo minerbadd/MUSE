@@ -7,6 +7,7 @@
 ``` 
 ```Lua
 --]]
+package.path = _G.Muse.package
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
 

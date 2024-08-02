@@ -16,6 +16,7 @@ The `grid.post` function uses placed markers for turtles to get to their `post` 
 The function produced by loading this file returns tables as defined below:
 ```Lua
 --]]
+package.path = _G.Muse.package
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local grids = require("grid"); local grid = grids.grid ---@module "signs.grid"
 --[[

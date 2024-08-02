@@ -9,6 +9,7 @@
 --]]
 _G.Muse = _G.Muse or {}; 
 _G.Muse.path = "rom/modules/"; local path = _G.Muse.path -- shared across all worlds (most of Muse)
+_G.Muse.package = "/rom/modules/lib/?.lua"
 _G.Muse.charts = _G.Muse.path.."charts/"
 
 ---@diagnostic disable-next-line: undefined-field
@@ -33,8 +34,8 @@ _G.Muse.data = "muse/"-- local to turtle/computer
 _G.Muse.map = _G.Muse.data.."map.map" -- name of map in _G.Muse.data
 _G.Muse.log = _G.Muse.data.."log.log"; 
 
-if rednet then package.path = "/rom/modules/lib/?.lua" end
-
+--dofile("rom/modules/assets/require.lua") -- so we can `require` (`package.path` read-only?)
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local places = require("places"); local place = places.place ---@module "signs.places"

@@ -6,6 +6,7 @@
 ```
 ```Lua
 --]]
+package.path = _G.Muse.package
 local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
 
 local command, arguments = ..., {select(2, ...)} -- -- first, {rest}

@@ -5,6 +5,7 @@
 --:+ _Plan prototype returns plans to log one level of a birch tree farm given bounds. Work function is `farm.logs`._
 ```Lua
 --]]
+package.path = _G.Muse.package
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
 

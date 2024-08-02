@@ -46,6 +46,8 @@ Here's what all that looks like for these libraries:
 ---@module "signs.motion"
 ---@diagnostic disable-next-line: undefined-field
 local rednet, Muse = _G.rednet, _G.Muse -- globals preserved across programs, not persistent
+
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 ---@diagnostic disable-next-line: undefined-field
 local turtles = require("mock"); local turtle = _G.turtle or turtles.turtle ---@module "signs.mock"

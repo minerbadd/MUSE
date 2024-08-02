@@ -9,6 +9,7 @@ There's nothing much to see here. The `task` library uses the same implementatio
 --]]
 local task, _task = {}, {}; task.hints =  {} ---@module "signs.task" -- internal and exported library functions and CLI hints
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
 local places = require("places"); local moves, place = places.moves, places.place ---@module "signs.places"

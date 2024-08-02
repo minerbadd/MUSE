@@ -5,6 +5,7 @@
 --:- wait -> _Locally on turtle, wait for rednet message. Useful as recovery for uncaught turtle error._  
 ```Lua
 --]]
+package.path = _G.Muse.package
 local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
 
 print("Waiting for rednet"); remote.wait()

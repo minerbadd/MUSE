@@ -6,6 +6,7 @@
 --:+ _The second argument of the command names the farm's corner `point` that will include a `fields` feature._
 ```Lua 
 --]]
+package.path = _G.Muse.package
 local cores = require ("core"); local core = cores.core ---@module "signs.core"
 local maps = require ("map"); local map = maps.map ---@module "signs.map"
 

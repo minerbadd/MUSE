@@ -10,6 +10,7 @@
 --:+ _Gates are to be placed by player (replacing fence) as desired._
 ```Lua
 --]]
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 

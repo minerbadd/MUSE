@@ -9,6 +9,7 @@
 --]]
 local _mine, mine = {}, {}; mine.hints = mine.hints or {} ---@module "signs.mine" -- for functions local to and exported from library
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local places = require("places"); local place, moves = places.place, places.moves

@@ -15,6 +15,7 @@ We'll get to more about the dancing in a bit but first, the expected library int
 --]]
 local _remote, remote = {}, {} ---@module "signs.remote" -- for functions that are internal and exported from library
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"

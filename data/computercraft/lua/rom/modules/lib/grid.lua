@@ -9,6 +9,7 @@ The `grid` library provides the _how_ extending mining plans run by the `lib/min
 --]]
 local grid = {}; grid.hints = {} ---@module "signs.grid" -- for functions exported from library
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"

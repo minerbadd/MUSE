@@ -5,6 +5,7 @@
 --:+ _Plan prototype loaded by `field.plan`. Returns `field.paths`. Digs one level with `turtle.unblock("down")`._  
 ```Lua
 --]]
+package.path = _G.Muse.package
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 

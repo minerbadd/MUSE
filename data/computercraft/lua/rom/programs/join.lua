@@ -4,6 +4,7 @@
 --:? rom/help/join.txt <- **Join Command Line Interface** -> muse/docs/programs/join.md  
 ```Lua
 --]]
+package.path = _G.Muse.package
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
 local places = require("places"); local place = places.place ---@module "signs.places"

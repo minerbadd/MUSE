@@ -9,6 +9,8 @@
 --]]
 -- exports, internals, hints 
 local field, _field = {}, {}; field.hints = {} ---@module "signs.field" 
+
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion");local move = moves.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"

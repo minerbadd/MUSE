@@ -4,6 +4,7 @@
 --:? rom/help/sync.txt <- **Sync Command Line Interface** -> muse/docs/programs/sync.md  
 ```Lua
 --]]
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local maps = require("map"); local map = maps.map ---@module "signs.map"
 

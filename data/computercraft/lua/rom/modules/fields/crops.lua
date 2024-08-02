@@ -9,6 +9,7 @@
 --:+ _Plots other than 1 block wide `harvest` plots are 8 blocks wide along east-west axis with water assumed on either side._
 ```Lua
 --]]
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 
