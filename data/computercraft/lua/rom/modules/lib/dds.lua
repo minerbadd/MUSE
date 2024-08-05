@@ -49,10 +49,12 @@ The player sends a `request` for MUSE roles (as ComputerCraft labels) to all com
 ```Lua
 --]]
 
+function dds.playerID(id) if id then _G.Muse.playerID = id end; return _G.Muse.playerID end
+
 local function request() -- player sends its ID and site to all computers registered as `MQ` protocol hosts.
-  _G.Muse.playerID = core.getComputerID(0) -- out-game force ID = 0
+  dds.playerID(core.getComputerID(0)) -- out-game force ID = 0
   local hosts = {rednet.lookup("MQ")}; core.report(1, "Hosting "..#hosts)
-  for _, id in ipairs(hosts) do rednet.send(id, place.site(), "MQ") end 
+  for _, id in pairs(hosts) do rednet.send(id, place.site(), "MQ") end 
   return #hosts
 end
 --[[
@@ -62,11 +64,12 @@ All computers other than the player's pocket computer wait to `respond`. If a re
 ```Lua
 --]]
 local function respond()  -- on non-player receiving MQ from player
-  local id, playerSite = rednet.receive("MQ"); -- only way to know player's site, `join` wrote a site file only for player
+  local id, playerSite = rednet.receive("MQ"); dds.playerID(id)-- join` wrote a site file only for player
   local label, sitedFile = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") -- no file if recently joined
   local site = sitedFile and sitedFile:read(); place.site(site or playerSite) -- player's site if not already established
   local newFile = not sitedFile and io.open(_G.Muse.data.."site.txt", "w"); 
-  assert(newFile or sitedFile, "dds.respond: can't write "..site.txt)
+  print("dds.respond: ", id, playerSite, label, sitedFile, site, newFile) -- **TODO: remove**
+  assert(newFile or sitedFile, "dds.respond: can't write site.txt")
   if newFile then newFile:write(place.site()) end -- new (player's) site
   local sitedLabel = landed[label] and place.qualify(label) or label; 
   core.setComputerLabel(sitedLabel); -- landed turtles in their place
@@ -105,11 +108,11 @@ function dds.hosts()
   end; 
 end
 
-function dds.join(role, idGiven)
+function dds.join(role, idGiven) -- on player
   --:: dds.join(role: ":", id: #:?) -> _Fix ID role association for next startup, id given by player._ -> `sitedLabel: ":"`
   local sitedLabel = landed[role] and place.qualify(role) or role; core.setComputerLabel(sitedLabel); -- qualify landed
   local id = idGiven or core.getComputerID(); IDs[sitedLabel] = id; roles[id] = sitedLabel 
-  return sitedLabel..":"..tostring(id)
+  return sitedLabel.." joined ID "..tostring(id)
 end
 --[[
 ```

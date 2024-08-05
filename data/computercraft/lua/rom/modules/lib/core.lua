@@ -7,6 +7,7 @@
 --]]
 ---@diagnostic disable-next-line: undefined-field
 package.path = _G.Muse.package
+---@diagnostic disable-next-line: undefined-field
 local rednet, turtle = _G.rednet, _G.turtle or require("mock").turtle -- mock out game
 local core = {}; core.hints = {}; --- @module "signs.core"                     
 --[[
@@ -257,9 +258,9 @@ end
 
 function core.record(message) -- file status messages used by `.status` daemon
   --:: core.record(message: ":") -> _Appends (status) message to log file on player._ -> `nil & !`
-  if not core.log.handle then return end
+  if not core.log.handle() then return end
   ---@diagnostic disable-next-line: undefined-field
-  local appendOK, appendReport = core.log.handle:write(message, "\n")
+  local appendOK, appendReport = core.log.handle():write(message, "\n")
   if not appendOK then error("core.record: Can't update "..core.log.file.." ".. appendReport) end
   ---@diagnostic disable-next-line: undefined-field
   core.log.handle:flush()
@@ -442,11 +443,11 @@ core.sleep = os.sleep or function() return nil end -- mock out-of-game
 
 --:: core.getComputerID(id: #:?) -> _Out of game returns id; id ignored in game._ -> `id: #:`
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerID = os.getComputerID or function(id) return id end -- mock out-of-game
+core.getComputerID = os.computerID or function(id) return id end -- mock out-of-game
 
 --:: core.getComputerLabel(label: ":"?) -> _Out of game returns label; label ignored in game._ -> `label: ":"`
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerLabel = os.getComputerLabel or function(label) return label or _G.Muse.label end -- mock out-of-game
+core.getComputerLabel = os.computerLabel or function(label) return label or _G.Muse.label end -- mock out-of-game
 
 --:: core.setComputerLabel(label: ":") -> _Sets (out-of game global) label_ -> `label: ":"`
 ---@diagnostic disable-next-line: undefined-field

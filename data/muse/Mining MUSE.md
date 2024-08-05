@@ -404,7 +404,8 @@ Once you have a fuel supply, you can go about setting up (the required) GPS navi
 
 The next step is putting together those parts to craft what you'll need to start:
 
-- Craft a pocket computer with an ender modem on top. 
+- Craft the pocket computer with an ender modem on top. 
+- (This will be an Advanced Ender Pocket Computer.)
 - Craft a turtle with an ender modem on either the left or right side. 
 - Craft a pick axe on the side opposite the modem on that turtle. 
 - (This will be an Advanced Ender Mining Turtle)
@@ -413,9 +414,11 @@ In spite of the configuration settings, you may need to go to `/gamemode creativ
   
 The rest of the given `base` inventory will be used to setup the GPS computers by using the `launch` command. We'll get to that in a bit. First, `reboot` CraftOS. This registers what you've placed in your world with the MUSE Distributed Discovery Service (DDS) for MQ hosts. 
 
+Select and (right) click the player's pocket computer to `use` it. Run the `periperals` program to make sure it has a modem. Just as a check, `use` the `porter` command computer and run `peripherals` on it as well. Do the same for the turtle you crafted.
+
 The next step is setting up the launch of the GPS facility. To align the GPS coordinates with Minecraft coordinates, place the `porter` somewhere convenient and place the turtle that will be `rover` on top of it (using `sneak`). 
 
-When you mouse the turtle, a number should appear above the turtle as its "nameplate". This is its temporary `label`. Let's say it's the number `3`. To assign the role of `rover` to the turtle, run `join rover 3` (or whatever number appears as its nameplate). This enrolls the turtle in DDS. It will be an `MQ` host on the next world startup (or CraftOS `reboot`).
+When you mouse the turtle, a number should appear above the turtle as its "nameplate". This is its temporary `label`. Let's say it's the number `3`. To assign the role of `rover` to the turtle, run `join rover 3` (or whatever number appears as its nameplate). This enrolls the turtle in DDS. It will be known as the `rover` `MQ` host on the next world startup (or CraftOS `reboot`).
 
 Then run `locate` from the `player` pocket computer to name the place above the `porter` where `rover` sits (and determine the turtle's orientation). Once `locate` has run, place the remaining player inventory items in `rover` inventory and issue the `launch` command to setup GPS using the named place you setup by running `locate`. The GPS computers will have their own startup files that don't enroll them as MQ hosts.
 

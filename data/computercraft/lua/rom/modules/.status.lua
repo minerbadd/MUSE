@@ -14,7 +14,7 @@ local ddss =  require("dds"); local dds = ddss.dds ---@module "signs.dds"
 
 local function status()
   while true do local id, message = rednet.receive("MS"); 
-    local taggedMessage = dds.role(id).."> "..message; print(taggedMessage)
+    local taggedMessage = (dds.role(id) or "?").."> "..message; print(taggedMessage)
     core.record(taggedMessage) 
   end
 end
