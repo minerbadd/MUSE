@@ -34,7 +34,7 @@ _G.Muse.IDs = _G.Muse.IDs or -- for out-game
 
 _G.Muse.roles = _G.Muse.roles or -- for out-game
 ---@diagnostic disable-next-line: undefined-field
-(_G.rednet and {} or {[0] = "player", [1] = "porter", [5] = "rover", [6] = "miner", [9] = "logger", [8] = "farmer"})
+(_G.rednet and {} or {[0] = "player", [1] = "porter", [2] = "rover", [3] = "miner", [4] = "logger", [5] = "farmer"})
 --:> roles: _Dictionary of Computercraft labels for MUSE roles keyed by Computercraft (string) IDs_ -> `[ID]: ":"`
 --:> role: _ComputerCraft label as MUSE role_ -> `":"`
 
@@ -63,8 +63,8 @@ end
 All computers other than the player's pocket computer wait to `respond`. If a responding turtle is a `landed` turtle that is_  -> yet, unsited, it attaches itself to the player's `site`. In any case, it sends back a message that provides information for mapping between its computer ID and its label (its MUSE role).
 ```Lua
 --]]
-local function respond()  -- on non-player receiving MQ from player
-  local id, playerSite = rednet.receive("MQ"); dds.playerID(id)-- join` wrote a site file only for player
+local function respond()  
+  local id, playerSite = rednet.receive("MQ"); dds.playerID(id) -- set global on remote responder
   local label, sitedFile = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") -- no file if recently joined
   local site = sitedFile and sitedFile:read(); place.site(site or playerSite) -- player's site if not already established
   local newFile = not sitedFile and io.open(_G.Muse.data.."site.txt", "w"); 
@@ -86,11 +86,11 @@ local function receive(count) -- on player for each DDS host
   for _ = 1, count do
     local ddsID, received = rednet.receive("MQ") -- next, deal with rednet send to self behavior
 ---@diagnostic disable-next-line: undefined-field
-    local ddsLabel = (ddsID == _G.Muse.playerID) and os.getComputerLabel() or received -- player sends garbage to self
+    local ddsLabel = (ddsID == dds.playerID()) and "player" or received -- player sends garbage to self
     IDs[ddsLabel] = ddsID; roles[ddsID] = ddsLabel -- the point of it all
     core.report(1, "MQ "..ddsID.." "..ddsLabel) -- DDS Player
     rednet.send(ddsID, "DDS OK on "..core.getComputerLabel(), "MS") -- to .status
-  end -- **the point of it all**
+  end 
 end
 --[[
 ```
@@ -104,7 +104,7 @@ function dds.hosts()
   if not player then parallel.waitForAny(respond) 
   else local count = request(); print(tostring(count).." DDS hosts (expected?)")  -- player
     parallel.waitForAny(function() receive(count) end) -- wait to get all MQ host responses
-    IDs[core.getComputerLabel("player")] = core.getComputerID(0) -- the player has a label: "player" 
+    --IDs[core.getComputerLabel("player")] = core.getComputerID(0) -- the player has a label: "player" 
   end; 
 end
 

@@ -18,12 +18,11 @@ local map = {}; map.hints = {} ---@module "signs.map" -- for functions exported 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
-local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local places = require("places"); local place = places.place ---@module "signs.places"
 
 ---@diagnostic disable-next-line: undefined-field
-local rednet, player = _G.rednet, _G.pocket -- references to ComputerCraft libraries
+local rednet, player, turtle = _G.rednet, _G.pocket, _G.turtle -- references to ComputerCraft libraries
 
 local siteFile = _G.Muse.data.."site.txt" -- The `_G.Muse.data` directory is local to each ComputerCraft computer.
 
@@ -96,7 +95,7 @@ local function store(site) -- used in `.start` to persist `site` and load clean 
   local siteFile = io.open(siteFile, "r"); if not siteFile then resite(site) end
   local _ = map.map() or map.map(_G.Muse.map); 
   local places = map.read(map.map()); map.write(map.map());
-  return places.." places found"
+  return site.." "..places.." places"
 end; -- map.hints["store "] = {["?site"] = {} } TODO:
 
 local function join(site, role) resite(site); return dds.join(role) end -- dds.join qualifies role for landed turtle

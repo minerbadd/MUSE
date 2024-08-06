@@ -98,11 +98,11 @@ if player or turtle or command then shell.openTab(path..".update.lua"); shell.op
 --]]
 --:# _Report turtle situations and number of places in map; persist site in site file and places in map (reporting errors)_
 
-local function printings(host, id) return function(results) print("\n"..id.." "..host..":\n"..results) end end
+local function printings(host, id) return function(results) print(id.." "..host..": "..results) end end
 if player then 
   for host, id in dds.map() do -- for each dds host, `fix` and `store` in `lib/map`
-    if turtle then remote.call(host, "fix", {}, printings(host, id)) end -- printings generates callback
-    remote.call(host, "store", {site}, printings(host, id)) -- new `site` established in `lib.dds`, needs persisting
+    remote.call(host, "fix", {}, printings(host, id)) -- printings generates callback
+    remote.call(host, "store", {site}, function(results) print(results) end) -- persist new `site` established in `dds`
   end
 end
 ---@diagnostic disable-next-line: undefined-field

@@ -248,7 +248,7 @@ function core.logging(arguments)
     handled:close(); return "Status logging "..core.log.file().." done"
   end
   if not filename then return "Status "..core.log.level().." > "..(core.log.file() or "~") end -- no file operation, level set
-  local logfile = filename..".log"; core.log.file(logfile) -- new log file!
+  local logfile = _G.Muse.data..filename..".log"; core.log.file(logfile) -- new log file!
   local removeOK, removeReport = io.open(logfile, "w"):close() -- clear old status log file
   if not removeOK then error("core.logging: Can't remove log file "..logfile.." because "..removeReport) end
   local filehandle, createReport = io.open(logfile, "a")                              --write file cleaned by read
