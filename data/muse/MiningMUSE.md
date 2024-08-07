@@ -9,7 +9,7 @@ But why would you want to do that? Because, even if you're working all on your o
 ## Chapter 1 - Exploring Why, What, What Not, and How
 <br/>
 
-![Explore](drawings/01CodeNeverLies.png)
+<IMG SRC="drawings/01CodeNeverLies.png"/>
 
 _Mining MUSE_ is based on the idea of exploration, Just as software development is actually practiced, there's a lot of exploration to do when trying to understand and fix or extend someone else's code (including that mess made by that alien cowboy). What follows is an overview of that exploration. But the overview is only the root of a very branchy tree. The interesting stuff is generally found somewhere near the leaves. Where exactly depends on you, your interests, your motivation, your experience. Go as deep as seems useful. Go back and look deeper when that seems right. It's up to you.  
 
@@ -252,7 +252,7 @@ For reference, here are the summaries for these files: for the <a href="docs/pla
 
 The `plan` for mine shafts get us down to a given level for mining ore (and back again). Tunnels need to be bored at a level to find and dig ore at that level. To minimize fuel consumption, all the digging at a given position is done while the turtle is at that position. This results in a cross shaped pattern for tunnels. Here's what that looks like at an even numbered level looking south-west:
 
-![CrossEvenTunnel](drawings/06CrossEvenTunnels.png)
+<IMG SRC="drawings/06CrossEvenTunnels.png"/>
 
 As you can see in the image above, the tunnel running north provides access to the east-west tunnels where the digging for ore is done. A given for Minecraft (or so we're told) is that ore is never found in smaller than 2 by 2 block veins. We can use that assumption to reduce the amount of digging necessary to find ore. <a href="drawings/06CrossSection.pdf" target="_blank"> <IMG SRC="drawings/06CrossSection.png" ALIGN="right" hspace ="10"/> </a>. With this in mind, we can follow the link to  look at an <a href="drawings/06CrossSection.pdf" target="_blank"> excavation pattern</a> that is repeated every four blocks vertically and every six blocks horizontally. (For tunnels as well as shafts, a schematic representation of what is to be done is helpful, perhaps even necessary.) The schematic representation in this case is a cross section looking north, showing how tunnels are to be dug to find ore. The blocks labeled "`O`" are dug in the cross shaped pattern we spoke of earlier. The blocks labeled "`--`" are adjacent to dug blocks and therefore may be inspected as we dig.  
  
@@ -260,7 +260,7 @@ One of the repeated patterns is shown with more detail. In that pattern, the dug
 
 Finally, we need torches in these tunnels. They are in put the bottom of the cross shaped dig and replaced after any excavation. The plan needs to work even when tunnels run into caves (as shown).
 
-![Mine](drawings/06Mine.png)
+<IMG SRC="drawings/06Mine.png"/>
 
 <a href="code/plans/cross.html" target="_blank"><IMG SRC="drawings/06Tree.jpg" ALIGN="left" hspace ="10"/></a>Follow the link in the tree to look at the <a href="code/plans/cross.html" target="_blank"> plan</a> for digging, mining, and navigating tunnels together with the <a href="drawings/06CrossSection.pdf" target="_blank"> cross section drawing</a> to see how the plan follows from the drawing.  The summary of the plan is <a href="docs/plans/cross.html" target="_blank"> here</a>. 
 
@@ -273,7 +273,7 @@ The next chapter takes the declarative idea to another level. Sometimes rather t
 ## Chapter 7 -  Frameworks and Factoring 
 <br/>
 
-![Fields](drawings/07Fields.png)
+<IMG SRC="drawings/07Fields.png"/>
 
 The MUSE framework built around `lib/field` supports work on a `field` as defined by a three dimensional rectangular `bounds`. Each of the files in the `fields` directory is, as you might guess, a _field file_. They include declarative representations of what is to be done in their `field`. One idea they have in common is the idea of a `plot`. Primarily to deal with the limitations of turtle inventory, plots break the field into pieces that can be dealt with separately. Another thing they have in common is participation in a control framework orchestrated by `lib/field`.
 
@@ -288,7 +288,7 @@ For MUSE, the hoped  for compensating benefit from this complicated flow of cont
 
 It's not like what we saw in `lib/mine` which knew (in grim detail) all about going down shafts and back up shafts to get to bores which could be used to mine ores. Here `lib/field` doesn't presume much at all about what's to be done in a `field`. It's just there to (efficiently) conduct the score that it's given. Here's how:
 
-![07FrameCalls](drawings/07FrameCalls.png)
+<IMG SRC="drawings/07FrameCalls.png"/>
 
 That score is constrained by `lib/field` to fit into a specific set of steps to execute a field command. 
 
