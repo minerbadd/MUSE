@@ -377,7 +377,7 @@ When you're ready to try running MUSE in the Minecraft/Computercraft environment
 
 - <a href="https:/www.curseforge.com/minecraft/mc-mods/jei/files?page=1&pageSize=20&version=1.20.1" target="_blank"> Just Enough Items 12.1.1.13</a> (which is helpful rather than necessary).
 
-- Then create a folder named `MUSE` in `.minecraft/resourcepacks`. Download and unzip a <a href="https://github.com/minerbadd/MUSE/releases/tag/v0.0.0" target="_blank"> MUSE release </a> and copy the contents of the MUSE release below the release folder itself into the `resourcepacks` `MUSE` folder. In the Minecraft launcher, choose the Forge 1.20.1 installation and ask to `play` it.
+- Then create a folder named `MUSE` in `.minecraft/resourcepacks`. Download and unzip a <a href="https://github.com/minerbadd/MUSE/releases/latest" target="_blank"> MUSE release </a> and copy the contents of the MUSE release below the release folder itself into the `resourcepacks` `MUSE` folder. In the Minecraft launcher, choose the Forge 1.20.1 installation and ask to `play` it.
 
 - When the loader finishes it's work, choose the `Options` in the Minecraft splash screen. Open `Resource Packs`. Look for `MUSE` (and `computercraft`) among those available. Hover over and click the arrow to include in those selected. Click `Done`. Back among the `Options`, click `Done`. Back in the Minecraft splash screen, Click `Single Player`.
 
