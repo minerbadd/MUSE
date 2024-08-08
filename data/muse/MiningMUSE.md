@@ -356,7 +356,7 @@ The code we've looked at is peppered with documentation. In MUSE, given its goal
 
 Following all those hyperlinks, there's been the opportunity for many field trips outside MUSE. I hope you didn't get too lost.
 
-The code for MUSE is part of what's supplied for you to use, experiment with, and evolve. There are `TODO:` comments throughout the code with suggestions forb that. I'll be interested in what you do with it and to it.
+The code for MUSE is part of what's supplied for you to use, experiment with, and evolve. There are `TODO:` comments throughout the code with suggestions for that. I'll be interested in what you do with it and to it.
 
 Code well.
 
@@ -385,9 +385,9 @@ When you're ready to try running MUSE in the Minecraft/Computercraft environment
 
 - It may be helpful to use a <a href="https://github.com/Cubitect/cubiomes-viewer" target="_blank">viewer</a> to find a place for your base. Perhaps somewhere reasonably flat to farm and near a village to trade. Check it out safely using the `creative` gamemode.
 
-### Next: ComputerCraft (Tweaked) for Each World You Create
+### Next: ComputerCraft (Tweaked) and MUSE for Each World You Create
 
-MUSE and Computercraft's Global Positioning System (GPS) can help you navigate in the world you've created. While GPS coordinates need not be aligned with Minecraft coordinates, it helps in using some game facilities if they are. MUSE provides a way to do this. You'll need to enable use of a command computer in survival mode. First up, change the configuration settings and increase the storage space on ComputerCraft computers. On Windows, the file to change default settings is at:
+Setting up the GPS is one of the first things to do in the Minecraft world you created. The coordinates for the GPS you set up need not be aligned with Minecraft coordinates, but it helps in using some game facilities if they are. MUSE provides a way to do this using a command computer. You'll need to enable its use in survival mode. First up, change the configuration settings and increase the storage space on ComputerCraft computers. On Windows, the file to change default settings is at:
 ```md
 .minecraft\defaultconfigs\computercraft-server.toml
 ```
@@ -396,39 +396,36 @@ The settings to include in the configuration are:
 computer_space_limit = 100000000
 command_require_creative = false
 </pre>
-There's a `computercraft-server.toml` file in the `MUSE\data` directory that you can copy to the `.minecraft\defaultconfigs` directory to do this.
-The 'default' settings seem actually to override the settings for all worlds. (If this doesn't work, each world's settings are in the world's `saves` as `.minecraft\saves\<world>\serverconfig\computercraft-server.toml`.)
-
-Muse provides support for the idea of a `site`. There may be several of these in a Minecraft world. Each could have a set of (so called, `landed`) workers for that site: a `farmer`, a `logger`, and a `miner`. Running `function muse:site` puts the turtles for a `site` in player inventory with the needed modems and work tools.  Sites are named using the, ahem, `site` command with a unique name for the site. When places are named, their names are qualified with the currently established site. When `join` is run to establish landed turtles turtles in the DDS, they will be given unique, sited roles (and labels) with the currently established site. This is important since `rednet` hosts need unique names.
-
-Once you have a fuel supply, you can go about setting up (the required) GPS navigation for MUSE. You'll need a pocket computer (the `player`), a command computer (the `porter`), a turtle (the `rover`), and four computers to provide GPS facilities. The GPS computers will need disk drives and a floppy disk. The turtle will need tools. All this lot will need modems. So many parts. Running `\function muse:base` provides all these parts in player inventory, sets the world spawn, and turns off Minecraft `DaylightCycle` and `WeatherCycle` (as a convenience).
+There's a `computercraft-server.toml` file in the `MUSE\data` directory that you can copy to the `.minecraft\defaultconfigs` directory. These 'default' settings seem actually to override the settings for all worlds. (If this doesn't work, each world's settings are in the world's `saves` as `.minecraft\saves\<world>\serverconfig\computercraft-server.toml`.)
 
 Doing much of anything with MUSE turtles will need fuel. For game experience, you can play to acquire fuel and maybe a crafting table (or use the coal supplied by `muse:base`).
 
-The next step is putting together those parts to craft what you'll need to start:
+With a fuel supply, you can go about setting up (the required) GPS navigation for MUSE. You'll need a pocket computer (the `player`), a command computer (the `porter`), a turtle (the `rover`), and four computers to provide GPS facilities. The GPS computers will need disk drives and a floppy disk. The turtle will need tools. All this lot will need modems. So many, many parts. Running `\function muse:base` provides all these parts in player inventory, sets the world spawn, and turns off Minecraft `DaylightCycle` and `WeatherCycle` (as a convenience).
 
+The next step is putting together all those parts to craft what you'll need for the GPS:
 - Craft the pocket computer with an ender modem on top. 
 - (This will be an Advanced Ender Pocket Computer.)
 - Craft a turtle with an ender modem on either the left or right side. 
 - Craft a pick axe on the side opposite the modem on that turtle. 
 - (This will be an Advanced Ender Mining Turtle)
 
-In spite of the configuration settings, you may need to go to `/gamemode creative` to place the command computer. Place it somewhere convenient with open sky above it. Then go back to `/gamemode survival` and `sneak` to place an ender modem on its back. 
+You will need to go to `/gamemode creative` to place the command computer. Place it somewhere convenient with open sky above it. Then go back to `/gamemode survival` and `sneak` to place an ender modem on its back. 
 
-Select and (right) click the player's pocket computer to `use` it. Run the `periperals` program to make sure it has a modem. Just as a check, click to `use` the `porter` command computer and run `peripherals` on it as well. 
+Select and (right) click the `player` pocket computer to `use` it. Run the `periperals` program to make sure it has a modem. Just as a check, click to `use` the (`porter`) command computer and run `peripherals` on it as well. 
   
-The rest of the given `base` inventory will be used to setup the GPS computers by using the `launch` command. We'll get to that in a bit. First, `reboot` CraftOS. This registers what you've placed in your world with the MUSE Distributed Discovery Service (DDS) for MQ hosts. There should now be two DDS hosts: `player` and`porter`.
+The rest of the given `base` inventory will be used to `launch` the GPS computers. We'll get to that in a bit. First, `reboot` CraftOS. This registers what you've placed in your world with the MUSE Distributed Discovery Service (DDS) for MQ hosts. There should now be two DDS hosts: `player` and`porter`.
 
-The next step is setting up the launch of the GPS facility. To help align the GPS coordinates with Minecraft coordinates, place the Advanced Ender Mining Turtle you crafted on top of it. It will be used to launch the GPS computers. 
+To align the GPS coordinates with Minecraft coordinates, place the Advanced Ender Mining Turtle you crafted on top of the `porter` command computer.
 
-When you mouse the turtle, a number should appear above the turtle as its "nameplate". This is its temporary `label`. Let's say it's the number `2`. To assign the role of `rover` to the turtle, run `join rover 2` (or whatever number appears as its nameplate). This enrolls the turtle in DDS. It will be known as the `rover` `MQ` host on the next world startup (or CraftOS `reboot`).
+When you mouse the turtle, a number should appear above the turtle as its "nameplate". This is its temporary `label`. Let's say it's the number `2`. To assign the role of `rover` to the turtle, run `join rover 2` (or whatever number appears as its nameplate). This enrolls the turtle in DDS. It will be known as the `rover` on the next world startup (or CraftOS `reboot`).
 
-Then run `locate` from the `player` pocket computer to determine the turtle's orientation and name the place above the `porter` where `rover` sits. Once `locate` has run, move the remaining player inventory items into the `rover` inventory. Make sure there's clear sky above then issue the `launch` command with the named place you setup by running `locate`. The GPS computers will have their own startup files that don't enroll them as MQ hosts.
+Then run `locate` from the `player` pocket computer to determine `rover` orientation and name the place above the `porter` where `rover` sits. Once `locate` has run, move the remaining player inventory items into the `rover` inventory. Make sure there's clear sky above then issue the `launch` command with the named place you setup by running `locate`. The GPS computers will have their own startup files that don't enroll them as `MQ` hosts. GPS should now be active. 
 
-sync map?
+Muse provides support for the idea of a `site`. There may be several of these in a Minecraft world. Each could have a set of (so called, `landed`) workers for that site: a `farmer`, a `logger`, and a `miner`. Running `function muse:site` puts the turtles for a `site` in player inventory with the needed modems and work tools.  Sites are named using the, ahem, `site` command with a unique name for the site. When places are named, their names are qualified with the currently established site. When `join` is run to establish landed turtles turtles in the DDS, they will be given unique, sited roles (and labels) with the currently established site. This is important since `rednet` hosts need unique names. If you've named places, you can run `sync` to include those places in the new turtles' `map`.
 
 When setting up a new site, you may want to keep site workers working while the player is elsewhere. Use the `activate` command with a MUSE `range` encompassing the site to establish the site bounds to keep turtles active while the player is away. (It seems, however, that this won't keep crops growing.)
 
+That's it for getting MUSE running in your Minecraft/ComputerCraft world. You may want to look at the <a href = "docs/help.txt" target=_blank"> programs summary </a> and the <a href = "docs/lib/net.html" target = "_blank"> remote call summary </a>.
 
 ### Zerobrane Studio (ZBS) for an IDE
 
