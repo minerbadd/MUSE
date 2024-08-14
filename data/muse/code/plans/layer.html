@@ -14,6 +14,7 @@
 --:+ <i>Returns plans with paths from <code>field.paths</code> and work as <code>farm.put</code> or <code>farm.replacer</code> (for removeables).</i>  
 </code></pre>
 <pre><code class="language-lua">
+package.path = _G.Muse.package
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
 

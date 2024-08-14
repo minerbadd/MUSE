@@ -13,7 +13,7 @@ local files = splitFiles(executionDirectory);
 local data =  table.concat(files, "/", 1, #files - 2).."/"
 
 local muse, rom  = data.."muse/", data.."computercraft/lua/rom/"
-local apiDirectory, apiFile = muse.."signs/", "zbs.api"
+local apiDirectory, apiFile = muse.."signs/", "muse.lua"
 local modules, programs, helps = rom.."modules/", rom.."programs/", rom.."help/"
 local docs, code = muse.."docs/", muse.."code/"; local help = docs.."help.txt"
 local verbose = true
@@ -25,7 +25,7 @@ local codeDirectories = {code.."lib", code.."fields", code.."plans", code.."char
 local Mark = require("Mark")
 Mark(apiDirectory, apiFile, sourceDirectories, docsDirectories, codeDirectories, verbose)
 
-local function makeHelp(helps, help) -- helps directory, output concatenated help file
+local function makeHelp(helps, help) -- helps directory and output concatenated help file
   local helpers = {}; for helpFile in lfs.dir(helps) do 
     local helpPath = helps..helpFile
     local helpFileHandle = io.open(helpPath, "r")

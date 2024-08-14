@@ -12,7 +12,7 @@
 --:? rom/help/range.txt <- <b>Range Command Line Interface</b> -> muse/docs/programs/range.md  
 </code></pre>
 <pre><code class="language-lua">
-
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local maps = require("map"); local map = maps.map ---@module "signs.map"
 

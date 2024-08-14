@@ -22,10 +22,10 @@ function core.xyzf() end
 ---@type fun(targets: string[]):  detail? 
 function core.findItems() end
 
--- Find first matching item in pair of item tables.
--- core.match(tableA: any[], tableB: any[]):  `nil` | `any` <-
----@type fun(tableA: any[],  tableB: any[]):  nil | any 
-function core.match() end
+-- Iterator over table beginning at index.
+-- core.inext(table: {:}, index: #:):  `(:), {:}, #:` <-
+---@type fun(table: table,  index: number):  function,  table,  number 
+function core.inext() end
 
 -- bounds:  :`[xyz, xyz]`
 ---@alias bounds [xyz, xyz] # Vector pair defining a rectangular solid
@@ -94,10 +94,10 @@ function core.report() end
 ---@alias xyz [number, number, number] # Minecraft coordinates: +x: east, +y: up, +z: south
 
 
--- Set threshold level [and local log file] for status reports
--- core.logging(arguments: :[level: #:, filename: ":"]):  `nil` <-
----@type fun(arguments: [number, string]):  nil 
-function core.logging() end
+-- Pass input but report string if not ok.
+-- core.pass(ok: ^:, ...: any):  ok: `true|false, result: ...|":", any?` <-
+---@type fun(ok: boolean,  ...: any):  ok: true|false,  result: ...|string,  any? 
+function core.pass() end
 
 -- core.log:  `{level: closing, file: closing, handle: closing}`
 ---@diagnostic disable-next-line: duplicate-doc-alias
@@ -113,10 +113,10 @@ function core.logging() end
 ---@type fun(start: bounds,  addend: xyz,  number: number,  partial: bounds?):  bounds[]
 function core.vectorPairs() end
 
--- Next integer down if below half fraction
--- core.round(n: #:):  `#:` <-
----@type fun(n: number):  number 
-function core.round() end
+-- Find first matching item in pair of item tables.
+-- core.match(tableA: any[], tableB: any[]):  `nil` | `any` <-
+---@type fun(tableA: any[],  tableB: any[]):  nil | any 
+function core.match() end
 
 -- Deep copy source table or return source if not table.
 -- core.clone(source: {:}|any):  `{:}|any` <-
@@ -142,10 +142,10 @@ function core.completer() end
 ---@alias detail {name: detail.name,  count: detail.count,  damage: detail.damage} # Defined by Computercraft
 
 
--- Iterator over table beginning at index.
--- core.inext(table: {:}, index: #:):  `(:), {:}, #:` <-
----@type fun(table: table,  index: number):  function,  table,  number 
-function core.inext() end
+-- Next integer down if below half fraction
+-- core.round(n: #:):  `#:` <-
+---@type fun(n: number):  number 
+function core.round() end
 
 -- core.faces:  "north"|"south"|"east"|"west"|"up"|"down"|"rotate"
 ---@diagnostic disable-next-line: duplicate-doc-alias
@@ -171,10 +171,10 @@ function core.serialize() end
 ---@alias detail.count  number # Available in inventory
 
 
--- Pass input but report string if not ok.
--- core.pass(ok: ^:, ...: any):  ok: `true|false, result: ...|":", any?` <-
----@type fun(ok: boolean,  ...: any):  ok: true|false,  result: ...|string,  any? 
-function core.pass() end
+-- Set threshold level [and local log file] for status reports
+-- core.logging(arguments: :[level: #:, filename: ":"]):  `nil` <-
+---@type fun(arguments: [number, string]):  nil 
+function core.logging() end
 
 -- For testing; just returns its arguments.
 -- core.echo(...: any):  ...: `any` <-

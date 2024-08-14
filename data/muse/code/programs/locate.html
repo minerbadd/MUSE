@@ -12,7 +12,7 @@
 --:? rom/help/locate.txt <- <b>Dead reckoning <code>point</code> for turtle on <code>porter</code> as Minecraft coordinates</b> -> muse/docs/programs/locate.md  
 </code></pre>
 <pre><code class="language-lua">
-
+package.path = _G.Muse.package
 local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
 remote.call("porter", "locate", {...}) --:= locate:
 

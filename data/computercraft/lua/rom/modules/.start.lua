@@ -10,7 +10,7 @@
 _G.Muse = _G.Muse or {}; 
 _G.Muse.path = "rom/modules/"; local path = _G.Muse.path -- shared across all worlds (most of Muse)
 _G.Muse.package = "/rom/modules/lib/?.lua"
-_G.Muse.charts = _G.Muse.path.."charts/"
+_G.Muse.charts = path.."charts/"
 
 ---@diagnostic disable-next-line: undefined-field
 local peripheral, parallel = _G.peripheral, _G.parallel -- to supress static analysis lint warnings

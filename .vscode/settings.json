@@ -5,5 +5,10 @@
         "peripheral",
         "rednet",
         "fs"
-    ]
+    ],
+    "launch": {
+        "program": "${file}",
+        "configurations": [],
+        "compounds": []
+    }
 }

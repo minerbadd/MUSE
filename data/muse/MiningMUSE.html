@@ -438,16 +438,17 @@ Follow the link to see a <a href="drawings/06SnakeShaft.pdf" target="_blank"> sc
 </ul>
 <h3 id="next-computercraft-tweaked-and-muse-for-each-world-you-create">Next: ComputerCraft (Tweaked) and MUSE for Each World You Create</h3>
 <p>Setting up the GPS is one of the first things to do in the Minecraft world you created. The coordinates for the GPS you set up need not be aligned with Minecraft coordinates, but it helps in using some game facilities if they are. MUSE provides a way to do this using a command computer. You'll need to enable its use in survival mode. First up, change the configuration settings and increase the storage space on ComputerCraft computers. On Windows, the file to change default settings is at:</p>
-<pre><code class="language-md">.minecraft\defaultconfigs\computercraft-server.toml
+<pre><code class="language-md">.minecraft/defaultconfigs/computercraft-server.toml
 </code></pre>
+<p><em>(We'll use forward slashes in file paths for consistency with non-Windows systems.)</em></p>
 <p>The settings to include in the configuration are:</p>
 <pre>
 computer_space_limit = 100000000
 command_require_creative = false
 </pre>
-<p>There's a <code>computercraft-server.toml</code> file in the <code>MUSE\data</code> directory that you can copy to the <code>.minecraft\defaultconfigs</code> directory. These 'default' settings seem actually to override the settings for all worlds. (If this doesn't work, each world's settings are in the world's <code>saves</code> as <code>.minecraft\saves\&lt;world&gt;\serverconfig\computercraft-server.toml</code>.)</p>
+<p>There's a <code>computercraft-server.toml</code> file in the <code>MUSE/data</code> directory that you can copy to the <code>.minecraft/defaultconfigs</code> directory. These 'default' settings seem actually to override the settings for all worlds. (If this doesn't work, each world's settings are in the world's <code>saves</code> as <code>.minecraft/saves/&lt;world&gt;/serverconfig/computercraft-server.toml</code>.)</p>
 <p>Doing much of anything with MUSE turtles will need fuel. For game experience, you can play to acquire fuel and maybe a crafting table (or use the coal supplied by <code>muse:base</code>).</p>
-<p>With a fuel supply, you can go about setting up (the required) GPS navigation for MUSE. You'll need a pocket computer (the <code>player</code>), a command computer (the <code>porter</code>), a turtle (the <code>rover</code>), and four computers to provide GPS facilities. The GPS computers will need disk drives and a floppy disk. The turtle will need tools. All this lot will need modems. So many, many parts. Running <code>\function muse:base</code> provides all these parts in player inventory, sets the world spawn, and turns off Minecraft <code>DaylightCycle</code> and <code>WeatherCycle</code> (as a convenience).</p>
+<p>With a fuel supply, you can go about setting up (the required) GPS navigation for MUSE. You'll need a pocket computer (the <code>player</code>), a command computer (the <code>porter</code>), a turtle (the <code>rover</code>), and four computers to provide GPS facilities. The GPS computers will need disk drives and a floppy disk. The turtle will need tools. All this lot will need modems. So many, many parts. Running <code>/function muse:base</code> provides all these parts in player inventory, sets the world spawn, and turns off Minecraft <code>DaylightCycle</code> and <code>WeatherCycle</code> (as a convenience).</p>
 <p>The next step is putting together all those parts to craft what you'll need for the GPS:</p>
 <ul>
 <li>Craft the pocket computer with an ender modem on top.</li>
@@ -458,47 +459,66 @@ command_require_creative = false
 </ul>
 <p>You will need to go to <code>/gamemode creative</code> to place the command computer. Place it somewhere convenient with open sky above it. Then go back to <code>/gamemode survival</code> and <code>sneak</code> to place an ender modem on its back.</p>
 <p>Select and (right) click the <code>player</code> pocket computer to <code>use</code> it. Run the <code>periperals</code> program to make sure it has a modem. Just as a check, click to <code>use</code> the (<code>porter</code>) command computer and run <code>peripherals</code> on it as well.</p>
-<p>The rest of the given <code>base</code> inventory will be used to <code>launch</code> the GPS computers. We'll get to that in a bit. First, <code>reboot</code> CraftOS. This registers what you've placed in your world with the MUSE Distributed Discovery Service (DDS) for MQ hosts. There should now be two DDS hosts: <code>player</code> and<code>porter</code>.</p>
+<p>The rest of the given <code>base</code> inventory will be used to <code>launch</code> the GPS computers. We'll get to that in a bit. First, <code>reboot</code> CraftOS. This registers what you've placed in your world with the MUSE Distributed Discovery Service (DDS) for MQ hosts. There should now be two DDS hosts: <code>player</code> and<code> porter</code>.</p>
 <p>To align the GPS coordinates with Minecraft coordinates, place the Advanced Ender Mining Turtle you crafted on top of the <code>porter</code> command computer.</p>
 <p>When you mouse the turtle, a number should appear above the turtle as its &quot;nameplate&quot;. This is its temporary <code>label</code>. Let's say it's the number <code>2</code>. To assign the role of <code>rover</code> to the turtle, run <code>join rover 2</code> (or whatever number appears as its nameplate). This enrolls the turtle in DDS. It will be known as the <code>rover</code> on the next world startup (or CraftOS <code>reboot</code>).</p>
 <p>Then run <code>locate</code> from the <code>player</code> pocket computer to determine <code>rover</code> orientation and name the place above the <code>porter</code> where <code>rover</code> sits. Once <code>locate</code> has run, move the remaining player inventory items into the <code>rover</code> inventory. Make sure there's clear sky above then issue the <code>launch</code> command with the named place you setup by running <code>locate</code>. The GPS computers will have their own startup files that don't enroll them as <code>MQ</code> hosts. GPS should now be active.</p>
 <p>Muse provides support for the idea of a <code>site</code>. There may be several of these in a Minecraft world. Each could have a set of (so called, <code>landed</code>) workers for that site: a <code>farmer</code>, a <code>logger</code>, and a <code>miner</code>. Running <code>function muse:site</code> puts the turtles for a <code>site</code> in player inventory with the needed modems and work tools.  Sites are named using the, ahem, <code>site</code> command with a unique name for the site. When places are named, their names are qualified with the currently established site. When <code>join</code> is run to establish landed turtles turtles in the DDS, they will be given unique, sited roles (and labels) with the currently established site. This is important since <code>rednet</code> hosts need unique names. If you've named places, you can run <code>sync</code> to include those places in the new turtles' <code>map</code>.</p>
 <p>When setting up a new site, you may want to keep site workers working while the player is elsewhere. Use the <code>activate</code> command with a MUSE <code>range</code> encompassing the site to establish the site bounds to keep turtles active while the player is away. (It seems, however, that this won't keep crops growing.)</p>
-<p>That's it for getting MUSE running in your Minecraft/ComputerCraft world. You may want to look at the &lt;a href = &quot;docs/help.txt&quot; target=_blank&quot;&gt; programs summary </a> and the <a href = "docs/lib/net.html" target = "_blank"> remote call summary </a>.</p>
-<h3 id="zerobrane-studio-zbs-for-an-ide">Zerobrane Studio (ZBS) for an IDE</h3>
+<p>That's it for getting MUSE running in your Minecraft/ComputerCraft world. To see what you can do with MUSE you may want to look at the <a href = "docs/help.txt" target = "_blank"> programs summary </a> and the <a href = "docs/lib/net.html" target = "_blank"> remote call summary </a>.</p>
+<p>If you want to experiment with changes to the MUSE implementation and its documentation, that's next</p>
+<h3 id="visual-studio-code-for-source-control-management-syntax-and-type-checking">Visual Studio Code for Source Control Management, Syntax and Type Checking</h3>
+<p>VSC's integration with GitHub makes source control pretty easy. With its help you'll have a remote repository for your code if the not so unimaginable thing happens to access to your local copy. So, first things first, get started with <code>git</code> and Github:</p>
 <ul>
 <li>
-<p>getting and installing</p>
+<p>Educate yourself with the very basics of <code>git</code>. There's a free <a href="https://git-scm.com/book/en/v2" target="_blank"> ebook</a>. No need to go deep just now.  Learning just what you need as you need it will be effective. Then get yourself a <a href="https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github" target="_blank">GitHub account</a> and install <a href="https://code.visualstudio.com/download" target="_blank">VSC </a>and the extension for <a href="https://code.visualstudio.com/docs/sourcecontrol/intro-to-git" target="_blank">git</a>. Close VSC.</p>
 </li>
 <li>
-<p>plugins in ZeroBraneStudio\packages: analyzeall.lua, cloneview.lua</p>
+<p>Create a project directory and set an environment variable, <code>MUSE_PROJECTS</code> to its path.<br>
+(For Windows, use the <code>Advanced System Settings</code> in the <code>System</code> Control Panel)</p>
 </li>
 <li>
-<p>project directory: .minecraft/saves/Muse/data/computercraft/lua</p>
+<p>For Lua's <code>require</code> function, set the <code>LUA_PATH</code> environment variable to include:</p>
+<pre>
+ %MUSE_PROJECTS%/CodeMark/?.lua;%MUSE_PROJECTS%/MUSE/data/computercraft/lua/rom/modules/lib/?.lua;;
+ </pre>
 </li>
 <li>
-<p>MUSE tooltips and completion: ZeroBraneStudio/api/lua</p>
+<p>Use VSC to <a href="https://code.visualstudio.com/docs/sourcecontrol/intro-to-git#_clone-a-repository-locally" href="_target"> clone </a>the <a href="https://github.com/minerbadd/MUSE" target="_blank">MUSE repository </a>into the project directory you created.</p>
+</li>
+<li>
+<p>If there's a MUSE directory in <code>.minecraft/resourcepacks</code>, remove it. You'll use the (potentially edited) cloned copy instead.  <em>(We'll show forward rather than back slashes for file paths as a bow to industry consistency.)</em></p>
+</li>
+<li>
+<p>The cloned copy of MUSE is in the project directory. Create a symbolic link to it in <code>.minecraft/resourcepacks</code>. (For Windows, there's a GUI, <a href="https://schinagl.priv.at/nt/hardlinkshellext/linkshellextension.html" target="_blank"> Link Shell Extension</a>, that may be helful.)</p>
+</li>
+<li>
+<p>Use VSC to clone the <a href="https://github.com/minerbadd/CodeMark" target="_blank">CodeMark repository </a>in your project directory. (So you can keep code completion and type checking current.)</p>
+</li>
+<li>
+<p>To take advantage of Lua code completion and type checking in VSC you'll need the <code>sumneko.lua</code> (Lua Language Server) extension.</p>
+</li>
+<li>
+<p>If you change <code>MiningMuse.md</code>, you'll also need the <code>yzhang.markdown-all-in-one</code> (Markdown All In One) extension to recreate its HTML file. After it's loaded, go to the VSC settings for Markdown CSS and add <code>markdown.css</code> to the markdown style paths.</p>
+</li>
+<li>
+<p>You may want a couple of additional extensions: <code>MinecraftCommands.syntax-mcfunction</code> and <code>be5invis.toml</code> (TOML Language Support)</a>.</p>
 </li>
 </ul>
-<p><a href="https://schinagl.priv.at/nt/hardlinkshellext/linkshellextension.html">https://schinagl.priv.at/nt/hardlinkshellext/linkshellextension.html</a></p>
-<p>file:///C:/Program%20Files/LinkShellExtension/Doc/linkshellextension.html
-hardlink files in .minecraft/saves/Muse/data/computercraft/lua/rom/modules/Muse/CodeMark/
---[[--
-Use this file to specify <strong>System</strong> preferences.
-Review [examples](+C:\Installs\Zerobrane 23\cfg\user-sample.lua) or check <a href="http://studio.zerobrane.com/documentation.html">online documentation</a> for details.
-symlink
---]]--
-api = {'muse'}
-&quot;C:\Installs\Zerobrane 23\cfg\user.lua&quot;
-C:\Installs\Zerobrane 23\api\lua
-.minecraft\resourcepacks\muse\data\computercraft\CodeMark\codemark.lua&quot;
-&quot;C:\Installs\Zerobrane 23\packages\codemark.lua&quot;
-codemark.lua to ZeroBraneStudio/packages/codemark.lua
-muse.lua to ZeroBraneStudio/api/lua/muse.lua</p>
+<p>There are VSC Lua debug extensions. It would be good to know if they work for what you are doing. Or you could just use VSC for its syntax checking, type checking, and source control management support while using Zerobrane Studio for your run and debug environment. That's next.</p>
+<h3 id="zerobrane-studio-zbs-for-a-run-and-debug-envronment">Zerobrane Studio (ZBS) for a Run and Debug Envronment</h3>
+<p>There's not much left to do in setting up your development environment for MUSE but it's arguably the most important part. Making changes to MUSE will mostly involve running code and testing it in the Zerobrane IDE. VSC analysis and source management is critical but not the main event. So, on to the main event:</p>
 <ul>
-<li>testing</li>
+<li>Follow the installation directions for <a href="https://studio.zerobrane.com/" target="_blank">Zerobrane Studio</a></li>
+<li>Copy <a href="https://github.com/pkulchenko/ZeroBranePackage/blob/master/README.md" target="_blank">packages </a>:  <code>analyzeall.lua</code> and possibly <code>cloneview.lua</code> into the ZBS <code>package</code> directory</li>
+<li>Create a symbolic link from <code>CodeMark/apiMark.lua</code> in your project directory to the ZBS <code>package</code> directory. You'll be able to update (but not remove) ZBS code completions for the file you're editing directly from ZBS in the <code>Project</code> drop down menu.</li>
+<li>Create a symbolic link from <code>MUSE/data/muse/signs/muse.lua</code> to  ZeroBraneStudio's <code>api/lua/</code> directory.</li>
+<li>Edit (or create) the <code>cfg/user.lua</code> file in your ZBS installation to include <code>api = {'muse'}</code>. You might wat to look at the <a href="(http://studio.zerobrane.com/documentation.html" target = "_blank"> documentation</a> for information about ZBS configuration.</li>
+<li>Set the project directory to the MUSE folder in your project directory.</li>
+<li>Open <code>MUSE/data/muse/assets/museMark.lua</code> and execute it (without debugging). This should produce all fresh, all new, all the code completion, all the type checking files, and all the code documentation for MUSE.</li>
 </ul>
-<p>analyzeall</p>
+<p>There are tests for MUSE but no test framework. MUSE tests rely on human review of their output. A framework automating tests would be a useful addition (as would more extensive testing).</p>
+<p>And that's the lot. There's an <a href="https://github.com/minerbadd/MUSE/issues" target="_blank"> issues</a> reporting page for MUSE if (really when) you find something that needs reporting. All the best.</p>
 
             
             

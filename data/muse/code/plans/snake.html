@@ -16,6 +16,7 @@
 <a id="introduction"></a>
 The introduction to this (mostly declarative) <code>plan</code> is like that of libraries in that it includes the usual loading of the libraries it depends on. There are plans for digging the shaft going down and plans going back up to the minehead for placing fixtures and shelves for the player to safely stand. There are plans for simply going lower or higher in the shaft.
 <pre><code class="language-lua">
+package.path = _G.Muse.package
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local grids = require("grid"); local grid = grids.grid ---@module "signs.grid"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"

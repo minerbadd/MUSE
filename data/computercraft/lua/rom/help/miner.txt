@@ -1,5 +1,5 @@
 
 
-miner` command argument...
+miner command argument...
  
 See muse/docs/lib/net.html for the remote command line interface.

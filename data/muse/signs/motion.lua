@@ -10,8 +10,17 @@ local  motion, move, step = {}, {}, {}
 ---@alias position {x: number,  y: number,  z: number} # Computercraft co-ordinates (+x east, +y up, +z south)
 
 
--- stepping:  `(): "done", remaining: #:, xyzf, direction &!recovery`
----@alias stepping fun():  "done",  remaining: number,  xyzf,  direction  # Iterator (default 1 step)
+-- situation.fuel:  `#:`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias situation.fuel  number # Simulated fuel level checked against reported fuel to validate dead reckoning
+
+
+-- situation:  `{position:position, facing:facing, fuel: situation.fuel, level: situation.level}`
+---@alias situation {position:position,  facing:facing,  fuel: situation.fuel,  level: situation.level} # Dead reckoning
+
+
+-- recovery:  `{call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"}`
+---@alias recovery {call: string,  failure: string,  cause: string,  remaining: number,  xyzf: xyzf,  direction: direction,  operation: string} # For some errors
 
 
 -- situation.level:  `"same"|"rise"|"fall"`
@@ -19,21 +28,12 @@ local  motion, move, step = {}, {}, {}
 ---@alias situation.level  "same"|"rise"|"fall" # For tracking
 
 
--- recovery:  `{call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"}`
----@alias recovery {call: string,  failure: string,  cause: string,  remaining: number,  xyzf: xyzf,  direction: direction,  operation: string} # For some errors
-
-
--- situation:  `{position:position, facing:facing, fuel: situation.fuel, level: situation.level}`
----@alias situation {position:position,  facing:facing,  fuel: situation.fuel,  level: situation.level} # Dead reckoning
-
-
--- situation.fuel:  `#:`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias situation.fuel  number # Simulated fuel level checked against reported fuel to validate dead reckoning
-
-
 -- facing:  `"north"|"east"|"south"|"west"` 
 ---@alias facing  "north"|"east"|"south"|"west"  # For movement in four NESW cardinal directions
+
+
+-- stepping:  `(): "done", remaining: #:, xyzf, direction &!recovery`
+---@alias stepping fun():  "done",  remaining: number,  xyzf,  direction  # Iterator (default 1 step)
 
 
 -- Count 0: just turn, 1: default

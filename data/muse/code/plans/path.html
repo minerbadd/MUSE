@@ -13,6 +13,7 @@
 --:+ <i>Returns plans with paths from <code>field.paths</code> and does no work but may cause damage. Use as check before preparing farm.</i> 
 </code></pre>
 <pre><code class="language-lua">
+package.path = _G.Muse.package
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 
 local bounds = table.unpack(...) 

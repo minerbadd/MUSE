@@ -17,8 +17,9 @@
 --:+ <i>Plots other than 1 block wide <code>harvest</code> plots are 8 blocks wide along east-west axis with water assumed on either side.</i>
 </code></pre>
 <pre><code class="language-lua">
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
-local fields = require("field); local field = fields.field ---@module "signs.field"
+local fields = require("field"); local field = fields.field ---@module "signs.field"
 
 local vectorPairs = core.vectorPairs
 

@@ -15,12 +15,13 @@
 ---@diagnostic disable-next-line: undefined-field
 local rednet, parallel = _G.rednet, _G.parallel
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local ddss =  require("dds"); local dds = ddss.dds ---@module "signs.dds"
 
 local function status()
   while true do local id, message = rednet.receive("MS"); 
-    local taggedMessage = dds.role(id).."> "..message; print(taggedMessage)
+    local taggedMessage = (dds.role(id) or (tostring(id).."?")).." > "..core.string(message); print(taggedMessage)
     core.record(taggedMessage) 
   end
 end

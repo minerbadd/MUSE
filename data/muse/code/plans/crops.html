@@ -14,6 +14,7 @@
 </code></pre>
 Each <code>run</code> is planted and harvested with the crop specified by the <code>plots</code> <code>index</code>. The work function uses the upvalues of the plan prototype rather than the arguments it's called with.
 <pre><code class="language-lua">
+package.path = _G.Muse.package
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
 

@@ -15,6 +15,7 @@
 ---@diagnostic disable-next-line: undefined-field
 local rednet, parallel = _G.rednet, _G.parallel
 
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.core"
 local maps = require("map"); local map = maps.map ---@module "signs.core"

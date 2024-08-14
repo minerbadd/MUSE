@@ -13,6 +13,7 @@
 --:- rover command argument... -> <i>See <a href="../lib/net.html">muse/docs/lib/net.html</a> for the remote command line interface.</i>
 </code></pre>
 <pre><code class="language-lua">
+package.path = _G.Muse.package
 local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
 
 local command, arguments = ..., {select(2, ...)} -- -- first, {rest}

@@ -14,6 +14,8 @@
 </code></pre>
 <pre><code class="language-lua">
 ---@diagnostic disable-next-line: undefined-field
+package.path = _G.Muse.package
+---@diagnostic disable-next-line: undefined-field
 local rednet, turtle = _G.rednet, _G.turtle or require("mock").turtle -- mock out game
 local core = {}; core.hints = {}; --- @module "signs.core"                     
 </code></pre>
@@ -236,7 +238,7 @@ function core.logging(arguments)
     handled:close(); return "Status logging "..core.log.file().." done"
   end
   if not filename then return "Status "..core.log.level().." > "..(core.log.file() or "~") end -- no file operation, level set
-  local logfile = filename..".log"; core.log.file(logfile) -- new log file!
+  local logfile = _G.Muse.data..filename..".log"; core.log.file(logfile) -- new log file!
   local removeOK, removeReport = io.open(logfile, "w"):close() -- clear old status log file
   if not removeOK then error("core.logging: Can't remove log file "..logfile.." because "..removeReport) end
   local filehandle, createReport = io.open(logfile, "a")                              --write file cleaned by read
@@ -246,9 +248,9 @@ end
 
 function core.record(message) -- file status messages used by <code>.status</code> daemon
   --:: core.record(message: ":") -> <i>Appends (status) message to log file on player.</i> -> <code>nil & !</code>
-  if not core.log.handle then return end
+  if not core.log.handle() then return end
   ---@diagnostic disable-next-line: undefined-field
-  local appendOK, appendReport = core.log.handle:write(message, "\n")
+  local appendOK, appendReport = core.log.handle():write(message, "\n")
   if not appendOK then error("core.record: Can't update "..core.log.file.." ".. appendReport) end
   ---@diagnostic disable-next-line: undefined-field
   core.log.handle:flush()
@@ -413,11 +415,11 @@ core.sleep = os.sleep or function() return nil end -- mock out-of-game
 
 --:: core.getComputerID(id: #:?) -> <i>Out of game returns id; id ignored in game.</i> -> <code>id: #:</code>
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerID = os.getComputerID or function(id) return id end -- mock out-of-game
+core.getComputerID = os.computerID or function(id) return id end -- mock out-of-game
 
 --:: core.getComputerLabel(label: ":"?) -> <i>Out of game returns label; label ignored in game.</i> -> <code>label: ":"</code>
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerLabel = os.getComputerLabel or function(label) return label or _G.Muse.label end -- mock out-of-game
+core.getComputerLabel = os.computerLabel or function(label) return label or _G.Muse.label end -- mock out-of-game
 
 --:: core.setComputerLabel(label: ":") -> <i>Sets (out-of game global) label</i> -> <code>label: ":"</code>
 ---@diagnostic disable-next-line: undefined-field

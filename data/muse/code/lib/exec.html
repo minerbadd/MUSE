@@ -17,6 +17,8 @@ The <code>exec</code> library provides CLL support for selected commands as alte
 The library preface is as expected. The only new thing is mocking some command computer operations so development and debug can be done outside the game environment.
 <pre><code class="language-lua">
 local exec = {}; exec.hints = exec.hints or {} ---@module "signs.exec"-- for functions exported from library
+
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local places = require("places"); local place = places.place ---@module "signs.places"
 local maps = require("map"); local map = maps.map ---@module "signs.map"

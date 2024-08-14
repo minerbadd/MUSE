@@ -13,6 +13,7 @@
 --:+ <i>Plan prototype loaded by <code>field.plan</code>. Returns <code>field.paths</code>. Digs one level with <code>turtle.unblock("down")</code>.</i>  
 </code></pre>
 <pre><code class="language-lua">
+package.path = _G.Muse.package
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 

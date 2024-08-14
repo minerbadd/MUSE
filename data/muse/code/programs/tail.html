@@ -13,7 +13,7 @@
 --:- tail rate? -> <i>Move <code>rover</code> every rate (default 5) seconds towards GPS player position.</i>
 </code></pre>
 <pre><code class="language-lua">
-
+package.path = _G.Muse.package
 local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
 local rates = ... -- optional as string; tonumber in remote.tail; default 0.5 seconds
 remote.tail("rover", "tail", rates)

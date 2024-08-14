@@ -34,15 +34,15 @@ function place.xyzf() end
 ---@type fun(span: number?,  reference?: string|position): fun():  name: string,  label: string,  xyz,  distance: number,  situations,  serial: string 
 function place.near() end
 
+-- Manhattan: abs(delta x) + abs(delta y) + abs(delta z).
+-- place.distance(a: xyzf, b: xyzf):  `distance: #:` <-
+---@type fun(a: xyzf,  b: xyzf):  distance: number 
+function place.distance() end
+
 -- Returns number of places.
 -- place.count():  `#:` <-
 ---@type fun():  number 
 function place.count() end
-
--- Sets situation position, can start tracking for trail.
--- place.fix(:xyzf:, track: ^:?):  `xyzf`   <-
----@type fun(xyzf: xyzf,  track: boolean?):  xyzf   
-function place.fix() end
 
 -- Returns trail
 -- place.track(name: ":"):  `name: ":"?, label: ":"?, situations`? <-
@@ -74,10 +74,10 @@ function place.add() end
 ---@type fun(xyzf: xyzf?,  cardinals: cardinals): [number, string, string, string, xyzf]
 function place.nearby() end
 
--- Manhattan: abs(delta x) + abs(delta y) + abs(delta z).
--- place.distance(a: xyzf, b: xyzf):  `distance: #:` <-
----@type fun(a: xyzf,  b: xyzf):  distance: number 
-function place.distance() end
+-- Sets situation position, can start tracking for trail.
+-- place.fix(:xyzf:, track: ^:?):  `xyzf`   <-
+---@type fun(xyzf: xyzf,  track: boolean?):  xyzf   
+function place.fix() end
 
 -- Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return index of situation in global places and the serialized situation including its features.
 -- place.name(name: ":", label: ":", supplied: situation?, :features:??):  `":", #:` <-

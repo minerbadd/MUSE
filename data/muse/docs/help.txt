@@ -2,6 +2,8 @@ activate range: Add borders from west and north to east and south of range for M
 
 book name label from to span? item??...: Spanned range with (default) items as properties; return cost less bank.
 
+
+
 chart filename ...: Loads and runs named file in `charts` directory to create named point and associated ranges.
 
 come: rover turtle towards GPS player position.
@@ -10,7 +12,7 @@ echo arguments ...: For testing: just returns its arguments.
 
 erase name: Remove named place, broadcast Muse eXcise (MX).
 
-farmer` command argument...: See muse/docs/lib/net.html for the remote command line interface.
+farmer command argument...: See muse/docs/lib/net.html for the remote command line interface.
 
 headings rate? place? count??: Repeated movement report at specified rate (or every five) seconds).
 
@@ -18,9 +20,9 @@ join role id: Temporarily set mapping for next startup, id from turtle nameplate
 
 locate name label?: Create launch point having Minecraft coordinates above `porter`.
 
-logger` command argument...: See muse/docs/lib/net.html for the remote command line interface.
+logger command argument...: See muse/docs/lib/net.html for the remote command line interface.
 
-miner` command argument...: See muse/docs/lib/net.html for the remote command line interface.
+miner command argument...: See muse/docs/lib/net.html for the remote command line interface.
 
 near place? span??: Report points within span blocks (or all) of named place (or current player or turtle position).
 
@@ -31,6 +33,8 @@ port booking: As provided in booking, consume player inventory to teleport entit
 porter command argument...: See muse/docs/lib/net.html for the remote command line interface.
 
 range name label point point key? value??: Volume by named points, optional key and value for feature.
+
+
 
 rover command argument...: See muse/docs/lib/net.html for the remote command line interface.
 

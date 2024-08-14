@@ -12,7 +12,7 @@
 --:? rom/help/port.txt <- <b>Muse Teleport with Command Computer to Named Place</b> -> muse/docs/programs/port.md  
 </code></pre>
 <pre><code class="language-lua">
-
+package.path = _G.Muse.package
 local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
 remote.call("porter", "port", {...}) --:= port: 
 

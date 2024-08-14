@@ -13,12 +13,13 @@
 --:| worker: <i>Run what's been created by</i> <code>planner</code> <i>while attempting to deal with a turtle's situational difficulties.</i> -> worker
 </code></pre>
 <pre><code class="language-lua">
+local worker = {} ---@module "signs.worker" -- for functions exported from library
+
+package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local places = require("places"); local moves = places.moves ---@module "signs.places"
-
-local worker = {} ---@module "signs.worker" -- for functions exported from library
 </code></pre>
 <a id="failures"></a> 
 Try recovery for 'lost<code> or 'blocked</code> conditions. If successful, <a href="https://dspace.mit.edu/bitstream/handle/1721.1/5753/AIM-443.pdf?sequence=2&isAllowed=y" target="_blank"> go to</a> <code>operate</code> as a<a href="https://en.wikipedia.org/wiki/Tail_call" target="_blank"> tail call</a> with the same index into <code>pathOperations</code> and the <code>remaining</code> blocks for <code>more</code>.
