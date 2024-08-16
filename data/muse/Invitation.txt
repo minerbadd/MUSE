@@ -1,0 +1,15 @@
+I've been working on a different kind of project for Computercraft, one aimed at teaching, by example, what's involved in developing maintainable code. It's a Moderately Useful Source Exploration, MUSE.
+
+There's a lot about managing state in MUSE because there, there be dragons. There are examples of how structuring code in libraries can isolate dependencies and create layers of abstraction. There's attention to UI factoring to anticipate (the inevitable) changes to user interfaces. 
+
+There's much fun with functions and persistent state distributed across a network. Distributing state and operations on that state across a network leads into the issues of concurrency, service discovery, and how to build a faciity for remote procedure calls (which handle error exceptions).  
+
+As part of a developer's bag of tricks (some more magical than others), hey presto, there be declarative little languages and frameworks. 
+
+The code is extensively documented, perhaps even narrated. It uses a type annotation system, CodeMark, aligned with LLS, the Lua Language Server, for type checking, tool tips, and code completion. It's much more concise and a bit more expressive than bare LLS. CodeMark is fit into a couple of development frameworks: Visual Studio Code and Zerobrane Studio. In addition to the code narration, libraries get summary level markdown and HTML documentation of what they do and the interfaces they support for doing it.
+
+There are a lot of hyperlinks into discussions of broader software engineering topics.
+
+The code and text for MUSE is supplied (under an MIT license) to experiment with, and evolve. There are "TODO:" comments throughout the code with suggestions for that. All with the intent of learning to develop maintainable code.
+
+If this interests you, let me know. It might be fun to work together on this.
