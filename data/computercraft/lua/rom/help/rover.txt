@@ -2,4 +2,4 @@
 
 rover command argument...
  
-See muse/docs/lib/net.html for the remote command line interface.
+See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.

@@ -10,9 +10,9 @@
 <h2> Send Command to <code>farmer</code>(Remote)</h2>
 <pre><code class="language-markdown">
 --:? rom/help/farmer.txt <- <b>Remote Operations for Muse Farmer</b> -> muse/docs/programs/farmer.md  
---:- farmer command argument... -> <i>See <a href="../lib/net.html">muse/docs/lib/net.html</a> for the remote command line interface.</i>
-</code></pre>
+--:- farmer command argument... -> <i>See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.</i>
 There's <a href="https://riptutorial.com/lua/topic/4475/variadic-arguments" target="_blank"> a tutorial </a> on Lua's ... operator and its <code>select</code> function.
+</code></pre>
 <pre><code class="language-lua">
 package.path = _G.Muse.package
 local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"

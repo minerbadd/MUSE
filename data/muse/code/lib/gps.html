@@ -50,15 +50,15 @@ function _gps.equip(direction) -- assembles computer, modem, drive, and floppy
   move.back(1) -- because positions are computer positions
   core.report(2, "Equiping host "..direction)
   assert(turtle.find({computer}), "gps: no computer") -- select computer
-  turtle.puts<a href="">"front"</a> -- place computer in front of turtle
+  turtle.puts["front"]() -- place computer in front of turtle
   move.back(1) -- move back to place modem
   assert(turtle.find({modem}), "gps: no modem") -- modem
-  turtle.puts<a href="">"front"</a> -- place modem
+  turtle.puts["front"]() -- place modem
   move.down(1); move.forward(1) -- move down below modem and forward to place drive below computer
   assert(turtle.find({drive}), "gps: no drive") -- select drive
-  turtle.puts<a href="">"front"</a> -- place drive (facing drive)
+  turtle.puts["front"]() -- place drive (facing drive)
   assert(turtle.find({floppy}), "gps: no floppy") -- select floppy
-  turtle.drops<a href="">"front"</a>-- drop into drive
+  turtle.drops["front"]()-- drop into drive
   return "Equipped "..direction.." GPS host"
 end
 
@@ -91,7 +91,7 @@ function _gps.actuate(commands)
   if peripheral then peripheral.call("front", "turnOn") end-- boot computer in game
   move.down(1) -- adjacent to drive
   core.report(2, "Retrieving floppy from ".. direction.." installation")
-  turtle.sucks<a href="">"front"</a> -- retrieve floppy disk into a turtle slot (doesn't matter where)
+  turtle.sucks["front"]() -- retrieve floppy disk into a turtle slot (doesn't matter where)
   move.down(3) -- get away down from installation: clearance = 3
   core.report(2, "Actuated ".. direction.." installation at", move.ats())
   return "Actuated "..direction.." GPS host"

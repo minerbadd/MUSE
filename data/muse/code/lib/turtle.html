@@ -35,7 +35,7 @@ local compass = {"north", "east", "south", "west"}
 
 local function makeDirections(front, up, down, op, lib) 
   lib[op] = {}; for _, cardinal in ipairs(compass) do 
-    lib<a href="0">op][cardinal] = function(q) move[cardinal</a> return front(q) end 
+    lib[op][cardinal] = function(q) move[cardinal](0) return front(q) end 
   end
   lib[op].front = function(q) return front(q) end; 
   lib[op].up = function(q) return up(q) end; 
@@ -158,12 +158,12 @@ Abstracting away the difficulties in moving and digging is also a kind of inform
 local undug = {"minecraft:water", "minecraft:lava"} -- cant'dig the undug
 
 local function attemptDig(direction) -- "done if air or the undug, else attack (mob); then return dig success (or not)
-  local inspectOK, found = turtle.inspects<a href="">direction</a>; if found and found.name == "minecraft:bedrock" then 
+  local inspectOK, found = turtle.inspects[direction](); if found and found.name == "minecraft:bedrock" then 
     error("turtle.attemptDig: Bedrock at "..move.ats().." "..direction) -- no recovery
   end; local untarget = turtle.check(undug, found); -- water or lava?
   if untarget then core.status(4, "turtle", "attempt dig", found, "undug:", untarget) end
   if not inspectOK or untarget then return "done", "undug" end -- air, water, or lava
-  turtle.attacks<a href="">direction</a>; local dug, report = turtle.digs<a href="">direction</a>; return dug, report or found.name
+  turtle.attacks[direction](); local dug, report = turtle.digs[direction](); return dug, report or found.name
 end 
 
 function turtle.unblock(direction, limit, attempts) -- returns "done" or raises an error
@@ -198,7 +198,7 @@ function turtle.digAround(orientation, name, diggings)
   --:+ <i>Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.</i>
   for _, digging in ipairs(diggings) do core.status(5, "turtle", "around", orientation, diggings)
     local OK, fail = core.pass(pcall(turtle.unblock, digging)); if not OK then
-      move<a href="0">orientation</a>; error("turtle.digAround: "..name.." "..digging.." failed, "..fail..", refacing "..orientation)
+      move[orientation](0); error("turtle.digAround: "..name.." "..digging.." failed, "..fail..", refacing "..orientation)
     end
   end; return "done"
 end

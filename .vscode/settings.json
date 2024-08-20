@@ -10,5 +10,8 @@
         "program": "${file}",
         "configurations": [],
         "compounds": []
-    }
+    },
+    "Lua.diagnostics.disable": [
+        "undefined-field"
+    ]
 }

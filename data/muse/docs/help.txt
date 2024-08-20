@@ -12,7 +12,7 @@ echo arguments ...: For testing: just returns its arguments.
 
 erase name: Remove named place, broadcast Muse eXcise (MX).
 
-farmer command argument...: See muse/docs/lib/net.html for the remote command line interface.
+farmer command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
 headings rate? place? count??: Repeated movement report at specified rate (or every five) seconds).
 
@@ -20,9 +20,9 @@ join role id: Temporarily set mapping for next startup, id from turtle nameplate
 
 locate name label?: Create launch point having Minecraft coordinates above `porter`.
 
-logger command argument...: See muse/docs/lib/net.html for the remote command line interface.
+logger command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
-miner command argument...: See muse/docs/lib/net.html for the remote command line interface.
+miner command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
 near place? span??: Report points within span blocks (or all) of named place (or current player or turtle position).
 
@@ -30,13 +30,13 @@ point name label trail?: Add named labeled point, can start trail, MU updated ma
 
 port booking: As provided in booking, consume player inventory to teleport entities from one area to another.
 
-porter command argument...: See muse/docs/lib/net.html for the remote command line interface.
+porter command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
 range name label point point key? value??: Volume by named points, optional key and value for feature.
 
 
 
-rover command argument...: See muse/docs/lib/net.html for the remote command line interface.
+rover command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
 site name?: Remote operation to report or change site (persistently) after, e.g., porting `rover`.
 

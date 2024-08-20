@@ -192,7 +192,7 @@ local function reckon(message)                                    -- find bad re
   ---@diagnostic disable-next-line: undefined-field
   if not _G.turtle then return message end                        -- pointless if not for turtles (in-game)
   local tx, ty, tz = core.get(); local gx, gy, gz = core.where(); --overloaded by lib/motion
-  if not gx then return message end                               -- no GPS_  ->sume reckoned
+  if not gx then return message end                               -- no GPS assume reckoned
   local matched = core.round(tx) == core.round(gx) and core.round(ty) == core.round(gy) and
   core.round(tz) == core.round(gz)
   if matched then return message end

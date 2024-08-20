@@ -114,7 +114,7 @@ local go = {up = move.up, down = move.down, north = move.north, south = move.sou
 local liquids = {"minecraft:water", "minecraft:lava"}
 
 local function digInspect(ores, direction) -- direction to check, dig if air, water, lava, or ore
-  local notAir, detail = turtle.inspects<a href="">direction</a>; -- <code>notAir</code> <code>false</code> for air 
+  local notAir, detail = turtle.inspects[direction](); -- <code>notAir</code> <code>false</code> for air 
   local ore, liquid = turtle.check(ores, detail), turtle.check(liquids, detail); 
   if notAir and not (liquid or ore) then return false end -- not air, water, lava, or ore
   digIn(direction); core.status(3, "grid", "inspected ore", ore, direction, notAir, liquid)

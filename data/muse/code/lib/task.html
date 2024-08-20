@@ -47,13 +47,13 @@ local function find(target) --:- find name...? -> <i>Report and select first slo
 end; task.hints["find"] = {["??item"] = {}}
 
 local function attack(...) --:- attack direction -> <i>Attempts attack in specified direction.</i> 
-  local direction = getDirection(...); local success = turtle.attacks<a href="">direction</a> and " succeeded" or " failed"
+  local direction = getDirection(...); local success = turtle.attacks[direction]() and " succeeded" or " failed"
   return "Attack "..direction..success
 end; task.hints["attack"] = {["?direction"] = {}}
 
 local function look(...) --:- look direction -> <i>Detect and inspect direction, return report.</i>
-  local direction = getDirection(...); if not turtle.detects<a href="">direction</a> then return "No block "..direction end
-  local success, data = turtle.inspects<a href="">direction</a>; if not success then return data.." "..direction end
+  local direction = getDirection(...); if not turtle.detects[direction]() then return "No block "..direction end
+  local success, data = turtle.inspects[direction](); if not success then return data.." "..direction end
   local name, state = data.name, core.string(data.state); local report = name..": "..state; return report
 end; task.hints["look"] = {["?direction"] = {}}
 
@@ -63,7 +63,7 @@ local function compare(...) --:- compare item direction... -> <i>Named item matc
   assert(item and directions, "task.compare: Need item and directions")
   local targets = turtle.category(item); local target = turtle.find(targets); local targetName = target and target.name
   local found = {}; for _, direction in ipairs(directions) do
-    local success, data = turtle.inspects<a href="">direction</a>; local dataName = success and data.name
+    local success, data = turtle.inspects[direction](); local dataName = success and data.name
     if dataName and targetName and dataName == targetName then found[#found + 1] = {direction, dataName} end
   end; 
   return core.string(found), found
@@ -71,12 +71,12 @@ end; task.hints["compare"] = {["?item ?direction..."] = {}}
 
 local function drop(...) --:- drop item direction quantity? -> <i>Drop quantity of selected items [or all].</i> 
   local item, direction, quantity = ...; local found = find(item); if not found then return "Found no "..item end
-  local released = turtle.drops<a href="tonumber(quantity">getDirection(direction)</a>)
+  local released = turtle.drops[getDirection(direction)](tonumber(quantity))
   return released and core.string(turtle.detail()) or "Release "..direction.." failed"
 end; task.hints["drop"] = {["?item ?direction ??count"] = {}}
 
 local function suck(...) --:- suck direction quantity? -> <i>Suck quantity items [or all] into available slot.</i> 
-  local direction, quantity = ...; local sucked = turtle.sucks<a href="quantity">getDirection(direction)</a>
+  local direction, quantity = ...; local sucked = turtle.sucks[getDirection(direction)](quantity)
   return sucked and core.string(turtle.detail()) or "Suck "..direction.." failed"
 end; task.hints["suck"] = {["?direction ?count"] = {}}
 </code></pre>
@@ -103,11 +103,11 @@ end
 
 local function doMany(distance, towards, puttings, op, clear, fill, targets)
   if clear then turtle.unblock(towards, 5) end -- 5 is arbitrary number of tries to unblock for dig
-  if not distance then move<a href="0">towards</a>; return doOnce(puttings, op, fill, targets) end
-  for code, remaining, ats in step<a href="tonumber(distance">towards</a>) do -- e.g., step.east
+  if not distance then move[towards](0); return doOnce(puttings, op, fill, targets) end
+  for code, remaining, ats in step[towards](tonumber(distance)) do -- e.g., step.east
     if code ~= "done" then return false, "Failed: "..code.." at "..ats..", "..remaining.." blocks remaining" end
     if clear then turtle.unblock(towards, 5) end
-    doOnce(puttings, op, fill, targets); move<a href="0">towards</a> -- and reorient after op
+    doOnce(puttings, op, fill, targets); move[towards](0) -- and reorient after op
   end; return "done "..distance.." blocks "..towards.." "..table.concat(puttings, " ").." to "..move.ats()
 end
 
@@ -133,7 +133,7 @@ end
 </code></pre>
 <h3>The Tasks Themselves</h3>
 <pre><code class="language-lua">
-local function dig(...) return _task.doTask({...}, function(direction) turtle.digs<a href="">direction</a> end, true) end
+local function dig(...) return _task.doTask({...}, function(direction) turtle.digs[direction]() end, true) end
 --:- dig direction distance hoeing... -> <i>Direction and distance to (possibly blocked) move, hoeings directions to hoe.</i>
 --:+ <i>Dig along trails by specifying <code>direction</code> as <code>along</code> and trailname as <code>distance</code>. Can dig <code>here</code>.</i>
 --:+ <i>Tilling down, the common case for tilling, requires an air block beneath and a dirt block beneath that.</i>
@@ -141,11 +141,11 @@ task.hints["dig"] = {["?direction ?distance ?direction..."] = {}}
 
 local function puts(direction, filling, target) -- for change and put commands; put once, direction is a putting
   assert(find(filling), "task: "..filling.." not found"); local targets = turtle.category(target); 
-  if #targets > 0 then local inspected, detail = turtle.inspects<a href="">direction</a>; -- change only targets
+  if #targets > 0 then local inspected, detail = turtle.inspects[direction](); -- change only targets
     if inspected and turtle.check(targets, detail) then -- found target to change
-      assert(turtle.digs<a href="">direction</a>, "task: dig "..direction.." failed") -- dig it out
+      assert(turtle.digs[direction](), "task: dig "..direction.." failed") -- dig it out
     end
-  end; assert(turtle.puts<a href="">direction</a>, "task put "..direction.." failed") -- replace it
+  end; assert(turtle.puts[direction](), "task put "..direction.." failed") -- replace it
 end
 
 local function put(...) 

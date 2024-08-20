@@ -47,7 +47,7 @@ local function here() -- are we here yet? (defensive programming, checking dead 
 end
 
 local function moveHere(tx, ty, tz, ttx, tty, ttz) --t<i> turtle, tt</i> target
-  here(); pickMove<a href="tx, ty, tz, ttx, tty, ttz">picks() + 1</a> -- sequentially to deal with blockages
+  here(); pickMove[picks() + 1](tx, ty, tz, ttx, tty, ttz) -- sequentially to deal with blockages
 end
 
 function roam.come(xyz) -- <b>needs GPS for {xyz}</b>, lib/remote RPC "come" dispatched by lib/net 

@@ -1404,9 +1404,9 @@ Default current situation.",
 }
 ,
   ["_rover_"] = {
-  ["line"] = "--:- rover command argument... -> _See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface._",
+  ["line"] = "--:- rover command argument... -> _See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface._",
   ["sign"] = "rover command argument...  ",
-  ["text"] = "See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface.",
+  ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
   ["kind"] = "cli",
 }
 ,
@@ -2914,10 +2914,10 @@ CLL to align MUSE location with Minecraft coordinates and activate a range as a 
 }
 ,
   ["_porter_"] = {
-  ["line"] = "--:- porter command argument... -> _See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface._",
+  ["line"] = "--:- porter command argument... -> _See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface._",
   ["sign"] = "porter command argument...  ",
   ["kind"] = "cli",
-  ["text"] = "See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface.",
+  ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
 }
 ,
   ["_place.add:_"] = {
@@ -3125,10 +3125,10 @@ Dispatch targets for_ `net` _library._ -> task, _task",
 }
 ,
   ["_miner_"] = {
-  ["line"] = "--:- miner command argument... -> _See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface._",
+  ["line"] = "--:- miner command argument... -> _See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface._",
   ["sign"] = "miner command argument...  ",
   ["kind"] = "cli",
-  ["text"] = "See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface.",
+  ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
 }
 ,
   ["_map.update:_"] = {
@@ -3799,9 +3799,9 @@ CLL for `book` and `port` commands assessing and clearing player inventory for s
 }
 ,
   ["_logger_"] = {
-  ["line"] = "--:- logger command argument... -> _See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface._",
+  ["line"] = "--:- logger command argument... -> _ _See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface._",
   ["sign"] = "logger command argument...  ",
-  ["text"] = "See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface.",
+  ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
   ["kind"] = "cli",
 }
 ,
@@ -4473,9 +4473,9 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
 }
 ,
   ["_farmer_"] = {
-  ["line"] = "--:- farmer command argument... -> _See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface._",
+  ["line"] = "--:- farmer command argument... -> _See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface._",
   ["sign"] = "farmer command argument...  ",
-  ["text"] = "See [muse/docs/lib/net.html](../lib/net.html) for the remote command line interface.",
+  ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
   ["kind"] = "cli",
 }
 ,

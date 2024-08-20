@@ -60,7 +60,7 @@ end
 --[[
 ```
 <a id="respond"></a> 
-All computers other than the player's pocket computer wait to `respond`. If a responding turtle is a `landed` turtle that is_  -> yet, unsited, it attaches itself to the player's `site`. In any case, it sends back a message that provides information for mapping between its computer ID and its label (its MUSE role).
+All computers other than the player's pocket computer wait to `respond`. If a responding turtle is a `landed` turtle that is as yet, unsited, it attaches itself to the player's `site`. In any case, it sends back a message that provides information for mapping between its computer ID and its label (its MUSE role).
 ```Lua
 --]]
 local function respond()  

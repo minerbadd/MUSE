@@ -33,7 +33,7 @@ local up = " 2n 2s u2 " -- fill north and south for support then up to next mark
 
 local function funds(_, direction) -- up, down, north, and south....and forward direction
   turtle.digAround(direction, "funds", {"up", "down", "north", "south"})
-  turtle.digAround(direction, "funds", {direction}); move<a href="0">direction</a>; -- turn to direction of movement 
+  turtle.digAround(direction, "funds", {direction}); move[direction](0); -- turn to direction of movement 
   return "done" 
 end
 </code></pre>

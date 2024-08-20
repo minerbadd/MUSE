@@ -43,7 +43,7 @@ end
 
 local function blocked(plan, pathOperations, index, direction, remaining, at, movement, motion) -- attempt unblock
   core.status(3, "worker", "blocked so unblocking at", at, "for", plan.name,  movement, motion) 
-  turtle.unblock(direction, 5); move<a href="0">direction</a> -- unblocking failure raises error, <code>operate</code> if unblocked
+  turtle.unblock(direction, 5); move[direction](0) -- unblocking failure raises error, <code>operate</code> if unblocked
   -- turned in original direction, work not done, continue current operation for remaining blocks
   turtle.block(false) -- for out-game operation, imagine that the blockage has been removed
   return operate(plan, pathOperations, index, remaining) -- plan, pathOperations, index, more; 
@@ -71,12 +71,12 @@ local function operateStep(elements, plan, index, pathOperations, more) -- step 
 
   if stepOK then return operate(plan, pathOperations, index + 1) end -- ok, continue to <code>operate</code> next path operation
 
-  move<a href="0">direction</a> -- need to handle failure, first turn back toward direction of travel
+  move[direction](0) -- need to handle failure, first turn back toward direction of travel
   if type(condition) ~= "table" then -- something unrecoverable has happened
     error("work.operateStep: failed hard "..plan.name.." "..direction.." "..distance.." "..index.." "..result)
   end -- otherwise get <code>move</code> failure type and remaining blocks for stepping the recovery
   local _, _, fail, remaining, at, movement, motion = table.unpack(condition) -- handle step failures
-  return failures<a href="plan, pathOperations, index, direction, remaining, at, movement, motion">fail</a>
+  return failures[fail](plan, pathOperations, index, direction, remaining, at, movement, motion)
 end
 
 local function operateMark(elements, plan, index, pathOperations)
@@ -89,7 +89,7 @@ local function operatePut(elements, plan, index, pathOperations)
   local _, direction, item = table.unpack(elements); -- try to find item and if found, select for <code>turtle.puts</code>
   local items = turtle.category(item) -- <code>turtle.find</code> expects a list
   if not turtle.find(items) then error("worker.operatePut: no "..item .." found in ".. plan.name.." plan") end
-  turtle.unblock(direction, 5); turtle.puts<a href="">direction</a>; return operate(plan, pathOperations, index +1)
+  turtle.unblock(direction, 5); turtle.puts[direction](); return operate(plan, pathOperations, index +1)
 end
 
 local function finishOperations(plan)
@@ -107,7 +107,7 @@ function operate(plan, pathOperations, index, more) -- <code>more</code> to cont
   if index > #pathOperations then return finishOperations(plan) end
   local elements = pathOperations[index]; local operation = table.unpack(elements)
   core.status(4, "work", "operate on", index, "of", #pathOperations, "in", plan.name)
-  return operations<a href="elements, plan, index, pathOperations, more">operation</a> -- <b>do</b> <code>step</code>, <code>mark</code>, <code>put</code> 
+  return operations[operation](elements, plan, index, pathOperations, more) -- <b>do</b> <code>step</code>, <code>mark</code>, <code>put</code> 
 end; 
 
 --:: worker.execute(plan, pathOperations, fuelOK: ^:, pathDistance: #:) -> <i>Do plan.</i> ->  <code>"done", report: ":" &: &!</code>

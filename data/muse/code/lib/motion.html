@@ -10,9 +10,11 @@
 <h2> Functions, State, and History: <code>lib/motion</code> for Turtle Motion</h2>
 <p>
 The first chunk of code using ComputerCraft that we'll look at is the <code>lib/motion</code> module. Of course, it's about moving turtles. Each <a href="https://en.wikipedia.org/wiki/Library_(computing)" target="_blank">
-<i>library</i></a>, in the module is a collection of code elements for moving turtles in some way. Libraries often build upon each other. That's the case for MUSE and since <code>lib/motion</code> is fundamental in that build, it's where we'll start our exploration. It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It is built to fit into a code analysis and documentation system. It likely does not look anything like the first chunk of code you ever got running. Spoonful of sugar time I'm afraid.
+<i>library</i></a>, in the module is a collection of code elements for moving turtles in some way. Libraries often build upon each other. That's the case for MUSE and since <code>lib/motion</code> is fundamental in that build, it's where we'll start our exploration. 
 <p>
-We'll use this module to illustrate how functions, a fundamental part of Lua, are used to implement these libraries. We'll also use it to introduce some ideas for managing the <a href="https://en.wikipedia.org/wiki/State<i>(computer</i>science)" target="_blank">
+It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Spoonful of sugar time I'm afraid.
+<p>
+We'll use this module to illustrate how functions, a fundamental part of Lua, are used to implement our libraries. We'll also use it to introduce some ideas for managing the <a href="https://en.wikipedia.org/wiki/State<i>(computer</i>science)" target="_blank">
 <i>state</i></a> of a turtle and handling the history of that state.
 <p>
 <h3>Introduction and Exports: the overview</h3>
@@ -31,7 +33,7 @@ To help readers and maintainers understand a module, it's useful to organize it 
 The first line of the introduction above sets the stage. It tells us that moving turtles is implemented using tables (as dictionaries) of <code>move</code> functions and of something we've called <code>step</code> functions (producing <a href="https://en.wikipedia.org/wiki/Closure<i>(computer</i>programming)" target="_blank">
 <i>closures</i>)</a> . It exports these functions as libraries producing APIs whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank"><i>Markdown</i></a> documentation, <code>muse/docs/lib/motion.md</code>, is found in the <code>docs</code> sub-directory of the <code>muse</code> project directory. Below are those tables of exported functions. We'll fill them in as we go.
 <pre><code class="language-lua">
-local move, step = {}, {} -- for exports
+local move, step = {}, {} ---@module "signs.motion"
 </code></pre>
 The library checks to see that fuel is consumed for all turtle movements that are supposed to have consumed fuel. <a href="https://en.wikipedia.org/wiki/Dead_reckoning" target="_blank">
 <i>Dead reckoning</i></a> 
@@ -40,22 +42,17 @@ keeps track of the whereabouts of the turtle depending on its supposed movement.
 <p>
 The <code>"lost"</code>, <code>"blocked"</code>, and <code>"empty"</code> conditions each raise an <code>error</code> reported to callers of <code>lib/motion</code> (and to their callers in turn).  The caller, for example <code>lib/roam</code> (discussed in another chapter), may attempt recovery operations depending on the error information or might just report the error.
 <p>
-As mentioned, the exported APIs for these libraries is provided in two tables of functions: <code>move</code> and <code>step</code>.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the library with <code>require</code> returns these tables. Just below we'll see that done for libraries that <code>lib/motion</code> depends on.
+As mentioned, the exported APIs for these libraries is provided in two tables of functions: <code>move</code> and <code>step</code>.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the library with <code>require</code> returns these tables. Just below we'll see that done for libraries that <code>lib/motion</code> depends on. <i>(Binding <code>package.path</code> provides the context for <code>require</code>.)</i>
 <p>
-The <code>lib/motion</code> libraries fit into a larger context.  That context is described by global references and dependencies on other libraries. (The <code>@diagnostic</code> annotation below signals to the IDE nanny that I know what I'm doing: there's nothing to see here.) The <code>@module</code> anotations tell the <a href="https://luals.github.io/wiki/annotations/" target="_blank"> Lua Language server</a>, LLS, where to find the information needed to check references to functions exported, used by and external to this module. (The particular way the external references are made local to this module seemed to be how LLS needed them.) 
+The <code>lib/motion</code> libraries fit into a larger context.  That context is described by global references and dependencies on other libraries. The <code>@module</code> anotations tell the <a href="https://luals.github.io/wiki/annotations/" target="_blank"> Lua Language server</a>, LLS, where to find the information needed to check references to functions exported, used by and external to this module. (The particular way the external references are made local to this module seemed to be how LLS needed them.) 
 <p>
 Here's what all that looks like for these libraries:
 <pre><code class="language-lua">
----@module "signs.motion"
----@diagnostic disable-next-line: undefined-field
-local rednet, Muse = _G.rednet, _G.Muse -- globals preserved across programs, not persistent
-
-package.path = _G.Muse.package
+package.path = _G.Muse.package -- to bind locally from global context for <code>require</code>
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
----@diagnostic disable-next-line: undefined-field
 local turtles = require("mock"); local turtle = _G.turtle or turtles.turtle ---@module "signs.mock"
 </code></pre>
-All the MUSE globals are collected in a single global table, <code>_G.Muse</code>, to avoid litter. The table is initialized <a href="../.start.html" target="_blank"> at startup</a> to the empty table if it doesn't yet exist. It is bound to a variable, <code>Muse</code>, local to the module (just to save a few cycles when referencing it). The <code>rednet</code> local variable is used to determine whether execution is in the game or in a test environment we'll discuss in just a bit: it is bound to <code>nil</code> unless running in the game environment.
+All the MUSE globals are collected in a single global table, <code>_G.Muse</code>, to avoid litter. The table is initialized <a href="../.start.html" target="_blank"> at startup</a> to the empty table if it doesn't yet exist. The <code>rednet</code> local variable is used to determine whether execution is in the game or in a test environment we'll discuss in just a bit: it is bound to <code>nil</code> unless running in the game environment.
 <p>
 Each ComputerCraft computer including turtles and pocket computers have their own set of globals. These globals are not persistent. They don't stick around after server shutdown, that is, between <a href="https://en.wikipedia.org/wiki/Session<i>(computer</i>science)" target="_blank"><i>sessions</i></a>.  
 However, they do stick around between program executions within a session; they survive <a href="https://en.wikipedia.org/wiki/Garbage<i>collection</i>(computer_science)" target="_blank">
@@ -81,10 +78,10 @@ A turtle's <code>situation</code> includes its position (as a keyed table of num
 
 --:> situations: <i>Tracking history</i> -> <code>situation[]</code>
 
-Muse.situation = Muse.situation or {position = {x=0, y=0, z=0}, facing = "north", fuel = 0, level = "same"} -- out game testing
-Muse.situations = Muse.situations or {}; -- for session
+_G.Muse.situation = _G.Muse.situation or {position = {x=0, y=0, z=0}, facing = "north", fuel = 0, level = "same"} -- out game testing
+_G.Muse.situations = _G.Muse.situations or {}; -- for session
 </code></pre>
-As we'll see, these libraries provide a tracking facility for repeated movement back and forth along a <code>trail</code> defined by certain changes in a turtle's <code>situation</code>. Trails (<code>Muse.situations</code>) represent a history of turtle state accumulated in a numerically indexed table, each element of which is a (copy of a) <code>situation</code>. Generally turtles are not tracked but they can be by calls to <code>turtle.tracking(true)</code>. 
+As we'll see, these libraries provide a tracking facility for repeated movement back and forth along a <code>trail</code> defined by certain changes in a turtle's <code>situation</code>. Trails (<code>_G.Muse.situations</code>) represent a history of turtle state accumulated in a numerically indexed table, each element of which is a (copy of a) <code>situation</code>. Generally turtles are not tracked but they can be by calls to <code>turtle.tracking(true)</code>. 
 <p>
 Data structures like these are some of the most pervasive and long lasting elements of a design. You and the aliens from another planet will be working with them for a long time. Some thought about that could payoff in maintenance.
 <p>
@@ -102,23 +99,23 @@ It helps to define utility functions used in the module toward the beginning of 
 --:## <b>Some Utilities: position reporting and setting:</b>
 function move.get(situation) 
   --:: move.get(:situation:?) -> <i>Default current situation.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"</code>
-  local s = situation or Muse.situation; local p = s.position; 
+  local s = situation or _G.Muse.situation; local p = s.position; 
   return tonumber(p.x), tonumber(p.y), tonumber(p.z), s.facing, s.fuel, s.level
 end
 
 core.get = move.get -- overrides the dummy binding in <code>lib/core</code>
 
-local function facing(situation) local s = situation or Muse.situation; return s.facing end 
+local function facing(situation) local s = situation or _G.Muse.situation; return s.facing end 
 -- facing(:situation:?) -> <i>Default current situation's facing.</i> -> <code>facing: ":"</code>
-local function fuel(situation) local s = situation or Muse.situation; return s.fuel end
+local function fuel(situation) local s = situation or _G.Muse.situation; return s.fuel end
 -- fuel(:situation:?) -> <i>Default current situation's fuel</i> -> <code>fuel: #:</code>
-local function setFuel(value) Muse.situation.fuel = value; return value end
+local function setFuel(value) _G.Muse.situation.fuel = value; return value end
 -- setFuel(value: #:) -> <i>Set current situation's fuel.</i> -> <code>fuel: #:</code>
-function move.track(enable) Muse.tracking.enabled = enable; return enable end
+function move.track(enable) _G.Muse.tracking.enabled = enable; return enable end
 --:: move.track(enable: ^:) -> <i>Set tracking condition</i> -> <code>enable: ^:</code>
 function move.set(x, y, z, f, fuel, level)
   --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???) -> <i>Set position, optionally rest of situation.</i> -> <code>nil</code>
-  local s = Muse.situation; s.position = {x = tonumber(x), y = tonumber(y), z = tonumber(z)}; 
+  local s = _G.Muse.situation; s.position = {x = tonumber(x), y = tonumber(y), z = tonumber(z)}; 
   if f then s.facing = f end; if fuel then s.fuel = fuel end; if level then s.level = level end
 end
 
@@ -126,8 +123,8 @@ core.set = move.set -- protect from override
 </code></pre>
 </code></pre>
 <h3>Globals Considered Harmful</h3>
-Globals are often <a href="https://dl.acm.org/doi/pdf/10.1145/953353.953355" target="_blank">bad hygiene</a>, a hole into which much maintenance can be and has been poured. They're used here as discussed earlier, because they will hang around in the face of garbage collection. Setting globals (changing their value) is particularly stinky hygiene. There's often a long, expensive chase to track down where a global's value has been changed. Lua has good support for <a href="https://en.wikipedia.org/wiki/Information_hiding" target="_blank">
-<i>information hiding</i></a> as Lua locals are not visible outside the file chunk (or block) in which they are defined.  Globals break that model. Exposing the <code>move.set</code> API covers a mutation with a critical fig leaf. We can put a 
+Globals are often <a href="https://dl.acm.org/doi/pdf/10.1145/953353.953355" target="_blank">bad hygiene</a>, a hole into which much maintenance can be and has been poured. In the code that follows they intensionally look really ugly. They're used here as discussed earlier, because they will hang around in the face of garbage collection. Setting globals (changing their value) is particularly stinky hygiene. There's often a long, expensive chase to track down where a global's value has been changed. Lua has good support for <a href="https://en.wikipedia.org/wiki/Information_hiding" target="_blank">
+<i>information hiding</i></a> as Lua locals are not visible outside the file chunk (or block) in which they are defined.  Globals break that model.  Exposing the <code>move.set</code> API covers a mutation with a critical fig leaf. We can put a 
 <a href="https://en.wikipedia.org/wiki/Breakpoint" target="_blank">
 <i>breakpoint</i></a> on  calls to this fig leaf. This is better hygiene than fiddling with the associated global directly. The function is made available in the <code>lib/core</code> library. (There's special attention in loading that library to prevent overriding this binding and that of <code>core.get</code> and <code>core.ats</code> needed for bootstrapping).
 <p>
@@ -137,25 +134,28 @@ There's a design decision in foregoing the introduction of
 <a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank">
 <i>objects</i></a>. Lua provides primitives that can be used to organize state into objects, another means of localizing state. We don't need to introduce the associated concepts here since we:
 <ul>
-<li>get information hiding from Lua's scoping rules for chunks, and</li>
-<li>don't need to build an 
+<li><i>get information hiding from Lua's scoping rules for chunks, and</i></li>
+<li><i>don't need to build an 
 <a href="https://en.wikipedia.org/wiki/Inheritance<i>(object-oriented</i>programming)" target="_blank">
-<i>inheritance</i></a> system for what's done, for example, with a <code>situation</code>.</li>
+<i>inheritance</i></a> system for what's done, for example, with a <code>situation</code>.</i></li>
 </ul>
 <p>
 Implicitly there's another design decision in arranging to modify <code>situation</code> state rather than creating a new <code>situation</code> for each change (and relying on the garbage collector to dispose of the detritus) . A 
 <a href="https://en.wikipedia.org/wiki/Functional_programming" target="_blank">
-<i>purely functional style</i></a> would require creating a new <code>situation</code> table for every change in turtle position or orientation. At the cost of that purity, the decision here is to only create a new situation, cloning one from the current <code>situation</code>, when we need the old situation in <code>situations</code>, a <code>situation</code> history. MUSE uses that history to optionally provide <code>tracking</code>. The history records (and clones) position and orientation only when either orientation or the kind of vertical movement changes.
+<i>purely functional style</i></a> would require creating a new <code>situation</code> table for every change in turtle position or orientation. At the cost of that purity, the decision here is to only create a new situation, cloning one from the current <code>situation</code>, when we need the old situation in <code>situations</code>, a <code>situation</code> history. MUSE uses that history to optionally provide <code>tracking</code>. The history records (and clones) position and orientation for tracking only when either orientation or the kind of vertical movement changes.
 <pre><code class="language-lua">
-function move.situations(situations) Muse.situations = situations; return situations end
+local function situation(setting) _G.Muse.situation = setting or _G.Muse.situation; return _G.Muse.situation end
+
+function move.situations(setting) _G.Muse.situations = setting or _G.Muse.situations; return _G.Muse.situations end
 --:: move.situations(:situations:) -> <i>Set <code>_G.Muse.situations</code> to situations.</i> -> situations
+
 function move.clone() -- easy cloning
 --:: move.clone() -> <i>Clone current situation</i> -> situation
   local x, y, z, facing, fuel, level = move.get() 
   return {position = {x = x, y = y, z = z}, facing = facing, fuel = fuel, level = level} 
 end
 
-function move.clones() return core.clone(Muse.situations) end
+function move.clones() return core.clone(_G.Muse.situations) end
 --:: move.clones() -> <i>Deep copy <code>_G.Muse.situations</code>.</i> ->  situations
 </code></pre>
 <a id="clone"/>
@@ -173,13 +173,12 @@ function move.at(situation) local x, y, z, f = move.get(situation); return {x, y
 --:: move.at(:situation:?) -> <i>(Current) situation xyzf.</i> -> <code>xyzf</code>
 function move.ats(situation)
 --:: move.ats(:situation:?) -> <i>(Current) situation position and facing string (<code>""</code> in game if not turtle).</i> -> <code>xyzf: ":"</code>
----@diagnostic disable-next-line: undefined-field
-  local x, y, z, f = move.get(situation); return (_G.turtle or not rednet) and "{"..x..", "..y..", "..z.."}, "..(f or "") or ""
+  local x, y, z, f = move.get(situation); return turtle and ("{"..x..", "..y..", "..z.."}, "..(f or "")) or ""
 end
 </code></pre>
 <a id="ats"></a>
 <h3>Where Oh Where</h3>
-The function <code>move.ats</code> returns a string representation of a turtle's position. It parallels <code>move.at</code> which returns a table of numbers for that position. There's a bit of complexity introduced in the implementation of <code>move.ats</code> since it's used out-of-game in the IDE as well as in-game. A Lua idiom for the <a href="http://lua-users.org/wiki/TernaryOperator" target="_blank"> <i>ternary operator</i></a> is used to return a string representing the <code>situation.position</code> if the condition, <code>(_G.turtle or not rednet)</code>, is met and the empty string, <code>""</code>, if it is not. In the out-of-game test environment <code>rednet</code> is <code>nil</code> (as is <code>_G.turtle</code>) so a string including the turtle's position and orientation is returned. In-game, <code>rednet</code> is <code>true</code> and <code>_G.turtle</code> is true only for turtles so in-game other than for turtles just the empty string is returned.
+The function <code>move.ats</code> returns a string representation of a turtle's position. It parallels <code>move.at</code> which returns a table of numbers for that position. There's a bit of complexity introduced in the implementation of <code>move.ats</code> since it's used out-of-game in the IDE as well as in-game. A Lua idiom for the <a href="http://lua-users.org/wiki/TernaryOperator" target="_blank"> <i>ternary operator</i></a> is used to return a string representing the <code>situation.position</code> if <code>turtle</code> is <code>true</code> and the empty string, <code>""</code>, if it is not. In the in-game environment, <code>turtle</code> is <code>true</code> only for turtles so in-game other than for turtles just the empty string is returned. In the out-of-game test environment, <code>turtle</code> is mocked, so the mocked <code>situation</code> is returned. 
 <p>
 Calls to the <a href="core.html#ats"> <code>core.ats</code> </a> function supports an instrumentation system defined in <code>lib/core</code> that we'll discuss later.
 <pre><code class="language-lua">
@@ -191,53 +190,50 @@ function move.where(tx, ty, tz, tf) -- where's the turtle?
 --:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ^: ok</code>
 --:+ <i>If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.</i>
   local px, py, pz, pf = table.unpack(move.at()); local gx, gy, gz = core.where() -- gx is nil if GPS fails or no GPS
----@diagnostic disable-next-line: undefined-field
   return gx or tx or px, gy or ty or py, gz or tz or pz, tf or pf, (gx or not _G.gps) -- ok if no GPS (out-game)
 end
 </code></pre>
 <a id="tables"></a>
-<h3>Tables of Motion</h3>
-Tables are an important Lua construct.  MUSE uses a lot of them.  The tables below tie together changes in turtle <code>situation.position</code> due to movements (<code>advance</code>, <code>retreat</code>, <code>rise</code>, and <code>fall</code>) with the direction a turtle is <code>facing</code>. A trick uses the <code>%</code> modulo function to circle around the <code>facings</code> from "west" back to "north".  A reciprocal <code>directions</code> table maps direction names (as strings) back to <code>facings</code> indices (as numbers). The <code>getRight</code> and <code>getLeft</code> functions get a number from <code>directions</code> to do modulo arithmetic and get a string from the result from <code>facings</code>.
+<h3>Getting Around</h3>
+A trick uses the <code>%</code> modulo function to circle around the <code>facings</code> from "west" back to "north". A reciprocal <code>directions</code> table maps direction names (as strings) back to <code>facings</code> indices (as numbers). The <code>getRight</code> and <code>getLeft</code> functions get a number from <code>directions</code> to do modulo arithmetic and get a string from the result from <code>facings</code>. If tracking is enabled, we'll need the <code>prior</code> version of the <code>situation</code> untouched by changes in direction so <code>situation</code> gets a (simple) <code>clone</code>.   
 <pre><code class="language-lua">
--- Translation and rotation constants: Computercraft co-ordinate system (y is vertical)
+-- Translation and rotation constants: Computercraft co-ordinate system (<code>y-axis</code> is vertical)
 local facings = {[0]="north", "east", "south", "west"} -- %4: after "west" is "north"
 local directions = {north = 0, east = 1, south = 2, west = 3} -- reciprocal of <code>facings</code>
-local advance = {north = {0, 0, -1}, east = {1, 0, 0}, south = {0, 0, 1}, west = {-1, 0, 0}} -- changes in position
-local retreat = {north = {0, 0, 1}, east = {-1, 0, 0}, south = {0, 0, -1}, west = {1, 0, 0}}
-local rise = {north = {0, 1, 0}, east = {0, 1, 0}, south = {0, 1, 0}, west = {0, 1, 0}} --facings irrelevant
-local fall = {north = {0, -1, 0}, east = {0, -1, 0}, south = {0, -1, 0}, west = {0, -1, 0}}
 
 local function getRight(direction) return facings[(directions[direction] + 1) % 4] end -- %4: "west" to "north"
 local function getLeft(direction) return facings[(directions[direction] - 1) % 4] end -- %4: "north" to "west"
 
+local function situationSafe() 
+  local prior = situation(); return prior, situation(_G.Muse.tracking.enabled and move.clone() or prior)
+end
+
 local function setRight() 
-  local prior = Muse.situation; Muse.situation = Muse.tracking.enabled and move.clone() or Muse.situation
-  Muse.situation.facing = getRight(Muse.situation.facing); Muse.situation.level = "same" 
+  local prior, current = situationSafe(); current.facing = getRight(current.facing); current.level = "same" 
   return prior
 end
 
 local function setLeft() 
-  local prior = Muse.situation; Muse.situation = Muse.tracking.enabled and move.clone() or Muse.situation
-  Muse.situation.facing = getLeft(Muse.situation.facing); Muse.situation.level = "same" 
+  local prior, current = situationSafe(); current.facing = getLeft(current.facing); current.level = "same" 
   return prior
 end
 </code></pre>
 <a id="direction"></a>
-<h3>Turning the Turtle: Implementing An Abstraction</h3>
-The "direction" abstraction, considering the four cardinal diretions, is built on turtle primitives to <code>turnRight</code> or <code>turnLeft</code>. The functions end by returning a status code. The turn is done immediately and (maybe) can fail. The status code in such case is <code>"blocked"</code>. Turtle rotations don't use fuel and, blocked or not, will have happened even in the face of an untimely Minecraft server shutdown. (So dead reckoning remains valid.) Otherwise the code returned is "done" (after potentially tracking the turn and  updating the <code>_G.Muse.situations</code> history table). The turtle's <code>_G.Muse.situation.facing</code> is changed by these functions. Recall that the functions <code>setRight</code> or <code>setLeft</code> use a bit of modulo arithmetic and access to the <code>directions</code> and <code>facings</code> table entries to get the new facing.
+<h3>Turning the Turtle: Implementing An Abstraction.</h3>
+The "direction" abstraction, considering the four cardinal directions, is built on turtle primitives to <code>turnRight</code> or <code>turnLeft</code>. The functions end by returning a status code. The turn is to be done immediately but can fail. The status code in such case is <code>"blocked"</code>. Turtle rotations don't use fuel and, if not blocked, will have happened even in the face of an untimely Minecraft server shutdown. (Dead reckoning remains valid. The turtle is not <code>"lost"</code>.) So the code returned is <code>"done"</code> (after potentially tracking the turn and  updating the <code>_G.Muse.situations</code> history table). The turtle's <code>_G.Muse.situation.facing</code> is changed by these functions. Recall that the functions <code>setRight</code> or <code>setLeft</code> use a bit of modulo arithmetic and access to the <code>directions</code> and <code>facings</code> table entries to get the new facing.
 <p>
-Normally, Lua files build upon function definitions from the beginning of a file to the end. If we did that, the last things done to move a turtle would show up in the file before the first things to be done. Making the file harder to understand. We handle the issue by introducing a dummy forward reference for functions whose definitions will come later.
+Normally, Lua files build upon function definitions from the beginning of a file to the end. If we did that, the last things done to move a turtle would show up in the file before the first things to be done. Making the file harder to understand. We handle the issue by introducing <code>trackMotion</code> as a dummy forward reference for a function whose definition will come later.
 <pre><code class="language-lua">
-local trackMotion -- forward reference
+local trackMotion -- forward reference to track turtle for turns, returns "done" after updating <code>situations</code>, a side-effect
 
 local function turnRight() -- make turn and adjust facing
-  local moved, prior = turtle.turnRight(), setRight()
-  return not moved and "blocked" or (Muse.tracking.enabled and trackMotion(prior) or "done")
+  local moved = turtle.turnRight(); local prior = setRight() -- <code>setRight</code> returns <code>situation</code> <code>prior</code> to turn
+  return moved and (_G.Muse.tracking.enabled and trackMotion(prior) or "done") or "blocked"
 end
 
 local function turnLeft() -- make turn and adjust facing
-  local moved, prior = turtle.turnLeft(), setLeft()
-  return not moved and "blocked" or (Muse.tracking.enabled and trackMotion(prior) or "done")
+  local moved = turtle.turnLeft(); local prior = setLeft() -- <code>setLeft</code> returns <code>situation prior</code> to turn
+  return moved and (_G.Muse.tracking.enabled and trackMotion(prior) or "done") or "blocked"
 end
 
 local function turnAround() -- make turn and adjust facing
@@ -247,96 +243,95 @@ end
 </code></pre>
 <a id="way"></a>
 <h3>Finding the Way</h3>
-MUSE encapsulates the parameters of motion in each of the four <code>way</code> tables (below). These supply the arguments for actual turtle <code>motion</code> (like <code>turtle.forward</code>), the kind of <code>movement</code> (like <code>"advance"</code>, the nature of any change in <code>level</code> (like <code>"same"</code>), and the <code>direction</code> of movement (for reporting and debugging convenience). In this way they effectively package up the variations in handling turtle movement so that all the variations can be dealt with by common routines. Which we'll be coming to shortly. 
-<p>
-As suggested, the (cardinal) direction abstraction is built on the <code>turnRight</code> and <code>turnLeft</code> primitives. The function <code>turnFacing</code> uses the <code>directions</code> constant table from the introduction part of <code>lib/motion</code> to get numbers for the four cardinal directions with which to do arithmetic.  The amount to turn, a value from 0 to 3, is used to select one of the appropriate <code>turns</code> primitives (including a <code>noop</code>). After the left or right turn is made, the turtle might be moved or stepped a <code>count</code> of blocks. We're on our way. Maybe.
+Tables are an important oart of Lua. MUSE uses a lot of them to better expose operation. The <code>advance</code>, <code>retreat</code>, <code>rise</code>, and <code>fall</code> movement tables use the direction a turtle is <code>facing</code> to indicate changes in <code>position</code> for each kind of movement. For example, <code>advance.north</code> shows a decrement, <code>{0, 0, -1}</code>, of the <code>z-axis</code> position. Further, MUSE encapsulates the parameters of motion in each of the four <code>way</code> tables using the movement tables. These supply the arguments for actual turtle <code>motion</code> (like <code>turtle.forward</code>), the kind of <code>movement</code> (like <code>"advance"</code>, the nature of any change in <code>level</code> (like <code>"same"</code>), and the <code>direction</code> of movement (for reporting and debugging convenience). In this way they effectively package up the variations in handling turtle movement so that all the variations can be dealt with by common routines to actually move the turtle beyond simple turning. Which we'll be coming to. Eventually.
 <pre><code class="language-lua">
-
--- <b>The <code>way</code> tables and the parameters of (trackable) motion</b>
+-- <b>The <code>movement</code> tables, the <code>way</code> tables and the parameters of (trackable) motion</b>
+local advance = {north = {0, 0, -1}, east = {1, 0, 0}, south = {0, 0, 1}, west = {-1, 0, 0}} -- changes in position
+local retreat = {north = {0, 0, 1}, east = {-1, 0, 0}, south = {0, 0, -1}, west = {1, 0, 0}}
+local rise = {north = {0, 1, 0}, east = {0, 1, 0}, south = {0, 1, 0}, west = {0, 1, 0}} --facings irrelevant
+local fall = {north = {0, -1, 0}, east = {0, -1, 0}, south = {0, -1, 0}, west = {0, -1, 0}}
 
 local wayForward, wayBack = {turtle.forward, advance, "same", "forward"}, {turtle.back, retreat, "same", "back"}
 local wayUp, wayDown = {turtle.up, rise, "rise", "up"}, {turtle.down, fall, "fall", "down"}
-local vertical = {up = wayUp, down = wayDown} -- primitives for vertical movement
+local vertical = {up = wayUp, down = wayDown} -- the way for vertical movement
 
-local function noop() return "done" end --neither left nor right
-local turns = {[0] = noop, turnRight, turnAround, turnLeft} -- turn functions
-
-local function turnFacing(direction) -- Given NESW compass points, finds and performs turn operation from turns table
-  local from, to = directions[facing()], directions[direction] -- numbers for arithmetic
-  if not from or not to then return turns<a href="">0</a> end -- no turns for up or down 
-  local turnOperation = turns[(to - from) % 4] -- -1 % 4 = 3; -3 % 4 = 1; e.g. ("south" - "west") % 4 = turnLeft
-  return turnOperation() -- noop, turnRight, turnAround, turnLeft
-end
+local function noop() return "done" end -- neither left nor right
+local turns = {[0] = noop, turnRight, turnAround, turnLeft} -- turn functions (here comes the modulo again)
 </code></pre>
 <a id="face+turn"></a>
 <h3>Facing and Turning for Movement</h3>
-There are a lot of moving parts needed to move a turtle. In what's below, each is defined separately to keep each part an easily readable chunk of code. While it's not always reasonable to do this, this sort of thing makes reading (and thus maintaining) the code easier. 
 <p>
-As we mentioned earlier, the ordering here using forward references is an unnatural act (for Lua anyway). The aim is to provide a natural order in the sequence of moving parts.
+Before any movement, the turtle needs to be turned. Either in a cardinal direction or just left or right. MUSE supports the primitive <code>turn</code> operations in <code>turnRight</code> and <code>turnLeft</code>. They're done before attempting motion. All the information needed to do that is captured in <code>wayForward</code> which is passed on to <code>moveCount</code> or <code>stepCount</code> in the <code>ops[op]()</code> call in the <code>turn</code>.
 <p>
-Before any movement, the turtle needs to be turned. Either in a cardinal direction or just left or right. The <code>direction</code> abstraction is extended here to include <code>up</code> or <code>down</code>, not just north, east, west, and south.
+The (cardinal) direction abstraction for <code>face</code> turns is built on the <code>turnRight</code> and <code>turnLeft</code> primitives. It's further extended in the <code>face</code> function to include <code>up</code> or <code>down</code>, not just north, east, west, and south. The function <code>turnFacing</code> uses the <code>directions</code> constant table from the introduction part of <code>lib/motion</code> to get numbers for the four cardinal directions with which to do arithmetic. The amount to turn, a value from 0 to 3, is used to select one of the appropriate <code>turns</code> function primitives (including a <code>noop</code>). After the left or right turn is made, the turtle might be moved (<code>moveCount</code>) or stepped (<code>stepCount</code>) a <code>count</code> of blocks. 
 <p>
-If turning the turtle encounters trouble, the chain of functions we've been exploring returns something other than <code>"done"</code>. In this case MUSE raises an error supplying a <code>recovery</code> table that might be used to recover from the error, perhaps by resolving the turtle's <code>"blocked"</code> condition.
+If turning the turtle encounters trouble, the functions we've been exploring return something other than <code>"done"</code>. In this case MUSE raises an error supplying a <code>recovery</code> table that might be used to recover from the error, perhaps by resolving the turtle's <code>"blocked"</code> condition.
 <pre><code class="language-lua">
-
 --:> recovery: <i>For some errors</i> -> <code>{call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"}</code>
 
-local moveCount, stepCount; local ops = {} -- forward reference
+local ops -- forward references to what actually moves the turtle: <code>moveCount</code> or <code>stepCount</code>
+
+local function turn(turnOperation, count, direction, op) --primitive: left or right, and provide for turn failure
+  local turnResult = turnOperation(); -- do the turn: <code>turnLeft</code> or <code>turnRight</code> and if ok, attempt the (forward) motion
+  if turnResult == "done" then return ops[op](wayForward, count, direction) end -- <code>moveCount</code> or <code>stepCount</code> <b>(Move turtle!)</b>
+  error {"motion.turn", "Failed because ", turnResult, count, move.ats(), direction, "turnMove"} --recovery
+end
+
+local function turnFacing(direction) -- Given NESW compass points, finds and performs turn operation from turns table
+  local from, to = directions[facing()], directions[direction] -- numbers for arithmetic
+  if not from or not to then return turns[0]() end -- no turns for <code>up</code> or <code>down</code> 
+  local turnOperation = turns[(to - from) % 4] -- -1 % 4 = 3; -3 % 4 = 1; e.g. ("south" - "west") % 4 = turnLeft
+  return turnOperation() -- <code>noop</code>, <code>turnRight</code>, <code>turnAround</code>, <code>turnLeft</code>
+end
 
 local function face(direction, count, op) -- cardinal directions now including <code>up</code> and <code>down</code>
   local turnResult = turnFacing(direction); -- first turn in specified direction, ignoring <code>up</code> or <code>down</code>
-  local moves = vertical[direction] or wayForward -- if not <code>up</code> or <code>down</code> just figure on going forward
-  if turnResult == "done" then return ops<a href="moves, count, direction">op</a> end -- move or step the count
+  local way = vertical[direction] or wayForward -- if not <code>up</code> or <code>down</code> just figure on going forward
+  if turnResult == "done" then return ops[op](way, count, direction) end -- <code>moveCount</code> or <code>stepCount</code> <b>(Turtle motion attempt!)</b>
   error {"motion.face", "Failed because ", turnResult, count, move.ats(), direction, "faceMove"} --recovery
-end
-
-local function turn(turnOperation, count, direction, op) --primitive: left or right, provide for turn failure
-  local turnResult = turnOperation(); -- <code>turnLeft</code> or <code>turnRight</code>
-  if turnResult == "done" then return ops<a href="wayForward, count, direction">op</a> end -- move or step the count
-  error {"motion.turn", "Failed because ", turnResult, count, move.ats(), direction, "turnMove"} --recovery
 end
 </code></pre>
 <a id="move+step"></a>
 <h3>Moving or Stepping the Count</h3>
-The <code>lib/motion</code> library provides for simple movement in <code>moveCount</code>. (Defined here to resolve the forward reference from above.) It also provides a way to do operations at each step of a turtle's movements. This turns out to be useful to clients of <code>lib/motion</code>. Here's how that's implemented. The <code>stepCount</code> function produces Lua iterators. First it sets up what Lua calls <code>upvalues</code>. These are within the <a href="https://www.lua.org/pil/6.1.html" target="_blank"> <i>lexical scoping</i></a>
-of the iterator, a function that is a <a href="https://en.wikipedia.org/wiki/Closure<i>(computer</i>programming)" target="_blank"> <i>closure</i></a>, Notice that each call of <code>stepCount</code> creates and returns a distinct iterator each with its own upvalues. Once the upvalue index <code>i</code> is greater than the <code>count</code> for that iterator, further calls will immediately return <code>nil</code>. The iterator is "exhausted". Otherwise, unless there's an error, each call of the iterator will move the turtle one block in the specified direction and return control to its caller to do work at the turtle's new position.
+The <code>lib/motion</code> library provides for simple movement in <code>moveCount</code>. It also provides a way to do operations at each step of a turtle's movements. This turns out to be useful to clients of <code>lib/motion</code>. Here's how that's implemented. The <code>stepCount</code> function produces Lua iterators. First it sets up what Lua calls <code>upvalues</code>. These are within the <a href="https://www.lua.org/pil/6.1.html" target="_blank"> <i>lexical scoping</i></a>
+of the iterator, a function that is a <a href="https://en.wikipedia.org/wiki/Closure<i>(computer</i>programming)" target="_blank"> <i>closure</i></a>, Notice that each call of <code>stepCount</code> creates and returns a distinct iterator each with its own upvalues. Once the upvalue index <code>i</code> is greater than the <code>count</code> for that iterator, further calls will immediately return <code>nil</code>. The iterator is "exhausted". Otherwise, unless there's an error, each call of the iterator will move the turtle one block in the specified direction and return control to its caller to do something at the turtle's new position.
 <pre><code class="language-lua">
 --:# <b>Forward! Up! Down! move, step ... again (raising errors, providing for recovery)</b>
 -- Moving (xyz) by distances, possibly stepping there with iterator, need to deal with fueling
-local checkFuel -- forward reference
 
-moveCount = function (way, count, direction) --xyz only, way: wayUp, wayDown, wayForward
+local fueledMotion -- forward reference for turtle motion if there's fuel
+
+local function moveCount(way, count, direction) --xyz only, way: <code>wayUp</code>, <code>wayDown</code>, <code>wayForward</code>
   if count and count == 0 then return "done", count, move.ats() end -- to just report xyzf
-  for i = 1, count do local result = checkFuel(way, count, direction) -- check fuel, try way 
+  for i = 1, count do local result = fueledMotion(way, count, direction) -- check fuel, try <code>way</code> to move turtle
     if result ~= "done" then direction = direction or "???" -- handling possibility of unspecified direction
       error {"motion.moveCount", "Failed because ", result, count - i + 1, move.ats(), direction, "moveCount"} -- recover
     end-- for all failures: could be "empty", "lost", or "blocked"
   end; return "done", 0, move.ats() -- nothing left to do, completed the sequence of move operations
 end
 
-stepCount = function (way, count, direction) --return a closure to iterate step operation 
+local function stepCount(way, count, direction) --return a closure to iterate step operation 
   count = count or 0; local i = 0 -- upvalues for closure
-  return function() -- this is the iterator, returns nil when exhausted, errors on "empty", "lost", "blocked"
-    local turnResult = turnFacing(direction); if turnResult ~= "done" then 
+  return function() -- this is the iterator, returns nil when exhausted, errors on <code>empty</code>, <code>lost</code>, <code>blocked</code>
+    local turnResult = turnFacing(direction); if turnResult ~= "done" then -- tried to turn and failed, can't iterate
       error {"motion.stepCount", "Failed turn because ", turnResult, count - (i-1), move.ats(), direction, "stepCount"} 
     end
     i = i + 1; if count - i < 0 then return nil end -- exhausted, terminate iteration
-    local result = checkFuel(way, direction) -- check and try doing specified movement
+    local result = fueledMotion(way, direction) -- check fuel and try doing specified movement
     if result == "done" then return "done", count - i, move.ats(), direction end -- success
     error {"motion.stepCount", "Failed because ", result, count - (i-1), move.ats(), direction, "stepCount"} --recovery
   end
 end
 
-ops = {move = moveCount, step = stepCount} -- now that moveCount and stepCount have values for functions 
-
+ops = {move = moveCount, step = stepCount} -- functions defined above to move or step the turtle
 </code></pre>
 <a id="fueling"></a>
 <h3>Fueling Around</h3>
-Before we actually move the turtle (I know, I know), we need to see if there's fuel to do so. In the <code>checkFuel</code> function, there's there are possible <code>nil</code> values returned for <code>detail</code> and <code>slot</code> from <code>core.findItems</code>. The Lua idiom using the boolean <code>or</code> operator binds a useful value to these variables. This is then used to bind a value to <code>detailName</code>. 
+Before we actually move the turtle (I know, I know), we need to see if there's fuel in turtle inventory to do so. In the <code>fueledMotion</code> function, there are possible <code>nil</code> values returned for <code>detail</code> and <code>slot</code> from <code>core.findItems</code> in turtle inventory. The Lua ternary operator idiom is used to bind a useful value to <code>detailName</code>. 
 <p>
-If the turtle has no fuel, no movement is possible so the function returns <code>"empty"</code>. Otherwise it returns the call on <code>refuel</code> which in turn, if refueling is successful, calls <code>xyzMotion</code> to (finally) move the turtle one Minecraft block just as if there had been no needed fueling. If refueling is not successful, <code>refuel</code> raises an error indicating in its report string where in the project's code the error occurred and other, presumably helpful information (like where the turtle is so that a rescue party can bring fuel to the empty turtle.).
+If the turtle has no fuel, no movement is possible so the function returns <code>"empty"</code>. Otherwise it returns the call on <code>refuel</code> which in turn, if refueling is successful, calls <code>xyzMotion</code> to (finally) move the turtle just as if there had been no needed fueling. (Yeah, this is a bit terse.) If refueling is not successful, <code>refuel</code> raises an error indicating in its report string where in the project's code the error occurred and other, presumably helpful information (like where the turtle is so that a rescue party can bring fuel to the <code>empty</code> turtle.).
 <p>
-Here's the interface for <a href="core.html#findItems" target="_blank"> <code>core.findItems</code></a> and the definitions for what Computercraft provides for the detail of what is found. The <a href="core.html#findItems" target="_blank"> implementation</a> is straight forward. 
+Here's the interface for <code>core.findItems</code> and the definitions for what Computercraft provides for the detail of what is found. The <a href="core.html#findItems" target="_blank"> implementation</a> is straight forward. 
 <pre><code class="language-lua">
 -- :: core.findItems(target: ":"[]) -> <i>Selects found slot.</i> -> <code>nil | detail</code>
 
@@ -347,41 +342,49 @@ Here's the interface for <a href="core.html#findItems" target="_blank"> <code>co
 </code></pre>
 And here's how it's used:
 <pre><code class="language-lua">
-local fuels = {"minecraft:coal", "minecraft:coal<i>block", "minecraft:charcoal", "minecraft:lava</i>bucket"} 
+local fuels = {
+  "minecraft:coal", "minecraft:coal_block", 
+  "minecraft:charcoal", "minecraft:lava_bucket"
+} 
 
-local xyzMotion, refuel -- forward references
+local refuel, xyzMotion -- forward references to move the turtle using <code>way</code> table
 
-checkFuel = function (way, count, direction) -- from move/step count
-  if turtle.getFuelLevel() > 0 then return xyzMotion(way) end
+fueledMotion = function (way, count, direction) -- for one block motion from move/step count
+  if turtle.getFuelLevel() > 0 then return xyzMotion(way) end -- <b>Move the turtle one block!</b>
   local detail, slot = core.findItems(fuels); slot = slot or "_none_"
   local detailName = detail and detail.name or "_no fuel_"
   core.status(4, "motion", "Refueling?", detailName, "in slot", slot)
-  return detail and refuel(way, count, direction) or "empty" -- if fuel found try refueling
+  return detail and refuel(way, count, direction) or "empty" 
+  -- if fuel found, try refueling (and try moving the turtle)
 end
 
-function refuel(way, count, direction) 
+function refuel(way, count, direction) -- 
   if turtle.refuel() then setFuel(turtle.getFuelLevel()) end 
-  local fueled = fuel(); if fueled <= 0 then 
-    error("motion.refuel: Empty with "..count.." remaining at "..move.ats().." "..direction) -- no recovery
-  end; core.status(5, "motion", "Refueling "..tostring(fuel))
-  return xyzMotion(way); -- now that there's fuel, try the way from checkFuel
+  local fueled = fuel(); if fueled > 0 then  -- use new fuel level
+    core.status(5, "motion", "Refueling "..tostring(fueled))
+    return xyzMotion(way); --now that there's fuel, try the way from fueledMotion
+  end
+  error("motion.refuel: Empty with "..count.." remaining at "..move.ats().." "..direction) -- no recovery
 end 
+</code></pre>
+<a id="status"></a>
+Calls to <code>core.status</code> make use of the MUSE <a href="core.html#status" target="_blank">monitoring</a> facilities that provide support for debugging in-game.
 </code></pre>
 <a id="motion"></a>
 <h3>Motion! (Finally)</h3>
-The <code>xyzMotion</code> function actually calls the turtle API to request movement using a particular <code>motion</code> function as the first argument. Passing a function as an argument effectively encapsulates what needs to be done. It looks for successful movement and the effect of that movement on turtle fuel.
+The <code>xyzMotion</code> function actually calls the turtle API to request movement. It uses the <code>way</code> tables encapsulating what needs to be done and how to do it. The function looks for successful movement and the effect of that movement on turtle fuel. All in all, a bit of an anti-climax.
 <p>
-This is how turtles actually get moved in the chain of calls we mentioned. A change in position requires an update to dead reckoning by <code>xyzUpdate</code>. If there will be a change in vertical movement and tracking is enabled, we'll need to clone the current situation as history for <code>trackMotion</code> before making the change . 
+This is how turtles actually get moved in the chain of calls we mentioned. A change in the turtle's position by the movement requires an update to dead reckoning by <code>xyzUpdate</code>. If there will be a change in vertical movement and tracking is enabled, we'll need to clone the current situation as history for <code>trackMotion</code> before making the change . 
 <p>
-The actual change in position is determined by which of the one of the four cardinal directions the turtle is <code>facing</code> and the kind of <code>movement</code>, whether an <code>"advance"</code>, a <code>"retreat"</code>, a <code>"rise"</code>, or a <code>"fall"</code> (referencing the <code>way</code> tables above). Thus <code>movement[facing]</code> directly gets the <code>dx</code>, <code>dy</code>, and <code>dz</code> offsets for the movement using the table referenced. Tables provide a concise way to get the job done. 
+The actual change in dead reckoning position is determined by which of the one of the four cardinal directions the turtle is <code>facing</code> and the kind of <code>movement</code>, whether an <code>"advance"</code>, a <code>"retreat"</code>, a <code>"rise"</code>, or a <code>"fall"</code> (referencing the <code>way</code> tables above). Thus <code>movement[facing]</code> directly gets the <code>dx</code>, <code>dy</code>, and <code>dz</code> offsets for the movement using the table referenced. Those tables provide a concise way to get the job done. 
 <p>
 Some attempts to move a turtle lead to trouble. If the requested movement happened, the trouble must be that the fuel didn't get used: the turtle is <code>"lost"</code>. If the movement didn't happen, the turtle is <code>"blocked"</code>. 
 <p>
 In the normal case (and if there's no tracking), <code>xyzMotion</code> reports the motion and then just returns what <code>xyzUpdate</code> returns. The call is done at that point, its locals (on the call stack) are no longer needed. Consequently, during debug such <a href="https://www.lua.org/pil/6.3.html" target="_blank"> <i>tail calls</i></a> can't be expected to be visible on the call stack. If this turns out to be awkward, it's easy to turn a tail call into something less fancy.
 <pre><code class="language-lua">
-local xyzUpdate -- forward reference
+local xyzUpdate -- forward reference to update dead reckoning x,y,z situation and track
 
-function xyzMotion(way) 
+function xyzMotion(way) -- move the turtle using <code>way</code> table
   local moving, movement, level, direction = table.unpack(way) --  moving: turtle function to move
   local preFuel = setFuel(turtle.getFuelLevel()) -- just before attempting motion
   local moved = moving() -- actually call the requested turtle function (mock uses fuel)
@@ -389,17 +392,18 @@ function xyzMotion(way)
 
   if not (moved and depletion) then return moved and "lost" or "blocked" end -- moved but no depletion: <code>lost</code>; else <code>blocked</code>
 
-  core.status(5, "motion", direction, level, preFuel, postFuel)
+  core.status(5, "motion", direction, level, preFuel, postFuel) -- moved and depleted: ok
   return xyzUpdate(movement, level) -- normal case, update situation and tracking, no problem: "done" 
 end
 
 xyzUpdate = function (movement, newLevel) -- update dead reckoning x,y,z situation and track
-  local px, py, pz, facing, fuel, level = move.get(); local tracking = Muse.tracking.enabled and newLevel ~= level
-  local situation = tracking and move.clone() or Muse.situation
-  local prior = Muse.situation; Muse.situation = situation
+  local px, py, pz, facing, fuel, level = move.get(); 
+  local tracking = _G.Muse.tracking.enabled and newLevel ~= level
+  local newSituation = tracking and move.clone() or situation()
+  local prior = situation(); situation(newSituation)
   local dx, dy, dz = table.unpack(movement[facing]) -- <code>movement</code>: advance/retreat/rise/fall
   move.set(px + dx, py + dy, pz + dz, facing, fuel - 1, newLevel); -- dead reckoning fuel and position 
-  return tracking and trackMotion(prior) or "done"-- trackMotion returns "done" and adds to <code>situations</code>
+  return tracking and trackMotion(prior) or "done"-- trackMotion returns "done" and adds to <code>_G.Muse.situations</code>
 end
 </code></pre>
 <a id="tracking"/>
@@ -408,19 +412,19 @@ If we got here, we're at the end of the (ahem) trail. The <code>return</code> pe
 <pre><code class="language-lua">
 local resetTrack -- forward reference --:# <b>Tracking Movement: completing movement</b>
 
-trackMotion = function (current) -- from turn operations and xyzUpdate, add a situation only for changes 
-  Muse.situations[#Muse.situations + 1] = current; 
-  local reset = (Muse.tracking.limit and #Muse.situations > Muse.tracking.limit) 
+trackMotion = function(current) -- from turn operations and xyzUpdate, add a situation only for turns and level changes 
+  local situations = move.situations(); situations[situations + 1] = current; 
+  local reset = (_G.Muse.tracking.limit and #situations + 1 > _G.Muse.tracking.limit) 
   return reset and resetTrack(current) or "done" -- #situations and at() returned by <code>moveCount</code> or <code>stepCount</code>
 end
 
 resetTrack = function (current) -- dealing with tracking overflow
-  core.status(3, "motion", "Trail reset, was longer than", Muse.tracking.limit)
-  Muse.situations = {current}; return "done"
+  core.status(3, "motion", "Trail reset, was longer than", _G.Muse.tracking.limit)
+  move.situations({current}); return "done"
 end
 </code></pre>
 <h3>Exposing the Move and Step Functions</h3>
-After all that, what's actally exposed by the library looks pretty simple. All the commonality has been squeezed out. You might think of what we've been through as just really big utility functions for moving or stepping the turtle. 
+After all that, what's actually exposed by the library looks pretty simple. That was kind of the point. All the commonality for the twenty exposed motions below has been squeezed out. You might think of what we've been through as just really big utility functions for moving or stepping the turtle. 
 <pre><code class="language-lua">
 --:# <b>Exposed APIs for move functions: turn left|right or face cardinal if needed, then repeat count forward</b>
 --:: move.moves(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code> 
@@ -455,7 +459,7 @@ function step.down(count) count = count or 1; return stepCount(wayDown, count, "
 function step.forward(count) count = count or 1; return stepCount(wayForward, count, "forward") end --:= step.steps:: step.forward:
 function step.back(count) count = count or 1; return stepCount(wayBack, count, "back") end --:= step.steps:: step.back:
 </code></pre>
-These functions only return values if there have been no errors in the functions they call (and that are called in turn). They mostly return a status code (as a string), the number of Minecraft blocks remaining to traverse (as a number), the position and orientation of the turtle (as a string produced by the call to <code>move.ats</code>), and in which way it was supposed to move (as a string). Of course, if there have been no errors in a <code>move</code>, the number remaining is zero. However if there is an error raised, the number of blocks remaining is non-zero as included in the error recovery table we talked about earlier.
+These functions only return values if there have been no errors in the functions they call (and that are called in turn). They mostly return a status code (as a string), the number of Minecraft blocks remaining to traverse (as a number), the position and orientation of the turtle (as a string produced by the call to <code>move.ats</code>), and in which way it was supposed to move (as a string). Of course, if there have been no errors in a <code>move</code>, the number of blocks remaining is zero. However if there is an error raised, the number of blocks remaining is non-zero as included in the error recovery table we talked about earlier.
 <p>
 This populates most of the two tables of functions returned by loading this library file.  There's just a few more, higher level operations that, of course, build on what we've already discussed.
 <p>
@@ -501,7 +505,7 @@ function step.to(xyzf, situation) -- iterator closure returns nil only if all di
 --:+ <i>Finally turn to face if supplied. Returned iterator returns</i> <code>nil</code> <i>when iterators for all directions are exhausted.</i>
   if not xyzf then error("motion.step.to: attempt to step to nil (road unpaved)") end
   if type(xyzf) ~= "table" then error("motion.step.to: expected table", xyzf) end
-  local x, y, z, face = table.unpack(xyzf); local target = situation or Muse.situation
+  local x, y, z, face = table.unpack(xyzf); local target = situation or _G.Muse.situation
   local tx, ty, tz = move.get(target); local dx, dy, dz = x - tx, y - ty, z - tz; 
   local xD, xOp, adx = dx < 0 and "west" or "east", dx < 0 and step.west or step.east, math.abs(dx)
   local zD, zOp, ady = dz < 0 and "north" or "south", dz < 0 and step.north or step.south, math.abs(dy)
@@ -509,7 +513,7 @@ function step.to(xyzf, situation) -- iterator closure returns nil only if all di
   core.status(4, "motion", "step.to", xD, yD, zD, "to", xyzf)
   local iterators, dxyz = {xOp(adx), zOp(adz), yOp(ady)}, adx + ady + adz; -- total distance 
 </code></pre>
-We've lead off with some error checking and then dealt with the two positions we're concerned with: where we are, and where we're going. The function takes an optional argument <code>situation</code>. If this is not provided, the function body uses the turtle's current situation and gets values for operations (like <code>step.west</code>), distances (like <code>dx</code>), and directions (like <code>xD</code>). And then it does something completely different: it gets iterators by calling functions which, eventually, call <code>stepCount</code>. Finally, it computes the total distance to be traversed and the <code>direction</code> to start that traversal. (The distance is a so-called "Manhattan distance" since turtles move only in a grid.)
+We've led off with some error checking and then dealt with the two positions we're concerned with: where we are, and where we're going. The function takes an optional argument <code>situation</code>. If this is not provided, the function body uses the turtle's current situation and gets values for operations (like <code>step.west</code>), distances (like <code>dx</code>), and directions (like <code>xD</code>). And then it does something completely different: it gets iterators by calling functions which, eventually, call <code>stepCount</code>. Finally, it computes the total distance to be traversed and the <code>direction</code> to start that traversal. (The distance is a so-called "Manhattan distance" since turtles move only in a grid.)
 <p>
 But wait, there's more.  So far, we've just setup the upvalues. The <code>step.to</code> function returns a function, the iterator that we can use to step the turtle from where it is to where it's going and do operations at each step of the way:
 <pre><code class="language-lua">
@@ -542,9 +546,9 @@ The important issue, though, is testing.
 <p>
 <h3>One More Thing: Lest We Forget</h3>
 <p>
-Testing. Developing the tests for a library is just part of developing that library. If done as the library is developed, the tests can be really help in keeping the development on course. The test is also a check on the utility and expressiveness of the library's interface. Done during library development, it's easier to change. A test provides usage examples as a complement to interface documentation. Perhaps most importantly, when a library's code (inevitably) needs to be restructured for whatever reason (clarity, better fit into its context, whatever), the tests support the will to make the necessary changes. In the case of development for environments such as ComputerCraft with limited debugging support, it's a crucial aid (together with an IDE). Additionally, tests provide a sandbox where errors have limited, easily repaired, consequences.
+Testing. Developing the tests for a library is just part of developing that library. If done as the library is developed, the tests can be really help in keeping the development on course. The test is also a check on the utility and expressiveness of the library's interface. Done during library development, it's easier (costs less) to change. A test provides usage examples as a complement to interface documentation. Perhaps most importantly, when a library's code (inevitably) needs to be restructured for whatever reason (clarity, better fit into its context, whatever), the tests support the will to make the necessary changes. In the case of development for environments such as ComputerCraft with limited debugging support, it's a crucial aid (together with an IDE). Additionally, tests provide a sandbox where errors have limited, easily repaired, consequences.
 <p>
-Most of the <code>lib/motion</code> test is straightforward and needs no discussion. (You'll need to look at the <code>lua/rom/modules/tests</code> directory if you're interested.) The steps facility, however, might be worth a look:
+Most of the <code>lib/motion</code> test is straightforward and needs no discussion. (You'll need to look at the <code>lua/rom/modules/tests</code> directory if you're interested.) The <code>steps</code> facility, however, might be worth a look:
 <pre><code class="language-lua">
 for code, remaining, ats in step.east(3) do 
   print(18, "step.east(3)", code, remaining, ats)
@@ -571,7 +575,7 @@ prints(20, "steps 2 forward 3", more())
 prints(21, "steps 3 forward 3", more())
 prints(22, "steps 4 forward 3", more()) 
 </code></pre>
-The variable <code>more</code> is bound to the result of calling <code>steps.forward(3)</code> This is an iterator that_  -> you might imagine, steps forward three blocks, one block at a time.  Here each call to <code>more</code>, moves one step and provides its results as the last three arguments to the <code>prints</code> statement. The output looks like this:
+The variable <code>more</code> is bound to the result of calling <code>steps.forward(3)</code> This is an iterator that as you might imagine, steps forward three blocks, one block at a time.  Here each call to <code>more</code>, moves one step and provides its results as the last three arguments to the <code>prints</code> statement. The output looks like this:
 <pre>
 19	{10, 15, 19}, north	done	2	...	steps 1 forward 3
 20	{10, 15, 18}, north	done	1	...	steps 2 forward 3

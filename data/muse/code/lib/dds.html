@@ -64,7 +64,7 @@ local function request() -- player sends its ID and site to all computers regist
 end
 </code></pre>
 <a id="respond"></a> 
-All computers other than the player's pocket computer wait to <code>respond</code>. If a responding turtle is a <code>landed</code> turtle that is_  -> yet, unsited, it attaches itself to the player's <code>site</code>. In any case, it sends back a message that provides information for mapping between its computer ID and its label (its MUSE role).
+All computers other than the player's pocket computer wait to <code>respond</code>. If a responding turtle is a <code>landed</code> turtle that is as yet, unsited, it attaches itself to the player's <code>site</code>. In any case, it sends back a message that provides information for mapping between its computer ID and its label (its MUSE role).
 <pre><code class="language-lua">
 local function respond()  
   local id, playerSite = rednet.receive("MQ"); dds.playerID(id) -- set global on remote responder
