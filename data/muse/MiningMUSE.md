@@ -1,5 +1,5 @@
 # Mining MUSE (A Moderately Useful Source Exploration)
-<base href="/"/>
+
 MUSE is a collection of resources built on the <a href="https://tweaked.cc/" target="_blank"> ComputerCraft _mod_</a> to <a href="https://www.minecraft.net/" target="_blank"> Minecraft </a> written in <a href="http://www.lua.org/" target="_blank"> Lua </a>. It provides a set of capabilities for ComputerCraft turtles and computers (also written in Lua) that make it easy (quite possibly too easy) to mine, farm, and do explorations in Minecraft worlds. 
 
 Looking about in MUSE, as we'll do here, is a different kind of exploration. It is the exploration into how to develop clean, maintainable code intended for those worlds (as a start). <IMG SRC="drawings/00Compost.png" hspace ="10" ALIGN="right"/> Avoiding a mess might not be too easy. The hope is making it easier to avoid so it's less likely to happen.
