@@ -51,7 +51,7 @@ With that understanding, it's time to climb about in that tree we spoke of. Try 
 
 These libraries rely on <a href="docs/lib/core.html" target="_blank"> `lib/core` </a>, a collection, as you might expect, of generally useful (core) functions. Look at the exported interfaces for that library. We'll discuss the implementations of these functions as needed.
 
-When that's done come back here to explore how to establish state that persists across <a href="https://en.wikipedia.org/wiki/Session_(computer_science)" target="_blank"> _sessions,_ </a> how to deal with state distributed over a network, how error handling works in network environments, and how to build a simple and easily maintainable command line user interface.
+When that's done come back here to explore how to establish state that persists across <a href="https://en.wikipedia.org/wiki/Session_(computer_science)" target="_blank"> _sessions_</a>, how to deal with state distributed over a network, how error handling works in network environments, and how to build a simple and easily maintainable command line user interface.
 <br/>
 <a id="Chapter3"></a>
 ## Chapter 3 - Places: Persistence, Distributed State, Remote Errors, CLI  
