@@ -55,7 +55,7 @@ When that's done come back here to explore how to establish state that persists 
 <br/>
 <a id="Chapter3"></a>
 ## Chapter 3 - Places: Persistence, Distributed State, Remote Errors, CLI  
-This chapter is less about how to write code in general. We've just got finished flogging that particular horse quite well enough. This chapter (and pretty much all that follow) is more about <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank"> <IMG SRC="drawings/03CLI.png" ALIGN="right" vspace = "10" hspace ="10"/> </a> how to provide some important mechanisms you may need to design (or understand how someone else did). It also deals with how to design user control through a <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank">  _Command Line Interface_  </a>(CLI). 
+This chapter is less about how to write code in general. We've just got finished flogging that particular horse pretty well. This chapter (and pretty much all that follow) is more about <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank"> <IMG SRC="drawings/03CLI.png" ALIGN="right" vspace = "10" hspace ="10"/> </a> how to provide some important mechanisms you may need to design (or understand how someone else did). It also deals with how to design user control through a <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank">  _Command Line Interface_  </a>(CLI). 
 
 MUSE needs to deal with networked computers (like turtles and pocket computers) operating on distributed persistent state. The operations may throw errors. We'll discuss in a bit how to deal with them. 
 
