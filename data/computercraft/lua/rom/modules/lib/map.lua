@@ -10,7 +10,18 @@ To review, they are named (and labelled) `situations` created by `tracking` in t
 
 To ease understanding, the module introduction for `map` shown below is organized in much the same way as described for <a href="motion.html"> `lib/motion`</a>. 
 
-There is one new thing. The `map` library is a `CLL`, a command line library, a supporting library for a CLI, command line interface. Hints are provided as <a href="core.html#UI" target="_blank"> shell completions </a> for CLI command entry to indicate what's expected for the command. These are accumulated in the `map.hints` table, each hint provided near the function that supports a particular command. The idea is that as function definitions change during maintenance, the CLI hint is more likely to get an appropriate update if it's near the supporting function. 
+There are a few new things. Firstly, the `map` library is a `CLL`, a command line library, a supporting library for a CLI, command line interface. Hints are provided as <a href="core.html#UI" target="_blank"> shell completions </a> for CLI command entry to indicate what's expected for the command. These are accumulated in the `map.hints` table, each hint provided near the function that supports a particular command. The idea is that as function definitions change during maintenance, the CLI hint is more likely to get an appropriate update if it's near the supporting function. 
+
+As mentioned, this is the first CLL we've run across. The design pattern is worth looking at. All the interesting stuff is done here in the library so that the CLI itself, the command program, is dead simple. There's a bunch of <a href="#programs" target="_blank"> programs </a> that provide the command line user interface. Look at one or two of them briefly to see that there's so little there there.
+
+Finally, what's new in `lib/map` are network operations and the use of 
+<a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
+_daemons_</a> to deal with network events. You may have already run across the 
+<a href="code/daemons/.status.html" target="_blank"> `.status` </a> daemon handling the `MS` (MUSE Statue) rednet protocol. The 
+<a href="code/daemons/.update.html" target="_blank"> `.update` </a> daemon handling the `MU` (MUSE Update) rednet protocol, and the
+<a href="code/daemons/.erase.html" target="_blank"> `.erase` </a> daemon handling the `MX` (MUSE eXcise) rednet protocol look
+much the same, easing debug by quickly passing control to a library to do the real work. 
+
 ```Lua
 --]]
 local map = {}; map.hints = {} ---@module "signs.map" -- for functions exported from library
@@ -21,13 +32,12 @@ local moves = require("motion"); local move = moves.move ---@module "signs.motio
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local places = require("places"); local place = places.place ---@module "signs.places"
 
----@diagnostic disable-next-line: undefined-field
 local rednet, player, turtle = _G.rednet, _G.pocket, _G.turtle -- references to ComputerCraft libraries
 
 local siteFile = _G.Muse.data.."site.txt" -- The `_G.Muse.data` directory is local to each ComputerCraft computer.
 
-function map.map(value) if value then _G.Muse.map = value end return _G.Muse.map end -- isolate global
-function map.charts(value) if value then _G.Muse.charts = value end return _G.Muse.charts end -- isolate global
+function map.map(value) _G.Muse.map = value or _G.Muse.map; return  _G.Muse.map end -- isolate global
+function map.charts(value) _G.Muse.charts = value or _G.Muse.charts return _G.Muse.charts end -- isolate global
 --[[
 ```
 <a id="place"></a> 
@@ -39,10 +49,9 @@ The `map.place` function deserializes a place from a <a href="core.html#serializ
 --:# **File and Broadcast Operations for points, trails, and ranges (including features)**
 function map.place(placeString) -- restores place using string from serialization
   --:: map.place(placeString: ":") -> _Instantiate string as named place, include in named places._ -> `serial: ":", index: #: &!`
-  local restore, fail = load(placeString); -- try to restore if place not `nil` or empty
-  if fail then error("map.place: "..placeString.." failed") end
----@diagnostic disable-next-line: need-check-nil
-  local thisPlace = restore(); if thisPlace and #thisPlace > 0 then 
+  local restorePlace, fail = load(placeString); -- try to restore if place not `nil` or empty
+  if fail or not restorePlace then error("map.place: "..placeString.." failed") end
+  local thisPlace = restorePlace(); if thisPlace and #thisPlace > 0 then 
     local name, label, situations, features = table.unpack(thisPlace) 
     return place.name(name, label, situations, features) 
   end 
@@ -55,20 +64,21 @@ The `map.read` and `map.write` functions do the actual disk operations. There's 
 --]]
 function map.read(thisMap) -- reinstantiate places; if no map file, create an empty one
   --:: map.read(thisMap: ":") -> _Reinstantiate places from map file._ -> `serial: ":", index: #: &!`
-  local _ = io.open(thisMap, "r") or (io.open(thisMap, "w"):close() and io.open(thisMap, "r"))
+  if not io.open(thisMap, "r") then io.open(thisMap, "w"):close(); assert(io.open(thisMap, "r")) end
   place.reset(); for line in io.lines(thisMap) do map.place(line) end    
   return place.count() 
 end
 
 function map.write(thisMap) --:: map.write(thisMap: ":"?) -> _Delete old, write new locally. Default current._ -> `nil &!`
-  thisMap = thisMap or map.map(); if not map then error("map.write: No map file established") end 
+  thisMap = thisMap or map.map(); if not thisMap then error("map.write: No map file established") end 
   local removeMap, removeReport = io.open(thisMap, "w"):close() -- old places file may include erased places
   if not removeMap then error("map.write: Can't remove obsolete "..thisMap.."because"..removeReport) end
   local createMap, createReport = io.open(thisMap, "a") --write places file cleaned by read
   if not createMap then error("map.write: Can't create new "..thisMap.."because"..createReport) end
-
-  for _, _, _, _, _, placeString in place.near() do -- write out named places
-    local appendMap, appendReport = createMap:write(placeString, "\n")
+  
+  -- TODO: alternatively collect entries in a table and write the table as "w" in one go
+  for _, _, _, _, _, placeString in place.near() do -- write out all named places
+    local appendMap, appendReport = createMap:write(placeString, "\n") 
     if not appendMap then error("map.write: Can't update "..thisMap.." because "..appendReport) end
   end
 
@@ -79,32 +89,32 @@ end
 --[[
 ```
 <a id="resite"></a> 
-For when the player or a turtle not tied to a site is in a new and better place, `map.resite`.
+For when the player or an unlanded turtle (not tied to a site) is in a new and better place.
 ```Lua
 --]]
 local function resite(site) 
   --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., porting `rover`._
-  if not site then return place.site() end
+  if not site then return place.site() end -- just report
   local siteFileHandle = assert(io.open(siteFile, "w"), "map.resite: can't write "..siteFile)
   siteFileHandle:write(place.site(site).."\n"); siteFileHandle:close()
   return place.site(site) 
-end 
+end ; map.hints["site "] = {["?name"] = {} }
 
 local function store(site) -- used in `.start` to persist `site` and load clean map
   -- :: store(site: ":") -> _Persists `site` in local store and loads local map._ -> `report: ":"`
   local siteFile = io.open(siteFile, "r"); if not siteFile then resite(site) end
-  local _ = map.map() or map.map(_G.Muse.map); 
+  if not map.map() then map.map(_G.Muse.map) end
   local places = map.read(map.map()); map.write(map.map());
-  return site.." "..places.." places"
-end; -- map.hints["store "] = {["?site"] = {} } TODO:
+  return site..": "..places.." places"
+end; map.hints["store "] = {["?site"] = {} } 
 
 local function join(site, role) resite(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
 --:- join site role -> _Set site and join landed turtle to it with specified role._
+ map.hints["join "] = {["?site "] = {["?role"] = {} }} 
 --[[
 ```
 <a id="update"></a> 
-Calling the local `update` function supporting the CLI does the update locally and broadcasts it to all computers registered by the <a href="../programs/amuse.html" target="_blank"> `amuse`</a>
-program. (It's just a thin layer on top of <a href="amuse.html" target="_blank"> `lib/amuse`</a> which does the actual work.) The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> `.update`</a>
+Calling the local `update` function supporting the CLI does the update locally and broadcasts it on the `MU` protocol to the `player`, the `porter` and all turtles registered by `join`. The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> `.update`</a>
 daemon. The <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
 _daemon_</a> responds to received network messages by calling `map.place` (above) to update the local memory and `map.update` (below) to update local storage. 
 ```Lua
@@ -125,14 +135,13 @@ end
 ```
 <a id="sync"></a> 
 Using the <a href="places.html#near" target="_blank"> `place.near`</a>
-iterator, the local `sync` function `MU` broadcasts all the all the places known to the local computer to all `MQ` registered computers.  The function yields control between each broadcast to allow each broadcast to complete.
+iterator, the local `sync` function `MU` broadcasts all the all the places known by the local computer to all `MQ` registered computers.  The function yields control between each broadcast to allow each broadcast to complete.
 ```Lua
 --]]
 --:# **Map File Operations**
 local function sync() --:- sync -> _Muse Update (MU) broadcast local map to (MQ) registered units._
   if rednet then for name, _, _, index, situations, serial in place.near() do 
     core.status(4, "map", "sync", name, #situations, index)
----@diagnostic disable-next-line: undefined-field
     rednet.broadcast(serial, "MU"); os.sleep(0) -- need to yield for each broadcast!
   end; return tostring(place.count()).." places" end 
 end
@@ -145,17 +154,17 @@ The `erase` operation works much like `update`. The daemon for erase is, not sur
 local function erase(name) --:- erase name -> _Remove named place, broadcast Muse eXcise (MX)._
   --:# **Referenced through `map.op` for CLI dispatch**
   if not name then error("map.erase: Missing place name") end
-  local placesRemaining = map.erase(name) -- handle local erase
+  local placesRemaining = map.erase(name) -- handle local erase (below)
   if rednet then rednet.broadcast(name, "MX") end -- to erase distributed copies
   return tostring(placesRemaining).." remaining places."
-end; map.hints["erase "] = {["?place"] = {}} 
+end; map.hints["erase "] = {["?placename"] = {}} 
 
 function map.erase(name) local remaining = place.erase(name); map.write(); return remaining end -- handle local erase
 --:: map.erase(name: ":") -> _Remove named place, overwrite local map file_ -> `remaining: #:`
 --[[
 ```
 <a id="get"></a>  
-Places include a <a href="places.html#name" target="_blank"> dictionary of name-value pairs</a> we've called features. This is a technique to allow other libraries to add attributes to places without needing to make changes to the implementation of `lib/places`. Names of features (feature keys) are unrestricted. There's no protection against unintended clashes. Rope provided. Use with care. A less generic interface with values restricted to strings is provided. It shares the implementation.
+Places include a <a href="places.html#name" target="_blank"> dictionary of name-value pairs</a> we've called features. This is a technique to allow other libraries to add attributes to places without needing to make changes to the implementation of `lib/places`. This sort of thing helps maintenance as the code base evolves to deal with new requirements. Names of features (feature keys) are unrestricted. There's no protection against unintended clashes. Rope provided. Use with care. A less generic interface with values restricted to strings is provided. It shares the implementation.
 ```Lua
 --]]
 function map.get(name, key) --:: map.get(name: ":", key: ":") -> _Get named place local feature value for key._ -> `value: any?` &!
@@ -270,7 +279,7 @@ local function point(name, label, trail, tx, ty, tz, tf) -- t* for no gps; tf fo
   if trail then fix(trail, x, y, z, f or "north") end -- dance and track in `fix` if trail
   local serial, index = place.name(name, label); update(serial) -- append 
   return place.qualify(name)..", "..label.." in "..index.. " of places", index
-end; map.hints["point "] = {["?name ?label"] = {} }
+end; map.hints["point "] = {["?name "] = {["?label "] = {["??trailname"] = {}}} }
 
 function map.set(name, label, x, y, z, f) return point(name, label, false, x, y, z, f) end
 --:: map.set(name: ":", label: ":", x: #:, y: #:, z: #:, f: ":") -> _Set turtle at created point -> ":"
@@ -319,7 +328,7 @@ local function trail(tailName, label) -- not useful for player
   local headString, tailString = place.trail(trailhead.name, tailName, label); 
   update(headString); update(tailString); 
   return "Trail from "..place.qualify(trailhead.name).." to "..place.qualify(tailName).." as "..label
-end; map.hints["trail "] = {["?name ?label"] = {} }
+end; map.hints["trail "] = {["?name "] = {["?label"] = {}} }
 --[[
 ```
 <a id="range"></a> 
@@ -339,7 +348,7 @@ local function range(name, label, nameA, nameB, key, value) -- -> "report", inde
   local serial, index = place.add(name, situationB) -- range has everything but second place
   core.status(5, "map range: "..place.qualify(name).." from "..place.qualify(nameA).." to "..place.qualify(nameB))
   update(serial); return "Range "..place.qualify(name).." at "..index.. " in places", index -- append serialized range;
-end; map.hints["range "] = {["?name ?label ?from ?to ??key ???value"] = {}}
+end; map.hints["range "] = {["?name "] = {["?label "] = {["?from "] = {["?to "] = {["??key "] = {["???value"] = {}}}}}}}
 --[[
 ```
 <a id="chart"></a> 
@@ -356,7 +365,7 @@ local function chart(chartName, ...)
   local  results = {core.pass(pcall(charting, ...))} -- **run chart file, put multiple returns in table** 
   local ok, report = table.unpack(results); if not ok then return "map.chart: failed "..report end
   return core.string(table.unpack(results, 2)) -- pack a table with unpacked multiple return (all except `ok`)
-end; map.hints["chart "] = {["?chartFileName ?..."] = {}}
+end; map.hints["chart "] = {["?chartFileName "] = {["?..."] = {}}}
 
 function map.borders(range) 
   --:: map.borders(range: place) -> _Get range elements_ -> `borders, features, position, position &!`
@@ -446,14 +455,14 @@ local function where(namedPlace, count, tx, ty, tz)  -- t* for testing -> report
   local forNamedPlace = namedPlace and toNamedPlace(namedPlace, xyz) or ""
   local nearby = count and "Nearby:\n"..toNearby(xyz, tonumber(count)) or ""
   return head .. forNamedPlace .. nearby
-end; map.hints["where "] =  {["?place "] = {["?count"] = {}}} 
+end; map.hints["where "] =  {["?place "] = {["??count"] = {}}} 
 
 local function headings(rate, ...)
   --:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every five) seconds)._
   local rateNumber = tonumber(rate); local rest = rateNumber and {...} or {rate, ...}; rateNumber = rateNumber or 5
   core.report(1, "Headings", rateNumber, table.unpack(rest)) --rateNumber, rate,
   while true do core.report(1, where(table.unpack(rest))); core.sleep(rateNumber) end
-end; map.hints["headings "] = {["??place ??rate ???lines"] = {}}
+end; map.hints["headings "] = {["??place "] = {["??rate "] = {["???#lines"] = {}}}}
 --[[
 ```
 <a id="near"></a> 
@@ -471,7 +480,7 @@ local function near(span, placeName) -- list places near span (or all) near plac
   for i = 1, #report do local distance, text = table.unpack(report[i]); report[i] = tostring(distance)..text end
   local result = "Found "..itemCount.." near\n"..table.concat(report, "\n"); core.status(4, "map.near", result) 
   return result
-end; map.hints["near "] = {["?place ??span"] = {}}
+end; map.hints["near "] = {["?place "] = {["??span"] = {}}}
 
 local function view(target)
   --:- view place -> _Report place details including all situations and features._

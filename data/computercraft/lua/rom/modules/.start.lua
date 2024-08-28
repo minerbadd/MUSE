@@ -7,35 +7,29 @@
 ``` 
 ```Lua
 --]]
-_G.Muse = _G.Muse or {}; 
+_G.Muse = _G.Muse or {}
 _G.Muse.path = "rom/modules/"; local path = _G.Muse.path -- shared across all worlds (most of Muse)
 _G.Muse.package = "/rom/modules/lib/?.lua"
-_G.Muse.charts = path.."charts/"
+_G.Muse.charts = path.."charts/" -- modified by tests to keep game undisturbed by tests
 
----@diagnostic disable-next-line: undefined-field
 local peripheral, parallel = _G.peripheral, _G.parallel -- to supress static analysis lint warnings
 
----@diagnostic disable-next-line: undefined-field
 local rednet = _G.rednet -- nil for out-game debug
----@diagnostic disable-next-line: undefined-field
 local player = _G.pocket; -- only the player has a pocket computer
----@diagnostic disable-next-line: undefined-field
 local turtle = _G.turtle; -- GPS computers and the command computer are not turtles
----@diagnostic disable-next-line: undefined-field
 local command = _G.commands -- table or nil (if not a command computer)
 
 --:# _Set Configuration Variables: landed turtles, default site, tracking, delays, turtle `data` directory_
 _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
-_G.Muse.IDs, _G.Muse.roles = {}, {}
-_G.Muse.defaultSite = "base" -- change site with `site` program
-_G.Muse.tracking = {limit = 500, enabled = nil}; -- _G.Muse.stack = 64 TODO:
+_G.Muse.IDs, _G.Muse.roles, _G.Muse.defaultSite = {}, {}, "base" -- with `site` program
+_G.Muse.tracking = {limit = 500, enabled = nil}
 _G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
+
 _G.Muse.data = "muse/"-- local to turtle/computer
 _G.Muse.map = _G.Muse.data.."map.map" -- name of map in _G.Muse.data
 _G.Muse.log = _G.Muse.data.."log.log"; 
 
---dofile("rom/modules/assets/require.lua") -- so we can `require` (`package.path` read-only?)
-package.path = _G.Muse.package
+package.path = _G.Muse.package -- needed for each module
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local places = require("places"); local place = places.place ---@module "signs.places"
@@ -55,15 +49,19 @@ print("\nsite: "..place.site() or "?"..", `site` to change")
 --]]
 local function identity() -- temporary label as computer ID if needed for MQ registration
   local label = core.getComputerLabel(); local labelled = not tonumber(label)
-  local role = labelled and label or (player and "player" or (command and "porter")); 
-  local id = tostring(core.getComputerID());
-  core.setComputerLabel(role or id) -- if role nil,set temporary label
+  local role = labelled and label or (player and "player" or (command and "porter"))
+  local id = tostring(core.getComputerID()); -- for temporary label
+  core.setComputerLabel(role or id) -- if role nil, set temporary label
   return core.getComputerLabel()
 end
 --:# **Get ready to run: turn on modems, setup for turtle registration**
 peripheral.find("modem", rednet.open)
 
-shell.openTab(path..".status.lua"); shell.openTab("bg"); 
+if player or turtle or command then -- not for GPS computers
+  shell.openTab(path..".update.lua"); shell.openTab(path..".erase.lua"); 
+  shell.openTab(path..".status.lua"); shell.openTab("bg") -- TODO: too many shells?
+end
+
 rednet.host("MQ", identity()) -- **start dds registration**, and give it time to settle
 --[[
 ```
@@ -85,11 +83,9 @@ end; complete(net.hints)
 ```Lua
 --]]
 --:# _Setup `dds` IDs and labels. Needed for remote calls (which can report errors back to player)_
----@diagnostic disable-next-line: undefined-field
-if rednet then os.sleep(_G.Muse.delays.dds); dds.hosts(); os.sleep(0); end -- need os.sleep for gps!
-
-if player or turtle or command then shell.openTab(path..".update.lua"); shell.openTab(path..".erase.lua"); end -- no GPS
---os.sleep(_G.Muse.delays.map)
+if rednet then -- TODO: Are all these delays needed?
+  os.sleep(_G.Muse.delays.dds); dds.hosts(); os.sleep(_G.Muse.delays.map); os.sleep(0) --  -- need os.sleep(0) for gps!
+end
 --[[
 ```
 <a id="fix"></a> 
@@ -105,7 +101,6 @@ if player then
     remote.call(host, "store", {site}, function(results) print(results) end) -- persist new `site` established in `dds`
   end
 end
----@diagnostic disable-next-line: undefined-field
 os.getComputerLabel() -- to show turtle nameplate
 --[[
 ```

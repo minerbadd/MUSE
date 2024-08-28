@@ -277,7 +277,7 @@ The next chapter takes the declarative idea to another level. Sometimes rather t
 
 The MUSE framework built around `lib/field` supports work on a `field` as defined by a three dimensional rectangular `bounds`. Each of the files in the `fields` directory is, as you might guess, a _field file_. They include declarative representations of what is to be done in their `field`. One idea they have in common is the idea of a `plot`. Primarily to deal with the limitations of turtle inventory, plots break the field into pieces that can be dealt with separately. Another thing they have in common is participation in a control framework orchestrated by `lib/field`.
 
-As we'll see, there is a complicated flow of control split between `lib/field` and its clients. This complexity opens up many unfortunate opportunities for <a href="https://en.wikipedia.org/wiki/Software_rot" target="_blank"> _bit rot_</a>. So whether to create a framework is a design decision to consider carefully. Sometimes though, it's the right way. 
+As we'll see, there is a complicated flow of control split between `lib/field` and its clients. This complexity opens up many unfortunate opportunities for <a href="https://en.wikipedia.org/wiki/Software_rot" target="_blank"> _bit rot_</a>. So whether to create a framework is a design decision to consider carefully. Sometimes though, it's the right way. And sometimes somebody else has made that decision for you. The blow-by-blow flow documented below is intended as something you can keep in mind in the event that you are confronted by that somebody else's framework.
 
 For MUSE, the hoped  for compensating benefit from this complicated flow of control is the ability to use the framework to readily define the _what_ for the work to be done on a wide variety of `fields` because the framework:
 
@@ -377,7 +377,17 @@ When you're ready to try running MUSE in the Minecraft/Computercraft environment
 
 - <a href="https://www.curseforge.com/minecraft/mc-mods/jei/files?page=1&pageSize=20&version=1.20.1" target="_blank"> Just Enough Items 12.1.1.13</a> (which is helpful rather than necessary).
 
-- Then create a folder named `MUSE` in `.minecraft/resourcepacks`. Download and unzip a <a href="https://github.com/minerbadd/MUSE/releases/latest" target="_blank"> MUSE release </a> and copy the contents of the MUSE release below the release folder itself into the `resourcepacks` `MUSE` folder. In the Minecraft launcher, choose the Forge 1.20.1 installation and ask to `play` it.
+- Then create a folder named `MUSE` in `.minecraft/resourcepacks`. Download and unzip a <a href="https://github.com/minerbadd/MUSE/releases/latest" target="_blank"> MUSE release </a> and copy the contents of the MUSE release below the release folder itself into the `resourcepacks` `MUSE` folder. 
+  
+- Create a MUSE directory and set an environment variable, `MUSE_PROJECTS` to its path.   
+  (For Windows, use the `Advanced System Settings` in the `System` Control Panel)
+
+- For Lua's `require` function, set the `LUA_PATH` environment variable to include:
+  <pre>
+   %MUSE_PROJECTS%/CodeMark/?.lua;%MUSE_PROJECTS%/MUSE/data/computercraft/lua/rom/modules/lib/?.lua;;
+   </pre>
+
+- In the Minecraft launcher, choose the Forge 1.20.1 installation and ask to `play` it.
 
 - When the loader finishes it's work, choose the `Options` in the Minecraft splash screen. Open `Resource Packs`. Look for `MUSE` (and `computercraft`) among those available. Hover over and click the arrow to include in those selected. Click `Done`. Back among the `Options`, click `Done`. Back in the Minecraft splash screen, Click `Single Player`.
 
@@ -413,17 +423,27 @@ The next step is putting together all those parts to craft what you'll need for 
 
 You will need to go to `/gamemode creative` to place the command computer. Place it somewhere convenient with open sky above it. Then go back to `/gamemode survival` and `sneak` to place an ender modem on its back. 
 
-Select and (right) click the `player` pocket computer to `use` it. Run the `periperals` program to make sure it has a modem. Just as a check, click to `use` the (`porter`) command computer and run `peripherals` on it as well. 
+Select and (right) click the `player` pocket computer to `use` it. Run the `peripherals` program to make sure it has a modem. Just as a check, click to `use` the (`porter`) command computer and run `peripherals` on it as well. 
   
 The rest of the given `base` inventory will be used to `launch` the GPS computers. We'll get to that in a bit. First, `reboot` CraftOS. This registers what you've placed in your world with the MUSE Distributed Discovery Service (DDS) for MQ hosts. There should now be two DDS hosts: `player` and` porter`.
 
-To align the GPS coordinates with Minecraft coordinates, place the Advanced Ender Mining Turtle you crafted on top of the `porter` command computer.
+The reboot involves a bit of indirection. The `muse.lua` file in the `MUSE/data/computercraft/lua/rom/autorun` directory is deliberately dead simple:
+<pre>
+--:~ Autorun -> **Enable access to MUSE programs and start MUSE** <- muse/docs/autorun/muse.md
+shell.setPath(shell.path()..":".."rom/programs/")
+shell.run("rom/modules/.start.lua")
+</pre>
+The reboot runs the <a href="code/daemons/.start.html" target="_blank"> `.start` </a> 
+<a href= "https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
+daemon </a> to establish and report the MUSE game environment and then puts the `porter` and any turtles (that you'll create) in a `MC` (MUSE Call) rednet protocol wait loop. This is the RPC wait loop that you saw in <a href="code/lib/remote.html#serverSend" target="_blank"> `lib/remote` </a>.
 
-When you mouse the turtle, a number should appear above the turtle as its "nameplate". This is its temporary `label`. Let's say it's the number `2`. To assign the role of `rover` to the turtle, run `join rover 2` (or whatever number appears as its nameplate). This enrolls the turtle in DDS. It will be known as the `rover` on the next world startup (or CraftOS `reboot`).
+When the reboot is done, set up to align the GPS coordinates with Minecraft coordinates by placing the Advanced Ender Mining Turtle you crafted on top of the `porter` command computer. 
 
-Then run `locate` from the `player` pocket computer to determine `rover` orientation and name the place above the `porter` where `rover` sits. Once `locate` has run, move the remaining player inventory items into the `rover` inventory. Make sure there's clear sky above then issue the `launch` command with the named place you setup by running `locate`. The GPS computers will have their own startup files that don't enroll them as `MQ` hosts. GPS should now be active. 
+When you mouse the turtle, a number should appear above the turtle as its "nameplate". This is its temporary `label`. Let's say it's the number `2`. To assign the role of `rover` to the turtle, run `join rover 2` from the `player` pocket computer (or whatever number appears as its nameplate). This enrolls the turtle in DDS. It will be known as the `rover` after the next CraftOS `reboot`, which you should do now..
 
-Muse provides support for the idea of a `site`. There may be several of these in a Minecraft world. Each could have a set of (so called, `landed`) workers for that site: a `farmer`, a `logger`, and a `miner`. Running `function muse:site` puts the turtles for a `site` in player inventory with the needed modems and work tools.  Sites are named using the, ahem, `site` command with a unique name for the site. When places are named, their names are qualified with the currently established site. When `join` is run to establish landed turtles turtles in the DDS, they will be given unique, sited roles (and labels) with the currently established site. This is important since `rednet` hosts need unique names. If you've named places, you can run `sync` to include those places in the new turtles' `map`.
+After the reboot, the turtle's nameplate should read as `rover`.Then run `locate` from the `player` pocket computer to name the place above the `porter` where `rover` sits and determine `rover` orientation . Let's say you named the place `stage`. Once `locate` has run, move the remaining player inventory items into the `rover` inventory. Make sure there's clear sky above then issue the `launch` command (as, say, `rover launch stage`) with the named place you setup by running `locate`. The GPS computers will get set in space and have their own startup files that don't enroll them as `MQ` hosts. After reboot, GPS should now be active. Setup is complete. But there's more.
+
+Muse provides support for the idea of a `site`. There may be several of these in a Minecraft world. Each could have a set of (so called, `landed`) workers for that site: a `farmer`, a `logger`, and a `miner`. Running `/function muse:site` as a cheat puts the turtles for a `site` in player inventory with the needed modems and work tools.  Sites are named using the, ahem, `site` command with a unique name for the site. When places are named, their names are qualified with the currently established site. When `join` is run to establish landed turtles turtles in the DDS, they will be given unique, sited roles (and labels) with the currently established site. This is important since `rednet` hosts need unique names. If you've named places, you can run `sync` from the `player` pocket computer to include those places in the new turtles' `map`.
 
 When setting up a new site, you may want to keep site workers working while the player is elsewhere. Use the `activate` command with a MUSE `range` encompassing the site to establish the site bounds to keep turtles active while the player is away. (It seems, however, that this won't keep crops growing.)
 
@@ -437,13 +457,6 @@ VSC's integration with GitHub makes source control pretty easy. With its help yo
 
 - Educate yourself with the very basics of `git`. There's a free <a href="https://git-scm.com/book/en/v2" target="_blank"> ebook</a>. No need to go deep just now.  Learning just what you need as you need it will be effective. Then get yourself a <a href="https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github" target="_blank">GitHub account</a> and install <a href="https://code.visualstudio.com/download" target="_blank">VSC </a>and the extension for <a href="https://code.visualstudio.com/docs/sourcecontrol/intro-to-git" target="_blank">git</a>. Close VSC.
 
-- Create a project directory and set an environment variable, `MUSE_PROJECTS` to its path.   
-  (For Windows, use the `Advanced System Settings` in the `System` Control Panel)
-
-- For Lua's `require` function, set the `LUA_PATH` environment variable to include:
-  <pre>
-   %MUSE_PROJECTS%/CodeMark/?.lua;%MUSE_PROJECTS%/MUSE/data/computercraft/lua/rom/modules/lib/?.lua;;
-   </pre>
 - Use VSC to <a href="https://code.visualstudio.com/docs/sourcecontrol/intro-to-git#_clone-a-repository-locally" href="_target"> clone </a>the <a href="https://github.com/minerbadd/MUSE" target="_blank">MUSE repository </a>into the project directory you created.
 - If there's a MUSE directory in `.minecraft/resourcepacks`, remove it. You'll use the (potentially edited) cloned copy instead.  _(We'll show forward rather than back slashes for file paths as a bow to industry consistency.)_   
 - The cloned copy of MUSE is in the project directory. Create a symbolic link to it in `.minecraft/resourcepacks`. (For Windows, there's a GUI, <a href="https://schinagl.priv.at/nt/hardlinkshellext/linkshellextension.html" target="_blank"> Link Shell Extension</a>, that may be helful.)
