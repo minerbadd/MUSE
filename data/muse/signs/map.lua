@@ -66,7 +66,7 @@ function map.puts() end
 ---@type fun(range: place):  borders,  features,  position,  position 
 function map.borders() end
 
--- Less generic retrieval: gets string feature value.
+-- Less generic retrieval interface: gets string feature value.
 -- map.gets(name: ":", key: ":"):  `":"?` <-
 ---@type fun(name: string,  key: string):  string? 
 function map.gets() end

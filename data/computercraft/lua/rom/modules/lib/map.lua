@@ -12,7 +12,7 @@ To ease understanding, the module introduction for `map` shown below is organize
 
 There are a few new things. Firstly, the `map` library is a `CLL`, a command line library, a supporting library for a CLI, command line interface. Hints are provided as <a href="core.html#UI" target="_blank"> shell completions </a> for CLI command entry to indicate what's expected for the command. These are accumulated in the `map.hints` table, each hint provided near the function that supports a particular command. The idea is that as function definitions change during maintenance, the CLI hint is more likely to get an appropriate update if it's near the supporting function. 
 
-As mentioned, this is the first CLL we've run across. The design pattern is worth looking at. All the interesting stuff is done here in the library so that the CLI itself, the command program, is dead simple. There's a bunch of <a href="#programs" target="_blank"> programs </a> that provide the command line user interface. Look at one or two of them briefly to see that there's so little there there.
+As mentioned, this is the first CLL we've run across. The design pattern is worth looking at. All the interesting stuff is done here in the library so that the CLI itself, the command program, is dead simple. There's a bunch of <a href="#programs" target="_blank"> programs </a> that provide the command line user interface. Look at one or two of them briefly to see that there's so very little there there.
 
 Finally, what's new in `lib/map` are network operations and the use of 
 <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
@@ -20,7 +20,7 @@ _daemons_</a> to deal with network events. You may have already run across the
 <a href="code/daemons/.status.html" target="_blank"> `.status` </a> daemon handling the `MS` (MUSE Statue) rednet protocol. The 
 <a href="code/daemons/.update.html" target="_blank"> `.update` </a> daemon handling the `MU` (MUSE Update) rednet protocol, and the
 <a href="code/daemons/.erase.html" target="_blank"> `.erase` </a> daemon handling the `MX` (MUSE eXcise) rednet protocol look
-much the same, easing debug by quickly passing control to a library to do the real work. 
+much the same, easing testing by quickly passing control to a library to do the real work. There'll be more of this throughout our discussions of how MUSE programs are implemented.
 
 ```Lua
 --]]
@@ -98,7 +98,7 @@ local function resite(site)
   local siteFileHandle = assert(io.open(siteFile, "w"), "map.resite: can't write "..siteFile)
   siteFileHandle:write(place.site(site).."\n"); siteFileHandle:close()
   return place.site(site) 
-end ; map.hints["site "] = {["?name"] = {} }
+end; map.hints["site "] = {["?name"] = {} }
 
 local function store(site) -- used in `.start` to persist `site` and load clean map
   -- :: store(site: ":") -> _Persists `site` in local store and loads local map._ -> `report: ":"`
@@ -114,7 +114,7 @@ local function join(site, role) resite(site); return dds.join(role) end -- dds.j
 --[[
 ```
 <a id="update"></a> 
-Calling the local `update` function supporting the CLI does the update locally and broadcasts it on the `MU` protocol to the `player`, the `porter` and all turtles registered by `join`. The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> `.update`</a>
+Calling the local `update` function does the update locally and broadcasts it on the `MU` protocol to the `player`, the `porter` and all turtles registered by `join`. The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> `.update`</a>
 daemon. The <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
 _daemon_</a> responds to received network messages by calling `map.place` (above) to update the local memory and `map.update` (below) to update local storage. 
 ```Lua
@@ -135,7 +135,7 @@ end
 ```
 <a id="sync"></a> 
 Using the <a href="places.html#near" target="_blank"> `place.near`</a>
-iterator, the local `sync` function `MU` broadcasts all the all the places known by the local computer to all `MQ` registered computers.  The function yields control between each broadcast to allow each broadcast to complete.
+iterator, the local `sync` function `MU` broadcasts all the all the places known by the local computer to all `MQ` registered computers. The function yields control between each broadcast to allow each broadcast to complete.
 ```Lua
 --]]
 --:# **Map File Operations**
@@ -164,7 +164,8 @@ function map.erase(name) local remaining = place.erase(name); map.write(); retur
 --[[
 ```
 <a id="get"></a>  
-Places include a <a href="places.html#name" target="_blank"> dictionary of name-value pairs</a> we've called features. This is a technique to allow other libraries to add attributes to places without needing to make changes to the implementation of `lib/places`. This sort of thing helps maintenance as the code base evolves to deal with new requirements. Names of features (feature keys) are unrestricted. There's no protection against unintended clashes. Rope provided. Use with care. A less generic interface with values restricted to strings is provided. It shares the implementation.
+Places include a <a href="places.html#name" target="_blank"> dictionary of name-value pairs</a> we've called features. 
+This is a technique to allow other libraries to add attributes to places without needing to make changes to the implementation of `lib/places`. This sort of thing helps maintenance as the code base evolves to deal with new requirements. That's especially important for a network of computers each having their own version of persistent data structures. That said, names of features (feature keys) are unrestricted. There's no explicit protection against unintended clashes. Rope provided. Invent some naming protocol and use with care. 
 ```Lua
 --]]
 function map.get(name, key) --:: map.get(name: ":", key: ":") -> _Get named place local feature value for key._ -> `value: any?` &!
@@ -174,7 +175,7 @@ function map.get(name, key) --:: map.get(name: ":", key: ":") -> _Get named plac
   return features[key]
 end
 
-map.gets = map.get --:: map.gets(name: ":", key: ":") -> _Less generic retrieval: gets string feature value._ -> `":"?`
+map.gets = map.get --:: map.gets(name: ":", key: ":") -> _Less generic retrieval interface: gets string feature value._ -> `":"?`
 
 function map.put(name, key, value)  
   --:: map.put(name: ":", key: ":", value: any?) -> _Set named place feature, send MU._ ->  `key: ":"?, value: any|true|nil &!`
@@ -187,6 +188,8 @@ map.puts = map.put
 --:: map.puts(name: ":", key: ":", value: ":"?) -> _Set string feature value, send MU._ -> `key: ":", value: ":"|true &!`
 --[[
 ```
+The `map.gets` and `map.puts` interfaces above (defined for code analysis) share implementations with their more generic interfaces. If that's wanted.
+
 <a id="facing"> </a> 
 The `getFacing` function finds the direction the turtle is facing by looking for changes in its GPS location after moving it forward or backward in the `x` or `z` coordinates. There's an extended ternary operator construction to sort this out. The `backward` `movement` table has reversed directions so the same function can be used for both forward and backward movement.
 
@@ -218,7 +221,7 @@ end
 ```
 <a id="changes"></a> 
 Looking for `changes` in turtle position involves a lot of potential failures to move the turtle. All these failures are funneled through calls to <a href="core.html#pass" target="_blank"> `core.pass`</a>
-so a breakpoint can be placed there to look at error conditions before they are otherwise handled. The `core.pass` function catches errors thrown by callers and, recursively, their callers <a href="https://en.wikipedia.org/wiki/
+so a breakpoint can be placed there to look at error conditions before they are otherwise handled. The `core.pass` function catches exceptions thrown by callers and, recursively, their callers <a href="https://en.wikipedia.org/wiki/
 Turtles__all__the__way__down" target="_blank"> all the way down</a>. Caught errors are thrown here with information useful for knowing turtle position. A (really clumsy) alternative might be for all those callers to return (and return and return) an error code to indicate a problem. For a small number of levels of callers this might work but as the call depths increase, maintainability gets tricky, quickly. 
 ```Lua
 --]]
@@ -332,7 +335,7 @@ end; map.hints["trail "] = {["?name "] = {["?label"] = {}} }
 --[[
 ```
 <a id="range"></a> 
-A range defines a rectangular volume defined by a pair of points.
+A range defines a rectangular volume established by a pair of points.
 ```Lua
 --]]
 local function range(name, label, nameA, nameB, key, value) -- -> "report", index: #:
@@ -341,11 +344,11 @@ local function range(name, label, nameA, nameB, key, value) -- -> "report", inde
   assert(nameA and nameB, "map: need end points for range")
   local _, placeA = place.match(nameA); assert(placeA, "map: "..nameA.." not found for range")
   local _, placeB = place.match(nameB); assert(placeB, "map: "..nameB.." not found for range")
-  local _, _, situationsA = table.unpack(placeA); local situationA = situationsA[1]
+  local _, _, situationsA = table.unpack(placeA); local situationA = situationsA[1] -- trails not relevant
   local _, _, situationsB = table.unpack(placeB); local situationB = situationsB[1]
   place.name(name, label, situationA); local _, rangePlace = place.match(name)
   local _, _, _, features = table.unpack(rangePlace); if key then features[key] = value or true end
-  local serial, index = place.add(name, situationB) -- range has everything but second place
+  local serial, index = place.add(name, situationB) -- range had everything but second place
   core.status(5, "map range: "..place.qualify(name).." from "..place.qualify(nameA).." to "..place.qualify(nameB))
   update(serial); return "Range "..place.qualify(name).." at "..index.. " in places", index -- append serialized range;
 end; map.hints["range "] = {["?name "] = {["?label "] = {["?from "] = {["?to "] = {["??key "] = {["???value"] = {}}}}}}}
@@ -357,10 +360,10 @@ A chart defines a point together with a set of ranges accessed by the `features`
 --]]
 local function chart(chartName, ...)
   --:- chart filename ... -> _Loads and runs named file in `charts` directory to create named point and associated ranges._
-  --:+ **While there are conventions (indicated), there's no restriction in what loading and running the file actually does.**
+  --:+ **While there are conventions (indicated), there's no restriction in what loading and running the file actually does!**
   --:+ _The function generated by loading the file is applied to the ... parameters following the chart file name._
   --:+ _This chart file function is expected to create ranges establishing the `chart` and a way to reference those ranges._
-  --:+ _There is nothing to enforce this expectation. The chart file could do pretty much anything._ 
+  --:+ _There is nothing to enforce this expectation. The chart file could do (oh, my) pretty much anything._ 
   local chartFile = map.charts()..chartName..".lua"; local charting = loadfile(chartFile) -- get the field function 
   local  results = {core.pass(pcall(charting, ...))} -- **run chart file, put multiple returns in table** 
   local ok, report = table.unpack(results); if not ok then return "map.chart: failed "..report end

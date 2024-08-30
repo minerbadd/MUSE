@@ -249,7 +249,7 @@ Find orientation using position changes for non-zero movement.",
   ["type"] = "function",
   ["name"] = "map.gets",
   ["description"] = "\
-Less generic retrieval: gets string feature value.",
+Less generic retrieval interface: gets string feature value.",
 }
 ,
   ["puts"] = {
@@ -1516,11 +1516,11 @@ Planting through blockages and in several directions. Putting item and replacing
 }
 ,
   ["_map.gets:_"] = {
-  ["line"] = "map.gets = map.get --:: map.gets(name: \":\", key: \":\") -> _Less generic retrieval: gets string feature value._ -> `\":\"?`",
+  ["line"] = "map.gets = map.get --:: map.gets(name: \":\", key: \":\") -> _Less generic retrieval interface: gets string feature value._ -> `\":\"?`",
   ["out"] = " `\":\"?`",
   ["sign"] = "map.gets(name: \":\", key: \":\")  ",
   ["kind"] = "face",
-  ["text"] = "Less generic retrieval: gets string feature value.",
+  ["text"] = "Less generic retrieval interface: gets string feature value.",
 }
 ,
   ["_core.xyzf:_"] = {
