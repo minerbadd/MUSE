@@ -107,7 +107,7 @@ Another detail needing abstracting is the notion what's in which `slot` of a tur
 Finally, `lib/turtle` also abstracts <a href="code/lib/turtle.html#unblock" target="_blank"> dealing with some of the difficulties </a>turtles face when attempting to move to a position. Hiding the detail of dealing with obstacles presents a simpler notion of movement. 
 
 <a id="UI"></a>
-Another issue for maintainable code is managing the inevitable and ongoing changes to the user interface. MUSE keeps the actual UI code "thin". We'll look at how.
+Another issue for maintainable code is managing the inevitable and ongoing changes to the user interface. MUSE keeps the actual UI code "thin". We looked at this in `lib/map`. We'll look exhaustively at how.
 
  _(We have it a bit easier since the user interface for MUSE is just a <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank"> command line interface, CLI</a>. The commands are simple text inputs to the <a href="https://www.computercraft.info/wiki/CraftOS" target="_blank"> CraftOS</a> command line. The design issues for a <a href="https://en.wikipedia.org/wiki/Graphical_user_interface" target="_blank"> graphical user interface, a GUI</a> are the subject of a whole other exploration.)_
 
