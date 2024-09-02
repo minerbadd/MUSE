@@ -26,10 +26,10 @@ Each appropriate turtle operation is redefined to support the new abstraction as
 --]]
 --:# **Turtle operations north, east, south, west, up, down**
 
-local compass = {"north", "east", "south", "west"}
+local cardinals = {"north", "east", "south", "west"}
 
 local function makeDirections(front, up, down, op, lib) 
-  lib[op] = {}; for _, cardinal in ipairs(compass) do 
+  lib[op] = {}; for _, cardinal in ipairs(cardinals) do 
     lib[op][cardinal] = function(q) move[cardinal](0) return front(q) end 
   end
   lib[op].front = function(q) return front(q) end; 
@@ -90,7 +90,7 @@ More abstractions: categories of items and the detail of which slot of turtle in
 
 function turtle.inventory() 
   --:: turtle.inventory() -> _Returns currrent turtle inventory as turtle detail table_. -> `detail[]`
-  local inventoryTable = {}; for i = 1, 16 do local detail = mock.getItemDetail(i)
+  local inventoryTable = {}; for i = 1, _G.Muse.slots do local detail = mock.getItemDetail(i)
     if detail then inventoryTable[#inventoryTable + 1] = {detail.name, detail.count, detail.damage} end
   end; return inventoryTable 
 end;
