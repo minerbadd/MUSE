@@ -31,6 +31,7 @@ _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtl
 _G.Muse.IDs, _G.Muse.roles, _G.Muse.defaultSite = {}, {}, "base" -- with <code>site</code> program
 _G.Muse.tracking = {limit = 500, enabled = nil}
 _G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
+_G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number)
 
 _G.Muse.data = "muse/"-- local to turtle/computer
 _G.Muse.map = _G.Muse.data.."map.map" -- name of map in _G.Muse.data
