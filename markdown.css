@@ -2,13 +2,13 @@
 
 body {
 font-family: Segoe, 'Segoe UI', Candara, Calibri, Arial, sans-serif;
-margin-left: 10%; margin-right: 10%; line-height: 1.5; font-size: 12px;
+margin-left: 10%; margin-right: 10%; line-height: 1.5; font-size: 14px;
 font-weight: 400
 }
 code {
     color: #0f8928; /* base00 */
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-	font-size: 12px;
+	font-size: 14px;
 	text-align: left;
 }
 
