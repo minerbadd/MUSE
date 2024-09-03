@@ -35,13 +35,13 @@ local function picks()
   return roam.picks.come 
 end 
 
-local function here() -- are we here yet? (defensive programming, checking dead reckoning against GPS)
+local function here() -- are we actually here? (defensive programming, checking dead reckoning against GPS)
   local gx, gy, gz, _, ok = move.where(); if not ok then return end -- can't check without GPS
   local ax, ay, az = table.unpack(move.at()); if not (gx == ax and gy == ay and gz == az) then error("roam.here: Lost!") end
 end
 
 local function moveHere(tx, ty, tz, ttx, tty, ttz) --t* turtle, tt* target
-  here(); pickMove[picks() + 1](tx, ty, tz, ttx, tty, ttz) -- sequentially to deal with blockages
+  here(); pickMove[picks() + 1](tx, ty, tz, ttx, tty, ttz) -- check dead reckoning `here` and sequentially to deal with blockages
 end
 
 function roam.come(xyz) -- **needs GPS for {xyz}**, lib/remote RPC "come" dispatched by lib/net 
