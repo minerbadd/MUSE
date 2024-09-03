@@ -39,8 +39,6 @@
 
 --:: turtle.item(slot: #:?) ->  _Detail of specified or currently selected slot._ -> `nil | detail`  
 
---:: turtle.detail(slot: #:?) -> _Detail of selected or specified slot._ -> `detail`   
-
 --:# **Item name and turtle status utilities**  
 
 --:: turtle.inventory() -> _Returns currrent turtle inventory as turtle detail table_. -> `detail[]`  

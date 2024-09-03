@@ -79,7 +79,6 @@ Passing interfaces through as if they were part of the `turtle` library complete
 turtle.find = core.findItems --:= core.findItems:: turtle.find
 turtle.select = mock.select --:: turtle.select(slot: #:) -> _Attempts to select the specified slot._ -> `selected: ^:`
 turtle.item = mock.getItemDetail --:: turtle.item(slot: #:?) ->  _Detail of specified or currently selected slot._ -> `nil | detail`
-turtle.detail = mock.getItemDetail --:: turtle.detail(slot: #:?) -> _Detail of selected or specified slot._ -> `detail` 
 --[[
 ```
 <a id="inventory"></a> 

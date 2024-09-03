@@ -82,7 +82,6 @@ Passing interfaces through as if they were part of the <code>turtle</code> libra
 turtle.find = core.findItems --:= core.findItems:: turtle.find
 turtle.select = mock.select --:: turtle.select(slot: #:) -> <i>Attempts to select the specified slot.</i> -> <code>selected: ^:</code>
 turtle.item = mock.getItemDetail --:: turtle.item(slot: #:?) ->  <i>Detail of specified or currently selected slot.</i> -> <code>nil | detail</code>
-turtle.detail = mock.getItemDetail --:: turtle.detail(slot: #:?) -> <i>Detail of selected or specified slot.</i> -> <code>detail</code> 
 </code></pre>
 <a id="inventory"></a> 
 More abstractions: categories of items and the detail of which slot of turtle inventory an item is in.

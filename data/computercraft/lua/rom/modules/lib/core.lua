@@ -422,7 +422,7 @@ function core.findItems(targets) -- nil if no slot with target otherwise slot de
   --:> detail.count: _Available in inventory_ -> `#:`
   --:> detail.damage: _Distinguishing value_ -> `#:`
   ---@diagnostic disable-next-line: undefined-field
-  local slots = _G.turtle and 16 or #turtle.slots                                     -- for out-of-game testing
+  local slots = _G.turtle and _G.Muse.slots or #turtle.slots                                     -- for out-of-game testing
   for i = 1, slots do
     local detail = turtle.getItemDetail(i)
     for _, target in ipairs(targets) do                                               -- if target == "" then return true end --TODO: OK??
