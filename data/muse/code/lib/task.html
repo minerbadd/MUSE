@@ -84,7 +84,7 @@ end; task.hints["suck"] = {["?direction ?count"] = {}}
 <pre><code class="language-lua">
 local to = {[0] = "here", [2] = "west", [3] = "east", [4] = "down", [5] = "up", [8] = "north", [9] = "south"}
 
-local function getAim(situation) -- <code>situation</code> is target, get direction to aim the movement
+local function getAim(situation) -- <code>situation</code> is target, get direction to aim the movement for trail
   local x, y, z = move.get(); local sx, sy, sz = move.get(situation); local dx, dy, dz = sx - x, sy - y, sz - z
   local flip = dx + dy + dz; local distance = math.abs(dx) + math.abs(dy) + math.abs(dz); -- <b>flip: only one dx, dy, dz ~= 0</b>
   local aims = (dx == 0 and 0 or 2) + (dy == 0 and 0 or 4) + (dz == 0 and 0 or 8) -- missing elements for errors
