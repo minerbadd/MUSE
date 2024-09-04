@@ -503,9 +503,10 @@ Just a big dispatch table, easily amended and extended. The CLI is just a thin l
 --]]
 local ops = { --:# **Command Line Interface** 
   erase = erase, store = store, sync = sync, point = point, range = range, -- for all
-  view = view, site = resite, chart = chart,-- for all
+  view = view, site = resite, chart = chart, join = join, -- for all
   near = near, at = at, where = where, headings = headings, -- position relative to places for players and turtles
-  fix = fix, trail = trail, join = join, test = test, -- just for turtles
+  fix = fix, trail = trail,  -- just for turtles
+  test = test, -- just to set test conditions
 }
 --[[
 ```
@@ -525,18 +526,20 @@ return {map = map}
 ```
 <a id="commands"></a> 
 Players can use 
+<a href="../programs/erase.html" target="_blank"> `erase`</a>, 
+<a href="../programs/store.html" target="_blank"> `store`</a>, 
+<a href="../programs/sync.html" target="_blank"> `sync`</a>, 
 <a href="../programs/point.html" target="_blank"> `point`</a>, 
 <a href="../programs/range.html" target="_blank"> `range`</a>, 
-<a href="../programs/erase.html" target="_blank"> `erase`</a>, 
-<a href="../programs/sync.html" target="_blank"> `sync`</a>, 
-<a href="../programs/chart.html" target="_blank"> `chart`</a>, 
-<a href="../programs/store.html" target="_blank"> `store`</a>, 
-<a href="../programs/site.html" target="_blank"> `site`</a>, 
-<a href="../programs/join.html" target="_blank"> `join`</a>, 
-<a href="../programs/headings.html" target="_blank"> `headings`</a>, 
-<a href="../programs/near.html" target="_blank"> `near`</a>, 
 <a href="../programs/view.html" target="_blank"> `view`</a>, and 
+<a href="../programs/site.html" target="_blank"> `site`</a>, 
+<a href="../programs/chart.html" target="_blank"> `chart`</a>, 
+<a href="../programs/join.html" target="_blank"> `join`</a>, 
+<a href="../programs/near.html" target="_blank"> `near`</a>, 
+<a href="../programs/at.html" target="_blank"> `at`</a>, 
 <a href="../programs/where.html" target="_blank"> `where`</a> commands. 
+<a href="../programs/headings.html" target="_blank"> `headings`</a>, 
+
 Follow the links just provided to see their (fairly trivial and boringly similar) implementations. It's easy to fiddle with this layer. That's good because experience with a UI usually suggests changes to it.
 
 That's it for `lib/map`. Follow the <a href="../../Mining MUSE.html#Chapter4"> link</a> to return to _Mining MUSE_.
