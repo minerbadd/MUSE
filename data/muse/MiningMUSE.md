@@ -115,12 +115,20 @@ Another detail needing abstracting is the notion what's in which `slot` of a tur
 
 Finally, `lib/turtle` also abstracts <a href="code/lib/turtle.html#unblock" target="_blank"> dealing with some of the difficulties </a>turtles face when attempting to move to a position. Hiding the detail of dealing with obstacles presents a simpler notion of movement. 
 
-With all these changes, `lib/turtle` has superseded the ComputerCraft definition of what's in `_G.turtle`. Behold we have made all turtles new. The old is no more. At least if you load `lib/turtle`.
+With all these changes, `lib/turtle` has superseded the ComputerCraft definition of much of what's in `_G.turtle`. Behold we have made all turtles new. The old is no more. At least if you load `lib/turtle`.
 
 There are two clients of the born again `turtle` that we'll build on: `lib/roam` and `lib/task`. First `lib/roam`.
 
 <a id="roam"/>
-<a href="code/lib/roam.html#op" target="_blank"> <IMG SRC="drawings/04ATree.jpg" hspace ="10" ALIGN="left"/> </a>The <a href="code/lib/roam.html#op" target="_blank"> `lib/roam` library </a> provides another example of how to use a CLI dispatch mechanism to keep command code thin. To explore this library, keep in mind that Lua has a <a href="https://www.lua.org/doc/sblp2005.pdf" target="_blank"> one pass compiler </a>. Functions build on each other from the beginning of the file to the end. The tree links to the end of the file. You might want to follow the code backward toward the beginning of the file through the support for <a href="code/lib/roam.html#go" target="_blank"> `go` </a> and <a href="code/lib/roam.html#to" target="_blank"> `to` </a> and then look at <a href="code/lib/roam.html#come" target="_blank"> `come` </a> to see how this is done. 
+<a href="code/lib/roam.html" target="_blank"> <IMG SRC="drawings/04ATree.jpg" hspace ="10" ="left"/> </a>The <a href="code/lib/roam.html" target="_blank"> `lib/roam` library </a> provides some extensions of `lib/turtle` for movement: 
+
+- "try again" strategies to find ways around blockages, 
+- turtle side support for following the `player` or going to a `place`, and
+- a very tiny language to chain together commands to move a turtle using both the abstractions of `lib/turtle` and the primitives of `lib/motion`. 
+
+The library centralizes error handling and blockage simulation (for test) for all this in its CLI <a href="code/lib/roam#op.html" target="_blank">dispatch </a> mechanism, the same one that keeps command code thin. 
+
+As we've mentioned, Lua has a <a href="https://www.lua.org/doc/sblp2005.pdf" target="_blank"> one pass compiler </a>. Functions build on each other from the beginning of the file to the end. The tree image shown links to the end of the file. Alternatively,  you may want to follow the code backward toward the beginning of the file through the support for <a href="code/lib/roam.html#go" target="_blank"> `go` </a> and <a href="code/lib/roam.html#to" target="_blank"> `to` </a> and then look at <a href="code/lib/roam.html#come" target="_blank"> `come` </a> to see how this is done. Or just read it as written by clicking the tree.
 </br></br>
 <a id="task"/>
 <a href="drawings/04Abstractions.pdf" target="_blank"><IMG SRC="drawings/04Abstractions.png" ALIGN="right" hspace ="10"/></a>
