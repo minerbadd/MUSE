@@ -21,7 +21,7 @@ local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module
 --[[
 ```
 <a id="operations"></a>
-Each appropriate turtle operation is redefined to support the new abstraction as a table of functions for that operation in the six possible directions and `forward`. When the library is loaded, `makeOperations` makes entries in the table that the `turtle` library exports. Generating functions for the `turtle` library with `makeOperations(operations, turtle)` lets us specify the suite of turtle operations concisely with a table.
+Each appropriate `turtle` operation is redefined to support the new abstraction as a table of functions for that operation in the six possible directions and `forward`. When the library is loaded, `makeOperations` makes entries in the table that the `turtle` library exports. Generating functions for the `turtle` library with `makeOperations(operations, turtle)` lets us specify the suite of turtle operations concisely with a table. (The `mock` functions are real Computercraft `turtle` functions in-game.)
 ```Lua
 --]]
 --:# **Turtle operations north, east, south, west, up, down**
@@ -29,12 +29,8 @@ Each appropriate turtle operation is redefined to support the new abstraction as
 local cardinals = {"north", "east", "south", "west"}
 
 local function makeDirections(front, up, down, op, lib) 
-  lib[op] = {}; for _, cardinal in ipairs(cardinals) do 
-    lib[op][cardinal] = function(q) move[cardinal](0) return front(q) end 
-  end
-  lib[op].front = function(q) return front(q) end; 
-  lib[op].up = function(q) return up(q) end; 
-  lib[op].down = function(q) return down(q) end
+  for _, cardinal in ipairs(cardinals) do lib[op][cardinal] = function(q) move[cardinal](0) return front(q) end end
+  lib[op].up = function(q) return up(q) end; lib[op].down = function(q) return down(q) end
 end -- `q` is quantity argument if needed
 
 local function makeOperations(operations, library)
@@ -98,7 +94,6 @@ function turtle.items() return core.string(turtle.inventory()) end --:- items ->
 
 function turtle.check(targets, detail) -- item inspected by turtle is in targets?
   --:: turtle.check(targets: ":"[], :detail:) -> _Tries to match each target against_ `detail.name`. -> ``matched: ^:`
-  if not detail then return false end
   for _, target in ipairs(targets) do if detail.name == target then return detail.name end end
 end
 
@@ -219,6 +214,6 @@ function turtle.blocking(blocking) _G.Muse.blocking = blocking; return _G.Muse.b
 return {turtle = turtle}
 --[[
 ```
-And we're done making the new and improved `turtle`. Return to <a href="../../Mining MUSE.html#UI"> Mining MUSE</a> 
-to look at building _thin_ command interface implementations aimed at maintainability.
+And we're done making the new and improved `turtle`. No more the old. Return to <a href="../../Mining MUSE.html#roam"> Mining MUSE</a> 
+to see how these functions are used to roam around a Minecraft world.
 --]]
