@@ -222,7 +222,6 @@ end
 Mostly just placing a naming layer on `move` and `step` but look at how iterators are handled in `steps.along`.
 ```Lua
 --]]
-
 --:# **Moving and stepping for known places: to points or along trails**
 function moves.along(name) -- move along trail
 --:: moves.along(name: ":") -> _Move from first to second situation of place._ -> `code: ":", remaining: #:, xyzf: ":" &! recovery`

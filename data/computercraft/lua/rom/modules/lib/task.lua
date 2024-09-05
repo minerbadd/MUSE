@@ -81,12 +81,12 @@ end; task.hints["suck"] = {["?direction ?count"] = {}}
 --]]
 local to = {[0] = "here", [2] = "west", [3] = "east", [4] = "down", [5] = "up", [8] = "north", [9] = "south"}
 
-local function getAim(situation) -- `situation` is target, get direction to aim the movement for trail
+local function getAim(situation) -- `situation` is target, get direction to aim the movement for trail (always one axis at a time)
   local x, y, z = move.get(); local sx, sy, sz = move.get(situation); local dx, dy, dz = sx - x, sy - y, sz - z
-  local flip = dx + dy + dz; local distance = math.abs(dx) + math.abs(dy) + math.abs(dz); -- **flip: only one dx, dy, dz ~= 0**
-  local aims = (dx == 0 and 0 or 2) + (dy == 0 and 0 or 4) + (dz == 0 and 0 or 8) -- missing elements for errors
+  local distance = math.abs(dx) + math.abs(dy) + math.abs(dz); local flip = dx + dy + dz -- **flip: requires but one dx, dy, dz ~= 0**
+  local aims = (dx == 0 and 0 or 2) + (dy == 0 and 0 or 4) + (dz == 0 and 0 or 8) -- fold axes, missing elements for errors
   local code = aims + (flip > 0 and 1 or 0); local direction = to[code] -- `here` is 0, `west/east` etc +/- for `flip`
-  assert(direction, "task.getAim: too many directions to move at once")
+  assert(direction, "task.getAim: trail has too many directions to move at once")
   return direction, distance
 end
 
