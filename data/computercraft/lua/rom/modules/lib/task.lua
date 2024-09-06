@@ -4,7 +4,7 @@
 --:! {task: []: (:) } <- **Command Line Library for Tasks: Low Level Turtle Operations** -> muse/docs/lib/task.md  
 --:| task: _Dispatch targets for_ `net` _library._ -> task, _task
 ```
-There's nothing much to see here. The `task` library uses the same implementation pattern for CLI support as other CLLs. But do look if you want to see another example. 
+TThe `task` library makes use of the `lib/turtle` abstractions. uses the same implementation pattern for CLI support as other CLLs. But do look if you want to see another example. 
  ```Lua
 --]]
 local task, _task = {}, {}; task.hints =  {} ---@module "signs.task" -- internal and exported library functions and CLI hints
@@ -19,12 +19,12 @@ local turtles = require("turtle"); local turtle = turtles.turtle ---@module "sig
 #Simple Tasks
 ```Lua
 --]]
-local abbreviations = {u = "up", d = "down", n = "north", e = "east", w = "west", s = "south", f = "front"} 
---:< **Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`ront_**
+local letters = {u = "up", d = "down", n = "north", e = "east", w = "west", s = "south", f = "forward"} 
+--:< **Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward_**
 
-local function getDirection(directionCode, supress) -- `supress` `true` to deal with `here`, a fake direction
+local function getDirection(directionCode, supress) -- `supress` is `true` to deal with `here`, a fake direction
   assert(directionCode, "task: Please specify direction")
-  local letter = string.sub(directionCode, 1, 1); local direction = abbreviations[letter]
+  local letter = string.sub(directionCode, 1, 1); local direction = letters[letter]
   if not direction and not supress then error("task.getDirection: Invalid direction ".. directionCode) end
   return direction
 end
@@ -53,9 +53,8 @@ local function look(...) --:- look direction -> _Detect and inspect direction, r
 end; task.hints["look"] = {["?direction"] = {}}
 
 local function compare(...) --:- compare item direction... -> _Named item matches block in any of specified directions?_
-  local arguments = {...}; local item, directions = table.unpack(arguments), {table.unpack(arguments, 2)}
-  -- TODO: local item, direction = select(1, ...), {select(2, ...)}
-  assert(item and directions, "task.compare: Need item and directions")
+  local item, directions = select(1, ...), {select(2, ...)}
+  assert(item and next(directions), "task.compare: Need item and directions")
   local targets = turtle.category(item); local target = turtle.find(targets); local targetName = target and target.name
   local found = {}; for _, direction in ipairs(directions) do
     local success, data = turtle.inspects[direction](); local dataName = success and data.name
@@ -77,6 +76,7 @@ end; task.hints["suck"] = {["?direction ?count"] = {}}
 --[[
 ```
 #Movement For Tasks
+<a id=movement"/>
 ```Lua
 --]]
 local to = {[0] = "here", [2] = "west", [3] = "east", [4] = "down", [5] = "up", [8] = "north", [9] = "south"}
@@ -92,18 +92,18 @@ end
 
 local function doOnce(puttings, op, fill, targets) 
   for _, direction in ipairs(puttings) do 
-    local ok, result = core.pass(pcall(op, getDirection(direction, true), fill, targets)) -- **do it**
+    local ok, result = core.pass(pcall(op, getDirection(direction, true), fill, targets)) -- **do the task op**
     if not ok then return "Task failed "..direction.." because "..result end
   end;  
   return "done "..table.concat(puttings, " ").." to "..move.ats() 
 end
 
 local function doMany(distance, towards, puttings, op, clear, fill, targets)
-  if clear then turtle.unblock(towards, 5) end -- 5 is arbitrary number of tries to unblock for dig
+  if clear then turtle.unblock(towards, _G.Muse.attempts) end -- attempts to unblock for dig
   if not distance then move[towards](0); return doOnce(puttings, op, fill, targets) end
   for code, remaining, ats in step[towards](tonumber(distance)) do -- e.g., step.east
     if code ~= "done" then return false, "Failed: "..code.." at "..ats..", "..remaining.." blocks remaining" end
-    if clear then turtle.unblock(towards, 5) end
+    if clear then turtle.unblock(towards, _G.Muse.attempts) end
     doOnce(puttings, op, fill, targets); move[towards](0) -- and reorient after op
   end; return "done "..distance.." blocks "..towards.." "..table.concat(puttings, " ").." to "..move.ats()
 end
@@ -125,7 +125,7 @@ function _task.doTask(arguments, op, clear, fill, targets)
   direction, distance = core.optionals(direction, distance) -- 
   local toward = getDirection(direction, true) -- supress error for bogus directions like "here"
   if toward then return doMany(distance, toward, puttings, op, clear, fill, targets) end -- `doMany` checks no distance
-  table.insert(puttings, 1, distance); return doOnce(puttings, op, fill, targets) -- `distance` alias `direction`
+  table.insert(puttings, 1, distance); return doOnce(puttings, op, fill, targets) -- `here`, `distance` alias `direction`
 end
 --[[
 ```
@@ -161,6 +161,7 @@ local function put(...)
 --[[
 ```
 #Dispatch
+<a id="dispatch"/>
 ```Lua
 --]]
   local ops = {

@@ -21,6 +21,6 @@
 
 --:- come -> _Turtle towards GPS player position._  
 
---:: remote.tail(turtle: ":", __ : "tail", rates: ":"?) -> _Repeatedly towards player position, default rate 0.5 seconds.__ -> `nil`   
+--:: remote.tail(turtle: ":", __ : "tail", rates: ":"?) -> _Repeatedly towards player position, default rate _G.Muse.rates.tail seconds -> `nil`   
 
 --:- tail rate? -> _Turtle every rate seconds towards player._  

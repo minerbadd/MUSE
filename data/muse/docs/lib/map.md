@@ -77,7 +77,7 @@
 
 --:- where place? count?? -> _Report movement direction, distance to named place (or all) three (or count) closest places._   
 
---:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every five) seconds)._  
+--:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds)._  
 
 --:- near place? span?? -> _Report points within span blocks (or all) of named place (or current player or turtle position)._  
 

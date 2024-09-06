@@ -167,13 +167,11 @@ end; roam.hints["go"] = {["?chain"] = {}}
 Just a simple dispatch, some error handling, and our work here is done. Look at what goes before to see how.
 ```Lua
 --]]
-local function doCommand(op, arguments) here(); return op(arguments) end 
-
 local ops = {go = go, to = tryTo, trace = trace, } 
 
 function roam.op(arguments) --:: roam.op(arguments: ":"[]) -> _Move turtle:_ -> `":" &:`
   local from = here(); turtle.block(turtle.blocking()) -- check dead reckoning, try motion and block if enabled for testing
-  local roamOK, code, _, xyzfacing = core.pass(pcall(doCommand, ops[arguments[1]], arguments))
+  local roamOK, code, _, xyzfacing = core.pass(pcall(ops[arguments[1], arguments))
   if not roamOK then return "Roam error command: "..arguments[1].." in "..core.string(arguments).." because "..code end
   return from.." to "..xyzfacing 
 end

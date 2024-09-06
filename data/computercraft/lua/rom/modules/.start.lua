@@ -26,6 +26,8 @@ _G.Muse.tracking = {limit = 500, enabled = nil}
 _G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
 _G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number)
 _G.Muse.sequenced = true -- `lib/roam` motion attempts in `pickMove` table (otherwise random)
+_G.Muse.attempts = 5 -- `lib/turtle` attempts to remove a blockage
+_G.Muse.rates = {}; _G.Muse.rate.headings = 5; _G.Muse.rates.tail = 0.5
 
 _G.Muse.data = "muse/"-- local to turtle/computer
 _G.Muse.map = _G.Muse.data.."map.map" -- name of map in _G.Muse.data

@@ -14,7 +14,7 @@ erase name: Remove named place, broadcast Muse eXcise (MX).
 
 farmer command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
-headings rate? place? count??: Repeated movement report at specified rate (or every five) seconds).
+headings rate? place? count??: Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds).
 
 join role id: Temporarily set mapping for next startup, id from turtle nameplate.
 

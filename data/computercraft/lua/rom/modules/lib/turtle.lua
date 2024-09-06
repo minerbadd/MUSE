@@ -30,8 +30,9 @@ local cardinals = {"north", "east", "south", "west"}
 
 local function makeDirections(front, up, down, op, lib) 
   for _, cardinal in ipairs(cardinals) do lib[op][cardinal] = function(q) move[cardinal](0) return front(q) end end
-  lib[op].up = function(q) return up(q) end; lib[op].down = function(q) return down(q) end
-end -- `q` is quantity argument if needed
+  lib[op].up = function(q) return up(q) end; lib[op].down = function(q) return down(q) end; 
+  lib[op].forward = function(q) return front(q) end -- `q` is quantity argument if needed
+end
 
 local function makeOperations(operations, library)
   for operation, ops in pairs(operations) do makeDirections(ops.front, ops.up, ops.down, operation, library) end
@@ -162,9 +163,9 @@ local function attemptDig(direction) -- "done if air or the undug, else attack (
 end 
 
 function turtle.unblock(direction, limit, attempts) -- returns "done" or raises an error
-  --:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys (default 5) dig to limit or bedrock._ -> `"done", nil|"undug" &!` 
+  --:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys (default `_G.Muse.attempts`) dig to limit or bedrock._ -> `"done", nil|"undug" &!` 
   --:+ _Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached._
-  limit = limit or 5; attempts = attempts or 0; -- waits, arbitrary default retrys for gravel; attacks
+  limit = limit or _G.Muse.attempts; attempts = attempts or 0; -- waits, arbitrary default retrys for gravel; attacks
   if attempts > limit then error("turtle.unblock: Failed at "..move.ats().." "..direction)
   end; -- failed: not air, water, lava, bedrock, sand, gravel (or succesful attack of mobs)
   local done, report = attemptDig(direction); if done then return done, report end -- **dig succeeded**

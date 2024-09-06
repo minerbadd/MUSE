@@ -111,7 +111,7 @@ function turtle.select() end
 ---@type fun():  fuelTotal: number 
 function turtle.fuel() end
 
--- Retrys (default 5) dig to limit or bedrock. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
+-- Retrys (default `_G.Muse.attempts`) dig to limit or bedrock. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
 -- turtle.unblock(direction: ":", limit: #:?):  `"done", nil|"undug" &!`  <-
 ---@type fun(direction: string,  limit: number?):  "done",  nil|"undug" 
 function turtle.unblock() end

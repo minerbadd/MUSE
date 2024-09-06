@@ -29,7 +29,7 @@
 
 --:- find name...? -> <i>Report and select first slot found [or if no name, just report inventory].</i>  
 
---:< <b>Directions are  <i><code>u</code>p, <code>d</code>own, <code>n</code>orth, <code>e</code>ast, <code>w</code>est, <code>s</code>outh, <code>f</code>ront</i></b>  
+--:< <b>Directions are  <i><code>u</code>p, <code>d</code>own, <code>n</code>orth, <code>e</code>ast, <code>w</code>est, <code>s</code>outh, <code>f</code>orward</i></b>  
 
 --:- suck direction quantity? -> <i>Suck quantity items [or all] into available slot.</i>   
 
@@ -81,7 +81,7 @@
 
 --:- fix trail? -> <i>Set and report GPS turtle position for dead reckoning. Optionally begin named trailhead.</i>  
 
---:- headings rate? place? count?? -> <i>Repeated movement report at specified rate (or every five) seconds).</i>  
+--:- headings rate? place? count?? -> <i>Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds).</i>  
 
 --:# <b>Map File Operations</b> (e.g., <code>rover site ...</code>)  
 

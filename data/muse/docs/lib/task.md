@@ -1,7 +1,7 @@
 --:! {task: []: (:) } <- **Command Line Library for Tasks: Low Level Turtle Operations** -> muse/docs/lib/task.md      
 --:| task: _Dispatch targets for_ `net` _library._ -> task, _task  
 
---:< **Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`ront_**  
+--:< **Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward_**  
 
 --:- find name...? -> _Report and select first slot found [or if no name, just report inventory]._  
 

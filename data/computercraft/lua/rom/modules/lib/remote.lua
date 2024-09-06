@@ -179,9 +179,9 @@ function remote.come(turtle) -- **needs GPS**
 end
 
 function remote.tail(turtle, _, rates) --  **needs GPS**; turtle tails player by repeated commands to `come`
-  --:: remote.tail(turtle: ":", __ : "tail", rates: ":"?) -> _Repeatedly towards player position, default rate 0.5 seconds.__ -> `nil` 
+  --:: remote.tail(turtle: ":", __ : "tail", rates: ":"?) -> _Repeatedly towards player position, default rate _G.Muse.rates.tail seconds -> `nil` 
   --:- tail rate? -> _Turtle every rate seconds towards player._
-  local rate = tonumber(rates) or 0.5; while true do -- assume good GPS
+  local rate = tonumber(rates) or _G.Muse.rates.tail; while true do -- assume good GPS
     local result, report = remote.call(_remote.prepareCome(turtle)) -- server, command, xyz
     core.status(5, "remote", "tail", result or "", report or ""); core.sleep(rate)
   end

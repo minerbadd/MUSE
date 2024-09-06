@@ -109,7 +109,7 @@ For MUSE, some abstractions are obvious. They closely relate to what's in the ga
 
 The `lib/turtle` library extends this abstraction consistently with the other interesting things turtles can be made to do. The consistency itself helps in maintenance. ComputerCraft's primitives deal with turns "right" and "left". They deal separately with those other things turtles can do in terms of "forward", "up", and "down".  A useful set of abstractions would be to hide all this detail and expose turtle interfaces uniformly in terms of six directions: the four cardinal and the two vertical directions. <a href="code/lib/turtle.html" target="_blank"> <IMG SRC="drawings/04Tree.jpg" hspace ="10" ALIGN="left"/> </a>
 
-There's a pretty long list of turtle operations that need fitting into this abstraction. The fitting is so repetitive that it lends itself to representation as a table. There's a couple of builder functions executed when `lib/turtle` is loaded. They generate the functions that `lib/turtle` exports. Look at the `lib/turtle` <a href="code/lib/turtle.html" target="_blank"> implementation </a> to see how to have yet more fun with functions. 
+There's a pretty long list of turtle operations that need fitting into this abstraction. The fitting is so repetitive that it lends itself to representation as a table. There's a couple of builder functions executed when `lib/turtle` is loaded. They generate the functions that `lib/turtle` exports. Look at the `lib/turtle` <a href="code/lib/turtle.html" target="_blank"> implementation </a> to see how to have yet more fun with functions. Note that each turtle operation is exposed as a table accessed by `direction`. 
 
 Another detail needing abstracting is the notion what's in which `slot` of a turtle's  <a href="code/lib/turtle.html#inventory" target="_blank"> inventory </a>. What's where exactly is something worth hiding. What we generally just want to know is whether the turtle's `inventory` includes certain items. Or better, whether it includes certain kinds, `categories`, of items.  These might be, for example,  `fuels`, `stones`, or `ores`. A category could be items useful as `fills` or the kinds of `dirt`. We might be more interested in the total fuel energy available to a turtle rather than any specific kind of fuel.
 
@@ -122,17 +122,21 @@ There are two clients of the born again `turtle` that we'll build on: `lib/roam`
 <a id="roam"/>
 <a href="code/lib/roam.html" target="_blank"> <IMG SRC="drawings/04ATree.jpg" hspace ="10" ="left"/> </a>The <a href="code/lib/roam.html" target="_blank"> `lib/roam` library </a> provides some extensions of `lib/turtle` for movement: 
 
-- "try again" strategies to find ways around blockages, 
-- turtle side support for following the `player` or going to a `place`, and
+- "try again" strategies controlled by a `.start` parameter to look for ways around blockages, 
+- going to a `place` (or xyz coordinates) and turtle side support for following the `player`, and
 - a very tiny language to chain together commands to move a turtle using both the abstractions of `lib/turtle` and the primitives of `lib/motion`. 
 
-The library centralizes error handling and blockage simulation (for test) for all this in its CLI <a href="code/lib/roam#op.html" target="_blank">dispatch </a> mechanism, the same one that keeps command code thin. 
+The library centralizes error handling, a safety check on turtle dead reckoning, and blockage simulation (for test) for all the commands in its CLI <a href="code/lib/roam#op.html" target="_blank">dispatch </a> mechanism, the same one that keeps command code thin. 
 
 As we've mentioned, Lua has a <a href="https://www.lua.org/doc/sblp2005.pdf" target="_blank"> one pass compiler </a>. Functions build on each other from the beginning of the file to the end. The tree image shown links to the end of the file. Alternatively,  you may want to follow the code backward toward the beginning of the file through the support for <a href="code/lib/roam.html#go" target="_blank"> `go` </a> and <a href="code/lib/roam.html#to" target="_blank"> `to` </a> and then look at <a href="code/lib/roam.html#come" target="_blank"> `come` </a> to see how this is done. Or just read it as written by clicking the tree.
 </br></br>
 <a id="task"/>
 <a href="drawings/04Abstractions.pdf" target="_blank"><IMG SRC="drawings/04Abstractions.png" ALIGN="right" hspace ="10"/></a>
-The abstractions we've been going on (and on) about are foundational in building the <a href="code/lib/task.html" target="_blank"> `lib/task` library </a> supporting a (remote) CLI for  low level turtle tasks. A similar pattern as described for `lib/roam` is used for the implementation of this CLL (CLI support library). There's little need to dig into `lib/task` unless to see another example of how thin CLI support might be built. But follow the link above if you're interested.
+The abstractions we've been going on (and on) about are foundational in building the <a href="code/lib/task.html" target="_blank"> `lib/task` library </a> supporting a (remote) CLI for low level turtle tasks (some, like `dig`, involving motion). The implementation for each of those low level turtle operations in `lib/task` uses the table accessed by `direction` that was built for that operation by `lib/turtle`. 
+
+There's a <a href="code/lib/task.html#movement" target="_blank">trick </a> in the `lib/task` implementation to fold particular kinds of movement vectors into a (scalar)  `direction` for that vector. It takes advantage of a property of the set of some such vectors that they only make changes in one axis at a time. You may find use for the trick in this or other kinds of folding.
+
+A similar pattern as described for `lib/roam` is used for the implementation of this CLL (CLI support library). There's little need to see how `lib/task` does this unless to see another example of how thin CLI support might be built. But follow the <a href="code/lib/task.html#dispatch" target="_blank"> link </a> if you're interested.
 
 If all you're looking for right now is how these libraries fit into the overall design, here are links to the interfaces for <a href="docs/lib/turtle.html" target="_blank"> `lib/turtle` </a>,  <a href="docs/lib/task.html" target="_blank"> `lib/task` </a>, and <a href="docs/lib/roam.html" target="_blank">`lib/roam`</a>.  Working on code this way is a good strategy to have available to you. Often in coming to grips with a body of code written by that visitor from another planet, just understanding the library interfaces for what's been exhumed can be helpful.
 

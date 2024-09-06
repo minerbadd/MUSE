@@ -2,4 +2,4 @@
 
 headings rate? place? count??
  
-Repeated movement report at specified rate (or every five) seconds).
+Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds).

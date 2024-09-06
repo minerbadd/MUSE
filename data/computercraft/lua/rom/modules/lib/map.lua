@@ -461,7 +461,7 @@ local function where(namedPlace, count, tx, ty, tz)  -- t* for testing -> report
 end; map.hints["where "] =  {["?place "] = {["??count"] = {}}} 
 
 local function headings(rate, ...)
-  --:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every five) seconds)._
+  --:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds)._
   local rateNumber = tonumber(rate); local rest = rateNumber and {...} or {rate, ...}; rateNumber = rateNumber or 5
   core.report(1, "Headings", rateNumber, table.unpack(rest)) --rateNumber, rate,
   while true do core.report(1, where(table.unpack(rest))); core.sleep(rateNumber) end

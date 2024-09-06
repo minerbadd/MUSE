@@ -17,7 +17,7 @@ function remote.come() end
 ---@type fun():  nil 
 function remote.wait() end
 
--- Repeatedly towards player position, default rate 0.5 seconds.
+-- Repeatedly towards player position, default rate _G.Muse.rates.tail seconds
 -- remote.tail(turtle: ":", __ : "tail", rates: ":"?):  `nil`  <-
 ---@type fun(turtle: string,  __ : "tail",  rates: string?):  nil  
 function remote.tail() end

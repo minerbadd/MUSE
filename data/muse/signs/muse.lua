@@ -852,7 +852,7 @@ Setup turtle to repeatedly wait for MC network requests, send MR results.",
   ["type"] = "function",
   ["name"] = "remote.tail",
   ["description"] = "\
-Repeatedly towards player position, default rate 0.5 seconds.",
+Repeatedly towards player position, default rate _G.Muse.rates.tail seconds",
 }
 ,
   ["call"] = {
@@ -1702,11 +1702,11 @@ Planting through blockages and in several directions. Putting item and replacing
 }
 ,
   ["_remote.tail:_"] = {
-  ["line"] = "  --:: remote.tail(turtle: \":\", __ : \"tail\", rates: \":\"?) -> _Repeatedly towards player position, default rate 0.5 seconds.__ -> `nil` ",
+  ["line"] = "  --:: remote.tail(turtle: \":\", __ : \"tail\", rates: \":\"?) -> _Repeatedly towards player position, default rate _G.Muse.rates.tail seconds -> `nil` ",
   ["out"] = " `nil` ",
   ["sign"] = "remote.tail(turtle: \":\", __ : \"tail\", rates: \":\"?)  ",
   ["kind"] = "face",
-  ["text"] = "Repeatedly towards player position, default rate 0.5 seconds.",
+  ["text"] = "Repeatedly towards player position, default rate _G.Muse.rates.tail seconds",
 }
 ,
   ["_suck_"] = {
@@ -1818,11 +1818,11 @@ Navigate to post",
 }
 ,
   ["_turtle.unblock:_"] = {
-  ["line"] = "  --:: turtle.unblock(direction: \":\", limit: #:?) -> _Retrys (default 5) dig to limit or bedrock._ -> `\"done\", nil|\"undug\" &!` ",
+  ["line"] = "  --:: turtle.unblock(direction: \":\", limit: #:?) -> _Retrys (default `_G.Muse.attempts`) dig to limit or bedrock._ -> `\"done\", nil|\"undug\" &!` ",
   ["kind"] = "face",
   ["sign"] = "turtle.unblock(direction: \":\", limit: #:?)  ",
   ["out"] = " `\"done\", nil|\"undug\" &!` ",
-  ["text"] = "Retrys (default 5) dig to limit or bedrock.",
+  ["text"] = "Retrys (default `_G.Muse.attempts`) dig to limit or bedrock.",
 }
 ,
   ["dds"] = {
@@ -2376,9 +2376,9 @@ Fields are rectangular solids defined by a range (a `situation` pair with `field
 }
 ,
   ["_Directions_"] = {
-  ["line"] = "--:< **Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`ront_**",
-  ["sign"] = "**Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`ront_** ",
-  ["text"] = "Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`ront",
+  ["line"] = "--:< **Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward_**",
+  ["sign"] = "**Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward_** ",
+  ["text"] = "Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward",
   ["kind"] = "word",
 }
 ,
@@ -2840,9 +2840,9 @@ Dispatch targets for_ `net` _library._ -> task, _task",
 }
 ,
   ["_headings_"] = {
-  ["line"] = "  --:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every five) seconds)._",
+  ["line"] = "  --:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds)._",
   ["sign"] = "headings rate? place? count??  ",
-  ["text"] = "Repeated movement report at specified rate (or every five) seconds).",
+  ["text"] = "Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds).",
   ["kind"] = "cli",
 }
 ,
@@ -3842,7 +3842,7 @@ Check block in direction has the same ID as selected slot",
   ["type"] = "function",
   ["name"] = "turtle.unblock",
   ["description"] = "\
-Retrys (default 5) dig to limit or bedrock. Returns \"done, \"undug\" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.",
+Retrys (default `_G.Muse.attempts`) dig to limit or bedrock. Returns \"done, \"undug\" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.",
 }
 ,
   [":turtle.sucks"] = {
