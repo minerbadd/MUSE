@@ -153,7 +153,7 @@ end
 local function go(line) -- returns the result from last chain command attempted
   --:# Movements are `r[ight], l[eft], f[orward], b[ack], u[p], d[own], n[orth], e[ast], s[outh], w[est]`.
   --:- go _(first letter of) directions followed by optional counts, e.g. `r 10 u east 3 u 4 d n`._ -> _Chained movement._
-  local commandOK, code, remaining, xyzfacing[local commands = chain(2, line, {}); -- line[1] is  "go"
+  local commandOK, code, remaining, xyzfacing; local commands = chain(2, line, {}); -- line[1] is  "go"
   for _, command in ipairs(commands) do commandOK, code, remaining, xyzfacing = core.pass(pcall(doChain, command))
     if not commandOK then 
       error("roam.go: Failed "..core.string(command).." in "..core.string(line).." because "..code.." at "..move.ats()) 
@@ -171,7 +171,7 @@ local ops = {go = go, to = tryTo, trace = trace, }
 
 function roam.op(arguments) --:: roam.op(arguments: ":"[]) -> _Move turtle:_ -> `":" &:`
   local from = here(); turtle.block(turtle.blocking()) -- check dead reckoning, try motion and block if enabled for testing
-  local roamOK, code, _, xyzfacing = core.pass(pcall(ops[arguments[1], arguments))
+  local roamOK, code, _, xyzfacing = core.pass(pcall(ops[arguments[1]], arguments))
   if not roamOK then return "Roam error command: "..arguments[1].." in "..core.string(arguments).." because "..code end
   return from.." to "..xyzfacing 
 end
