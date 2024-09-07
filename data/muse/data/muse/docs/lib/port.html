@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title></title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 10px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        <style>
+/* MUSE MD css */
+
+body {
+font-family: Segoe, 'Segoe UI', Candara, Calibri, Arial, sans-serif;
+margin-left: 7%; margin-right: 7%; line-height: 1.5; font-size: 15px;
+font-weight: 400
+}
+code {
+    color: #0f8928; /* base00 */
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 15px;
+	text-align: left;
+}
+
+
+
+</style>
+        </head>
+        <body class="vscode-body vscode-light">
+            <p>--:! {port: []: (:)} &lt;- <strong>Transport Operations Command Line Library</strong> -&gt; muse/docs/lib/port.md<br>
+--:| port: <em>CLL for <code>book</code> and <code>port</code> commands assessing and clearing player inventory for specified teleport.</em> -&gt; port</p>
+<p>--:# Partially consumed inventory items add to the energy <code>bank</code> used to decrease a future porting cost in a session.</p>
+<p>--:# Default player inventory items are considered for <code>book</code> and <code>port</code> (porting) operations.</p>
+<p>--:&gt; port.item: <em>Short inventory item name for booking</em> -&gt; <code>&quot;iron&quot;|&quot;copper&quot;|&quot;gold&quot;|&quot;redstone&quot;</code></p>
+<p>--:# Rather arbitrarly, height for porting includes a player standing on a turtle</p>
+<p>--:# <strong>Support and test functions for <code>book</code> and <code>port</code> operations.</strong><br>
+--:+ <em>Assess player inventory considered for energy available to do work.</em></p>
+<p>--:: port.inventory(costToPay: #:, orderedItems: port.order, playerInventory: [port.item]: #:) -&gt; <em>Testing</em> -&gt; <code>&quot;:&quot;[], #:, #:</code><br>
+--:+ <em>Returns payment inventory used for <code>costToPay</code>, excess energy to bank, inventory energy used</em></p>
+<p>--:&gt; port.order: <em>Order in which inventory items will be considered for booking</em> -&gt; <code>port.item[]</code></p>
+<p>--:: port.available(set: [port.item]: #:) -&gt; <em>For Testing: mock player inventory</em> -&gt; <code>[port.item]: #:</code></p>
+<p>--:: port.book(name: &quot;:&quot;, label: &quot;:&quot;, from: place, to: place, span: #:, ordering: port.order) -&gt; <em>Testing</em> -&gt; <code>booking: &quot;:&quot;</code><br>
+--:+ <em>Booking (string) names the <code>range</code> entry that will be used to specify a <code>port</code> operation and how to pay for it.</em><br>
+--:+ <em>Return needed inventory for booking and bankable if &gt; 0</em></p>
+<p>--:# <strong>Booking from place spanning area to place, offering items for port operation</strong></p>
+<p>--:- book name label from to span? item??... -&gt;  <em>Spanned range with (default) items as properties; return cost less bank.</em></p>
+<p>--:# Save booking as a <code>range</code> with <code>span</code> and offered or default ordering of items as <code>range</code> properties</p>
+<p>--:# <strong>Port operation consuming player inventory offered in booking.</strong></p>
+<p>--:- port booking -&gt; <em>As provided in booking, consume player inventory to teleport entities from one area to another.</em></p>
+<p>--:# <strong>If this is in-game, do the port and if successful, pay for it by clearing counts of selected items</strong></p>
+<p>--:: port.op(commands: &quot;:&quot;[]) -&gt; <em>Command Line Interface for teleport book and trip:</em> -&gt; <code>&quot;:&quot; &amp;:</code></p>
+
+            
+            
+        </body>
+        </html>

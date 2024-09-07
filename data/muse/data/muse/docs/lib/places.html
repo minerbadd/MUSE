@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title></title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 10px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        <style>
+/* MUSE MD css */
+
+body {
+font-family: Segoe, 'Segoe UI', Candara, Calibri, Arial, sans-serif;
+margin-left: 7%; margin-right: 7%; line-height: 1.5; font-size: 15px;
+font-weight: 400
+}
+code {
+    color: #0f8928; /* base00 */
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 15px;
+	text-align: left;
+}
+
+
+
+</style>
+        </head>
+        <body class="vscode-body vscode-light">
+            <p>--:! {place: []: (:), moves: []: (:), steps: []: (:) } &lt;- <strong>Places Functions Library</strong> -&gt; muse/docs/lib/places.md<br>
+--:| places: <em>Naming places at MUSE coordinates, moving there, stepping there for operations.</em> -&gt; places, place, moves, steps<br>
+--:+ place: <strong>Name places (points, trails, ranges); serialize and load serializations for disk and network operations.</strong><br>
+--:+ moves: <strong>Move turtles to named places or along named trails.</strong><br>
+--:+ steps: <strong>Iterator to move block by block to named places or along named trails.</strong></p>
+<p>--:# <strong>Type definitions that will be serialized for network tansport and disk storage</strong></p>
+<p>--:&gt; place: <em>A point, trail, or range</em> -&gt; <code>{name: &quot;:&quot;, label: &quot;:&quot;, :situations:, :features:}</code></p>
+<p>--:&gt; features: <em>Dictionary of string key, any value pairs</em> -&gt; <code>[key: &quot;:&quot;]: any</code></p>
+<p>--:# <strong>Utilities for places (points, trails, and ranges)</strong></p>
+<p>--:: place.reset() -&gt; <em>Resets places to the empty table.</em> -&gt; <code>nil</code></p>
+<p>--:: place.count() -&gt; <em>Returns number of places.</em> -&gt; <code>#:</code></p>
+<p>--:: place.site(value: &quot;:&quot;?) -&gt; <em>Set or return local <code>site</code> (isolates global).</em> -&gt; <code>&quot;:&quot;</code></p>
+<p>--:: place.qualify(name: &quot;:&quot;) -&gt; <em>Return already sited name, otherwise prepend site to name</em> -&gt; <code>sitedName: &quot;:&quot;</code></p>
+<p>--:: place.distance(a: xyzf, b: xyzf) -&gt; <em>Manhattan: abs(delta x) + abs(delta y) + abs(delta z).</em> -&gt; <code>distance: #:</code></p>
+<p>--:: place.match(name: &quot;:&quot;) -&gt; <em>Lookup place qualified by site, return</em> <code>nil</code> <em>if not found.</em> -&gt; <code>index: #:?, place?</code></p>
+<p>--:: place.xyzf(name: &quot;:&quot;?, number: #:?) -&gt; <em>Looks up name [defaults to current situation].</em> -&gt; <code>xyzf?, index: #:?</code></p>
+<p>--:: <a href="http://place.name">place.name</a>(name: &quot;:&quot;, label: &quot;:&quot;, supplied: situation?, :features:??) -&gt; <em>Make or update place.</em> -&gt; <code>&quot;:&quot;, #:</code><br>
+--:+ <em>Include current situation or optionally supplied situation in places. Optionally update features with key = value.</em><br>
+--:+ <em>Return index of situation in global places and the serialized situation including its features.</em></p>
+<p>--:: place.add(name: &quot;:&quot;, :situation:) -&gt; <em>Add situation to situations of an existing place.</em> -&gt; <code>serialized: &quot;:&quot;, index: #:</code></p>
+<p>--::place.erase(name: &quot;:&quot;) -&gt; <em>Removes named place from array of places.</em> -&gt; <code>#:, index: #:</code><br>
+--:+ <em>Return new length of places table and the (previous) index of the removed place.</em></p>
+<p>--:# <strong>Answering &quot;where?&quot;</strong></p>
+<p>--:: place.near(span: #:?, reference?: &quot;:&quot;|position) -&gt; __ -&gt; (): <code>name: &quot;:&quot;, label: &quot;:&quot;, xyz, distance: #:, situations, serial: &quot;:&quot;</code><br>
+--:+ <em>If both the span and name or position are specified, return places within a span of blocks of the named place or position.</em><br>
+--:+ <em>If only the span is specified, return places within a span of blocks of the current situation or player position.</em><br>
+--:+ <em>If neither is specified return each of the named places. In any case, iterator returns include serialized places.</em></p>
+<p>--:: place.nearby(:xyzf:?, :cardinals:) -&gt; <em>Sorted</em> -&gt; `:[distance: #:, name: &quot;:&quot;, label: &quot;:&quot;, cardinal: &quot;:&quot;, :xyzf:]</p>
+<p>--:&gt; cardinals: <em>Function to get one of the eight cardinal points of the compass</em> -&gt; (dx: #:, dz: #:): cardinal: &quot;:&quot;<br>
+--:+ <em>Nearest places to specified xyzf coordinates or current position (as default).</em><br>
+--:+ <em>Returned table is sorted by distances and includes the name, label, and xyzf position of each place.</em><br>
+--:+ <em>If a <code>cardinals</code> function is supplied, the eight point cardinal direction is also included.</em></p>
+<p>--:# <strong>Support for trails (names and labels for sequences of situations)</strong></p>
+<p>--:: place.fix(:xyzf:, track: ^:?) -&gt; <em>Sets situation position, can start tracking for trail.</em> -&gt; <code>xyzf</code></p>
+<p>--:: place.trail(headName: &quot;:&quot;, tailName: &quot;:&quot;, label: &quot;:&quot;) -&gt; <em>Makes two places.</em> -&gt; <code>headSerial: &quot;:&quot;, tailSerial: &quot;:&quot;</code><br>
+--:+ <em>Trail places share a label and represent trails from head to tail and tail to head; head set by</em> <code>place.fix</code>.</p>
+<p>--:: place.track(name: &quot;:&quot;) -&gt; <em>Returns trail</em> -&gt; <code>name: &quot;:&quot;?, label: &quot;:&quot;?, situations</code>?</p>
+<p>--:# <strong>Moving and stepping for known places: to points or along trails</strong></p>
+<p>--:: moves.along(name: &quot;:&quot;) -&gt; <em>Move from first to second situation of place.</em> -&gt; <code>code: &quot;:&quot;, remaining: #:, xyzf: &quot;:&quot; &amp;! recovery</code><br>
+--:+ <em>If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head.</em></p>
+<p>--:: steps.along(name: &quot;:&quot;) -&gt; <em>Iterator: first to next situation of place.</em> -&gt; <code>(): code: &quot;:&quot;, remaining: #:, xyzf: &quot;:&quot; &amp;! recovery</code><br>
+--:+ <em>If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head.</em></p>
+<p>--:: <a href="http://moves.to">moves.to</a>(target: &quot;:&quot;, first: &quot;:&quot;) -&gt; <em>Move to target, first along direction.</em> -&gt; <code>code: &quot;:&quot;, remaining: #:, xyzf: &quot;:&quot; &amp;! recovery</code></p>
+<p>--:: <a href="http://steps.to">steps.to</a>(target: &quot;:&quot;) -&gt; <em>Step (iterator) to target place.</em> -&gt; <code>(): code: &quot;:&quot;, remaining: #:, xyzf: &quot;:&quot; &amp;! recovery</code></p>
+
+            
+            
+        </body>
+        </html>

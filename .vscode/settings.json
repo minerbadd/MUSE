@@ -13,5 +13,6 @@
     },
     "Lua.diagnostics.disable": [
         "undefined-field"
-    ]
+    ],
+    "markdown.preview.fontSize": 10
 }

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title></title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 10px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        <style>
+/* MUSE MD css */
+
+body {
+font-family: Segoe, 'Segoe UI', Candara, Calibri, Arial, sans-serif;
+margin-left: 7%; margin-right: 7%; line-height: 1.5; font-size: 15px;
+font-weight: 400
+}
+code {
+    color: #0f8928; /* base00 */
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 15px;
+	text-align: left;
+}
+
+
+
+</style>
+        </head>
+        <body class="vscode-body vscode-light">
+            <p>--:! {turtle: []: (:) } &lt;- <strong>Turtle Operations Overlay Library</strong> -&gt; muse/docs/lib/turtle.md<br>
+--:| turtle: <em>Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down.</em> -&gt; turtle<br>
+--:+ <em>Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking.</em></p>
+<p>--:&gt; direction: <em>Four compass points and verticals</em> -&gt; <code>&quot;north&quot;|&quot;east&quot;|&quot;south&quot;|&quot;west&quot;|&quot;up&quot;|&quot;down&quot;</code></p>
+<p>--:# <strong>Turtle operations north, east, south, west, up, down</strong></p>
+<p>--:# <strong>Operation dictionaries keyed by direction, values are generally functions of no arguments calling which return a boolean.</strong></p>
+<p>--:&gt; turtle.attacks: <em>Attack in direction and return attack success.</em> -&gt; <code>[:direction:]: (): ^:, &quot;:&quot;?</code></p>
+<p>--:&gt; turtle.compares: <em>Check block in direction has the same ID as selected slot</em> -&gt; <code>[:direction:]: (): same: ^:</code></p>
+<p>--:&gt; turtle.detects: <em>Check block in direction is solid: not air, mob, liquid or floater.</em> -&gt; <code>[:direction:]: (): ^:</code></p>
+<p>--:&gt; turtle.digs: <em>Try to dig block in direction and call</em> suck(). -&gt; <code>[:direction:]: (side: &quot;:&quot;?): ^:, &quot;:&quot;?</code><br>
+--:+ <em>Sucked items go to inventory. If a hoe is used to attempt to &quot;dig&quot; a dirt block, it will be tilled instead.</em><br>
+--:+ <em>Tilling is also possible if the space in front of the turtle is empty but dirt exists below that point.</em></p>
+<p>--:&gt; turtle.drops: <em>Drop count [or all] items in selected slot to inventory.</em> -&gt; <code>[:direction:]: (count: #:?): ^:, &quot;:&quot;?</code><br>
+--:+ <em>Returned function drops and returns</em> <code>false</code> <em>if there's inventory on the side specified by direction which is full.</em></p>
+<p>--:&gt; turtle.inspects: <em>If true, get detail block information in direction.</em> -&gt; <code>[:direction:]: (): </code>^:<code>, </code>detail?`</p>
+<p>--:&gt; turtle.puts:  <em>Attempt placing block of the selected slot in direction.</em> -&gt; <code>[:direction:]: (text: &quot;:&quot;?): ^:, &quot;:&quot;?</code><br>
+--:+ <em>Collects water or lava if the currently selected slot is an empty bucket. Text is used for placed sign.</em><br>
+--:+ <em>Value of <code>turtle.puts[:direction:]</code> is a function of one optional argument calling which returns a boolean.</em></p>
+<p>--:&gt; turtle.sucks: <em>Move count [or all] from direction to inventory.</em> -&gt; <code>[:direction:]: (count: #:?): ^:, &quot;:&quot;?</code><br>
+--:+ <em>Move from ground or first non empty slot of adjacent inventory enabled block to selected or next turtle slot.</em><br>
+--:+ <em>Value of <code>turtle.sucks[:direction:]</code> is function of one optional argument calling which returns a boolean.</em></p>
+<p>--:# <strong>Function References</strong></p>
+<p>--:: turtle.find(targets: &quot;:&quot;[]) -&gt; <em>Selects found slot.</em> -&gt; <code>detail?</code></p>
+<p>--:: turtle.select(slot: #:) -&gt; <em>Attempts to select the specified slot.</em> -&gt; <code>selected: ^:</code></p>
+<p>--:: turtle.item(slot: #:?) -&gt;  <em>Detail of specified or currently selected slot.</em> -&gt; <code>nil | detail</code></p>
+<p>--:# <strong>Item name and turtle status utilities</strong></p>
+<p>--:: turtle.inventory() -&gt; <em>Returns currrent turtle inventory as turtle detail table</em>. -&gt; <code>detail[]</code></p>
+<p>--:- items -&gt; <em>Returns items in turtle inventory as string.</em></p>
+<p>--:: turtle.check(targets: &quot;:&quot;[], :detail:) -&gt; <em>Tries to match each target against</em> <code>detail.name</code>. -&gt; ``matched: ^:`</p>
+<p>--:# <em>Categories provide names for sets of minecraft items.</em></p>
+<p>--:&gt; ore: <em>Minecraft</em> -&gt; <code>&quot;minecraft:coal_ore&quot;|&quot;minecraft:iron_ore&quot;|&quot;minecraft:lapis_ore&quot;|&quot;minecraft:gold_ore&quot;|&quot;minecraft:diamond_ore&quot;|&quot;minecraft:redstone_ore&quot;|&quot;minecraft:emerald_ore&quot;|&quot;minecraft:nether_quartz_ore&quot;|&quot;minecraft:prismarine&quot;|minecraft:obsidian&quot;</code></p>
+<p>--:&gt; ores: <em>Category</em> -&gt; <code>ore[]</code></p>
+<p>--:&gt; minecraft: <em>For Language Server</em> -&gt; &quot;:&quot;</p>
+<p>--:&gt; group: <em>Materials</em> -&gt; <code>&quot;fuel&quot; | &quot;ore&quot;| &quot;fill&quot; | &quot;dirt&quot; | &quot;stone&quot; | &quot;fence&quot; | &quot;test&quot;</code></p>
+<p>--:# <strong>Fence material specified by short name (e.g. <code>oak</code>) along points specified by <code>range</code></strong></p>
+<p>--:&gt; fencings: <em>Wooden materials</em> <code>-&gt; &quot;birch&quot; | &quot;acacia&quot; | &quot;bamboo&quot; | &quot;cherry&quot; | &quot;chrimson&quot; | &quot;dark oak&quot; | &quot;mangrove&quot; | &quot;oak&quot;</code></p>
+<p>--:: turtle.category(name: &quot;:&quot;) -&gt; <em>Names in category or fencings matching <code>name</code> or</em> <code>{&quot;minecraft:&quot;..name}</code>. -&gt; <code>&quot;:&quot;[]</code></p>
+<p>--:- fueling -&gt; <em>Returns energy available in turtle slots.</em></p>
+<p>--:: turtle.fuel() -&gt; <em>Total energy actually available in turtle slots plus turtle fuel level.</em> -&gt; <code>fuelTotal: #:</code></p>
+<p>--:: turtle.unblock(direction: &quot;:&quot;, limit: #:?) -&gt; <em>Retrys (default <code>_G.Muse.attempts</code>) dig to limit or bedrock.</em> -&gt; <code>&quot;done&quot;, nil|&quot;undug&quot; &amp;!</code><br>
+--:+ <em>Returns &quot;done, &quot;undug&quot; if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.</em></p>
+<p>--:: turtle.digTo(:xyzf:, limit: #:?) -&gt; <em>Unblocking move.</em> -&gt; <code>code: &quot;:&quot;, remaining: #:, xyzf: &quot;:&quot; &amp;: &amp;!</code><br>
+--:+ <em>Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for &quot;lost&quot; or &quot;empty&quot;.</em><br>
+--:+ <em>Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason.</em><br>
+--:+ <em>Normally return just what a successful move would: &quot;done&quot;, 0 remaining, current position.</em></p>
+<p>--:: turtle.digAround(orientation: &quot;:&quot;, name: &quot;:&quot;, diggings: &quot;:&quot;[]) -&gt; <em>Unblocking dig.</em> -&gt; <code>&quot;done&quot; &amp;: &amp;!</code><br>
+--:+ <em>Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.</em></p>
+<p>--:: turtle.block(blocked: ^:) -&gt; <em>Out-of-game debug: sets blocking for simulating turtle being blocked.</em> -&gt;  <code>blocked: ^:</code></p>
+<p>--:: turtle.blocking(^:) -&gt; <em>Isolate global to control blocking for out-of-game debug.</em> -&gt; <code>^:</code></p>
+
+            
+            
+        </body>
+        </html>

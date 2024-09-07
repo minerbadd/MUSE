@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title></title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 10px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        <style>
+/* MUSE MD css */
+
+body {
+font-family: Segoe, 'Segoe UI', Candara, Calibri, Arial, sans-serif;
+margin-left: 7%; margin-right: 7%; line-height: 1.5; font-size: 15px;
+font-weight: 400
+}
+code {
+    color: #0f8928; /* base00 */
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 15px;
+	text-align: left;
+}
+
+
+
+</style>
+        </head>
+        <body class="vscode-body vscode-light">
+            <p>--:! {core: []: (:)} &lt;- <strong>Core Functions Library</strong> -&gt; muse/docs/lib/core.md<br>
+--:| core: <em>Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support.</em> -&gt; core</p>
+<p>--:# <strong>Managing state: clone table, generate closure for session (non-persistent) state, cache loads</strong></p>
+<p>--:: core.clone(source: {:}|any) -&gt; <em>Deep copy source table or return source if not table.</em> -&gt; <code>{:}|any</code></p>
+<p>--:&gt; closing: <em>Returns value or sets it and optional table entry to non <code>nil</code> <code>value</code>.</em>  -&gt; <code>(value: any): value: any</code></p>
+<p>--:: core.state(table: {:}?, key: &quot;:&quot;?) -&gt; <em>Returns closure over closure variable</em> -&gt; <code>closing</code></p>
+<p>--:# <strong>Table Utilities: merging tables and finding common items in a pair of tables</strong></p>
+<p>--:: core.merge(...: {:}) -&gt; <em>Merge any number of flat tables into one, allowing repeats.</em> -&gt; <code>{:}</code></p>
+<p>--:: core.match(tableA: any[], tableB: any[]) -&gt; <em>Find first matching item in pair of item tables.</em> -&gt; <code>nil</code> | <code>any</code></p>
+<p>--:# <strong>Making Strings: both instantiable strings and simple single quoted strings for printing</strong></p>
+<p>--:: core.serialize(input: any) -&gt; <em>Executable string to instantiate input.</em> -&gt; <code>&quot;return &quot;..&quot;:&quot; &amp;!</code></p>
+<p>--:: core.string(...: any) -&gt; <em>Makes string from any inputs, simplifies single entry tables.</em> -&gt; <code>&quot;:&quot;</code></p>
+<p>--:: core.xyzf(:xyzf:) -&gt; <em>Returns specially formatted string for <code>xyzf</code>.</em> -&gt; <code>&quot;:&quot;</code></p>
+<p>--:&gt; xyzf: <em>Position and facing as table</em> -&gt; <code>{x: #:, y: #:, z: #:, facing: &quot;:&quot;}</code></p>
+<p>--:# <strong>Handling errors and reporting operations</strong></p>
+<p>--:: core.pass(ok: ^:, ...: any) -&gt; <em>Pass input but report string if not ok.</em> -&gt; ok: <code>true|false, result: ...|&quot;:&quot;, any?</code></p>
+<p>--:: core.where() -&gt; <em>GPS location if available.</em> -&gt; <code>x: #:?, y: #:?, z: #:?</code></p>
+<p>--:# <strong>Logging and Quit Control Globals</strong></p>
+<p>--:- quit message -&gt; <em>Set <code>quit</code> flag to message; next <code>core.status</code> throws <code>error</code> to abort operations.</em></p>
+<p>--:&gt; core.log: <em>Closure variable</em> -&gt; <code>{level: closing, file: closing, handle: closing}</code></p>
+<p>--:: core.status(level: #:, ...: any) -&gt; <em>If level less than (elimination) threshold, then report rest as string.</em> -&gt; <code>nil</code><br>
+--:+ <em>If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol.</em><br>
+--:+ <em>If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.</em></p>
+<p>--:: core.report(level: #:, ...: any) -&gt; <em>If level less than <code>status</code> threshold, report <code>rest</code> as string.</em> -&gt; <code>nil</code></p>
+<p>--:: core.logging(arguments: :[level: #:, filename: &quot;:&quot;]) -&gt; <em>Set threshold level [and local log file] for status reports</em> -&gt; <code>nil</code></p>
+<p>--:: core.record(message: &quot;:&quot;) -&gt; <em>Appends (status) message to log file on player.</em> -&gt; <code>nil &amp; !</code></p>
+<p>--:: core.trace(err: any) -&gt; <em>Reports traceback for xpcalls.</em> -&gt; <code>err: any</code></p>
+<p>--:# <strong>User interface utilities</strong></p>
+<p>--:: core.completer(completions: {:}) -&gt; <em>Register command completions for shell</em> -&gt; <code>(:)</code></p>
+<p>--:: core.echo(...: any) -&gt; <em>For testing; just returns its arguments.</em> -&gt; ...: <code>any</code></p>
+<p>--:- echo arguments ... -&gt; <em>For testing: just returns its arguments.</em></p>
+<p>--:: core.optionals(string: &quot;:&quot;?, number: #:?, ...: any) -&gt; <em>Optional number and/or string.</em> -&gt; <code>string: &quot;:&quot;?, number: #:?, ...: any</code></p>
+<p>--:# <strong>Math utilities</strong></p>
+<p>--:: core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?) -&gt; <em>Make plots.</em> -&gt; <code>bounds[]</code><br>
+--:+ <em>Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result.</em><br>
+--:+ <em>The number n is the number of bounds in result where each bound is offset by addend from the prior bounds.</em><br>
+--:+ <em>Optionally the partial bounds are included as the first bounds in the result.</em></p>
+<p>--:&gt; bounds: <em>Vector pair defining a rectangular solid</em> -&gt; :<code>[xyz, xyz]</code></p>
+<p>--:&gt; xyz: <em>Minecraft coordinates: +x: east, +y: up, +z: south</em> -&gt; :[x: #:, y: #:, z: #:]</p>
+<p>--:: core.orient(vectors: xyzMap, face: &quot;:&quot;?, rotate: &quot;:&quot;??) -&gt; <em>Three dimensional rotation</em> -&gt; <code>xyzMap</code><br>
+--:+ <em>Turn from up north to face, default for no face is to rotate -90 degrees.</em></p>
+<p>--:&gt; xyzMap: <em>Table of vectors either an array or dictionary</em> -&gt; <code>xyz[] | [core.faces]: xyz</code></p>
+<p>--:&gt; core.faces: <em>Key for composed function dictionary</em> -&gt; &quot;north&quot;|&quot;south&quot;|&quot;east&quot;|&quot;west&quot;|&quot;up&quot;|&quot;down&quot;|&quot;rotate&quot;</p>
+<p>--:: core.round(n: #:) -&gt; <em>Next integer down if below half fraction</em> -&gt; <code>#:</code></p>
+<p>--:# <strong>Example iterator, restartable at index</strong></p>
+<p>--:: core.inext(table: {:}, index: #:) -&gt; <em>Iterator over table beginning at index.</em> -&gt; <code>(:), {:}, #:</code></p>
+<p>--:# <strong>Lowest level turtle and mock turtle support used by several libraries including lib/motion</strong></p>
+<p>--:: core.findItems(targets: &quot;:&quot;[]) -&gt; <em>Selects found slot.</em> -&gt; <code>detail?</code></p>
+<p>--:&gt; detail: <em>Defined by Computercraft</em> -&gt; <code>{name: detail.name, count: detail.count, damage: detail.damage}</code></p>
+<p>--:&gt; <a href="http://detail.name">detail.name</a>: <em>Prepended by the mod name <code>&quot;minecraft:&quot;</code>.</em> -&gt; <code>&quot;:&quot;</code></p>
+<p>--:&gt; detail.count: <em>Available in inventory</em> -&gt; <code>#:</code></p>
+<p>--:&gt; detail.damage: <em>Distinguishing value</em> -&gt; <code>#:</code></p>
+<p>--:: core.sleep(#:?) -&gt; <em>Mocks sleep as null operation out of game.</em> -&gt; <code>nil</code></p>
+<p>--:: core.getComputerID(id: #:?) -&gt; <em>Out of game returns id; id ignored in game.</em> -&gt; <code>id: #:</code></p>
+<p>--:: core.getComputerLabel(label: &quot;:&quot;?) -&gt; <em>Out of game returns label; label ignored in game.</em> -&gt; <code>label: &quot;:&quot;</code></p>
+<p>--:: core.setComputerLabel(label: &quot;:&quot;) -&gt; <em>Sets (out-of game global) label</em> -&gt; <code>label: &quot;:&quot;</code></p>
+
+            
+            
+        </body>
+        </html>

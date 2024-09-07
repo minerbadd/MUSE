@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title></title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 10px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        <style>
+/* MUSE MD css */
+
+body {
+font-family: Segoe, 'Segoe UI', Candara, Calibri, Arial, sans-serif;
+margin-left: 7%; margin-right: 7%; line-height: 1.5; font-size: 15px;
+font-weight: 400
+}
+code {
+    color: #0f8928; /* base00 */
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 15px;
+	text-align: left;
+}
+
+
+
+</style>
+        </head>
+        <body class="vscode-body vscode-light">
+            <p>--:! {remote: []: (:) } &lt;- <strong>Functions Library for Remote Procedure Calls</strong> -&gt; muse/docs/lib/remote.md<br>
+--:| remote: <em>Client and server side support for RPCs and client (player) side support for</em> <code>come</code> <em>and</em> <code>tail</code>. -&gt; remote, _remote<br>
+--:+ <strong>Test functions are provided for out-of-game, no network operation.</strong></p>
+<p>--:# <strong>Server Side Remote Call Operations: Protocols to Receive Muse Calls (MC), Send Muse Responses (MR)</strong></p>
+<p>--:: remote.wait() -&gt; <em>Setup turtle to repeatedly wait for MC network requests, send MR results.</em> -&gt; <code>nil</code></p>
+<p>--:# <strong>Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)</strong></p>
+<p>--:: remote.call(server: &quot;:&quot;, command: &quot;:&quot;, arguments: any[], callback: (:)?) -&gt; <em>RPC:</em> -&gt; <code>any &amp;: &amp;!</code><br>
+--:+ <em>Form serialized request table from command string and arguments. Get server ID from server name.</em><br>
+--:+ <em>Send request to server, wait for result, return call (default <code>remote.return</code>) callback function to result.</em></p>
+<p>--:: remote.returns(results: any[]) -&gt; <em>Default client side handling of server response: just print results as string.</em> -&gt; <code>nil</code></p>
+<p>--:# <strong>Turtle fetch functions:</strong> <code>come</code> <strong>(once) and</strong> <code>tail</code> <strong>(repeatedly) to player</strong><br>
+--:+ <em>Prepare remote call to server turtle by getting player xyz position and forming argument table.</em></p>
+<p>--:: remote.come(turtle: &quot;:&quot;) -&gt; <em>Towards GPS player position.</em> -&gt; <code>report: &quot;:&quot;</code></p>
+<p>--:- come -&gt; <em>Turtle towards GPS player position.</em></p>
+<p>--:: remote.tail(turtle: &quot;:&quot;, __ : &quot;tail&quot;, rates: &quot;:&quot;?) -&gt; _Repeatedly towards player position, default rate _G.Muse.rates.tail seconds -&gt; <code>nil</code></p>
+<p>--:- tail rate? -&gt; <em>Turtle every rate seconds towards player.</em></p>
+
+            
+            
+        </body>
+        </html>

@@ -28,7 +28,7 @@ Each appropriate `turtle` operation is redefined to support the new abstraction 
 
 local cardinals = {"north", "east", "south", "west"}
 
-local function makeDirections(front, up, down, op, lib) 
+local function makeDirections(front, up, down, op, lib) -- TODO: extend `directions` and `operations` to include `right` and `left`
   for _, cardinal in ipairs(cardinals) do lib[op][cardinal] = function(q) move[cardinal](0) return front(q) end end
   lib[op].up = function(q) return up(q) end; lib[op].down = function(q) return down(q) end; 
   lib[op].forward = function(q) return front(q) end -- `q` is quantity argument if needed
