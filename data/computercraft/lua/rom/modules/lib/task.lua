@@ -4,7 +4,7 @@
 --:! {task: []: (:) } <- **Command Line Library for Tasks: Low Level Turtle Operations** -> muse/docs/lib/task.md  
 --:| task: _Dispatch targets for_ `net` _library._ -> task, _task
 ```
-The `task` library uses the `direction` table abstractions built by `lib/turtle` to provide the new and improved turtle. It supports a few tasks, like `dig`, done while in motion. For motions along trails, it folds and xyz change into a scalar direction for the change. Finally, it uses the same implementation pattern for CLI support as other CLLs. 
+The `task` library uses the `direction` table abstractions built by `lib/turtle` to provide the new and improved turtle. It supports a few tasks, like `dig`, done while in motion. Those use the `step` closures of motion last seen in `lib/motion`. For motions along trails, it folds and xyz change into a scalar direction for the change. Finally, it uses the same implementation pattern for CLI support as other CLLs. 
  ```Lua
 --]]
 local task, _task = {}, {}; task.hints =  {} ---@module "signs.task" -- internal and exported library functions and CLI hints

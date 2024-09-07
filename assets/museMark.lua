@@ -39,7 +39,7 @@ local markdownFooter = [[
 
 local headers = {lua = luaHeader, md = markdownHeader}
 local footers = {lua = luaFooter, md = markdownFooter}
-local assets = {headers, footers}
+local html = {headers, footers}
 
 local function splitFiles(path)   -- make a table split by \ or /
   local files = {}; for name in string.gmatch(path, "([^/\\]+)[/\\]?") do table.insert(files, name) end 
@@ -60,7 +60,7 @@ local docsDirectories = {docs.."lib", docs.."fields", docs.."plans", docs.."char
 local codeDirectories = {code.."lib", code.."fields", code.."plans", code.."charts", code.."daemons", code.."programs"}
 
 local Mark = require("Mark")
-Mark(apiDirectory, apiFile, sourceDirectories, docsDirectories, codeDirectories, assets, verbose)
+Mark(apiDirectory, apiFile, sourceDirectories, docsDirectories, codeDirectories, html, verbose)
 
 local function makeHelp(helps, help) -- helps directory and output concatenated help file
   local helpers = {}; for helpFile in lfs.dir(helps) do 
