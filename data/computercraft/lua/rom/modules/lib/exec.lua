@@ -20,6 +20,7 @@ local commands = _G.rednet and _G.commands or require("mock").commands -- for ou
 --[[
 ```
 ### CLI support for `locate` command to align a turtle's dead reckoning with Minecraft coordinates for launch.
+<a id="locate"></a>
 ```Lua
 --]]
 --:# **Before GPS launch, set Muse dead reckoning coordinates for turtle sitting on `porter` to be its Minecraft coordinates**
@@ -43,6 +44,7 @@ end; exec.hints["locate"] = { ["?name ??label"] = {} }
 --[[
 ```
 ### CLI support for `activate` command: `/forceload add` area specified by a `range`
+<a id="activate"></a>
 ```Lua
 --]]
 local function activate(range)

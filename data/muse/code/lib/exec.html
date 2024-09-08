@@ -26,6 +26,7 @@ local maps = require("map"); local map = maps.map ---@module "signs.map"
 local commands = _G.rednet and _G.commands or require("mock").commands -- for out-game testing
 </code></pre>
 <h1> CLI support for <code>locate</code> command to align a turtle's dead reckoning with Minecraft coordinates for launch.</h1>
+<a id="locate"></a>
 <pre><code class="language-lua">
 --:# <b>Before GPS launch, set Muse dead reckoning coordinates for turtle sitting on <code>porter</code> to be its Minecraft coordinates</b>
 --:+ The turtle will generally be <code>rover</code> for launch. Named point will be the launch base. Needs command computer in-game.
@@ -47,6 +48,7 @@ local function locate(name, label, tx, ty, tz, blockAboveTest) -- <code>t*</code
 end; exec.hints["locate"] = { ["?name ??label"] = {} }
 </code></pre>
 <h1> CLI support for <code>activate</code> command: <code>/forceload add</code> area specified by a <code>range</code></h1>
+<a id="activate"></a>
 <pre><code class="language-lua">
 local function activate(range)
   --:- activate range -> <i>Add borders from west and north to east and south of range for Minecraft forceload.</i>

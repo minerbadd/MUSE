@@ -13,7 +13,7 @@
 --:| net: <i>Command Line Library providing turtle operations used by remote library (effectively the UI for Muse).</i> -> net
 --:# <i>Remote commands for turtles need prefixing by <code>farmer</code>, <code>miner</code>, <code>logger</code>,<code>porter</code>,  or <code>rover</code> roles.</i>
 </code></pre>
-When this module is loaded it populates its exported table, the <code>net</code> library, as a dispatch table used by <code>remote.call</code>. Each entry in the table defines a <i>remote command</i>. Only the operations performed by these commands are available for remote execution. Together these create the remote CLI for MUSE. It also sets up hints as shell completions for ComputerCraft's CraftOS <code>shell.setCompletionFunction</code>. This is invoked at MUSE session start by <a href="../.start.html#complete" target="_blank"> <code>.start.lua</code></a> running  <code>core.completer</code>
+When this module is loaded it populates its exported table, the <code>net</code> library, as a dispatch table used by <code>remote.call</code>. Each entry in the table defines a <i>remote command</i>. Only the operations performed by these commands are available for remote execution. Together these create the remote CLI for MUSE. It also sets up hints as shell completions for ComputerCraft's CraftOS <code>shell.setCompletionFunction</code>. This is invoked at MUSE session start by <a href="../.start.html#complete" target="_blank"> <code>.start.lua</code> </a> running  <code>core.completer</code>
 <p>
 As you'll see, it's all about that exported table.
 <pre><code class="language-lua">

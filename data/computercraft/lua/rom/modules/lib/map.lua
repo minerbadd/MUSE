@@ -88,27 +88,27 @@ function map.write(thisMap) --:: map.write(thisMap: ":"?) -> _Delete old, write 
 end
 --[[
 ```
-<a id="resite"></a> 
-For when the player or an unlanded turtle (not tied to a site) is in a new and better place.
+<a id="sited"></a> 
+For when the player or an unlanded turtle (not tied to a site) is in a new and far far better place.
 ```Lua
 --]]
-local function resite(site) 
+local function sited(site) 
   --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., porting `rover`._
   if not site then return place.site() end -- just report
-  local siteFileHandle = assert(io.open(siteFile, "w"), "map.resite: can't write "..siteFile)
+  local siteFileHandle = assert(io.open(siteFile, "w"), "map.sited: can't write "..siteFile)
   siteFileHandle:write(place.site(site).."\n"); siteFileHandle:close()
   return place.site(site) 
 end; map.hints["site "] = {["?name"] = {} }
 
 local function store(site) -- used in `.start` to persist `site` and load clean map
   -- :: store(site: ":") -> _Persists `site` in local store and loads local map._ -> `report: ":"`
-  local siteFile = io.open(siteFile, "r"); if not siteFile then resite(site) end
+  local siteFile = io.open(siteFile, "r"); if not siteFile then sited(site) end
   if not map.map() then map.map(_G.Muse.map) end
   local places = map.read(map.map()); map.write(map.map());
   return site..": "..places.." places"
 end; map.hints["store "] = {["?site"] = {} } 
 
-local function join(site, role) resite(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
+local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
 --:- join site role -> _Set site and join landed turtle to it with specified role._
  map.hints["join "] = {["?site "] = {["?role"] = {} }} 
 --[[
@@ -503,7 +503,7 @@ Just a big dispatch table, easily amended and extended. The CLI is just a thin l
 --]]
 local ops = { --:# **Command Line Interface** 
   erase = erase, store = store, sync = sync, point = point, range = range, -- for all
-  view = view, site = resite, chart = chart, join = join, -- for all
+  view = view, site = sited, chart = chart, join = join, -- for all
   near = near, at = at, where = where, headings = headings, -- position relative to places for players and turtles
   fix = fix, trail = trail,  -- just for turtles
   test = test, -- just to set test conditions
