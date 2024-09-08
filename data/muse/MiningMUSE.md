@@ -100,7 +100,7 @@ There's an operation in `lib/map` that needs noting. It's there for a reason we'
 With parental warnings duly noted (and  forgotten), let's press on to the next chapter where there'll be more examples of constructing CLIs as well as ideas about what to expose and what to hide in a design.
 <br/>
 <a id="Chapter4"></a> 
-## Chapter 4 - Choosing Abstractions, Table Making Functions
+## Chapter 4 - Choosing Abstractions, Tables That Make Functions
 <a href="https://en.wikipedia.org/wiki/Information_hiding#:~:text=In%20computer%20science%2C%20information%20hiding,the%20design%20decision%20is%20changed." target="_blank"> _Information hiding_  </a>is an important part of what a library does. The choice of what to expose as an interface is the choice of what to hide. One aspect of choosing what (detail) to hide is choosing the abstractions to create. Exposing the wrong detail gets in the way of delivering an evolving yet maintainable system. Thus, the task of design is often about exposing the right abstractions. 
 
 For MUSE, some abstractions are obvious. They closely relate to what's in the game, our _problem domain_, and have fairly intuitive expression in the _solution domain_ that we're <a href="https://shahworld.wordpress.com/2015/09/22/what-is-problem-domain-and-solution-domain/" target="_blank"> building</a>. For changes in the position and orientation of a turtle, the right abstractions might expose interfaces for movement in the four cardinal directions ("north", "south", "east", and "west") rather than relative directions ("right" and "left"). The <a href="docs/lib/motion.html" target="_blank"> `lib/motion`  </a> library exposed these abstractions for movement. 
@@ -111,38 +111,38 @@ The `lib/turtle` library extends this abstraction consistently with the other in
 
 There's a pretty long list of turtle operations that would need fitting into this abstraction. The fitting is so repetitive that it lends itself to representation as a table. There's a couple of maker functions executed when `lib/turtle` is loaded. They make the functions that `lib/turtle` exports. Each of those exported turtle operation functions is then exposed as a table indexed by `direction`. 
 
-Functions making tables is the _dog bites man_ story. With a little license, this story is _tables make functions_. It's a small step toward a declarative programming style. Larger ones to follow. For now, look at the `lib/turtle` <a href="code/lib/turtle.html" target="_blank"> implementation </a> to see how to have yet more fun with functions. 
+Functions making tables is the _dog bites man_ story. With a little license, this story is titled _tables make functions_. It's a small step toward a <a href="https://en.wikipedia.org/wiki/Declarative_programming" target="_blank"> declarative programming </a>style. Larger ones to follow. For now, look at the `lib/turtle` <a href="code/lib/turtle.html" target="_blank"> implementation </a> to see how to have yet more fun with functions. 
 
 Another detail needing abstracting is the notion of what's in which `slot` of a turtle's  <a href="code/lib/turtle.html#inventory" target="_blank"> inventory</a>. What's where exactly is something worth hiding. What we generally just want to know is whether the turtle's `inventory` includes certain items. Or better, whether it includes certain kinds, `categories`, of items.  These might be, for example,  `fuels`, `stones`, or `ores`. You might want to know about whether a turtle's got stones but not care what kind exactly. A category could be items useful as `fills` or the kinds of `dirt`. We might be more interested in the total fuel energy available to a turtle rather than any specific kind of fuel.
 
-Finally, `lib/turtle` also abstracts <a href="code/lib/turtle.html#unblock" target="_blank"> dealing with some of the difficulties </a>turtles face when attempting to move to a position. Hiding the detail of dealing with obstacles presents a simpler notion of movement. 
+Finally, `lib/turtle` also abstracts <a href="code/lib/turtle.html#unblock" target="_blank"> dealing with some of the difficulties </a> turtles face when attempting to move to a position. Hiding the detail of dealing with obstacles presents a simpler notion of movement. 
 
-_With all these changes, `lib/turtle` has superseded the ComputerCraft definition a turtle. Behold all turtles are made new._ 
+_With all these changes, `lib/turtle` has superseded the ComputerCraft definition of a turtle. Behold all turtles are made new._ 
 
 At least if you load `lib/turtle`.
 
-There are two clients of the born again `turtle` that we'll discuss  next: `lib/roam` and `lib/task`. First `lib/roam`.
+There are two clients of the born again turtle that we'll discuss  next: `lib/roam` and `lib/task`. First `lib/roam`.
 
 <a id="roam"/>
 
-<a href="code/lib/roam.html" target="_blank"> <IMG SRC="drawings/04ATree.jpg" hspace ="10" ALIGN="left"/> </a>. The `lib/roam` <a href="code/lib/roam.html" target="_blank"> library </a> provides yet more movement extensions for our turtles: 
+<a href="code/lib/roam.html" target="_blank"> <IMG SRC="drawings/04ATree.jpg" hspace ="15" ALIGN="left"/> </a>. The `lib/roam` <a href="code/lib/roam.html" target="_blank"> library </a> provides yet more movement extensions for our turtles: 
 
 - _try again strategies_ controlled by a `.start` parameter to look for ways around blockages, 
   
 - _going to a `place`_ (as well as specified xyz coordinates)
   
-- _turtle side support_ for following the `player` around (as befits a squire), and
+- _turtle side support_ for following the `player` around (as befits, say, a squire), and
   
 - _a very tiny language_ to chain together commands to move a turtle piecewise in all those abstracted directions, 
   
-All using both the abstractions of `lib/turtle` and the primitives of `lib/motion`. 
+All this is done using both the abstractions of `lib/turtle` and the primitives of `lib/motion`. 
 
 The `lib/roam` library centralizes error handling, safety checks on turtle dead reckoning, and simulated blockage testing for all the commands it supports. It does all this in its CLI <a href="code/lib/roam#op.html" target="_blank">dispatch </a> mechanism, the same one that keeps command code thin. 
 
 Lua has a <a href="https://www.lua.org/doc/sblp2005.pdf" target="_blank"> one pass compiler</a>. Functions build on each other from the beginning of the file to the end. The tree image above <a href="code/lib/roam.html" target="_blank"> links </a> to the beginning of the file. Alternatively, you may want to follow the code backward toward the beginning through the support for <a href="code/lib/roam.html#go" target="_blank"> `go` </a> and <a href="code/lib/roam.html#to" target="_blank"> `to` </a> and then look at <a href="code/lib/roam.html#come" target="_blank"> `come` </a> to see how this is done. Or just read it as written by clicking the tree.
 </br></br>
 <a id="task"></a>
-You might have been driven to abstraction by what we've been going on (and on) about. But it's the new and improved turtle that lets us build the <a href="code/lib/task.html" target="_blank"> `lib/task` library</a>. It supports a CLI for low level turtle tasks in terms of those abstracted directions (some, like `dig`, involve chewing gum while walking). The implementation for each of those low level turtle operations in `lib/task` uses the table accessed by the `direction` that was made for that operation by `lib/turtle`. Oh, the things a turtle can do made new.
+You might have been driven to abstraction by what we've been going on (and on) about. But it's the new and improved turtle that lets us build the <a href="code/lib/task.html" target="_blank"> `lib/task` library</a>. It supports a CLI for low level turtle tasks in terms of those abstracted directions (some, like `dig`, involve chewing gum while walking). These last use the `step` closures from `lib/motion` to do the work, like `dig`, one small step (for a turtle) at a time. The implementation for each of those low level turtle operations in `lib/task` uses the table accessed by the `direction` that was made for that operation by `lib/turtle`. Oh, the things a turtle can do.
 
 There's a <a href="code/lib/task.html#movement" target="_blank">technique </a> in the `lib/task` implementation that folds particular kinds of movement vectors into a (scalar) `direction` for that vector. It takes advantage of a property of the set of some such vectors that they only make changes in one axis at a time. You may find use for the technique in this or other kinds of folding.
 
