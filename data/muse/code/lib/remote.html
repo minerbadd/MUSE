@@ -7,7 +7,7 @@
   <body> 
      <script src="../../../../assets/prism.js"></script> 
 
-<h2> Remote Procedure Calls, RPCs: lib/remote.lua</h2>
+<h2> Remote Procedure Calls, RPCs: lib/remote.lua, Client Side <code>come</code> and <code>tail</code></h2>
 <pre><code class="language-markdown">
 --:! {remote: []: (:) } <- <b>Functions Library for Remote Procedure Calls</b> -> muse/docs/lib/remote.md  
 --:| remote: <i>Client and server side support for RPCs and client (player) side support for</i> <code>come</code> <i>and</i> <code>tail</code>. -> remote, _remote
@@ -16,7 +16,7 @@
 </code></pre>
 The library for MUSE support of remote procedure calls (RPC) is <code>lib/remote</code>. To do an RPC there are a bunch of steps choreographed between the <code>client</code>, generally the player's pocket computer, and the <code>server</code>, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff.) 
 <p>
-At the dance waiting to be asked, all but the player's pocket computer are running <code>remote.wait</code> finishing up their execution of the .start daemon. They'll wait to receive a <code>rednet</code> MUSE Call protocol message, <code>MC</code>. After doing the work requested by the call, they'll answer the call with a <code>rednet</code> MUSE Response, <code>MR</code> protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
+At the dance waiting to be asked, all but the player's pocket computer are running <code>remote.wait</code> finishing up their execution of the <code>.start</code> daemon. They'll wait to receive a <code>rednet</code> MUSE Call (<code>MC</code>) protocol message. After doing the work requested by the call, they'll answer the call with a <code>rednet</code> MUSE Response (<code>MR</code>) protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
 <p>
 We'll get to more about the dancing in a bit but first, the expected library introduction. Loading <code>lib/net</code> generates a dispatch table with references to the libraries that actually do the work of the remote call. 
 <pre><code class="language-lua">
@@ -28,7 +28,6 @@ local motion = require("motion"); local move = motion.move ---@module "signs.mot
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local nets = require("net"); local net = nets.net ---@module "signs.net"
 
----@diagnostic disable-next-line: undefined-field
 local rednet, parallel = _G.rednet, _G.parallel -- to supress static analysis lint warnings
 </code></pre>
 <a id="dance"/a>As promised: the dance. It all starts, of course, with <code>remote.call</code>. The arguments to the call are evaluated by the client and then packaged up into strings that can be sent over the network by <code>prepareCall</code>. (This is testable out of game.) This lot is sent along to the the chosen server by <code>clientSend</code> as an <code>MC</code> protocol message. The client thread then waits for an <code>MR</code> protocol message in <code>clientReceive</code>.
@@ -50,18 +49,18 @@ local function serverCall(command, argumentTable) -- <b>execute the call on the 
 end
 
 function _remote.serverRequest(clientID, request) -- test as <code>remote.testRequest</code>
-  --:: <code>_remote.serverRequest(clientID: #:, request: ":")</code> -> <i>Return serialized result</i>. -> <code>result: ":"</code>
-  local requestLoad, requestError = load(request); local client = dds.role(clientID) or clientID -- fallback
+  --:: <code>_remote.serverRequest(clientID: #:, request: ":")</code> -> <i>Request string to request table, return serialized result</i>. -> <code>result: ":"</code>
+  local requestLoad, requestError = load(request); local client = dds.role(clientID) or clientID -- fallback:<code>join</code> no reboot
   core.status(3, "remote", "MR Request", request, "from", client)
-  if not requestLoad then error("remote.request: Can't load "..request.." from "..client.." "..requestError) end
+  if not requestLoad then error("remote.request: Can't instantiate "..request.." from "..client.." "..requestError) end
   local command, argumentTable = table.unpack(requestLoad()) -- <code>command: ":"</code> for dispatch into net RPC functions
   core.status(3, "remote", "MR Dispatch", command, "from", client, "for", argumentTable)
   return core.serialize(serverCall(command, argumentTable)) -- table serialized as string
 end; remote.testRequest = <i>remote.serverRequest; -- Test through</i> <code>lib/net</code> _for server execution
 </code></pre>
-Note that there's no executable representation for functions in the serialized argument table. While MUSE happens to operate in a homogeneous environment, no assumptions are made about compatible execution environments. That's a real issue in the real world. 
+Note that there's deliberately no executable representation for functions in the serialized argument table. It's just a string. While MUSE happens to operate in a homogeneous environment, no assumptions are made about compatible execution environments. That's a real issue in the real world. 
 <p>
-Further, while there are no untrusted actors in the MUSE environment, in other environments passing representations of functions could create an exposure that rogue actors could exploit. Additionally, <a href="core.html#serialize" target="_blank"> as we've seen </a>, special attention is paid in serialization of strings that could be evaluated to create exposures. All that as given however, only rogue wary functions are good for sever side execution.
+Further, while there are no untrusted actors in the MUSE environment, in other environments passing representations of functions could create an exposure that rogue actors could exploit. Additionally, <a href="core.html#serialize" target="_blank"> as we've seen </a>, special attention is paid in serialization of strings that could be evaluated to create exposures. All that as given however, only rogue wary functions are good for sever side execution. We're looking at you, <code>map.chart</code>.
 <p>
 <h3>Server Send: The Server's Work Here Is Done</h3>
 <a id="serverSend"></a> Because of testing considerations, the actual (instrumented) network operations are handled by relatively simple implementations. The <code>serverSend</code> function just calls <code>serverRequest</code>, the function we've just discussed and sends the serialized result back to the client using the <code>MR</code> (Muse Response) protocol to the requesting client (which will be the player's pocket computer). The <code>remote.wait</code> loop (<code>while true do</code>) patiently waits for <code>MC</code> (Muse Call) protocol messages and calls <code>serverSend</code> function whenever it receives one.
@@ -85,7 +84,7 @@ The  <a href="../wait.html" target="_blank"> <code>wait</code> command </a> can 
 <p>
 <h3>Client Result: The End of the End</h3>
 <a id="clientResult"></a> 
-Back on the client that called for the RPC, the <code>clientResult</code> and <code>clientReceive</code> functions handle the return value from the remote call server. In the same way as done for the server side functions, <code>clientResult</code> can be tested out-of-game. It uses Lua's <code>load</code> function as <code>serverRequest</code> does. In this case to deserialize the <code>result</code> from the serialized table sent over the network by the server. It applies a supplied <a href="https://en.wikipedia.org/wiki/Callback<i>(computer</i>programming)" target="_blank"> _deferred <code>callback</code>_ </a> function to the deserialized result table and saves the value <code>returned</code> by that application in a variable local to the library.
+Back on the client that called for the RPC, the <code>clientResult</code> and <code>clientReceive</code> functions handle the return value from the remote call server. In the same way as done for the server side functions, <code>clientResult</code> can be tested out-of-game. It uses Lua's <code>load</code> function as <code>serverRequest</code> does. In this case, to deserialize the <code>result</code> from the serialized table sent over the network by the server. It applies a supplied <a href="https://en.wikipedia.org/wiki/Callback<i>(computer</i>programming)" target="_blank"> _deferred <code>callback</code>_ </a> function to the deserialized result table and saves the value <code>returned</code> by applying that function in a variable local to the library.
 <pre><code class="language-lua">
 --:# <b>Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)</b>
 function _remote.clientResult(serverID, resultString, callback) -- test as <code>remote.testResult</code>

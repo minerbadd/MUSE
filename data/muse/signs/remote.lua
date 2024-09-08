@@ -27,7 +27,7 @@ function remote.tail() end
 ---@type fun(server: string,  command: string,  arguments: any[],  callback: function?):  any 
 function remote.call() end
 
--- Return serialized result_.
+-- Request string to request table, return serialized result_.
 -- _remote.serverRequest(clientID: #:, request: ":"):  `result: ":"` <-
 ---@type fun(clientID: number,  request: string):  result: string 
 function _remote.serverRequest() end

@@ -4054,7 +4054,7 @@ Replaces game definitions, unifies operations to all directions: north, east, so
   ["type"] = "function",
   ["name"] = "_remote.serverRequest",
   ["description"] = "\
-Return serialized result_.",
+Request string to request table, return serialized result_.",
 }
 ,
   ["testCome"] = {
@@ -4608,11 +4608,11 @@ Server (turtle) side support for_ `come` _and_ `tail`, _chained motion commands,
 }
 ,
   ["__remote.serverRequest:_"] = {
-  ["line"] = "  --:: `_remote.serverRequest(clientID: #:, request: \":\")` -> _Return serialized result_. -> `result: \":\"`",
+  ["line"] = "  --:: `_remote.serverRequest(clientID: #:, request: \":\")` -> _Request string to request table, return serialized result_. -> `result: \":\"`",
   ["out"] = " `result: \":\"`",
   ["sign"] = "`_remote.serverRequest(clientID: #:, request: \":\")`  ",
   ["kind"] = "face",
-  ["text"] = "Return serialized result_.",
+  ["text"] = "Request string to request table, return serialized result_.",
 }
 ,
   ["_remote.wait:_"] = {

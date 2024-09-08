@@ -205,7 +205,7 @@ A library, <a href="code/lib/exec.html" target="_blank"> `lib/exec`</a> provides
 <a href="drawings/05CommandIntegration.pdf" target="_blank">
 <IMG SRC="drawings/05CommandIntegration.png" ALIGN="right" hspace ="10"/></a>
 
-Since we've gone ahead and used a command computer, we've already demonstrated a shameful lack of constraint. Another command computer indulgence, the <a href="../lib/port.html" target="_blank"> lib/port </a> library, provides an integration with `lib/map places` and the Minecraft `teleport` command. The   <a href="drawings/05CommandIntegration.pdf" target="_blank"> drawing </a> adds them into the overall context of MUSE. 
+Since we've gone ahead and used a command computer, we've already demonstrated a shameful lack of constraint. Another command computer indulgence, the <a href="code/lib/port.html" target="_blank"> lib/port </a> library, provides an integration with `lib/map places` and the Minecraft `teleport` command. The   <a href="drawings/05CommandIntegration.pdf" target="_blank"> drawing </a> adds them into the overall context of MUSE. 
 
 In the following chapter we'll look at the MUSE libraries that create and make use of what you might think of as a (very simple) <a href="https://en.wikipedia.org/wiki/Declarative_programming" target="_blank"> declarative language </a>. They allow us to describe turtle operations by _what_ is to be done rather than _how_ it is to be done. In some ways, it's another kind of abstraction with the goal of increased maintainability: hiding the detail of _how_ while exposing the main point: _what_.
 
