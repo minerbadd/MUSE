@@ -4,9 +4,9 @@
 --:! {exec: []: (:)} <- **Command Computer Command Line Library** -> muse/docs/lib/exec.md
 --:| exec: _CLL to align MUSE location with Minecraft coordinates and activate a range as a Minecraft chunk._ -> exec
 ```
-The `exec` library provides CLL support for selected commands as alternatives to directly using Minecraft 'cheats'. A number of the commands make it easier to setup a Muse environment. They count on a command computer enabled for use outside Minecraft's creative mode.
+The `exec` library provides CLL support for a couple of commands that make it easier to setup and operate a MUSE environment. They count on a command computer enabled for use outside Minecraft's creative mode.
 ```
-The library preface is as expected. The only new thing is mocking some command computer operations so development and debug can be done outside the game environment.
+The library preface is as expected. The only odd thing is mocking some command computer operations so development and debug can be done outside the game environment.
 ```Lua
 --]]
 local exec = {}; exec.hints = exec.hints or {} ---@module "signs.exec"-- for functions exported from library
@@ -23,7 +23,7 @@ local commands = _G.rednet and _G.commands or require("mock").commands -- for ou
 ```Lua
 --]]
 --:# **Before GPS launch, set Muse dead reckoning coordinates for turtle sitting on `porter` to be its Minecraft coordinates**
---:+ The turtle will generally be `rover` for launch. Named point will be launch base. Only runs on command computer in-game.
+--:+ The turtle will generally be `rover` for launch. Named point will be the launch base. Needs command computer in-game.
 
 local function locate(name, label, tx, ty, tz, blockAboveTest) -- `t*` (x, y, z as numbers) and `blockAboveTest` are test inputs
   --:- locate name label? -> _Create launch point having Minecraft coordinates above `porter`._
@@ -63,7 +63,7 @@ exec.hints["activate"] = { ["?range"] = {} }
 --:# Dispatch for `exec` commands: `locate`, `activate`
 local ops = { locate = locate, activate = activate, }
 
-function exec.op(commandLine)                                            --:: exec.op(commandLine: :[command: ":", ...]) -> _CLI for Command Computer commands_ -> `":" &:`
+function exec.op(commandLine) --:: exec.op(commandLine: :[command: ":", ...]) -> _CLI for Command Computer commands_ -> `":" &:`
   local ok, report = core.pass(pcall(ops[commandLine[1]], table.unpack(commandLine, 2)))
   if ok then return report else return "exec: " .. core.string(report) end -- report failure for error
 end

@@ -2773,7 +2773,7 @@ Command Line Library providing turtle operations used by remote library (effecti
 }
 ,
   ["_exec.op:_"] = {
-  ["line"] = "function exec.op(commandLine)                                            --:: exec.op(commandLine: :[command: \":\", ...]) -> _CLI for Command Computer commands_ -> `\":\" &:`",
+  ["line"] = "function exec.op(commandLine) --:: exec.op(commandLine: :[command: \":\", ...]) -> _CLI for Command Computer commands_ -> `\":\" &:`",
   ["kind"] = "face",
   ["sign"] = "exec.op(commandLine: :[command: \":\", ...])  ",
   ["out"] = " `\":\" &:`",

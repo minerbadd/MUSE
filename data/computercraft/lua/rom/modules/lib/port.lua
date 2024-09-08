@@ -14,7 +14,6 @@ local places = require("places"); local place = places.place ---@module "signs.p
 local maps = require("map"); local map = maps.map ---@module "signs.map"
 
 local mock = require("mock").commands ---@module "signs.mock"
----@diagnostic disable-next-line: undefined-field
 local commands = _G.rednet and _G.commands or mock
 
 --:# Partially consumed inventory items add to the energy `bank` used to decrease a future porting cost in a session.
@@ -69,7 +68,6 @@ end
 
 function port.available(set)  -- for testing
   --:: port.available(set: [port.item]: #:) -> _For Testing: mock player inventory_ -> `[port.item]: #:`
-  
   local inventoryTest = set or _G.Muse.inventoryTest; _G.Muse.inventoryTest = inventoryTest; return inventoryTest
 end
 
@@ -89,6 +87,7 @@ function port.book(name, label, from, to, span, ordering) -- testable
   local xyzfFrom = assert(place.xyzf(from), "port.book: "..place.qualify(from).." unknown place"); 
   local xyzfTo = assert(place.xyzf(to), "port.book: "..place.qualify(to).." unknown place")
 ---@diagnostic disable-next-line: assign-type-mismatch -- key: `booking`, value: any
+-- diagnostic just tells the type check nanny that I know what I'm doing...or so I think
   map.op {"range", name, label, from, to, "booking", {span, ordering or orderDefault}}
   local inventoryCost, bankable, cost = portingCost(xyzfFrom, xyzfTo, span, ordering)
   local bookString = tostring(cost).. "J, bankable (or unmet) "..tostring(bankable).."J using "..core.string(inventoryCost)

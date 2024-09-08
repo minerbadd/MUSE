@@ -15,7 +15,6 @@ local moves = require("motion"); local move = moves.move ---@module "signs.motio
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local places = require("places"); local place = places.place ---@module "signs.places
 
----@diagnostic disable-next-line: undefined-field
 local peripheral = _G.peripheral
 
 local installs = peripheral and "disk/install.lua" or _G.Muse.path.."tests/install.lua" --for out-game test

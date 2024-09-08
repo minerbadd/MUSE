@@ -39,24 +39,25 @@ Lua's `load` function creates a deserializing function (or an indication of erro
 --:# **Server Side Remote Call Operations: Protocols to Receive Muse Calls (MC), Send Muse Responses (MR)**
 local function serverCall(command, argumentTable) -- **execute the call on the server**
   local netCall = net[command]; if not netCall then return "remote: No operation defined for "..command end
-  local results = netCall(argumentTable); -- **TADA..actually do it: index into net functions applied to arguments** 
+  local results = netCall(argumentTable); -- **TADA..actually execute call: index into net functions applied to arguments** 
   return results
 end
 
 function _remote.serverRequest(clientID, request) -- test as `remote.testRequest`
   --:: `_remote.serverRequest(clientID: #:, request: ":")` -> _Request string to request table, return serialized result_. -> `result: ":"`
-  local requestLoad, requestError = load(request); local client = dds.role(clientID) or clientID -- fallback:`join` no reboot
-  core.status(3, "remote", "MR Request", request, "from", client)
+  local requestLoad, requestError = load(request) -- TODO: replace `load` and `core.serialize` with JSON compatible equivalents
+  local client = dds.role(clientID) or clientID -- fallback: `join` done but no reboot yet, clientID is just a stringified number
+  core.status(5, "remote", "MR Request", request, "from", client) -- seen on turtle, can we instantiate command, argument table?
   if not requestLoad then error("remote.request: Can't instantiate "..request.." from "..client.." "..requestError) end
   local command, argumentTable = table.unpack(requestLoad()) -- `command: ":"` for dispatch into net RPC functions
   core.status(3, "remote", "MR Dispatch", command, "from", client, "for", argumentTable)
-  return core.serialize(serverCall(command, argumentTable)) -- table serialized as string
+  return core.serialize(serverCall(command, argumentTable)) -- call executed, result table serialized as string
 end; remote.testRequest = _remote.serverRequest; -- Test through_ `lib/net` _for server execution
 --[[
 ```
-Note that there's deliberately no executable representation for functions in the serialized argument table. It's just a string. While MUSE happens to operate in a homogeneous environment, no assumptions are made about compatible execution environments. That's a real issue in the real world. 
+Note that there's deliberately no executable representation for functions in the serialized argument table. It's just a string. The function arguments are just a serialized table (recursively) of strings. In principle, any way of (recursively) serializing tables of strings would be fine. MUSE happens to operate in a homogeneous execution environment. We get away with letting Lua's `load` function do the deserialization. That's not a good assumption in the real world. 
 
-Further, while there are no untrusted actors in the MUSE environment, in other environments passing representations of functions could create an exposure that rogue actors could exploit. Additionally, <a href="core.html#serialize" target="_blank"> as we've seen </a>, special attention is paid in serialization of strings that could be evaluated to create exposures. All that as given however, only rogue wary functions are good for sever side execution. We're looking at you, `map.chart`.
+There are no untrusted actors in the MUSE environment. In other environments passing executable representations of functions could create an exposure that rogue actors could exploit. As we have noted <a href="core.html#serialize" target="_blank"> special attention</a>, is paid in serialization of strings that could be evaluated to create such exposures. All that as given however, only rogue wary functions are good for server side execution. We're looking at you, `map.chart`.
 
 #Server Send: The Server's Work Here Is Done
 <a id="serverSend"></a> Because of testing considerations, the actual (instrumented) network operations are handled by relatively simple implementations. The `serverSend` function just calls `serverRequest`, the function we've just discussed and sends the serialized result back to the client using the `MR` (Muse Response) protocol to the requesting client (which will be the player's pocket computer). The `remote.wait` loop (`while true do`) patiently waits for `MC` (Muse Call) protocol messages and calls `serverSend` function whenever it receives one.
@@ -113,7 +114,7 @@ The MUSE DDS facilities called on above <a href="dds.html" target="_blank"> are 
 -- _Send serialized string from `remote.call` to network and wait for result from server_
 function _remote.prepareCall(server, command, arguments) -- test as `remote.testCall`
 --:: `_remote.prepareCall(server: ":", command: ":", arguments: any[]})` -> _Serialize server request._ -> `serverID: #:, request: ":" &: &!`
-  local serialOK, request = core.pass(pcall(core.serialize, {command, arguments})) 
+  local serialOK, request = core.pass(pcall(core.serialize, {command, arguments})) -- TODO: use JSON compatible serialization
   if not serialOK then error("remote.call: Can't serialize "..command.." for".." "..request) end
   local serverID = dds.roleID(server); if not serverID then error("remote.call: unknown target "..server) end
   return serverID, request -- on player client for send to turtle server
