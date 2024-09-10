@@ -269,7 +269,7 @@ end
 --[[
 ```
 <a id="tables"></a> 
-The library exports three tables: one to deal with names, one to deal with movement directed by those names, and one to deal with stepping through such movement. And that's it for the second of the MUSE foundation libraries. Head back to <a href="../../MiningMUSE.html#Chapter3"> _Mining MUSE_</a> for a discussion of persistence, distributed state, and much, much more!
+The library exports three tables: one to deal with names, one to deal with movement directed by those names, and one to deal with stepping through such movement. And that's it for the second of the MUSE foundation libraries. Head back to <a href="../../MiningMUSE.html#Chapter3"> _MiningMUSE_</a> for a discussion of persistence, distributed state, and much, much more!
 ```Lua
 --]]
 return {place = place, moves = moves, steps = steps}

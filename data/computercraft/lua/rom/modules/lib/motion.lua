@@ -620,5 +620,5 @@ The variable `more` is bound to the result of calling `steps.forward(3)` This is
 </pre>
 Notice that the fourth attempt to step three blocks forward makes no change to turtle position and outputs `nil`  rather than `"done"`.
   ```
-That's the end of this excursion. Next up is <a href="places.html"> `lib/places` </a> or follow the <a href="../../Mining MUSE.html#Chapter3"> link </a> to return to _Mining MUSE_.
+That's the end of this excursion. Next up is <a href="places.html"> `lib/places` </a> or follow the <a href="../../MiningMUSE.html#Chapter3"> link </a> to return to _MiningMUSE_.
 --]]

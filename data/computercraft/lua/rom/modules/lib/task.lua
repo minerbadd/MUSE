@@ -177,5 +177,5 @@ local function put(...)
   return {task = task}
 --[[
 ```
-Return to <a href="../../Mining MUSE.html#Chapter5"> Mining MUSE</a> to continue the exploration.
+Return to <a href="../../MiningMUSE.html#Chapter5"> MiningMUSE</a> to continue the exploration.
 --]]

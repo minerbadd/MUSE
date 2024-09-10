@@ -14,9 +14,9 @@
 --:+ <b>Test functions are provided for out-of-game, no network operation.</b>
 
 </code></pre>
-The library for MUSE support of remote procedure calls (RPC) is <code>lib/remote</code>. To do an RPC there are a bunch of steps choreographed between the <code>client</code>, generally the player's pocket computer, and the <code>server</code>, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff.) 
+The library for MUSE support of remote procedure calls (RPC) is <code>lib/remote</code>. To do an RPC there are a bunch of steps choreographed between the <code>client</code>, generally the player's pocket computer, and the <code>server</code>, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff. They ran their own startup files not <code>.start</code>. ) 
 <p>
-At the dance waiting to be asked, all but the player's pocket computer are running <code>remote.wait</code> finishing up their execution of the <code>.start</code> daemon. They'll wait to receive a <code>rednet</code> MUSE Call (<code>MC</code>) protocol message. After doing the work requested by the call, they'll answer the call with a <code>rednet</code> MUSE Response (<code>MR</code>) protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
+At the dance waiting to be asked, all but the player's pocket computer (and the GPS computers) are running <code>remote.wait</code> finishing up their execution of the <code>.start</code> file. They'll wait to receive a <code>rednet</code> MUSE Call (<code>MC</code>) protocol message. After doing the work requested by the call, they'll answer the call with a <code>rednet</code> MUSE Response (<code>MR</code>) protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
 <p>
 We'll get to more about the dancing in a bit but first, the expected library introduction. Loading <code>lib/net</code> generates a dispatch table with references to the libraries that actually do the work of the remote call. 
 <pre><code class="language-lua">
@@ -192,7 +192,7 @@ Finally, in distributed operations, the kind of reporting that <code>core.status
 <p>
 Then look at how <a href="net.html" target="_blank"> <code>lib/net</code></a> actually creates the remote CLI we said we would discuss.
 <p>
-You can return to the next chapter of <i>Mining Muse</i> with this <a href="../../Mining MUSE.html#Chapter6" target="_blank"> link</a> to actually dig stuff.
+You can return to the next chapter of <i>MiningMUSE</i> with this <a href="../../MiningMUSE.html#Chapter6" target="_blank"> link</a> to actually dig stuff.
 <p>
   </body> 
 </html>

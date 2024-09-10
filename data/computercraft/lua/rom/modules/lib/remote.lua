@@ -6,9 +6,9 @@
 --:+ **Test functions are provided for out-of-game, no network operation.**
 
 ```
-The library for MUSE support of remote procedure calls (RPC) is `lib/remote`. To do an RPC there are a bunch of steps choreographed between the `client`, generally the player's pocket computer, and the `server`, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff.) 
+The library for MUSE support of remote procedure calls (RPC) is `lib/remote`. To do an RPC there are a bunch of steps choreographed between the `client`, generally the player's pocket computer, and the `server`, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff. They ran their own startup files not `.start`. ) 
 
-At the dance waiting to be asked, all but the player's pocket computer are running `remote.wait` finishing up their execution of the `.start` daemon. They'll wait to receive a `rednet` MUSE Call (`MC`) protocol message. After doing the work requested by the call, they'll answer the call with a `rednet` MUSE Response (`MR`) protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
+At the dance waiting to be asked, all but the player's pocket computer (and the GPS computers) are running `remote.wait` finishing up their execution of the `.start` file. They'll wait to receive a `rednet` MUSE Call (`MC`) protocol message. After doing the work requested by the call, they'll answer the call with a `rednet` MUSE Response (`MR`) protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
 
 We'll get to more about the dancing in a bit but first, the expected library introduction. Loading `lib/net` generates a dispatch table with references to the libraries that actually do the work of the remote call. 
   ```Lua
@@ -200,5 +200,5 @@ Finally, in distributed operations, the kind of reporting that `core.status` and
 
 Then look at how <a href="net.html" target="_blank"> `lib/net`</a> actually creates the remote CLI we said we would discuss.
 
-You can return to the next chapter of _Mining Muse_ with this <a href="../../Mining MUSE.html#Chapter6" target="_blank"> link</a> to actually dig stuff.
+You can return to the next chapter of _MiningMUSE_ with this <a href="../../MiningMUSE.html#Chapter6" target="_blank"> link</a> to actually dig stuff.
 --]]

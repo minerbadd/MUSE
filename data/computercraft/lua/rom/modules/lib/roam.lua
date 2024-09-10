@@ -179,5 +179,5 @@ end
 return {roam = roam}
 --[[
 ```
-Return to <a href="../../Mining MUSE.html#task"> Mining MUSE</a> to continue the exploration.
+Return to <a href="../../MiningMUSE.html#task"> MiningMUSE</a> to continue the exploration.
 --]]

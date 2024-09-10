@@ -215,6 +215,6 @@ function turtle.blocking(blocking) _G.Muse.blocking = blocking; return _G.Muse.b
 return {turtle = turtle}
 --[[
 ```
-And we're done making the new and improved `turtle`. No more the old. Return to <a href="../../Mining MUSE.html#roam"> Mining MUSE</a> 
+And we're done making the new and improved `turtle`. No more the old. Return to <a href="../../MiningMUSE.html#roam"> MiningMUSE</a> 
 to see how these functions are used to roam around a Minecraft world.
 --]]
