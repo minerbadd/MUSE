@@ -476,13 +476,14 @@ local function near(span, placeName) -- list places near span (or all) near plac
 --:- near place? span?? -> _Report points within span blocks (or all) of named place (or current player or turtle position)._
   local itemCount, report, position = 0, {}, player and {core.where()}
   if position and #position == 0 then error("map.near: GPS failure "..core.string(position)) end
+  
   for namepoint, labelpoint, xyzfpoint, distance, situations in place.near(tonumber(span), placeName or position) do 
     itemCount = itemCount +1; local x, y, z = table.unpack(xyzfpoint); local xyzfString = core.xyzf({x, y, z})
     report[#report + 1] = {core.round(distance), " "..namepoint..": "..xyzfString.." "..labelpoint.." ("..#situations..")"}
   end; table.sort(report, function(a,b) return a[1] < b[1] end) -- anonymous sort function on `distance`
+  
   for i = 1, #report do local distance, text = table.unpack(report[i]); report[i] = tostring(distance)..text end
-  local result = "Found "..itemCount.." near\n"..table.concat(report, "\n"); core.status(4, "map.near", result) 
-  return result
+  return "Found "..itemCount.." near\n"..table.concat(report, "\n"); core.status(4, "map.near", result) 
 end; map.hints["near "] = {["?place "] = {["??span"] = {}}}
 
 local function view(target)
@@ -490,9 +491,11 @@ local function view(target)
   local index, placed = place.match(assert(target, "map: need place to view")); 
   assert(placed, "map value: no match for "..place.qualify(target))
   local name, label, situations, features = table.unpack(placed)
+  
   local situationStrings = {} for _, situation in ipairs(situations) do 
     situationStrings[#situationStrings + 1] = core.xyzf({move.get(situation)})
   end; local situationList = table.concat(situationStrings, "\n")
+  
   return name..": "..(label or "_").." ("..index..")\n"..core.string(features).."\n"..situationList
 end; map.hints["view "] = {["?place"] = {}}
 --[[

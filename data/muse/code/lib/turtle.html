@@ -20,7 +20,6 @@ local turtle = {}; turtle.hints = {} ---@module "signs.turtle" -- for functions 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
----@diagnostic disable-next-line: undefined-field
 local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module "signs.mock"
 -- if no _G.turtle then mock turtle: out-of-game
 

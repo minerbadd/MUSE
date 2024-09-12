@@ -20,20 +20,16 @@ package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local places = require("places"); local place = places.place ---@module "signs.places"
 
----@diagnostic disable-next-line: undefined-field
 local rednet, parallel = _G.rednet, _G.parallel -- for static analysis
 
----@diagnostic disable-next-line: undefined-field
 local player = _G.pocket -- only the player has the (only) pocket computer
 
 _G.Muse.IDs = _G.Muse.IDs or -- for out-game 
 --:> IDs: _Dictionary of ComputerCraft computer IDs keyed by MUSE role_ -> `[role]: ID`
 --:> ID: _ComputerCraft computer ID_ -> `#:`
----@diagnostic disable-next-line: undefined-field
 (_G.rednet and {} or {player = 0, porter = 1, rover = 5, miner = 6, logger = 7, farmer = 8}) 
 
 _G.Muse.roles = _G.Muse.roles or -- for out-game
----@diagnostic disable-next-line: undefined-field
 (_G.rednet and {} or {[0] = "player", [1] = "porter", [2] = "rover", [3] = "miner", [4] = "logger", [5] = "farmer"})
 --:> roles: _Dictionary of Computercraft labels for MUSE roles keyed by Computercraft (string) IDs_ -> `[ID]: ":"`
 --:> role: _ComputerCraft label as MUSE role_ -> `":"`
@@ -85,7 +81,6 @@ The player waits to `receive` each of the responses and populates two tables, `I
 local function receive(count) -- on player for each DDS host
   for _ = 1, count do
     local ddsID, received = rednet.receive("MQ") -- next, deal with rednet send to self behavior
----@diagnostic disable-next-line: undefined-field
     local ddsLabel = (ddsID == dds.playerID()) and "player" or received -- player sends garbage to self
     IDs[ddsLabel] = ddsID; roles[ddsID] = ddsLabel -- the point of it all
     core.report(1, "MQ "..ddsID.." "..ddsLabel) -- DDS Player

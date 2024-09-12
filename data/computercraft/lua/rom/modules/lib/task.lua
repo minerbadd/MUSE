@@ -56,11 +56,12 @@ local function compare(...) --:- compare item direction... -> _Named item matche
   local item, directions = select(1, ...), {select(2, ...)}
   assert(item and next(directions), "task.compare: Need item and directions")
   local targets = turtle.category(item); local target = turtle.find(targets); local targetName = target and target.name
+  
   local found = {}; for _, direction in ipairs(directions) do
     local success, data = turtle.inspects[direction](); local dataName = success and data.name
     if dataName and targetName and dataName == targetName then found[#found + 1] = {direction, dataName} end
-  end; 
-  return core.string(found), found
+  end; return core.string(found), found
+  
 end; task.hints["compare"] = {["?item ?direction..."] = {}} 
 
 local function drop(...) --:- drop item direction quantity? -> _Drop quantity of selected items [or all]._ 
@@ -80,21 +81,24 @@ end; task.hints["suck"] = {["?direction ?count"] = {}}
 ```Lua
 --]]
 local function doOnce(puttings, op, fill, targets) 
+  
   for _, direction in ipairs(puttings) do 
     local ok, result = core.pass(pcall(op, getDirection(direction, true), fill, targets)) -- **do the task op**
     if not ok then return "Task failed "..direction.." because "..result end
-  end;  
-  return "done "..table.concat(puttings, " ").." to "..move.ats() 
+  end; return "done "..table.concat(puttings, " ").." to "..move.ats() 
+  
 end
 
 local function doMany(distance, towards, puttings, op, clear, fill, targets)
   if clear then turtle.unblock(towards, _G.Muse.attempts) end -- attempts to unblock for dig
   if not distance then move[towards](0); return doOnce(puttings, op, fill, targets) end
+  
   for code, remaining, ats in step[towards](tonumber(distance)) do -- e.g., step.east
     if code ~= "done" then return false, "Failed: "..code.." at "..ats..", "..remaining.." blocks remaining" end
     if clear then turtle.unblock(towards, _G.Muse.attempts) end
     doOnce(puttings, op, fill, targets); move[towards](0) -- and reorient after op
   end; return "done "..distance.." blocks "..towards.." "..table.concat(puttings, " ").." to "..move.ats()
+  
 end
 
 local to = {[0] = "here", [2] = "west", [3] = "east", [4] = "down", [5] = "up", [8] = "north", [9] = "south"}

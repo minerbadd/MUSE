@@ -174,11 +174,13 @@ function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing
 --:+ _If a `cardinals` function is supplied, the eight point cardinal direction is also included._
   local reference = type(xyzf) ~= "table" and move.at() or xyzf; local x,_,z = table.unpack(reference); 
   cardinals = type(xyzf) == "function" and xyzf or (cardinals or function(_, _) return "" end) -- dx, dz
+  
   local namedPlaces = {}; for name, label, pxyz in place.near() do 
     local px, py, pz = table.unpack(pxyz); local distance = place.distance(pxyz, xyzf); 
     local position, cardinal = core.xyzf({core.round(px), core.round(py), core.round(pz)}), cardinals(px - x, pz - z)
     namedPlaces[#namedPlaces + 1] = {distance, name, label, cardinal, position}
   end; table.sort(namedPlaces, function(a,b) return a[1] < b[1] end) -- on `distance`
+  
   return namedPlaces
 end
 --[[
@@ -238,6 +240,7 @@ function steps.along(name) -- step from each situation to the next beginning wit
   local _, _, situations = place.track(name); local iterators = {}; 
   local clonedSituations = core.clone(situations); -- deep copy because there's a mutation coming next
   table.insert(clonedSituations, 1, move.clone()) -- push a copy of the current situation onto the cloned table
+  
   for index = 2, #clonedSituations do 
     local current, prior = clonedSituations[index], clonedSituations[index - 1]
     local xyzf = xyzfSituation(current) -- get xyzf from each what will be "current" situation 

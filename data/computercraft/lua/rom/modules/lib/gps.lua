@@ -134,10 +134,12 @@ function _gps.launch(commands) -- use `locate` to give a `place` a `location`
   assert(location, "gps.launch: need to specify launch location")
   assert(place.match(location), "gps.launch: "..place.qualify(location).." not found")
   local xyzLocation = place.xyzf(location); yD = yD or 255; local positions = makePositions(xyzLocation, yD)
+  
   for _, direction in ipairs(order) do local position = positions[direction]; 
     core.report(2, "GPS "..direction.." host to "..core.xyzf(position)) 
     move.to(position); _gps.equip(direction); install(position); _gps.actuate({"actuate", direction}) -- **do the work**
-  end; core.report(2, "Returning to launch location"); move.to(xyzLocation) 
+  end; core.report(2, "Returning to launch location"); move.to(xyzLocation)
+  
   local xb, yb, zb = table.unpack(xyzLocation); local x, y, z = move.where(); 
   if not x then core.status(1, "gps", "GPS Locate Failed") end
   return "GPS "..x..", "..y..", "..z.." for "..xb..", "..yb..", "..zb
