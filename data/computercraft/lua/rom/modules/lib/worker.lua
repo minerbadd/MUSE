@@ -72,6 +72,7 @@ local function operateStep(elements, plan, index, pathOperations, more) -- step 
   if type(condition) ~= "table" then -- something unrecoverable has happened
     error("work.operateStep: failed hard "..plan.name.." "..direction.." "..distance.." "..index.." "..result)
   end -- otherwise get `move` failure type and remaining blocks for stepping the recovery
+
   local _, _, fail, remaining, at, movement, motion = table.unpack(condition) -- handle step failures
   return failures[fail](plan, pathOperations, index, direction, remaining, at, movement, motion)
 end
@@ -114,11 +115,11 @@ end;
 function worker.execute(plan, pathOperations, fuelOK, pathDistance)
   core.status(4, "worker", "execute plan", fuelOK, pathDistance, "blocks")
   if not fuelOK then error("worker.execute: insufficient fuel for "..pathDistance.." block plan") end 
+
   if plan.base then local moveOK, report = core.pass(pcall(moves.to, plan.base)) -- start from base
-    if not moveOK then error("worker.execute: failed at "..move.ats().." for "..plan.name.." because "..report)
-    end; core.status(2, "work", "at plan base") -- couldn't even get to first base
-  end; 
-  turtle.block(turtle.blocking())-- block in next operation if blocking has been enabled for out-game test
+    if not moveOK then error("worker.execute: failed at "..move.ats().." for "..plan.name.." because "..report) end
+    core.status(2, "work", "at plan base") 
+  end; turtle.block(turtle.blocking())-- block in next operation if blocking has been enabled for out-game test
   return operate(plan, pathOperations, 1); -- **do it all** (uncaught errors thrown if anything fails)
   -- plan, pathOperations, index, more (`more` is nil at start of plan operation)
 end

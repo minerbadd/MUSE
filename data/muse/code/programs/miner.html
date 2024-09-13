@@ -21,6 +21,8 @@ local command, arguments = ..., {select(2, ...)}
 local ops = {come = remote.come, tail = remote.tail}
 
 local op = ops[command] or remote.call; op("miner", command, arguments)
+-- TODO: shortcut the <code>lib/net</code> remote mining commands to assume the <code>miner</code> 
+-- (along the lines of, say, what was done for the <code>locate</code> command for the <code>porter</code>)
 
 
   </body> 

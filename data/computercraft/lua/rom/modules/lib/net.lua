@@ -122,7 +122,7 @@ net["join"] = op(map.op, "join"); as["join "] = map.hints["join"]; hints[path.."
 
 --:# **GPS Launch Command** (e.g., `rover launch gantry ....`)
 net["launch"] = op(gps.op, "launch"); as["launch "] = gps.hints["launch "] --:= launch:
-
+--<a id="mine"></a>
 --:# **Remote Mining Operation Commands** (e.g. `miner shaft ....`)
 net["shaft"] = op(mine.op, "shaft"); as["shaft "] = mine.hints["shaft"] --:= shaft:
 net["bore"] = op(mine.op, "bore"); as["bore "] = mine.hints["bore"] --:= bore:

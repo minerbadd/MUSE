@@ -216,16 +216,7 @@ In the following chapter we'll look at the MUSE libraries that create and make u
 <a id="Chapter6"></a>
 ## Chapter 6 - Planners and Workers, Declarative Programming
 
-In this chapter, as threatened, we'll explore the idea of <a href="https://en.wikipedia.org/wiki/Declarative_programming" target="_blank"> declarative programming </a>. We'll look at using this approach for digging shafts and tunnels to mine ores.  The _what_ of all this will get pretty detailed. In some sense, that's the point. The luxury of just saying _what_ is particularly important when there's a lot of detail (that inevitably will get changed). 
-
-As is typical, there's two parts to this declarative programming engine: a <a href="code/lib/planner.html" target="_blank"> `planner`</a>  (a producer of the _how_, an executable interpretation of the _what_) and a <a href= "code/lib/worker.html" target="_blank"> `worker`</a>  (consuming that interpretation to actually do the work). Helper libraries provide _work functions_ extending the planner's declarative language.
-
-<a href="drawings/06Declarations.pdf" target="_blank"><IMG SRC="drawings/06Declarations.png" ALIGN="right" hspace ="10"/></a>As a guide, here's how the libraries we'll be looking at for mining <a href="drawings/06Declarations.pdf" target="_blank"> fit together</a>. (Click the picture.) For clarity, the drawing just shows these libraries and their dependencies. There's a library, `lib/grid`, that provides the work functions for mining plans. The `mine` library is a CLL, Command Line Library, supporting the mining remote CLI in `lib/net`. It uses `lib/planner` to build plans for commands given it and `lib/worker` to execute them. While tedious, what's in `lib/mine` is straightforward. The clever stuff is in `lib/grid`.
-
-As you might figure, there's a lot of <a href="https://en.wikipedia.org/wiki/Decomposition_(computer_science)" target="_blank"> factoring </a> (that is, which piece does what) to explore in the design
-along the lines described above.  But before we explore these factored libraries, it'll be helpful to see something about what they might be useful for.
-
-Apologies in advance: this chapter will be unavoidably detailed in the _what_ in order to ground our exploration.
+In this chapter, as threatened, we'll explore the idea of <a href="https://en.wikipedia.org/wiki/Declarative_programming" target="_blank"> declarative programming </a>. We'll look at using this approach for digging shafts and tunnels to mine ores.  The _what_ of all this will get pretty detailed. In some sense, that's the point. The luxury of just saying _what_ is particularly important when there's a lot of detail (that inevitably will get changed). Apologies in advance: this chapter will be unavoidably detailed in the _what_ in order to ground our exploration.
 
 The _what_ that is to done for our examples is to dig some holes. In particular, shafts down to a given level and tunnels to mine at that level. However, digging is only part of the work. Provisioning a shaft needs, for example, ladders, torches, and storage barrels put just right. For the player's safety, we also need platforms to stand on. 
 
@@ -272,23 +263,25 @@ We'll use (the numbered) markers to navigate the twists and turns of the mine to
 
 All this detail motivates a declarative _what_ rather than imperative _how_ approach to writing maintainable code. It's likely obvious that getting all this right the first time isn't very likely. There will be changes. It's easier to make those changes if we can find a declarative representation that pretty much directly follows our (changing) schematic as understanding develops of what must be done.
 
-So then, back to how all this works. In MUSE, the _what_ is a `plan`. The `lib/planner` library uses Lua to load a `plan` and produce its internal representation. This representation is consumed by `lib/worker`. It's a different kind of dependency. Together these libraries are the procedural engine for the _how_ that supports the declarative _what_. They take care of the _how_ so you don't have to. 
+So then, on to how all this works. As is typical, there's two parts to this declarative programming engine: a _planner_  (a producer of the _how_, an executable interpretation of the _what_) and a _worker_  (consuming that interpretation to actually do the work). Helper libraries provide _work functions_ extending the planner's declarative language for specific situations. In MUSE, the _what_ is a `plan`. The `lib/planner` library uses Lua to load a `plan` and produce its internal representation. This representation is consumed by `lib/worker`. It's a different kind of dependency. Together these libraries are the procedural engine for the _how_ that supports the declarative _what_. They take care of the _how_ so you don't have to. 
 
 The design of the declarative `plan` "language" is governed by a few principles. We want to: <a id="plan"> </a>
 
 - **limit the declarative scope** to moving turtles, placing items, and marking places; _and  beyond that scope_, 
-- **extend operations with Lua (work) functions** rather than making a bigger language; _and_
+- **extend operations with Lua _work functions_** rather than making a bigger language; _and_
 - **fit well with Lua syntax** to minimize the work (and opportunity for error) in parsing the representation.
 
 The general idea is to keep it simple and use Lua for the hard stuff. Making the language bigger than it strictly needs to be means there's more (parsing) to get wrong and, just as importantly, more that's unfamiliar. (That's a potential pitfall for <a href="http://staff.um.edu.mt/afra1/seminar/little-languages.pdf" target="_blank"> _little languages_</a>.) 
 
 One of the strong points for Lua is the coherence between development and operation: Lua _**is**_ the <a href="https://en.wikipedia.org/wiki/Shell_script" target="_blank"> _shell language_ </a> as well as the general development language. In keeping with this idea, a MUSE plan is just a Lua file. It's easy to escape back to Lua whenever there's the temptation to make the little language a little bigger.
 
-<a href="drawings/06Declarations.pdf" target="_blank"><IMG SRC="drawings/06Declarations.png" ALIGN="right" hspace ="10"/></a>We make use of this facility in the plan for mining ores. There's a lot of _how_ that would be needed for any plan for mining in a `grid` pattern. That's captured in the `lib/grid` library. The _what_ plan for one particular mine geometry, `plans/cross`, references `lib/grid` for the _how_ that will be directly handled  by Lua fuctions. 
+<a href="drawings/06Declarations.pdf" target="_blank"><IMG SRC="drawings/06Declarations.png" ALIGN="right" hspace ="10"/></a>As a guide, here's how the libraries we'll be looking at for mining <a href="drawings/06Declarations.pdf" target="_blank"> fit together</a>. (Click the picture.) For clarity, the drawing just shows these libraries and their dependencies. As you might figure, there's a lot of <a href="https://en.wikipedia.org/wiki/Decomposition_(computer_science)" target="_blank"> factoring </a> (that is, which piece does what) to explore in the design. The `mine` library is a CLL, Command Line Library. It uses`lib/planner` to build plans for commands given it and `lib/worker` to execute them. Work functions for the plan to actually mine ore in our example are provided by `lib/grid`. 
 
-Our little language expects to <a href="code/lib/motion.html#moving" target="_blank"> _step_</a> turtle motion in a closure as we discussed way back when we explored `lib/motion`. At each of these steps, the _what_ operations specified within the declarative scope of our little language are executed and then an optional (Lua) _work function_ is invoked. This escape to <a href="https://en.wikipedia.org/wiki/Procedural_programming" target="_blank"> procedural programming</a> keeps the little language little.
+Our little language expects to <a href="code/lib/motion.html#moving" target="_blank"> _step_</a> turtle motion in a closure as we discussed way back when we explored `lib/motion`. At each of these steps, the _what_ operations specified within the declarative scope of our little language are executed and then that optional (Lua) _work function_ is invoked. The escape to <a href="https://en.wikipedia.org/wiki/Procedural_programming" target="_blank"> procedural programming</a> keeps the little language little.
 
-<a href="code/lib/planner.html" target="_blank"><IMG SRC="drawings/06Tree.jpg" ALIGN="left" hspace ="10"/></a> Look at the <a href="code/lib/planner.html" target="_blank"> `lib/planner`</a> introduction to see the definition of our little language. Then explore the <a href="code/plans/snake.html" target="_blank"> `plan`</a> for a `snake` shaped shaft like the one we've been looking at in those pictures to see how the language is used. Finally follow the link in the tree back to <a href="code/lib/planner.html" target="_blank"> `lib/planner`</a> to see how it produces an internal representation for the plan that is used by `lib/worker`. 
+<a href="code/lib/planner.html" target="_blank"><IMG SRC="drawings/06Tree.jpg" ALIGN="left" hspace ="10"/></a> Look at the <a href="code/lib/planner.html" target="_blank"> `lib/planner`</a> introduction to see the definition of our little language. Then explore the <a href="code/plans/snake.html" target="_blank"> `plan`</a> for a snake shaped shaft to see how the language is used. This is the plan for providing shafts like the one we've been looking at in those pictures. It's how a turtle gets down to where the actual mining is done. Note that `funds`, the very simple _work function_ for `plan/snake` is included in the plan definition. There was no need to make a separate library for it. Since the plans are just Lua, we could simply define the function in the plan, just like any other constant. 
+
+Finally follow the link in the tree back to <a href="code/lib/planner.html" target="_blank"> `lib/planner`</a> to see how it produces an internal representation for the plan that is used by `lib/worker`. 
 
 You can explore the <a href="code/lib/worker.html#operate" target="_blank"> `worker.execute`</a> function and follow the code there backward through the library. 
 
@@ -298,7 +291,14 @@ As you'll see, the only tricky bit in the code, an admittedly tricky <a href=" h
 
 For reference, here are the summaries for these files: for the <a href="docs/plans/snake.html" target="_blank"> shaft plan</a>, for the <a href="docs/lib/planner.html" target="_blank">  planner </a>, and for the <a href="docs/lib/worker.html" target="_blank">  worker</a>.
 
-The `plan` for mine shafts get us down to a given level for mining ore (and back again). Tunnels need to be bored at a level to find and dig ore at that level. To minimize fuel consumption, all the digging at a given position is done while the turtle is at that position. This results in a cross shaped pattern for tunnels. Here's what that looks like at an even numbered level looking south-west:
+As we mentioned, The CLL for mining is `lib/mine`. Here's its <a href="docs/lib/mine.html" target="_blank"> summary</a>. It supports the  remote CLI for mine operations in <a href="code/lib/net.html#mine" target="_blank">`lib/net`
+</a>. 
+
+The <a href="code/lib/mine.html#mine" target="_blank"> implementation </a> is straight forward (and frankly kinda ugly) with a lot of status monitoring and error checking as it loads and runs plans. If you must look, it might be best studied working from the end of the file to the beginning.
+
+So far we've only been dealing with the `shaft` command. Actually drilling tunnels (`bore`), navigating in the mine (`post`), and mining the ore (`ores`) is next.
+
+The `plan` for mine shafts get us down to a given level for mining ore (and back again). Tunnels need to be bored at a given level to find and dig ore at that level. To minimize fuel consumption, all the digging at a given position is done while the turtle is at that position. This results in a cross shaped pattern for tunnels. Here's what that looks like at an even numbered level looking south-west:
 
 <IMG SRC="drawings/06CrossEvenTunnels.png"/>
 
@@ -308,13 +308,13 @@ One of the repeated patterns is shown with more detail. In that pattern, the dug
 
 Finally, we need torches in these tunnels. They are in put the bottom of the cross shaped dig and replaced after any excavation. The plan needs to work even when tunnels run into caves (as shown).
 
-<IMG SRC="drawings/06Mine.png"/>
+<IMG SRC="drawings/06Mine.png" vspace="10"/>
 
-<a href="code/plans/cross.html" target="_blank"><IMG SRC="drawings/06Tree.jpg" ALIGN="left" hspace ="10"/></a>Follow the link in the tree to look at the <a href="code/plans/cross.html" target="_blank"> plan</a> for digging, mining, and navigating tunnels together with the <a href="drawings/06CrossSection.pdf" target="_blank"> cross section drawing</a> to see how the plan follows from the drawing.  The summary of the plan is <a href="docs/plans/cross.html" target="_blank"> here</a>. 
+The _how_ that would be needed for any plan for mining in a `grid` pattern is captured in `lib/grid`. The _what_ plan for one particular mine geometry, <a href="code/plans/cross.html" target="_blank">`plans/cross`</a>, references `lib/grid` for the _how_ that will be directly handled  by the Lua functions there. 
 
-Note that the tunnels in a `cross` plan form a (rectangular) `grid`. As we mentioned before, the `cross` plan references `lib/grid` so that the plan itself keeps to the _what_. There's an awful lot of _how_ in mining. That's kept out of the plan and the _little language_ is kept little. There's a library for that: <a href="code/lib/grid.html" target="_blank">`lib/grid`</a>. As you'll see if you follow the link, it does a lot.
+<a href="code/plans/cross.html" target="_blank"><IMG SRC="drawings/06Tree.jpg" ALIGN="left" vspace="10" hspace ="10"/></a>Follow the link in the tree to look at the <a href="code/plans/cross.html" target="_blank"> plan</a> for digging, mining, and navigating our tunnels together with the <a href="drawings/06CrossSection.pdf" target="_blank"> cross section drawing</a> to see how the plan follows from the drawing.  The summary of the plan is <a href="docs/plans/cross.html" target="_blank"> here</a>. 
 
-The CLI for mining is `lib/mine`. Here's its <a href="docs/lib/mine.html" target="_blank"> summary</a>. As we said at the beginning of this chapter, the <a href="code/lib/mine.html#mine" target="_blank"> implementation </a> is straight forward (and frankly kinda ugly) with a lot of status monitoring and error checking as it loads and runs plans. If you must look, it might be best studied working from the end of the file to the beginning.
+Note that the tunnels in a `cross` plan form a (rectangular) `grid`. As we mentioned before, the `cross` plan references `lib/grid` so that the plan itself keeps to the _what_. There's an awful lot of _how_ in mining. That's kept out of the plan and the _little language_ is kept little. There's a library for that: <a href="code/lib/grid.html" target="_blank">`lib/grid`</a>. As you'll see if you follow the link, it does the most interesting bits.
 
 The next chapter takes the declarative idea to another level. Sometimes rather than defining the `path` of a `plan` explicitly, it's useful to let MUSE generate a plan by just specifying the three dimensional rectangular `bounds` that its `path` should cover. In this case, the support libraries do more so that the client declarations can do less. Because of this, the support libraries wind up being more intertwined with their clients. In particular, control flow passes back and forth between libraries and clients in what might be characterized as a <a href="https://en.wikipedia.org/wiki/Inversion_of_control" target="_blank"> _framework inversion of control_ </a>. Before considering the idea of frameworks, we always saw clients calling libraries. The new and surprising thing here is that the library is also calling its clients. Man bites dog. Different dog.
 <br/>
