@@ -4,7 +4,7 @@
 --:! {grid: []: (:)} <- **Grid Mining Functions Library** -> muse/docs/lib/grid.md  
 --:| grid: _Work functions boring, navigating, and mining ore in a grid of tunnels._ -> grid
 ```
-The `grid` library provides the _how_ extending mining plans run by the `lib/mine` CLL. It provides the means for `worker.execute` to navigate, bore, and mine a grid of tunnels at some level in a mine. Ores are mined in tunnels perpendicular to three bored access tunnels: an `inner` one to the shaft, `outer` ones at the edges of the bored area.
+The `grid` library provides the _how_ extending mining plans run by the `lib/mine` CLL. It provides the means for `worker.execute` to navigate, bore, and mine a grid of tunnels at some level in a mine. There are three bored access tunnels: an `inner` one to the shaft and two `outer` ones at the edges of the bored area. Ores are mined in tunnels perpendicular to these.
 ```Lua
 --]]
 local grid = {}; grid.hints = {} ---@module "signs.grid" -- for functions exported from library
@@ -25,7 +25,7 @@ local place, moves = places.place, places.moves
 --[[
 ```
 <a id="navigation"></a> 
-Navigating the grid of tunnels is done using markers for named `places`. The general idea for navigating is to go directly to the shaft between levels or to a (named place) `target` if is either is `reachable`, that is if the y coordinate and either the x or the z coordinate is within one block of the current turtle `position`. If this is the case, the turtle has arrived. If that's not possible, go instead to an `inner` tunnel if that's `reachable`, to an `outer` tunnel if that's not. Then try again. Prefer tunnels `closer` to the `target`. Here are some utility functions used for navigation: 
+Navigating the grid of tunnels is done using markers for named `places`. The general idea for navigating is to go directly to the shaft between levels or to a `target` (a named `place`) if is either is `reachable`, that is if the y coordinate and either the x or the z coordinate is within one block of the current turtle `position`. If this is the case, the turtle has arrived. If that's not possible, go instead to an `inner` tunnel if that's `reachable` or to an `outer` tunnel if that's not. Then try again (and again) until the turtle can get to a shaft or the `target`. Prefer tunnels `closer` to the `target`. Here are some utility functions used for navigation: 
 ```Lua
 --]]
 --:# **Navigation for grids:  use placed markers to find posts for turtles.**
@@ -41,30 +41,27 @@ local function closer(placeName, nameMarker, xyzTarget) -- placeName is tentativ
   return distancePlace < distanceMarker
 end
 
-local binLabels = {shaft = true, inner = true, outer = true} -- the interesting labels of places
+local mineLabels = {shaft = true, inner = true, outer = true} -- the labels of places for mine navigation 
+-- bin: set `name.target`, `name.inner`, or `name`.outer` to marker name 
+-- only if it's `reachable` and `closer` than whatever is currently in that `name` 
 
--- examine (marker) place, bin its name as `markers.target`, `markers.inner`, or markers.`outer` 
--- only if it's `reachable` and `closer` than whatever is currently in that bin
--- bin (noun) is a collection of marker names; bin (verb): put marker name in the collection
--- marker labels are `shaft`, `inner`, or `outer`
-
-local function bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, markers)
-  if not binLabels[placeLabel] or not reachable(xyzPlace) then return end
-  core.status(5, "grid reachable", placeName, placeLabel, markers)
+local function bin(targetBase, xyzTarget, placeName, 
+  if not mineLabels[placeLabel] or not reachable(xyzPlace) then return end
+  core.status(5, "grid reachable", placeName, placeLabel, names)
   local _, _, placeBase = planner.mark(placeName) -- parse marker; if found target, done
-  if targetBase == placeBase or placeLabel == "shaft" then markers.target = placeName; return markers end -- **DONE**
-  if closer(placeName, markers[placeLabel], xyzTarget) then markers[placeLabel] = placeName end -- `inner` or `outer`
-  return markers -- label: inner (main) hall or outer (back) hall
+  if targetBase == placeBase or placeLabel == "shaft" then name.target = placeName; return name end -- **DONE**
+  if closer(placeName, name[placeLabel], xyzTarget) then name[placeLabel] = placeName end -- `inner` or `outer`
+  return name -- label: inner (main) hall or outer (back) hall
 end
 
 local function binMarkers(markerName) -- look at all the named `places` to bin those useful in moving to target
   local _, _, targetBase = planner.mark(markerName); local xyzTarget = place.xyzf(markerName)
   assert(targetBase and xyzTarget, "grid: binMarkers missing targets for "..markerName)
-  local markers = {}; -- markers.target holds name of target marker or shaft marker
+  local name = {}; -- name.target will hold name of target marker or shaft marker
   
   for placeName, placeLabel, xyzPlace in place.near() do 
     bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, markers)  
-  end; return markers -- for target, inner, and outer at current level 
+  end; return name -- for target, inner, and outer at current level 
   
 end
 --[[
