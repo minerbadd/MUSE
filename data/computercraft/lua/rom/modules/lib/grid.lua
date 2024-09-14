@@ -45,23 +45,23 @@ local mineLabels = {shaft = true, inner = true, outer = true} -- the labels of p
 -- bin: set `name.target`, `name.inner`, or `name`.outer` to marker name 
 -- only if it's `reachable` and `closer` than whatever is currently in that `name` 
 
-local function bin(targetBase, xyzTarget, placeName, 
+local function bin(targetBase, xyzTarget, placeName, names)
   if not mineLabels[placeLabel] or not reachable(xyzPlace) then return end
   core.status(5, "grid reachable", placeName, placeLabel, names)
   local _, _, placeBase = planner.mark(placeName) -- parse marker; if found target, done
-  if targetBase == placeBase or placeLabel == "shaft" then name.target = placeName; return name end -- **DONE**
-  if closer(placeName, name[placeLabel], xyzTarget) then name[placeLabel] = placeName end -- `inner` or `outer`
-  return name -- label: inner (main) hall or outer (back) hall
+  if targetBase == placeBase or placeLabel == "shaft" then names.target = placeName; return names end
+  if closer(placeName, names[placeLabel], xyzTarget) then names[placeLabel] = placeName end -- `inner` or `outer`
+  return names -- label: inner (main) hall or outer (back) hall
 end
 
 local function binMarkers(markerName) -- look at all the named `places` to bin those useful in moving to target
   local _, _, targetBase = planner.mark(markerName); local xyzTarget = place.xyzf(markerName)
   assert(targetBase and xyzTarget, "grid: binMarkers missing targets for "..markerName)
-  local name = {}; -- name.target will hold name of target marker or shaft marker
+  local names = {}; -- names.target will hold name of target marker or shaft marker
   
   for placeName, placeLabel, xyzPlace in place.near() do 
-    bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, markers)  
-  end; return name -- for target, inner, and outer at current level 
+    bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, names)  
+  end; return names -- for target, inner, and outer at current level 
   
 end
 --[[
@@ -86,13 +86,13 @@ function grid.mark(plan, marking) -- called by `worker.execute`, **specified in 
 end
 
 function grid.post(markerName, borePlans) -- in level, **specified by bore plan**, `mine.post` interface --:= mine.post:: grid.post
-  local markers = binMarkers(markerName) -- target (shaft or tag), inner, and outer markers
-  core.status(3, "grid", "binned markers for", markerName, markers) 
-  if markers.target then moves.to(markers.target, "y"); return markers -- **at specified post or at shaft within this level**
-  elseif markers.inner then moves.to(markers.inner, "y"); return grid.post(markerName, borePlans) -- try for shaft|tag
-  elseif markers.outer then moves.to(markers.outer, "y"); return grid.post(markerName, borePlans) -- try for inner
+  local names = binMarkers(markerName) -- target (shaft or base), inner, and outer marker names
+  core.status(4, "grid", "binned markers for", markerName, names) 
+  if names.target then moves.to(names.target, "y"); return names -- **at specified post or at shaft within this level**
+  elseif names.inner then moves.to(names.inner, "y"); return grid.post(markerName, borePlans) -- try for shaft|tag
+  elseif names.outer then moves.to(names.outer, "y"); return grid.post(markerName, borePlans) -- try for inner
   else error("mine.post: Can't navigate to "..markerName.." for "..borePlans.bores.name..
-      " at "..move.ats().." with "..core.string(markers).." markers")
+      " at "..move.ats().." with "..core.string(names).." markers")
   end
 end
 --[[
