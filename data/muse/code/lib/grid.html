@@ -12,7 +12,7 @@
 --:! {grid: []: (:)} <- <b>Grid Mining Functions Library</b> -> muse/docs/lib/grid.md  
 --:| grid: <i>Work functions boring, navigating, and mining ore in a grid of tunnels.</i> -> grid
 </code></pre>
-The <code>grid</code> library provides the <i>how</i> extending mining plans run by the <code>lib/mine</code> CLL. It provides the means for <code>worker.execute</code> to navigate, bore, and mine a grid of tunnels at some level in a mine. Ores are mined in tunnels perpendicular to three bored access tunnels: an <code>inner</code> one to the shaft, <code>outer</code> ones at the edges of the bored area.
+The <code>grid</code> library provides the <i>how</i> extending mining plans run by the <code>lib/mine</code> CLL. It provides the means for <code>worker.execute</code> to navigate, bore, and mine a grid of tunnels at some level in a mine. There are three bored access tunnels: an <code>inner</code> one to the shaft and two <code>outer</code> ones at the edges of the bored area. Ores are mined in tunnels perpendicular to these.
 <pre><code class="language-lua">
 local grid = {}; grid.hints = {} ---@module "signs.grid" -- for functions exported from library
 
@@ -29,49 +29,6 @@ local place, moves = places.place, places.moves
 
 --:> crossplan: <i>Bore and mine, minimal movement</i> -> <code>{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }</code>
 
-</code></pre>
-<a id="navigation"></a> 
-Navigating the grid of tunnels is done using markers for named <code>places</code>. The general idea for navigating is to go directly to the shaft between levels or to a (named place) <code>target</code> if is either is <code>reachable</code>, that is if the y coordinate and either the x or the z coordinate is within one block of the current turtle <code>position</code>. If this is the case, the turtle has arrived. If that's not possible, go instead to an <code>inner</code> tunnel if that's <code>reachable</code>, to an <code>outer</code> tunnel if that's not. Then try again. Prefer tunnels <code>closer</code> to the <code>target</code>. Here are some utility functions used for navigation: 
-<pre><code class="language-lua">
---:# <b>Navigation for grids:  use placed markers to find posts for turtles.</b>
-local function reachable(xyzPlace) 
-  local x, y, z = table.unpack(move.at()); -- only grid movement in tunnels; only within level 
-  local xPlace, yPlace, zPlace = table.unpack(xyzPlace)
-  return (math.abs(x - xPlace) <= 1 or math.abs(z - zPlace) <= 1) and math.abs(y - yPlace) <= 1 
-end
-
-local function closer(placeName, nameMarker, xyzTarget) -- placeName is tentative replacement
-  local distancePlace = place.distance(place.xyzf(placeName), xyzTarget)
-  local distanceMarker = place.distance(place.xyzf(nameMarker), xyzTarget)
-  return distancePlace < distanceMarker
-end
-
-local binLabels = {shaft = true, inner = true, outer = true} -- the interesting labels of places
-
--- examine (marker) place, bin its name as <code>markers.target</code>, <code>markers.inner</code>, or markers.<code>outer</code> 
--- only if it's <code>reachable</code> and <code>closer</code> than whatever is currently in that bin
--- bin (noun) is a collection of marker names; bin (verb): put marker name in the collection
--- marker labels are <code>shaft</code>, <code>inner</code>, or <code>outer</code>
-
-local function bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, markers)
-  if not binLabels[placeLabel] or not reachable(xyzPlace) then return end
-  core.status(5, "grid reachable", placeName, placeLabel, markers)
-  local _, _, placeBase = planner.mark(placeName) -- parse marker; if found target, done
-  if targetBase == placeBase or placeLabel == "shaft" then markers.target = placeName; return markers end -- <b>DONE</b>
-  if closer(placeName, markers[placeLabel], xyzTarget) then markers[placeLabel] = placeName end -- <code>inner</code> or <code>outer</code>
-  return markers -- label: inner (main) hall or outer (back) hall
-end
-
-local function binMarkers(markerName) -- look at all the named <code>places</code> to bin those useful in moving to target
-  local _, _, targetBase = planner.mark(markerName); local xyzTarget = place.xyzf(markerName)
-  assert(targetBase and xyzTarget, "grid: binMarkers missing targets for "..markerName)
-  local markers = {}; -- markers.target holds name of target marker or shaft marker
-  
-  for placeName, placeLabel, xyzPlace in place.near() do 
-    bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, markers)  
-  end; return markers -- for target, inner, and outer at current level 
-  
-end
 </code></pre>
 <a id="mark"></a>
 Markers are created according to a <code>marking</code> format that includes the name of the shaft for the minehead, the level in the mine, and the rest of the marker name that's specified by the <code>plan</code> file for the mine. The format is used for finding a <code>post</code> for a turtle and going there in the grid of tunnels. The <code>lib/mine</code> library has added supplementary information to the <code>plan</code>. This is used in creating the marker and providing its feature list with the <code>key</code> and <code>value</code> for the <code>plan</code>. A mining turtle uses <code>grid.post</code> to navigate to the <code>post</code> at a given level and wait there for commands from the player. The function adheres to the <code>mine.post</code> interface.
@@ -90,15 +47,55 @@ function grid.mark(plan, marking) -- called by <code>worker.execute</code>, <b>s
   map.put(markerName, key, value) -- marker gets plan key and value
   return markerName, label, report 
 end
+</code></pre>
+<a id="navigation"></a> 
+Navigating the grid of tunnels is done using markers for named <code>places</code>. The general idea for navigating is to go directly to the shaft between levels or to a <code>target</code> (a named <code>place</code>) if is either is <code>reachable</code>, that is if the y coordinate and either the x or the z coordinate is within one block of the current turtle <code>position</code>. If this is the case, the turtle has arrived. If that's not possible, go instead to an <code>inner</code> tunnel if that's <code>reachable</code> or to an <code>outer</code> tunnel if that's not. Then try again (and again) until the turtle can get to a shaft or the <code>target</code>. Prefer tunnels <code>closer</code> to the <code>target</code>. Here are some utility functions used for navigation: 
+<pre><code class="language-lua">
+--:# <b>Navigation for grids:  use placed markers to find posts for turtles.</b>
+local function reachable(xyzPlace) 
+  local x, y, z = table.unpack(move.at()); -- only grid movement in tunnels; only within level 
+  local xPlace, yPlace, zPlace = table.unpack(xyzPlace)
+  return (math.abs(x - xPlace) <= 1 or math.abs(z - zPlace) <= 1) and math.abs(y - yPlace) <= 1 
+end
+
+local function closer(placeName, nameMarker, xyzTarget) -- placeName is tentative replacement
+  local distancePlace = place.distance(place.xyzf(placeName), xyzTarget)
+  local distanceMarker = place.distance(place.xyzf(nameMarker), xyzTarget)
+  return distancePlace < distanceMarker
+end
+
+local mineLabels = {shaft = true, inner = true, outer = true} -- the labels of places for mine navigation 
+-- bin: set <code>name.target</code>, <code>name.inner</code>, or <code>name</code>.outer` to marker name 
+-- only if it's <code>reachable</code> and <code>closer</code> than whatever is currently in that <code>name</code> 
+
+local function bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, names)
+  if not mineLabels[placeLabel] or not reachable(xyzPlace) then return end -- of all the places, disqualify this
+  core.status(5, "grid reachable", placeName, placeLabel, names) -- try this place
+  local _, _, placeBase = planner.mark(placeName) -- parse marker; if found target, nice, but <code>binMarkers</code> continues
+  if targetBase == placeBase or placeLabel == "shaft" then names.target = placeName; return names end
+  if closer(placeName, names[placeLabel], xyzTarget) then names[placeLabel] = placeName end -- <code>inner</code> or <code>outer</code>
+  return names -- label: inner (main) hall or outer (back) hall
+end
+
+local function binMarkers(markerName) -- look at all the named <code>places</code> to bin those useful in moving to target
+  local _, _, targetBase = planner.mark(markerName); local xyzTarget = place.xyzf(markerName)
+  assert(targetBase and xyzTarget, "grid: binMarkers missing targets for "..markerName)
+  local names = {}; -- names.target will hold name of target marker or shaft marker
+  
+  for placeName, placeLabel, xyzPlace in place.near() do -- all the places
+    bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, names)  
+  end; return names -- for target, inner, and outer at current level 
+  
+end
 
 function grid.post(markerName, borePlans) -- in level, <b>specified by bore plan</b>, <code>mine.post</code> interface --:= mine.post:: grid.post
-  local markers = binMarkers(markerName) -- target (shaft or tag), inner, and outer markers
-  core.status(3, "grid", "binned markers for", markerName, markers) 
-  if markers.target then moves.to(markers.target, "y"); return markers -- <b>at specified post or at shaft within this level</b>
-  elseif markers.inner then moves.to(markers.inner, "y"); return grid.post(markerName, borePlans) -- try for shaft|tag
-  elseif markers.outer then moves.to(markers.outer, "y"); return grid.post(markerName, borePlans) -- try for inner
+  local names = binMarkers(markerName) -- target (shaft or base), inner, and outer marker names
+  core.status(4, "grid", "binned markers for", markerName, names) 
+  if names.target then moves.to(names.target, "y"); return names -- <b>at specified post or at shaft within this level</b>
+  elseif names.inner then moves.to(names.inner, "y"); return grid.post(markerName, borePlans) -- try for shaft|tag
+  elseif names.outer then moves.to(names.outer, "y"); return grid.post(markerName, borePlans) -- try for inner
   else error("mine.post: Can't navigate to "..markerName.." for "..borePlans.bores.name..
-      " at "..move.ats().." with "..core.string(markers).." markers")
+      " at "..move.ats().." with "..core.string(names).." markers")
   end
 end
 </code></pre>

@@ -24,6 +24,26 @@ local place, moves = places.place, places.moves
 
 --[[
 ```
+<a id="mark"></a>
+Markers are created according to a `marking` format that includes the name of the shaft for the minehead, the level in the mine, and the rest of the marker name that's specified by the `plan` file for the mine. The format is used for finding a `post` for a turtle and going there in the grid of tunnels. The `lib/mine` library has added supplementary information to the `plan`. This is used in creating the marker and providing its feature list with the `key` and `value` for the `plan`. A mining turtle uses `grid.post` to navigate to the `post` at a given level and wait there for commands from the player. The function adheres to the `mine.post` interface.
+```Lua
+--]]
+
+function grid.mark(plan, marking) -- called by `worker.execute`, **specified in shaft and bore plans** 
+--:: grid.mark(:plan:, :marking:) -> _Make place name, report result._ -> `markerName: ":", label: ":", report: ":"`
+--:+ _Called by `worker.execute` to make marker name and use it to add map point for navigation in mine._
+--:+ _Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore._
+--:+ _Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`._
+  local prefix, base, label = table.unpack(marking); local length = string.len(prefix) --shaftName and level
+  local shaftName, level, key, value = plan.head, plan.level, plan.key, plan.value -- **added by lib/mine**
+  local levelName = length > 1 and string.format("%02d", level) or "" -- more than 1 colon in prefix => put level in name
+  local based = (base == "") and "" or ":"..base; local markerName = shaftName..":"..levelName..based; 
+  local report = map.op {"point", markerName, label}; 
+  map.put(markerName, key, value) -- marker gets plan key and value
+  return markerName, label, report 
+end
+--[[
+```
 <a id="navigation"></a> 
 Navigating the grid of tunnels is done using markers for named `places`. The general idea for navigating is to go directly to the shaft between levels or to a `target` (a named `place`) if is either is `reachable`, that is if the y coordinate and either the x or the z coordinate is within one block of the current turtle `position`. If this is the case, the turtle has arrived. If that's not possible, go instead to an `inner` tunnel if that's `reachable` or to an `outer` tunnel if that's not. Then try again (and again) until the turtle can get to a shaft or the `target`. Prefer tunnels `closer` to the `target`. Here are some utility functions used for navigation: 
 ```Lua
@@ -45,10 +65,10 @@ local mineLabels = {shaft = true, inner = true, outer = true} -- the labels of p
 -- bin: set `name.target`, `name.inner`, or `name`.outer` to marker name 
 -- only if it's `reachable` and `closer` than whatever is currently in that `name` 
 
-local function bin(targetBase, xyzTarget, placeName, names)
-  if not mineLabels[placeLabel] or not reachable(xyzPlace) then return end
-  core.status(5, "grid reachable", placeName, placeLabel, names)
-  local _, _, placeBase = planner.mark(placeName) -- parse marker; if found target, done
+local function bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, names)
+  if not mineLabels[placeLabel] or not reachable(xyzPlace) then return end -- of all the places, disqualify this
+  core.status(5, "grid reachable", placeName, placeLabel, names) -- try this place
+  local _, _, placeBase = planner.mark(placeName) -- parse marker; if found target, nice, but `binMarkers` continues
   if targetBase == placeBase or placeLabel == "shaft" then names.target = placeName; return names end
   if closer(placeName, names[placeLabel], xyzTarget) then names[placeLabel] = placeName end -- `inner` or `outer`
   return names -- label: inner (main) hall or outer (back) hall
@@ -59,30 +79,10 @@ local function binMarkers(markerName) -- look at all the named `places` to bin t
   assert(targetBase and xyzTarget, "grid: binMarkers missing targets for "..markerName)
   local names = {}; -- names.target will hold name of target marker or shaft marker
   
-  for placeName, placeLabel, xyzPlace in place.near() do 
+  for placeName, placeLabel, xyzPlace in place.near() do -- all the places
     bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, names)  
   end; return names -- for target, inner, and outer at current level 
   
-end
---[[
-```
-<a id="mark"></a>
-Markers are created according to a `marking` format that includes the name of the shaft for the minehead, the level in the mine, and the rest of the marker name that's specified by the `plan` file for the mine. The format is used for finding a `post` for a turtle and going there in the grid of tunnels. The `lib/mine` library has added supplementary information to the `plan`. This is used in creating the marker and providing its feature list with the `key` and `value` for the `plan`. A mining turtle uses `grid.post` to navigate to the `post` at a given level and wait there for commands from the player. The function adheres to the `mine.post` interface.
-```Lua
---]]
-
-function grid.mark(plan, marking) -- called by `worker.execute`, **specified in shaft and bore plans** 
---:: grid.mark(:plan:, :marking:) -> _Make place name, report result._ -> `markerName: ":", label: ":", report: ":"`
---:+ _Called by `worker.execute` to make marker name and use it to add map point for navigation in mine._
---:+ _Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore._
---:+ _Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`._
-  local prefix, base, label = table.unpack(marking); local length = string.len(prefix) --shaftName and level
-  local shaftName, level, key, value = plan.head, plan.level, plan.key, plan.value -- **added by lib/mine**
-  local levelName = length > 1 and string.format("%02d", level) or "" -- more than 1 colon in prefix => put level in name
-  local based = (base == "") and "" or ":"..base; local markerName = shaftName..":"..levelName..based; 
-  local report = map.op {"point", markerName, label}; 
-  map.put(markerName, key, value) -- marker gets plan key and value
-  return markerName, label, report 
 end
 
 function grid.post(markerName, borePlans) -- in level, **specified by bore plan**, `mine.post` interface --:= mine.post:: grid.post
