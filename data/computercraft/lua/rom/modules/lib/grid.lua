@@ -49,48 +49,49 @@ Navigating the grid of tunnels is done using markers for named `places`. The gen
 ```Lua
 --]]
 --:# **Navigation for grids:  use placed markers to find posts for turtles.**
-local function reachable(xyzPlace) 
+
+local function reachable(xyzPlace) -- can the turtle get there from here (where it's currently `at`)
   local x, y, z = table.unpack(move.at()); -- only grid movement in tunnels; only within level 
   local xPlace, yPlace, zPlace = table.unpack(xyzPlace)
   return (math.abs(x - xPlace) <= 1 or math.abs(z - zPlace) <= 1) and math.abs(y - yPlace) <= 1 
 end
 
-local function closer(placeName, nameMarker, xyzTarget) -- placeName is tentative replacement
+local function closer(placeName, markerName, xyzTarget) -- placeName is being tried
   local distancePlace = place.distance(place.xyzf(placeName), xyzTarget)
-  local distanceMarker = place.distance(place.xyzf(nameMarker), xyzTarget)
-  return distancePlace < distanceMarker
+  local distanceMarker = place.distance(place.xyzf(markerName), xyzTarget)
+  return distancePlace < distanceMarker -- current marker
 end
 
 local mineLabels = {shaft = true, inner = true, outer = true} -- the labels of places for mine navigation 
--- bin: set `name.target`, `name.inner`, or `name`.outer` to marker name 
--- only if it's `reachable` and `closer` than whatever is currently in that `name` 
 
 local function bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, names)
+  -- bin: set `names.target`, `names.inner`, or `names`.outer` to place being tried
+  -- only if it's `reachable` from where the turtle is currently `at` and `closer` than whatever is currently in that `name` 
   if not mineLabels[placeLabel] or not reachable(xyzPlace) then return end -- of all the places, disqualify this
   core.status(5, "grid reachable", placeName, placeLabel, names) -- try this place
   local _, _, placeBase = planner.mark(placeName) -- parse marker; if found target, nice, but `binMarkers` continues
   if targetBase == placeBase or placeLabel == "shaft" then names.target = placeName; return names end
   if closer(placeName, names[placeLabel], xyzTarget) then names[placeLabel] = placeName end -- `inner` or `outer`
-  return names -- label: inner (main) hall or outer (back) hall
+  return names -- label: `inner` (main) hall or `outer` (back) hall
 end
 
-local function binMarkers(markerName) -- look at all the named `places` to bin those useful in moving to target
+local function binMarkers(markerName) -- look at all the named `places` to bin those useful in moving to target marker
   local _, _, targetBase = planner.mark(markerName); local xyzTarget = place.xyzf(markerName)
-  assert(targetBase and xyzTarget, "grid: binMarkers missing targets for "..markerName)
+  assert(targetBase and xyzTarget, "grid: binMarkers "..markerName.." failed as target")
   local names = {}; -- names.target will hold name of target marker or shaft marker
-  
-  for placeName, placeLabel, xyzPlace in place.near() do -- all the places
+
+  for placeName, placeLabel, xyzPlace in place.near() do -- `bin` all the places for target marker
     bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, names)  
   end; return names -- for target, inner, and outer at current level 
-  
+
 end
 
 function grid.post(markerName, borePlans) -- in level, **specified by bore plan**, `mine.post` interface --:= mine.post:: grid.post
   local names = binMarkers(markerName) -- target (shaft or base), inner, and outer marker names
   core.status(4, "grid", "binned markers for", markerName, names) 
-  if names.target then moves.to(names.target, "y"); return names -- **at specified post or at shaft within this level**
-  elseif names.inner then moves.to(names.inner, "y"); return grid.post(markerName, borePlans) -- try for shaft|tag
-  elseif names.outer then moves.to(names.outer, "y"); return grid.post(markerName, borePlans) -- try for inner
+  if names.target then moves.to(names.target, "y"); return names -- **at specified post (base) or at shaft within this level**
+  elseif names.inner then moves.to(names.inner, "y"); return grid.post(markerName, borePlans) -- move and try for shaft|base
+  elseif names.outer then moves.to(names.outer, "y"); return grid.post(markerName, borePlans) -- move and try for inner
   else error("mine.post: Can't navigate to "..markerName.." for "..borePlans.bores.name..
       " at "..move.ats().." with "..core.string(names).." markers")
   end

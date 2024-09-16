@@ -97,7 +97,7 @@
 
 --:- bore marker borePlans  -> _Dig horizontally from marker using saved or specified bore and shaft plans._   
 
---:- post marker borePlans?  -> _Go to marker (and up 1) from current level with saved or specified plans._  
+--:- post marker borePlans?  -> _Go to marker (and up 1 block) from current level with saved or specified plans._  
 
 --:- ores marker borePlans?  -> _Excavate ores from side tunnel near marker, return up 1 from marker._  
 

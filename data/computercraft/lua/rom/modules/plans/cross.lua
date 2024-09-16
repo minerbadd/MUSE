@@ -1,11 +1,11 @@
 --[[
-## Bore and Ore Plan for Odd and Even Mine Levels
+## Bore and Ore Cross Plan for Odd and Even Mine Levels
 ```md
 --:~ crossplan <- **Horizontal Tunnels 6 Blocks Apart for One (Odd or Even) Level** -> muse/docs/plans/cross.md  
 --:+ _Markers include shaft plan and bore plan file names in order to provide defaults for mine operations._ 
 ```
 <a id="definitions"></a> 
-This `cross` plan file to mine ores works for a particular tunnel geometry as shown in the <a href="../../drawings/06CrossSection.pdf" target="_blank"> cross-section drawing </a>. Looking at the drawing,  tunnel geometry is offset for odd and even levels. The `odd` and `even` `bores` plans here deal with the offset. As you'll see, there's a lot of detail here that is best expressed by the declarative _what_ rather than the procedural _how_. Or have we said that?
+This `cross` plan file to mine ores works for a particular tunnel geometry as shown in the <a href="../../drawings/06CrossSection.pdf" target="_blank"> cross-section drawing </a>. Looking at the drawing, tunnel geometry is offset for odd and even levels. The `odd` and `even` `bores` plans here deal with the offset. As you'll see, there's a lot of detail here that is best expressed by the declarative _what_ rather than the procedural _how_. Or have we said that?
 
 A grid of tunnels is bored first to mine ores. The tunnels running east and west are where the mining is done. The three tunnels running north and south provide ways to get to to those tunnels. The inner bore connects with the shaft. The outer ones are on the east and west edges of the dug level. Digging the bores near the shaft messes up ladders. The `fix` bore deals with that and puts a barrel near the shaft to store ore.
 

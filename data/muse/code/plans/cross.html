@@ -7,13 +7,13 @@
   <body> 
      <script src="../../../../assets/prism.js"></script> 
 
-<h2> Bore and Ore Plan for Odd and Even Mine Levels</h2>
+<h2> Bore and Ore Cross Plan for Odd and Even Mine Levels</h2>
 <pre><code class="language-markdown">
 --:~ crossplan <- <b>Horizontal Tunnels 6 Blocks Apart for One (Odd or Even) Level</b> -> muse/docs/plans/cross.md  
 --:+ <i>Markers include shaft plan and bore plan file names in order to provide defaults for mine operations.</i> 
 </code></pre>
 <a id="definitions"></a> 
-This <code>cross</code> plan file to mine ores works for a particular tunnel geometry as shown in the <a href="../../drawings/06CrossSection.pdf" target="_blank"> cross-section drawing </a>. Looking at the drawing,  tunnel geometry is offset for odd and even levels. The <code>odd</code> and <code>even</code> <code>bores</code> plans here deal with the offset. As you'll see, there's a lot of detail here that is best expressed by the declarative <i>what</i> rather than the procedural <i>how</i>. Or have we said that?
+This <code>cross</code> plan file to mine ores works for a particular tunnel geometry as shown in the <a href="../../drawings/06CrossSection.pdf" target="_blank"> cross-section drawing </a>. Looking at the drawing, tunnel geometry is offset for odd and even levels. The <code>odd</code> and <code>even</code> <code>bores</code> plans here deal with the offset. As you'll see, there's a lot of detail here that is best expressed by the declarative <i>what</i> rather than the procedural <i>how</i>. Or have we said that?
 <p>
 A grid of tunnels is bored first to mine ores. The tunnels running east and west are where the mining is done. The three tunnels running north and south provide ways to get to to those tunnels. The inner bore connects with the shaft. The outer ones are on the east and west edges of the dug level. Digging the bores near the shaft messes up ladders. The <code>fix</code> bore deals with that and puts a barrel near the shaft to store ore.
 <p>

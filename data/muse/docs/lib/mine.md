@@ -63,9 +63,9 @@
 
 --:# **Do the `post` operation for the command line interface**.  
 
---:- post marker borePlans?  -> _Go to marker (and up 1) from current level with saved or specified plans._  
+--:- post marker borePlans?  -> _Go to marker (and up 1 block) from current level with saved or specified plans._  
 
---:# **Bore horizontal tunnels and mine tunnels branching off the main (inner) tunnel for ore**    
+--:# **Bore horizontal tunnels and mine tunnels branching off the main tunnel for ore**    
 --:+ _Use shaft plans and bore plans to navigate to marker, bore horizontal tunnels using bore plans._    
 --:+ _Add "bore" and bore plans name as key and value to bore plans for inclusion in marker._    
 --:+ _Bores plans at even or odd level, potentially leaves place marks and torches._  

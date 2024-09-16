@@ -125,7 +125,7 @@ end; mine.hints["shaft"] = { ["?minehead ?levels ?shaftplans" ] = {}}
 --[[
 ```
 <a id="post"></a> 
-Use the shaft plan to move the turtle from odd to even and even to odd shaft levels until it arrives at the target level. Assume the shaft has already been dug and provisioned. The `checkLevel` and `changeLevel` functions just help with the `post` operation, moving the turtle to the designated post `point`. Navigation is done either from a shaft (at some level) to a marked `point` in the `inner` or `outer` tunnels or from there to a shaft at the level specified by its `marker`.
+Use the shaft plan to move the turtle from odd to even and even to odd shaft levels until it arrives at the target level. Assume the shaft has already been dug and provisioned. The `checkLevel` and `changeLevel` functions just help with the `post` operation, moving the turtle to the designated post `point`. Navigation is done either from a shaft (at some level) to a marked `point` or from there to a shaft at the level specified by its `marker`.
 ```Lua
 --]]
 -- # **Navigate to post using markers, changing level if necessary**
@@ -163,14 +163,14 @@ local function checkLevel(markerName, borePlans, shaftPlans, markers)
 end
 --[[
 ```
-Getting to the `post` requires navigating to its level. That's the tricky part. The rest is here.
+Getting to the `post` requires navigating to its level. That's the tricky part (above). The rest is here.
 ```Lua
 --]]
 function _mine.toPost(markerName, borePlans, shaftPlans) 
   --:: `_mine.toPost(markerName: ":", borePlans: bores, shaftPlans: shafts)` -> _Navigate to post_ -> `"done", ":", #: &!`
   -- + _Uses post operation specified by bore plan to navigate to post, returns level reached by post._
   if not place.match(markerName) then error("mine.toPost: "..markerName.." not found") end
-  local markers = borePlans.bores.post(markerName, borePlans); -- navigation to shaft (or post) --was , shaftPlans)
+  local markers = borePlans.bores.post(markerName, borePlans); -- navigation to shaft (or post) 
   local levelDone, levelReport, doneLevel= checkLevel(markerName, borePlans, shaftPlans, markers) 
   core.status(3, "mine", "level", levelDone, levelReport)
   if levelDone == "post" then return "done", levelReport, doneLevel end-- already at level and thus at post
@@ -183,7 +183,7 @@ end
 
 --:# **Do the `post` operation for the command line interface**.
 local function postOp(markerName, borePlansFile, shaftPlans) 
-  --:- post marker borePlans?  -> _Go to marker (and up 1) from current level with saved or specified plans._
+  --:- post marker borePlans?  -> _Go to marker (and up 1 block) from current level with saved or specified plans._
   local boreFileName = borePlansFile or map.gets(markerName, "bore")
   assert(boreFileName, "mine.postOp: need bore plan")
   --go to marker post (and up 1) in specified level from somewhere in current level
@@ -193,13 +193,13 @@ local function postOp(markerName, borePlansFile, shaftPlans)
   if not atMarker then error("mine.postOp: Unable to return to "..markReport) end
   move.up(1) -- **turtle stays above marker between operations to stay out of the way**
   return atMarker, markReport, shaftLevel
-end
+end; mine.hints["post"] = { ["?marker ??boreplans"] = {} }
 --[[
 ```
 <a id="bore"></a> Bores start at the shaft for the level specified by the `markerName`. The only interesting thing in this code is the use of the feature list key and value support from `lib/map` to simplify the CLI for mining ores. 
 ```Lua
 --]]
---:# **Bore horizontal tunnels and mine tunnels branching off the main (inner) tunnel for ore**
+--:# **Bore horizontal tunnels and mine tunnels branching off the main tunnel for ore**
 function _mine.bore(markerName, borePlans, shaftPlans) -- **returns `"done"` and inventory table size**
   --:: `_mine.bore(markerName: ":", borePlans: bores, shaftPlans:shafts)` -> _Go to marker and bore_ -> `"done", ":", #: &: &!`
   --:+ _Use shaft plans and bore plans to navigate to marker, bore horizontal tunnels using bore plans._

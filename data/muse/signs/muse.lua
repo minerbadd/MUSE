@@ -776,10 +776,10 @@ CLL to align MUSE location with Minecraft coordinates and activate a range as a 
 }
 ,
   ["_post_"] = {
-  ["line"] = "  --:- post marker borePlans?  -> _Go to marker (and up 1) from current level with saved or specified plans._",
+  ["line"] = "  --:- post marker borePlans?  -> _Go to marker (and up 1 block) from current level with saved or specified plans._",
   ["sign"] = "post marker borePlans?   ",
   ["kind"] = "cli",
-  ["text"] = "Go to marker (and up 1) from current level with saved or specified plans.",
+  ["text"] = "Go to marker (and up 1 block) from current level with saved or specified plans.",
 }
 ,
   ["_activate_"] = {
