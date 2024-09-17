@@ -7,11 +7,9 @@
 <a id="definitions"></a> 
 This `cross` plan file to mine ores works for a particular tunnel geometry as shown in the <a href="../../drawings/06CrossSection.pdf" target="_blank"> cross-section drawing </a>. Looking at the drawing, tunnel geometry is offset for odd and even levels. The `odd` and `even` `bores` plans here deal with the offset. As you'll see, there's a lot of detail here that is best expressed by the declarative _what_ rather than the procedural _how_. Or have we said that?
 
-A grid of tunnels is bored first to mine ores. The tunnels running east and west are where the mining is done. The three tunnels running north and south provide ways to get to to those tunnels. The inner bore connects with the shaft. The outer ones are on the east and west edges of the dug level. Digging the bores near the shaft messes up ladders. The `fix` bore deals with that and puts a barrel near the shaft to store ore.
+A grid of tunnels is bored first to mine ores. The tunnels running east and west are where the mining is done. The three tunnels running north and south provide ways to get to to those tunnels. The `inner` bore connects with the `shaft`. The `outer ones are on the east and west edges of the dug level. Digging the bores near the shaft messes up ladders. The `fix` bore deals with that and puts a barrel near the shaft to store ore.
 
-As advertised, rather than go beyond the limits of what is reasonably expressed declaratively, we just use Lua. In this case, we use the functions in `lib/grid` to complement the declarative plan in order to dig bores, mine ores, and navigate grids. These functions are summarized <a href="../../docs/lib/grid.html" target="_blank"> here</a>. Look at the <a href="../../code/lib/grid.html" target="_blank"> implementation</a> to see how they work with the (declarative) plan.
-
-The `grid.post` function uses placed markers for turtles to get to their `post` by moving around the grid at a level and using the shaft to get between levels. Navigation makes use of specifically formatted marker names and labels to do this.
+As advertised, rather than go beyond the limits of what is reasonably expressed declaratively, we just use Lua. In this case, we use the functions in `lib/grid` to complement the declarative plan in order to dig bores, mine ores, and navigate grids. The `grid.post` function uses placed markers for turtles to get to their `post` by moving around the grid at a level and using the shaft to get between levels. Navigation makes use of specifically formatted marker names and labels to do this. The `lib/grid` functions are summarized <a href="../../docs/lib/grid.html" target="_blank"> here</a>. Look at the <a href="../../code/lib/grid.html" target="_blank"> implementation</a> to see how they work with the (declarative) plan.
 
 The function produced by loading this file returns tables as defined below:
 ```Lua
@@ -25,6 +23,8 @@ local grids = require("grid"); local grid = grids.grid ---@module "signs.grid"
 The `eastIn`, `eastOut`, `westIn`, and `westOut` bores are where we'll dig tunnels. The `outer`, `mid`, and `inner` digs are just part of those bores where we'll put stone or dirt and torches. Dirt rather than stone is placed under torches in the `inner` bores as a clue for visual navigation by a player. Torches are placed at mid points of ore mining tunnels so there's sufficient light to prevent mob spawning. Using Lua to build the constants needed to describe the geometry means we can keep the declarative "language" simple.
 ```Lua
 --]]
+
+-- TODO: rotate plan 90 degrees and/or extend plan from three bores to five (provide alternate to `lib/grid`)
 
 local outer, mid, inner = " d1 2d u1 1d ", " d1 2d u1 1d ", " d1 3d u1 1d " -- bores: fill on cross bottom, torch on fill
 

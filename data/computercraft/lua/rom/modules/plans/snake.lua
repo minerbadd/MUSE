@@ -16,9 +16,11 @@ local motion = require("motion"); local move = motion.move ---@module "signs.mot
 --[[
 ```
 <a id="constants"></a> 
-There are a number of advantages in defining plan files as Lua files. One of them is shown below. To make the plan easier to understand, some constants are defined that are used (repetitively) to create the plan. One constant defined here is the `funds` function used to dig a shaft. It's quite specific to digging this kind of shaft so it's just included here.
+There are a number of advantages in defining plan files as Lua files. One of them is shown below. To make the plan easier to understand, some constants are defined that are used (repetitively) to create the plan. One constant defined here is the `funds` function used to dig a shaft. It's specific to digging this kind of shaft so it's just included here.
 ```Lua
 --]]
+
+-- TODO: provide a plan to provide steps like a spiral staircase rather than laders
 local fixtures = {"minecraft:torch", "fill", "minecraft:ladder"} -- in north cutouts 
 local marker = " ::|shaft 2s u1 1n 2s " -- mark, fill south, then up 1 to ladder north and fill south
 local ladder = " d1 2s 3n " -- at each block down, fill south and ladder north
@@ -34,7 +36,7 @@ end
 --[[
 ```
 <a id="snake"></a> 
-The actual plan for digging the shaft comes directly from looking at the <a href="../../drawings/06SnakeShaft.pdf" target="_blank"> drawing </a> for a so-called "snake" shaft. As understanding develops of what exact shape is to be dug out and provisioned, the plan is adjusted more easily and reliably than writing detailed code. We'll hold off on the discussion of the `grid.mark` function till when we deal with digging tunnels and mining ore.
+The actual plan for digging the shaft comes directly from looking at the <a href="../../drawings/06SnakeShaft.pdf" target="_blank"> drawing </a> for a so-called "snake" shaft. As understanding develops of what exact shape is to be dug out and provisioned, the plan is adjusted more easily and reliably than writing detailed code. We'll hold off on the discussion of the `grid.mark` function till when we look at `lib/grid`.
 ```Lua
 --]]
 return {name = "snake",

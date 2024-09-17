@@ -25,7 +25,7 @@ local place, moves = places.place, places.moves
 --[[
 ```
 <a id="mark"></a>
-Markers are created according to a `marking` format that includes the name of the shaft for the minehead, the level in the mine, and the rest of the marker name that's specified by the `plan` file for the mine. The format is used for finding a `post` for a turtle and going there in the grid of tunnels. The `lib/mine` library has added supplementary information to the `plan`. This is used in creating the marker and providing its feature list with the `key` and `value` for the `plan`. A mining turtle uses `grid.post` to navigate to the `post` at a given level and wait there for commands from the player. The function adheres to the `mine.post` interface.
+Markers are created according to a `marking` format that includes the name of the shaft for the minehead, the level in the mine, and the rest of the marker name that's specified by the `plan` file for the mine. The format is used for finding a `post` for a turtle and going there in the mine tunnels. The `lib/mine` library has added supplementary information to the `plan`. This is used in creating the marker and providing its feature list with the `key` and `value` for the `plan`. 
 ```Lua
 --]]
 
@@ -45,7 +45,7 @@ end
 --[[
 ```
 <a id="navigation"></a> 
-Navigating the grid of tunnels is done using markers for named `places`. The general idea for navigating is to go directly to the shaft between levels or to a `target` (a named `place`) if is either is `reachable`, that is if the y coordinate and either the x or the z coordinate is within one block of the current turtle `position`. If this is the case, the turtle has arrived. If that's not possible, go instead to an `inner` tunnel if that's `reachable` or to an `outer` tunnel if that's not. Then try again (and again) until the turtle can get to a shaft or the `target`. Prefer tunnels `closer` to the `target`. Here are some utility functions used for navigation: 
+A mining turtle uses `grid.post` to navigate to the `post` at a given level and wait there for commands from the player. The function adheres to the `mine.post` interface. Navigating the grid of tunnels is done using markers for named `places`. The general idea for navigating is to go directly to the shaft between levels or to a `target` (a named `place`) if is either is `reachable`, that is if the y coordinate and either the x or the z coordinate is within one block of the current turtle `position`. If this is the case, the turtle has arrived. If that's not possible, go instead to an `inner` tunnel if that's `reachable` or to an `outer` tunnel if that's not. Then try again (and again) until the turtle can get to a shaft or the `target`. Prefer tunnels `closer` to the `target`. Here are some utility functions used for navigation: 
 ```Lua
 --]]
 --:# **Navigation for grids:  use placed markers to find posts for turtles.**
