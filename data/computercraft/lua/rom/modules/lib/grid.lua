@@ -13,7 +13,6 @@ package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
-local maps = require("map"); local map = maps.map---@module "signs.map"
 local planners = require("planner"); local planner = planners.planner ---@module "signs.planner"
 local places = require("places") ---@module "signs.places"
 local place, moves = places.place, places.moves
@@ -22,26 +21,6 @@ local place, moves = places.place, places.moves
 
 --:> crossplan: _Bore and mine, minimal movement_ -> `{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }`
 
---[[
-```
-<a id="mark"></a>
-Markers are created according to a `marking` format that includes the name of the shaft for the minehead, the level in the mine, and the rest of the marker name that's specified by the `plan` file for the mine. The format is used for finding a `post` for a turtle and going there in the mine tunnels. The `lib/mine` library has added supplementary information to the `plan`. This is used in creating the marker and providing its feature list with the `key` and `value` for the `plan`. 
-```Lua
---]]
-
-function grid.mark(plan, marking) -- called by `worker.execute`, **specified in shaft and bore plans** 
---:: grid.mark(:plan:, :marking:) -> _Make place name, report result._ -> `markerName: ":", label: ":", report: ":"`
---:+ _Called by `worker.execute` to make marker name and use it to add map point for navigation in mine._
---:+ _Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore._
---:+ _Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`._
-  local prefix, base, label = table.unpack(marking); local length = string.len(prefix) --shaftName and level
-  local shaftName, level, key, value = plan.head, plan.level, plan.key, plan.value -- **added by lib/mine**
-  local levelName = length > 1 and string.format("%02d", level) or "" -- more than 1 colon in prefix => put level in name
-  local based = (base == "") and "" or ":"..base; local markerName = shaftName..":"..levelName..based; 
-  local report = map.op {"point", markerName, label}; 
-  map.put(markerName, key, value) -- marker gets plan key and value
-  return markerName, label, report 
-end
 --[[
 ```
 <a id="navigation"></a> 

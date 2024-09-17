@@ -12,7 +12,6 @@ A MUSE `plan` includes at least one `path` which may have `step` elements (speci
 local planner = {} ---@module "signs.planner" -- for functions exported from library
 
 package.path = _G.Muse.package
-local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local step = motion.step ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 

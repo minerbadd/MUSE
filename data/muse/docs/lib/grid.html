@@ -11,11 +11,6 @@
 
 --:> crossplan: <i>Bore and mine, minimal movement</i> -> <code>{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }</code>  
 
---:: grid.mark(:plan:, :marking:) -> <i>Make place name, report result.</i> -> <code>markerName: ":", label: ":", report: ":"</code>    
---:+ <i>Called by <code>worker.execute</code> to make marker name and use it to add map point for navigation in mine.</i>    
---:+ <i>Puts plan name value in marker (keyed by <code>"shaft"</code> or <code>"bore"</code>) so marker is enough for navigating in shaft or bore.</i>    
---:+ <i>Marker place name formed as <code>head:level:base</code> or <code>head:base</code> or <code>head</code> with place labelled as <code>"outer"|"inner"|"shaft"</code>.</i>  
-
 --:# <b>Navigation for grids:  use placed markers to find posts for turtles.</b>    
 --:= mine.post:: grid.post  
 

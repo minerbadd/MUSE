@@ -48,6 +48,27 @@ local workers = require("worker"); local worker = workers.worker ---@module "sig
 
 --:# **Interface definition for implemented bore navigation functions in mines**
 --:> mine.post: _Navigate shaft and bores to go to marker._ -> (markerName: ":", :bores:):  `marking[]`
+
+--[[
+```
+<a id="mark"></a>
+Markers are created according to a `marking` format that includes the name of the shaft for the minehead, the level in the mine, and the rest of the marker name that's specified by the `plan` file for the mine. The format is used for finding a `post` for a turtle and going there in the mine tunnels. The `lib/mine` library adds supplementary information to the `plan`. This is used in creating the marker and providing its feature list with the `key` and `value` for the `plan`. 
+```Lua
+--]]
+
+function mine.mark(plan, marking) -- called by `worker.execute`, **specified in shaft and bore plans** 
+--:: mine.mark(:plan:, :marking:) -> _Make place name, report result._ -> `markerName: ":", label: ":", report: ":"`
+--:+ _Called by `worker.execute` to make marker name and use it to add map point for navigation in mine._
+--:+ _Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore._
+--:+ _Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`._
+  local prefix, base, label = table.unpack(marking); local length = string.len(prefix) --shaftName and level
+  local shaftName, level, key, value = plan.head, plan.level, plan.key, plan.value -- **added by lib/mine**
+  local levelName = length > 1 and string.format("%02d", level) or "" -- more than 1 colon in prefix => put level in name
+  local based = (base == "") and "" or ":"..base; local markerName = shaftName..":"..levelName..based; 
+  local report = map.op {"point", markerName, label}; 
+  map.put(markerName, key, value) -- marker gets plan key and value
+  return markerName, label, report 
+end
 --[[
 ```
 <a id="atWork"></a> 

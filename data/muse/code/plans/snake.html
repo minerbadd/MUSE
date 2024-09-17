@@ -18,7 +18,7 @@ The introduction to this (mostly declarative) <code>plan</code> is like that of 
 <pre><code class="language-lua">
 package.path = _G.Muse.package
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
-local grids = require("grid"); local grid = grids.grid ---@module "signs.grid"
+local mines = require("mine"); local mine = mines.mine ---@module "signs.mine"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 </code></pre>
 <a id="constants"></a> 
@@ -40,17 +40,17 @@ local function funds(_, direction) -- up, down, north, and south....and forward 
 end
 </code></pre>
 <a id="snake"></a> 
-The actual plan for digging the shaft comes directly from looking at the <a href="../../drawings/06SnakeShaft.pdf" target="_blank"> drawing </a> for a so-called "snake" shaft. As understanding develops of what exact shape is to be dug out and provisioned, the plan is adjusted more easily and reliably than writing detailed code. We'll hold off on the discussion of the <code>grid.mark</code> function till when we look at <code>lib/grid</code>.
+The actual plan for digging the shaft comes directly from looking at the <a href="../../drawings/06SnakeShaft.pdf" target="_blank"> drawing </a> for a so-called "snake" shaft. As understanding develops of what exact shape is to be dug out and provisioned, the plan is adjusted more easily and reliably than writing detailed code. We'll hold off on the discussion of the <code>mine.mark</code> function till when we look at <code>lib/grid</code>.
 <pre><code class="language-lua">
 return {name = "snake",
   down = { -- at even level marker going down to odd level (or vice versa)
     even = 
-    {name = "shaft down even", mark = grid.mark, work = funds, 
+    {name = "shaft down even", mark = mine.mark, work = funds, 
       fixtures = fixtures, path = {marker.." w1 "..down.." e1 2w ".. up}}, -- "e1 2w" to fill behind
     odd = 
-    {name = "shaft down odd", mark = grid.mark, work = funds, 
+    {name = "shaft down odd", mark = mine.mark, work = funds, 
       fixtures = fixtures, path = {marker.." e1 "..down.." w1 2e ".. up}},  -- "w1 2e" to fill behind
-    last = {name = "shaft down last", mark = grid.mark, path = {"::|shaft"}}, -- mark last level dug
+    last = {name = "shaft down last", mark = mine.mark, path = {"::|shaft"}}, -- mark last level dug
   },
 
   back = {-- 1 above marker going back from even to odd level (or vice versa)

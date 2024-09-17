@@ -55,6 +55,25 @@ local workers = require("worker"); local worker = workers.worker ---@module "sig
 
 --:# <b>Interface definition for implemented bore navigation functions in mines</b>
 --:> mine.post: <i>Navigate shaft and bores to go to marker.</i> -> (markerName: ":", :bores:):  <code>marking[]</code>
+
+</code></pre>
+<a id="mark"></a>
+Markers are created according to a <code>marking</code> format that includes the name of the shaft for the minehead, the level in the mine, and the rest of the marker name that's specified by the <code>plan</code> file for the mine. The format is used for finding a <code>post</code> for a turtle and going there in the mine tunnels. The <code>lib/mine</code> library adds supplementary information to the <code>plan</code>. This is used in creating the marker and providing its feature list with the <code>key</code> and <code>value</code> for the <code>plan</code>. 
+<pre><code class="language-lua">
+
+function mine.mark(plan, marking) -- called by <code>worker.execute</code>, <b>specified in shaft and bore plans</b> 
+--:: mine.mark(:plan:, :marking:) -> <i>Make place name, report result.</i> -> <code>markerName: ":", label: ":", report: ":"</code>
+--:+ <i>Called by <code>worker.execute</code> to make marker name and use it to add map point for navigation in mine.</i>
+--:+ <i>Puts plan name value in marker (keyed by <code>"shaft"</code> or <code>"bore"</code>) so marker is enough for navigating in shaft or bore.</i>
+--:+ <i>Marker place name formed as <code>head:level:base</code> or <code>head:base</code> or <code>head</code> with place labelled as <code>"outer"|"inner"|"shaft"</code>.</i>
+  local prefix, base, label = table.unpack(marking); local length = string.len(prefix) --shaftName and level
+  local shaftName, level, key, value = plan.head, plan.level, plan.key, plan.value -- <b>added by lib/mine</b>
+  local levelName = length > 1 and string.format("%02d", level) or "" -- more than 1 colon in prefix => put level in name
+  local based = (base == "") and "" or ":"..base; local markerName = shaftName..":"..levelName..based; 
+  local report = map.op {"point", markerName, label}; 
+  map.put(markerName, key, value) -- marker gets plan key and value
+  return markerName, label, report 
+end
 </code></pre>
 <a id="atWork"></a> 
 The <code>atWork</code> function actually does the digging (and furnishing) of the bores and shafts at a specified level. It also sets up supplementary information in the fields of the <code>plan</code> for the work functions of the <code>plan</code> that are called by <code>worker.execute</code>. 

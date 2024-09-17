@@ -16,6 +16,7 @@ The function produced by loading this file returns tables as defined below:
 --]]
 package.path = _G.Muse.package
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
+local mines = require("mine"); local mine = mines.mine ---@module "signs.mine"
 local grids = require("grid"); local grid = grids.grid ---@module "signs.grid"
 --[[
 ```
@@ -56,7 +57,7 @@ local guides = {
 <a id="constants"></a> 
 The `stone` and `dirt` constants specify how mining ore is done in the bottom cut. The path for that cut provides replacement of torches (and the fill on which they are put) after digging out ore.
 
-The ore mining (`grid.ore`) and navigation (`grid.mark` and `grid.post`) functions are the procedural helpers of the declarations in a `cross` plan.
+The ore mining (`grid.ore`) and navigation (`mine.mark` and `grid.post`) functions are the procedural helpers of the declarations in a `cross` plan.
 ```Lua
 --]]
 local stone, dirt, targets = " 2d w1 1e w11 ", " 3d w1 1e w11 ", turtle.category("ore") -- any ore will do
@@ -73,7 +74,7 @@ return {
     -- put fixtures near shaft again: 
     fix = {name = "bore fix", fixtures = fixtures, path = {" e1 n1 3n s1 4n u1 4n d2 4n w2 4n e2 5s u1 w1 1d "}},
 
-    even = {name = "bore even", mark = grid.mark, work = dig, fixtures = fixtures, -- 48 x 48 bore from shaft marker
+    even = {name = "bore even", mark = mine.mark, work = dig, fixtures = fixtures, -- 48 x 48 bore from shaft marker
       path = {-- need to move (not bore) to center channel for cross bore
         "n24 e24 s48 w24 n24 s24 w24 n48 ",-- as inner N, outer E, S, NS (shaft and back), outer W to NW corner
         "::NW24|outer"..eastIn.." ::N24|inner"..eastOut.."::NE24|outer", 
@@ -87,7 +88,7 @@ return {
         "s06 ::SW24|outer"..eastIn.." ::S24|inner"..eastOut.."::SE24|outer", -- need to move (not bore) to shaft for torches
       }},
 
-    odd = {name = "bore odd", mark = grid.mark, work = dig, fixtures = fixtures, -- 42 x 42 bore from shaft marker
+    odd = {name = "bore odd", mark = mine.mark, work = dig, fixtures = fixtures, -- 42 x 42 bore from shaft marker
       path = {-- need to move (not bore) to center channel for cross bore
         "n21 e24 s42 w24 n21 s21 w24 n42", -- as inner N, outer E, S, NS (shaft and back), outer W to NW corner
         "::NW21|outer"..eastIn.."::N21|inner"..eastOut.."::NE21|outer", 

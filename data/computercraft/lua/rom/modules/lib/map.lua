@@ -483,7 +483,8 @@ local function near(span, placeName) -- list places near span (or all) near plac
   end; table.sort(report, function(a,b) return a[1] < b[1] end) -- anonymous sort function on `distance`
   
   for i = 1, #report do local distance, text = table.unpack(report[i]); report[i] = tostring(distance)..text end
-  return "Found "..itemCount.." near\n"..table.concat(report, "\n"); core.status(4, "map.near", result) 
+  
+  local result= "Found "..itemCount.." near\n"..table.concat(report, "\n"); core.status(4, "map.near", result); return result
 end; map.hints["near "] = {["?place "] = {["??span"] = {}}}
 
 local function view(target)

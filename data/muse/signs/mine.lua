@@ -64,20 +64,6 @@ local  mine, _mine = {}, {}
 ---@alias downs.odd  plan # Mark, dig, ladder, and fill an odd level (for landing platforms)
 
 
--- Dig. Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans.
--- mine.op(arguments: :[op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]):  `^:, ":", #: &:` <-
----@type fun(arguments: [string, string, string|number, string]):  boolean,  string,  number 
-function mine.op() end
-
--- shafts.name:  `":"`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias shafts.name  string # Included in error and status reports
-
-
--- shafts:  `{shafts.name: ":", shafts.down: downs, shafts.back: levels, shafts.lower: levels, shafts.higher: levels}`
----@alias shafts {shafts.name: string,  shafts.down: downs,  shafts.back: levels,  shafts.lower: levels,  shafts.higher: levels} # Dig
-
-
 -- mine.post:  (markerName: ":", :bores:):  `marking[]`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias mine.post fun(markerName: string,  bores: bores):   marking[] # Navigate shaft and bores to go to marker.
@@ -87,6 +73,25 @@ function mine.op() end
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias levels.even  plan # Plan for navigating from one even level to the next
 
+
+-- shafts:  `{shafts.name: ":", shafts.down: downs, shafts.back: levels, shafts.lower: levels, shafts.higher: levels}`
+---@alias shafts {shafts.name: string,  shafts.down: downs,  shafts.back: levels,  shafts.lower: levels,  shafts.higher: levels} # Dig
+
+
+-- shafts.name:  `":"`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias shafts.name  string # Included in error and status reports
+
+
+-- Make place name, report result. Called by `worker.execute` to make marker name and use it to add map point for navigation in mine. Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore. Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`.
+-- mine.mark(:plan:, :marking:):  `markerName: ":", label: ":", report: ":"` <-
+---@type fun(plan: plan,  marking: marking):  markerName: string,  label: string,  report: string 
+function mine.mark() end
+
+-- Dig. Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans.
+-- mine.op(arguments: :[op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]):  `^:, ":", #: &:` <-
+---@type fun(arguments: [string, string, string|number, string]):  boolean,  string,  number 
+function mine.op() end
 
 -- bores.even:  `plan`
 ---@diagnostic disable-next-line: duplicate-doc-alias

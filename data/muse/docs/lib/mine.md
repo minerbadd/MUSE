@@ -51,6 +51,11 @@
 
 --:> mine.post: _Navigate shaft and bores to go to marker._ -> (markerName: ":", :bores:):  `marking[]`  
 
+--:: mine.mark(:plan:, :marking:) -> _Make place name, report result._ -> `markerName: ":", label: ":", report: ":"`    
+--:+ _Called by `worker.execute` to make marker name and use it to add map point for navigation in mine._    
+--:+ _Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore._    
+--:+ _Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`._  
+
 --:# **Go to minehead, dig shaft and return to minehead if no errors.**    
 --:+ _Start dig down from minehead, finish by placing marker one level below target level, error raised for failure._    
 --:+ _Add "shaft" and shaft plans name as key and value to shaft plans for inclusion in marker._    
