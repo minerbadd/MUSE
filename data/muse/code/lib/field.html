@@ -56,7 +56,7 @@ end;
 function field.cut(places) return protect(_field.cut, places) end
 --:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> <i>Quarry out blocks from one place to the other.</i> -> <code>":" &:</code>
 --:- cut point point -> <i>Quarry out blocks bound by named points (defining a rectangular solid).</i>
-field.hints["cut"] = {["?point ?point"] = {}}
+field.hints["cut"] = {["?point "] = {["?point"] = {}}}
 
 function _field.put(thePlan, start, finish, filling, target)
   --:: <code>_field.put(thePlan: ":", start: #:, finish: #:, filling: ":", target: ":"?)</code> -> <i>Use<code>layer</code> or <code>till</code> plan.</i> -> <code>":" &:</code>
@@ -78,13 +78,13 @@ function field.fill(parameters) return protect(_field.fillTill, "layer", paramet
 --:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> <i>Fill, Till, Replace.</i> -> <code>":" &:</code>
 --:< <i>Filling and target may be one of the turtle categories or a Minecraft detail name without prefix</i> <code>minecraft:</code> 
 --:- fill point point filling [target] -> <i>Layer fill bounds by points; optionally swaps out only target blocks.</i>
-field.hints["fill"] = {["?point ?point ?filling ??target"] = {}}
+field.hints["fill"] = {["?point "] = {["?point "] = {["?filling "] = {["??target"] = {}}}}}
 
 function field.till(parameters) return protect(_field.fillTill, "till", parameters) end
 --:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> <i>Till the seed from one place to the other.</i> -> <code>":" &:</code>
 --:< <i>Seed may be one of the turtle categories or a Minecraft detail name without the prefix</i> <code>"minecraft:"</code>
 --:- till point point seed -> <i>Till the seed bounds by named points (defining a rectangular solid).</i>
-field.hints["till"] = {["?point ?point ?seed" ] = {}} 
+field.hints["till"] = {["?point "] = {["?point "] = {["?seed" ] = {}}}} 
 </code></pre>
 <a id="fences"/a>
 Fences expect a linear traversal between points at the same height. They may be made of any wooden material. Fences will only be placed for ranges whose <code>fields</code> features include <code>fences</code>.
@@ -104,7 +104,7 @@ local function fence(parameters)
   assert(features and features.fences, "field.fence: missing fences feature")
   local xyzFrom, xyzTo = {from.x, from.y, from.z}, {to.x, to.y, to.z}
   return _field.put("layer", xyzFrom, xyzTo, fencing or "fence") -- put the fence as filling using <code>layer</code> plan
-end; field.hints["fence"] = {["?range ??fencing"] = {}}
+end; field.hints["fence"] = {["?range "] = {["??fencing"] = {}}}
 
 function field.fence(parameters) return protect(fence, parameters) end
 --:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> <i>Put fencing using <code>layer</code> plan.</i> -> <code>":"</code>

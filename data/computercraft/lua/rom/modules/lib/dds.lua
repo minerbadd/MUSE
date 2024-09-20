@@ -14,7 +14,7 @@ The so-called DDS facilities only work in-game. The ComputerCraft network interf
 ```Lua
 --]]
 
-local dds = {}; dds.hints = {} ---@module "signs.dds" -- for functions exported from library
+local dds = {} ---@module "signs.dds" -- for functions exported from library
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"

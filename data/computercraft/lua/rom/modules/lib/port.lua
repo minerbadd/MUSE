@@ -101,7 +101,7 @@ local function book(name, label, from, to, span, ...) -- in-game only
   local items = select("#", ...); local ordering = items > 0 and {...} or orderDefault
   --:# Save booking as a `range` with `span` and offered or default ordering of items as `range` properties
   return port.book(name, label, from, to, span, ordering)
-end port.hints["book"] = {["?name ?label ?from ?to ??span=0 ???item..."] = {} }
+end port.hints["book"] = {["?name "] = {["?label "] = {["?from "] = {["?to "] = {["??span=0 "] = {["???item..."] = {} }}}}}}
 
 local function portingCommand(xyzFrom, xyzTo, span)
   -- # **With inventoryCost, bankable, and the xyzf from and to, create the string for the porting command.**

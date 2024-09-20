@@ -51,7 +51,7 @@ end;
 function field.cut(places) return protect(_field.cut, places) end
 --:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`
 --:- cut point point -> _Quarry out blocks bound by named points (defining a rectangular solid)._
-field.hints["cut"] = {["?point ?point"] = {}}
+field.hints["cut"] = {["?point "] = {["?point"] = {}}}
 
 function _field.put(thePlan, start, finish, filling, target)
   --:: `_field.put(thePlan: ":", start: #:, finish: #:, filling: ":", target: ":"?)` -> _Use`layer` or `till` plan._ -> `":" &:`
@@ -73,13 +73,13 @@ function field.fill(parameters) return protect(_field.fillTill, "layer", paramet
 --:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`
 --:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:` 
 --:- fill point point filling [target] -> _Layer fill bounds by points; optionally swaps out only target blocks._
-field.hints["fill"] = {["?point ?point ?filling ??target"] = {}}
+field.hints["fill"] = {["?point "] = {["?point "] = {["?filling "] = {["??target"] = {}}}}}
 
 function field.till(parameters) return protect(_field.fillTill, "till", parameters) end
 --:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`
 --:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `"minecraft:"`
 --:- till point point seed -> _Till the seed bounds by named points (defining a rectangular solid)._
-field.hints["till"] = {["?point ?point ?seed" ] = {}} 
+field.hints["till"] = {["?point "] = {["?point "] = {["?seed" ] = {}}}} 
 --[[
 ```
 <a id="fences"/a>
@@ -101,7 +101,7 @@ local function fence(parameters)
   assert(features and features.fences, "field.fence: missing fences feature")
   local xyzFrom, xyzTo = {from.x, from.y, from.z}, {to.x, to.y, to.z}
   return _field.put("layer", xyzFrom, xyzTo, fencing or "fence") -- put the fence as filling using `layer` plan
-end; field.hints["fence"] = {["?range ??fencing"] = {}}
+end; field.hints["fence"] = {["?range "] = {["??fencing"] = {}}}
 
 function field.fence(parameters) return protect(fence, parameters) end
 --:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`

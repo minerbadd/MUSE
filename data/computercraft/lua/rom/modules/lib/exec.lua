@@ -9,7 +9,7 @@ The `exec` library provides CLL support for a couple of commands that make it ea
 The library preface is as expected. The only odd thing is mocking some command computer operations so development and debug can be done outside the game environment.
 ```Lua
 --]]
-local exec = {}; exec.hints = exec.hints or {} ---@module "signs.exec"-- for functions exported from library
+local exec = {}; exec.hints = {} ---@module "signs.exec"-- for functions exported from library
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
@@ -40,7 +40,7 @@ local function locate(name, label, tx, ty, tz, blockAboveTest) -- `t*` (x, y, z 
   local nbt = assert(blockAbove.nbt, "exec.locate: no nbt above")
   local museRole = assert(nbt.Label, "exec.locate: no role above")
   return museRole .. " at " .. place.qualify(name) .. " facing " .. facing
-end; exec.hints["locate"] = { ["?name ??label"] = {} }
+end; exec.hints["locate"] = {["?name "] = {["??label"] = {} }}
 --[[
 ```
 ### CLI support for `activate` command: `/forceload add` area specified by a `range`

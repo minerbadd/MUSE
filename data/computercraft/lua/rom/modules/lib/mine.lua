@@ -7,7 +7,7 @@
 <a id="introduction"></a> 
 ```Lua
 --]]
-local _mine, mine = {}, {}; mine.hints = mine.hints or {} ---@module "signs.mine" -- for functions local to and exported from library
+local _mine, mine = {}, {}; mine.hints = {} ---@module "signs.mine" -- for functions local to and exported from library
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
@@ -142,7 +142,7 @@ function _mine.shaftOp(mineheadName, levels, shaftPlans)
   local backInventory = turtle.inventory() -- as a result of getting back up shaft to minehead
   core.report(2, "Inventory digging back ", downInventory)
   return backResult, backReport, #backInventory -- back at minehead, returns `"done"` and inventory table size
-end; mine.hints["shaft"] = { ["?minehead ?levels ?shaftplans" ] = {}}
+end; mine.hints["shaft"] = { ["?minehead "] = {["?levels "] = {["?shaftplans" ] = {}}}}
 --[[
 ```
 <a id="post"></a> 
@@ -214,7 +214,7 @@ local function postOp(markerName, borePlansFile, shaftPlans)
   if not atMarker then error("mine.postOp: Unable to return to "..markReport) end
   move.up(1) -- **turtle stays above marker between operations to stay out of the way**
   return atMarker, markReport, shaftLevel
-end; mine.hints["post"] = { ["?marker ??boreplans"] = {} }
+end; mine.hints["post"] = { ["?marker "] = {["??boreplans"] = {} }}
 --[[
 ```
 <a id="bore"></a> Bores start at the shaft for the level specified by the `markerName`. The only interesting thing in this code is the use of the feature list key and value support from `lib/map` to simplify the CLI for mining ores. 
@@ -249,7 +249,7 @@ local function boreOp(markerName, borePlansFile, shaftPlans)
   local boreOK, boreReport, inventory = _mine.bore(markerName, borePlans, shaftPlans)
   move.up(1) -- **turtle stays above marker between operations to stay out of the way**
   return boreOK, boreReport, inventory
-end; mine.hints["bore"] = { ["?marker ?boreplans"] = {} }
+end; mine.hints["bore"] = { ["?marker "] = {["?boreplans"] = {} }}
 --[[
 ```
 <a id="ores"></a> There's not much to deal with here procedurally in digging ores: it's all in the declarative plan and the work functions in `lib/grid`.  This code just picks the right plans, loads them, causes them to be executed, and check for errors.
@@ -275,7 +275,7 @@ local function oresOp(markerName, borePlansFile, shaftPlans) -- get ores from si
   local report, inventory = _mine.ores(markerName, thisLevel, borePlans) -- `"done"` and inventory table size
   move.up(1) -- **return to above marker (without digging) between operations to stay out of the way**
   return report, inventory
-end; mine.hints["ores"] = { ["?marker ??boreplans"] = {} }
+end; mine.hints["ores"] = { ["?marker "] = {["??boreplans"] = {} }}
 --[[
 ```
 <a id="mine"></a> 

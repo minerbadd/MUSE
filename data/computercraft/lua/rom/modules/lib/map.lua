@@ -98,7 +98,7 @@ local function sited(site)
   local siteFileHandle = assert(io.open(siteFile, "w"), "map.sited: can't write "..siteFile)
   siteFileHandle:write(place.site(site).."\n"); siteFileHandle:close()
   return place.site(site) 
-end; map.hints["site "] = {["?name"] = {} }
+end; map.hints["site"] = {["?name"] = {} }
 
 local function store(site) -- used in `.start` to persist `site` and load clean map
   -- :: store(site: ":") -> _Persists `site` in local store and loads local map._ -> `report: ":"`
@@ -106,11 +106,11 @@ local function store(site) -- used in `.start` to persist `site` and load clean 
   if not map.map() then map.map(_G.Muse.map) end
   local places = map.read(map.map()); map.write(map.map());
   return site..": "..places.." places"
-end; map.hints["store "] = {["?site"] = {} } 
+end; map.hints["store"] = {["?site"] = {} } 
 
 local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
 --:- join site role -> _Set site and join landed turtle to it with specified role._
- map.hints["join "] = {["?site "] = {["?role"] = {} }} 
+ map.hints["join"] = {["?site "] = {["?role"] = {} }} 
 --[[
 ```
 <a id="update"></a> 
@@ -157,7 +157,7 @@ local function erase(name) --:- erase name -> _Remove named place, broadcast Mus
   local placesRemaining = map.erase(name) -- handle local erase (below)
   if rednet then rednet.broadcast(name, "MX") end -- to erase distributed copies
   return tostring(placesRemaining).." remaining places."
-end; map.hints["erase "] = {["?placename"] = {}} 
+end; map.hints["erase"] = {["?placename"] = {}} 
 
 function map.erase(name) local remaining = place.erase(name); map.write(); return remaining end -- handle local erase
 --:: map.erase(name: ":") -> _Remove named place, overwrite local map file_ -> `remaining: #:`
@@ -266,7 +266,7 @@ local function fix(trail, tx, ty, tz, tf) -- just for turtles, t* for no gps -> 
   if trail then trailhead.name = place.qualify(trail) end -- use trailhead.name in call to `trail`
   local xf, yf, zf = table.unpack(fixed); local fixes = core.round(xf)..", "..core.round(yf)..", "..core.round(zf)
   return "{"..fixes.."} "..trailhead.name; 
-end map.hints["fix "] = {["??trailname"] = {} }
+end map.hints["fix"] = {["??trailname"] = {} }
 --[[
 ```
 <a id="point"></a> 
@@ -282,7 +282,7 @@ local function point(name, label, trail, tx, ty, tz, tf) -- t* for no gps; tf fo
   if trail then fix(trail, x, y, z, f or "north") end -- dance and track in `fix` if trail
   local serial, index = place.name(name, label); update(serial) -- append 
   return place.qualify(name)..", "..label.." in "..index.. " of places", index
-end; map.hints["point "] = {["?name "] = {["?label "] = {["??trailname"] = {}}} }
+end; map.hints["point"] = {["?name "] = {["?label "] = {["??trailname"] = {}}} }
 
 function map.set(name, label, x, y, z, f) return point(name, label, false, x, y, z, f) end
 --:: map.set(name: ":", label: ":", x: #:, y: #:, z: #:, f: ":") -> _Set turtle at created point -> ":"
@@ -331,7 +331,7 @@ local function trail(tailName, label) -- not useful for player
   local headString, tailString = place.trail(trailhead.name, tailName, label); 
   update(headString); update(tailString); 
   return "Trail from "..place.qualify(trailhead.name).." to "..place.qualify(tailName).." as "..label
-end; map.hints["trail "] = {["?name "] = {["?label"] = {}} }
+end; map.hints["trail"] = {["?name "] = {["?label"] = {}} }
 --[[
 ```
 <a id="range"></a> 
@@ -351,7 +351,7 @@ local function range(name, label, nameA, nameB, key, value) -- -> "report", inde
   local serial, index = place.add(name, situationB) -- range had everything but second place
   core.status(5, "map range: "..place.qualify(name).." from "..place.qualify(nameA).." to "..place.qualify(nameB))
   update(serial); return "Range "..place.qualify(name).." at "..index.. " in places", index -- append serialized range;
-end; map.hints["range "] = {["?name "] = {["?label "] = {["?from "] = {["?to "] = {["??key "] = {["???value"] = {}}}}}}}
+end; map.hints["range"] = {["?name "] = {["?label "] = {["?from "] = {["?to "] = {["??key "] = {["???value"] = {}}}}}}}
 --[[
 ```
 <a id="chart"></a> 
@@ -368,7 +368,7 @@ local function chart(chartName, ...)
   local  results = {core.pass(pcall(charting, ...))} -- **run chart file, put multiple returns in table** 
   local ok, report = table.unpack(results); if not ok then return "map.chart: failed "..report end
   return core.string(table.unpack(results, 2)) -- pack a table with unpacked multiple return (all except `ok`)
-end; map.hints["chart "] = {["?chartFileName "] = {["?..."] = {}}}
+end; map.hints["chart"] = {["?chartFileName "] = {["?..."] = {}}}
 
 function map.borders(range) 
   --:: map.borders(range: place) -> _Get range elements_ -> `borders, features, position, position &!`
@@ -458,14 +458,14 @@ local function where(namedPlace, count, tx, ty, tz)  -- t* for testing -> report
   local forNamedPlace = namedPlace and toNamedPlace(namedPlace, xyz) or ""
   local nearby = count and "Nearby:\n"..toNearby(xyz, tonumber(count)) or ""
   return head .. forNamedPlace .. nearby
-end; map.hints["where "] =  {["?place "] = {["??count"] = {}}} 
+end; map.hints["where"] =  {["?place "] = {["??count"] = {}}} 
 
 local function headings(rate, ...)
   --:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds)._
   local rateNumber = tonumber(rate); local rest = rateNumber and {...} or {rate, ...}; rateNumber = rateNumber or 5
   core.report(1, "Headings", rateNumber, table.unpack(rest)) --rateNumber, rate,
   while true do core.report(1, where(table.unpack(rest))); core.sleep(rateNumber) end
-end; map.hints["headings "] = {["??place "] = {["??rate "] = {["???#lines"] = {}}}}
+end; map.hints["headings"] = {["??place "] = {["??rate "] = {["???#lines"] = {}}}}
 --[[
 ```
 <a id="near"></a> 
@@ -485,7 +485,7 @@ local function near(span, placeName) -- list places near span (or all) near plac
   for i = 1, #report do local distance, text = table.unpack(report[i]); report[i] = tostring(distance)..text end
   
   local result= "Found "..itemCount.." near\n"..table.concat(report, "\n"); core.status(4, "map.near", result); return result
-end; map.hints["near "] = {["?place "] = {["??span"] = {}}}
+end; map.hints["near"] = {["?place "] = {["??span"] = {}}}
 
 local function view(target)
   --:- view place -> _Report place details including all situations and features._
@@ -498,7 +498,7 @@ local function view(target)
   end; local situationList = table.concat(situationStrings, "\n")
   
   return name..": "..(label or "_").." ("..index..")\n"..core.string(features).."\n"..situationList
-end; map.hints["view "] = {["?place"] = {}}
+end; map.hints["view"] = {["?place"] = {}}
 --[[
 ```
 <a id="ops"></a> 

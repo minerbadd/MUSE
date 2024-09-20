@@ -14,7 +14,7 @@
 </code></pre>
 <a id="introduction"></a> 
 <pre><code class="language-lua">
-local _mine, mine = {}, {}; mine.hints = mine.hints or {} ---@module "signs.mine" -- for functions local to and exported from library
+local _mine, mine = {}, {}; mine.hints = {} ---@module "signs.mine" -- for functions local to and exported from library
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
@@ -143,7 +143,7 @@ function _mine.shaftOp(mineheadName, levels, shaftPlans)
   local backInventory = turtle.inventory() -- as a result of getting back up shaft to minehead
   core.report(2, "Inventory digging back ", downInventory)
   return backResult, backReport, #backInventory -- back at minehead, returns <code>"done"</code> and inventory table size
-end; mine.hints["shaft"] = { ["?minehead ?levels ?shaftplans" ] = {}}
+end; mine.hints["shaft"] = { ["?minehead "] = {["?levels "] = {["?shaftplans" ] = {}}}}
 </code></pre>
 <a id="post"></a> 
 Use the shaft plan to move the turtle from odd to even and even to odd shaft levels until it arrives at the target level. Assume the shaft has already been dug and provisioned. The <code>checkLevel</code> and <code>changeLevel</code> functions just help with the <code>post</code> operation, moving the turtle to the designated post <code>point</code>. Navigation is done either from a shaft (at some level) to a marked <code>point</code> or from there to a shaft at the level specified by its <code>marker</code>.
@@ -211,7 +211,7 @@ local function postOp(markerName, borePlansFile, shaftPlans)
   if not atMarker then error("mine.postOp: Unable to return to "..markReport) end
   move.up(1) -- <b>turtle stays above marker between operations to stay out of the way</b>
   return atMarker, markReport, shaftLevel
-end; mine.hints["post"] = { ["?marker ??boreplans"] = {} }
+end; mine.hints["post"] = { ["?marker "] = {["??boreplans"] = {} }}
 </code></pre>
 <a id="bore"></a> Bores start at the shaft for the level specified by the <code>markerName</code>. The only interesting thing in this code is the use of the feature list key and value support from <code>lib/map</code> to simplify the CLI for mining ores. 
 <pre><code class="language-lua">
@@ -244,7 +244,7 @@ local function boreOp(markerName, borePlansFile, shaftPlans)
   local boreOK, boreReport, inventory = _mine.bore(markerName, borePlans, shaftPlans)
   move.up(1) -- <b>turtle stays above marker between operations to stay out of the way</b>
   return boreOK, boreReport, inventory
-end; mine.hints["bore"] = { ["?marker ?boreplans"] = {} }
+end; mine.hints["bore"] = { ["?marker "] = {["?boreplans"] = {} }}
 </code></pre>
 <a id="ores"></a> There's not much to deal with here procedurally in digging ores: it's all in the declarative plan and the work functions in <code>lib/grid</code>.  This code just picks the right plans, loads them, causes them to be executed, and check for errors.
 <pre><code class="language-lua">
@@ -268,7 +268,7 @@ local function oresOp(markerName, borePlansFile, shaftPlans) -- get ores from si
   local report, inventory = _mine.ores(markerName, thisLevel, borePlans) -- <code>"done"</code> and inventory table size
   move.up(1) -- <b>return to above marker (without digging) between operations to stay out of the way</b>
   return report, inventory
-end; mine.hints["ores"] = { ["?marker ??boreplans"] = {} }
+end; mine.hints["ores"] = { ["?marker "] = {["??boreplans"] = {} }}
 </code></pre>
 <a id="mine"></a> 
 Supporting the CLI for <code>mine</code> is just loading the shaft plan (which may be associated with a marker), dispatching to the function for the indicated operation, and checking for errors.

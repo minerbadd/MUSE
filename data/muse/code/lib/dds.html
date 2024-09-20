@@ -21,7 +21,7 @@ This library provides the DDS facilities needed for remote calls. Remote calls a
 The so-called DDS facilities only work in-game. The ComputerCraft network interfaces are not mocked. However, the library exports a default mapping.
 <pre><code class="language-lua">
 
-local dds = {}; dds.hints = {} ---@module "signs.dds" -- for functions exported from library
+local dds = {} ---@module "signs.dds" -- for functions exported from library
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"

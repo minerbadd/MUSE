@@ -7,7 +7,7 @@
 The `grid` library provides the _how_ extending mining plans run by the `lib/mine` CLL. It provides the means for `worker.execute` to navigate, bore, and mine a grid of tunnels at some level in a mine. There are three bored access tunnels: an `inner` one to the shaft and two `outer` ones at the edges of the bored area. Ores are mined in tunnels perpendicular to these.
 ```Lua
 --]]
-local grid = {}; grid.hints = {} ---@module "signs.grid" -- for functions exported from library
+local grid = {} ---@module "signs.grid" -- for functions exported from library
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"

@@ -8,7 +8,7 @@
 The MUSE `turtle` module introduction is much like any other. One thing is a little different: a <a href="../CodeMark/Annotations.html" target="_blank"> CodeMark </a> `VALUE` mark, describing `direction` as a unification of the four cardinal and two vertical directions. We've seen a limited bit of this in `lib/motion`.  Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by `lib/mock`) are accessed in the `mock` table.
 ```Lua
 --]]
-local turtle = {}; turtle.hints = {} ---@module "signs.turtle" -- for functions exported from library
+local turtle = {} ---@module "signs.turtle" -- for functions exported from library
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"

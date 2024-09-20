@@ -62,18 +62,18 @@ local function compare(...) --:- compare item direction... -> _Named item matche
     if dataName and targetName and dataName == targetName then found[#found + 1] = {direction, dataName} end
   end; return core.string(found), found
   
-end; task.hints["compare"] = {["?item ?direction..."] = {}} 
+end; task.hints["compare"] = {["?item "] = {["?direction..."] = {}}} 
 
 local function drop(...) --:- drop item direction quantity? -> _Drop quantity of selected items [or all]._ 
   local item, direction, quantity = ...; local found = find(item); if not found then return "Found no "..item end
   local released = turtle.drops[getDirection(direction)](tonumber(quantity))
   return released and core.string(turtle.item()) or "Release "..direction.." failed"
-end; task.hints["drop"] = {["?item ?direction ??count"] = {}}
+end; task.hints["drop"] = {["?item "] = {["?direction "] = {["??count"] = {}}}}
 
 local function suck(...) --:- suck direction quantity? -> _Suck quantity items [or all] into available slot._ 
   local direction, quantity = ...; local sucked = turtle.sucks[getDirection(direction)](quantity)
   return sucked and core.string(turtle.item()) or "Suck "..direction.." failed"
-end; task.hints["suck"] = {["?direction ?count"] = {}}
+end; task.hints["suck"] = {["?direction "] = {["?count"] = {}}}
 --[[
 ```
 #Movement For Tasks in Motion
@@ -140,7 +140,7 @@ local function dig(...) return _task.doTask({...}, function(direction) turtle.di
 --:- dig direction distance hoeing... -> _Direction and distance to (possibly blocked) move, hoeings directions to hoe._
 --:+ _Dig along trails by specifying `direction` as `along` and trailname as `distance`. Can dig `here`._
 --:+ _Tilling down, the common case for tilling, requires an air block beneath and a dirt block beneath that._
-task.hints["dig"] = {["?direction ?distance ?direction..."] = {}}
+task.hints["dig"] = {["?direction "] = {["?distance "] = {["?direction..."] = {}}}}
 
 local function puts(direction, filling, target) -- for change and put commands; put once, direction is a putting
   assert(find(filling), "task: "..filling.." not found"); local targets = turtle.category(target); 
@@ -155,13 +155,13 @@ local function put(...)
   --:- put filling direction distance putting... -> _Direction, distance to move, placing filling in puttings directions._
   --:+ _Put along trails by specifying `direction` as `along` and trailname as `distance`. Can put `here`._
   local filling = ...; return _task.doTask({select(2, ...)}, puts, false, filling) end -- [direction distance puttings...]
-  task.hints["put"] = {["?item ?direction ?distance ?direction..."] = {}}
+  task.hints["put"] = {["?item "] = {["?direction "] = {["?distance "] = {["?direction..."] = {}}}}}
 
   local function change(...) local target, filling = ...; -- `{select(n: #:, ...}` to make a table of the rest including nth
     --:- change target filling direction distance putting... -> _Move distance in direction replacing target with filling._
       --:+ _Change along trails by specifying `direction` as `along` and trailname as `distance`. Can change `here`._
     return _task.doTask({select(3, ...)}, puts, false, filling, target) -- [direction distance puttings+] 
-  end; task.hints["change"] = {["?target ?item ?direction ?distance ?direction..."] = {}} 
+  end; task.hints["change"] = {["?target "] = {["?item "] = {["?direction "] = {["?distance "] = {["?direction..."] = {}}}}}} 
 --[[
 ```
 #Dispatch

@@ -100,7 +100,7 @@ local function tryTo(arguments) -- repeated calls try each direction in turn
   local moveOK, code, index, xyzfacing =  core.pass(pcall(moveHere, trys, tx, hy, tz, ttx, tty, ttz))
   if not moveOK then error("roam.tryTo: Could not roam to ".. to.." because "..code.." at "..move.ats()) end
   return code, index, xyzfacing
-end; roam.hints["to"] = {["?name | ?x y z ??face"] = {}} 
+end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
 --[[
 ```
 <a id="trace"></a>

@@ -12,7 +12,7 @@ package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 
-local sides = {
+local sides = { -- for logging
   -- north = {"up"}, east = {"up"}, south = {"up"}, west = {"up"}, up = {"up"}, down = {"up"}, -- for debug: force unblocking
   north = {"down", "east", "west"}, east = {"down", "south", "north"}, 
   south = {"down", "east", "west"}, west = {"down", "south", "north"},
@@ -55,15 +55,15 @@ function farm.replacer(putAim, item, removables) -- not direction of travel, onl
   end
 end
 
-farm.hints["field "] = {["quarry|layer|cover|finish|harvest|path ?range ??first ???last"] = {}}
+farm.hints["field"] = {["quarry|layer|cover|finish|harvest|path "] = {["?range "] = {["??first "] = {["???last"] = {}}}}}
 --:- field `quarry|layer|cover|finish|harvest|path` -> _Prepare and harvest field for farming._ 
 
-farm.hints["quarry "] = {["?range ??first ???last"] = {}}
-farm.hints["layer "] = {["?range ??first ???last"] = {}}
-farm.hints["cover "] = {["?range ??first ???last"] = {}}
-farm.hints["finish "] = {["?range ??first ???last"] = {}}
-farm.hints["harvest "] = {["?range ??first ???last"] = {}}
-farm.hints["path "] = {["?range ??first ???last"] = {}}
+farm.hints["quarry"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+farm.hints["layer"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+farm.hints["cover"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+farm.hints["finish"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+farm.hints["harvest"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+farm.hints["path"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
 
 --:# **Remote Commands for farm operations (`fieldOpNames`) on plots of fields bounded by ranges**
 --:- quarry range firstPlot? lastPlot?? -> _Dig out the field to level it._

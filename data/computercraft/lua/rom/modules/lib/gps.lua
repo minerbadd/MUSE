@@ -143,7 +143,7 @@ function _gps.launch(commands) -- use `locate` to give a `place` a `location`
   local xb, yb, zb = table.unpack(xyzLocation); local x, y, z = move.where(); 
   if not x then core.status(1, "gps", "GPS Locate Failed") end
   return "GPS "..x..", "..y..", "..z.." for "..xb..", "..yb..", "..zb
-end gps.hints["launch "] = {["?location ??yDelta"] = {}}
+end gps.hints["launch "] = {["?location "] = {["??yDelta"] = {}}}
 
 local ops = {launch = _gps.launch, equip = _gps.equip, actuate = _gps.actuate, check = check} 
 
