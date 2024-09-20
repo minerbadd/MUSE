@@ -67,7 +67,7 @@ local function compare(...) --:- compare item direction... -> <i>Named item matc
     if dataName and targetName and dataName == targetName then found[#found + 1] = {direction, dataName} end
   end; return core.string(found), found
   
-end; task.hints["compare"] = {["?item " = {["?direction..."] = {}}} 
+end; task.hints["compare"] = {["?item "] = {["?direction..."] = {}}} 
 
 local function drop(...) --:- drop item direction quantity? -> <i>Drop quantity of selected items [or all].</i> 
   local item, direction, quantity = ...; local found = find(item); if not found then return "Found no "..item end

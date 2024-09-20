@@ -1,5 +1,5 @@
 --[[ 
-## Turtle Work Functions for Preparing, Planting, Harvesting Fields: lib/farm.lua
+## Turtle Work Functions and Documentation for Preparing, Planting, Harvesting Fields: lib/farm.lua
 ```md
 --:! {farm: []: (:)} <- **Turtle Work Functions Support Library** -> muse/docs/lib/farm.md  
 --:| farm: _Planting through blockages and in several directions. Putting item and replacing blocks._-> farm
@@ -11,6 +11,29 @@ local farm = {}; farm.hints = {} ---@module "signs.farm" -- for functions export
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
+
+--:# **Remote Commands for `farmer` and `logger` farm operations (`fieldOpNames`) on plots of fields bounded by ranges**
+farm.hints["farm"] = {["quarry|layer|cover|finish|harvest|path "] = {["?range "] = {["??first "] = {["???last"] = {}}}}}
+-- :- farm`quarry|layer|cover|finish|harvest|path range firstPlot? lastPlot??-> _Prepare and harvest field for farming._ 
+
+farm.hints["quarry"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+--:- quarry range firstPlot? lastPlot?? -> _Dig out the field to level it._
+
+farm.hints["layer"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+--:- layer range firstPlot? lastPlot?? -> _Put foundation material in place for field._
+
+farm.hints["cover"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+--:- cover range firstPlot? lastPlot?? -> _Replace field material (for tree farm grid)._
+
+farm.hints["finish"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+--:- finish range firstPlot lastPlot?? -> _Complete field preparation for farming._
+
+farm.hints["harvest"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+--:- harvest range firstPlot lastPlot?? -> _Harvest (and replant if needed)._
+
+farm.hints["path"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
+--:- path range firstPlot lastPlot?? -> _Test harvest path (safely)._
+
 
 local sides = { -- for logging
   -- north = {"up"}, east = {"up"}, south = {"up"}, west = {"up"}, up = {"up"}, down = {"up"}, -- for debug: force unblocking
@@ -55,22 +78,7 @@ function farm.replacer(putAim, item, removables) -- not direction of travel, onl
   end
 end
 
-farm.hints["field"] = {["quarry|layer|cover|finish|harvest|path "] = {["?range "] = {["??first "] = {["???last"] = {}}}}}
---:- field `quarry|layer|cover|finish|harvest|path` -> _Prepare and harvest field for farming._ 
-
-farm.hints["quarry"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
-farm.hints["layer"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
-farm.hints["cover"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
-farm.hints["finish"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
-farm.hints["harvest"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
-farm.hints["path"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
-
---:# **Remote Commands for farm operations (`fieldOpNames`) on plots of fields bounded by ranges**
---:- quarry range firstPlot? lastPlot?? -> _Dig out the field to level it._
---:- layer range firstPlot? lastPlot?? -> _Put foundation material in place for field._
---:- cover range firstPlot? lastPlot?? -> _Replace field material (for tree farm grid)._
---:- finish range firstPlot lastPlot?? -> _Complete field preparation for farming._
---:- harvest range firstPlot lastPlot?? -> _Harvest (and replant if needed)._
---:- path range firstPlot lastPlot?? -> _Test harvest path (safely)._
+-- TODO: make `farm` command assuming `farmer` as server of remote call; add hints and help text
+-- TODO: make `log` command assuming `logger` as server of remote call; add hints and help text
 
 return {farm = farm}

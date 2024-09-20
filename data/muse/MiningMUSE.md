@@ -1,5 +1,7 @@
 # Mining MUSE (A Moderately Useful Source Exploration)
 
+This is a different kind of project for Computercraft, one aimed at teaching, by example, what's involved in developing maintainable code. It's a Moderately Useful Source Exploration, MUSE.
+
 MUSE is a collection of resources built on the <a href="https://tweaked.cc/" target="_blank"> ComputerCraft _mod_</a> to <a href="https://www.minecraft.net/" target="_blank"> Minecraft </a> written in <a href="http://www.lua.org/" target="_blank"> Lua </a>. It provides a set of capabilities for ComputerCraft turtles and computers (also written in Lua) that make it easy (quite possibly too easy) to mine, farm, and do explorations in Minecraft worlds. 
 
 Looking about in MUSE, as we'll do here, is a different kind of exploration. It is the exploration into how to develop clean, maintainable code intended for those worlds (as a start). <IMG SRC="drawings/00Compost.png" hspace ="10" ALIGN="right"/> Avoiding a mess might not be too easy. The hope is making it easier to avoid so it's less likely to happen.
@@ -356,23 +358,21 @@ The music continues when `field.plan`
 
 - The grand finale is when `field.plan` passes control to <a href="code/lib/field.html#execute" target="_blank"> `field.execute`</a> (step 7).
 
-There's a `lib.field` utility function, <a href="code/lib/field.html#extents" target="_blank"> `field.extents`</a>, which is interesting because it defines a pair of virtual axes, `stride` and `run`. These create an abstraction to define plots in terms that may (or may not) be a rotation of game coordinates. The idea is to do the rotation if that would result in longer (more time efficient) turtle runs along the `paths`. The extents of the supplied `bounds` of a field are returned as `stride` and `run` coordinates. Field operations (that is, turtle runs) are done along the `run` of a `plot`. 
+There's a `lib.field` utility function, <a href="code/lib/field.html#extents" target="_blank"> `field.extents`</a>, which is interesting because it defines a pair of virtual axes, `stride` and `run`. These create an abstraction to define plots in terms that may (or may not) be a rotation of game coordinates. The idea is to do the rotation if that would result in longer (more time efficient) turtle runs along the `paths`. The extents of the supplied `bounds` of a field are returned as `stride` and `run` coordinates. Field operations (that is, turtle runs) are done along the `run` of a `plot`. The `directions` for plots are then virtual: virtual north, `vN`, virtual east, `vE`, and so forth.
 
 Making a farm involves a lot of work both out there in reality and here in a game. The land needs to be levelled, the soil prepared, and crops planted. Finally, with the farm established, it can be harvested and, perhaps, new seeds planted for the next harvest. Each of these stages coresponds to a field _operation_. 
 
-Flogging our orchestration analogy yet some more, the field operations are the movements of the music orchestrated by the set of MUSE _field files_. For this set they are: `quarry`, `layer`, `cover`, `finish`, and `harvest`. They're defined in the `lib/farm` CLL. All are exposed as remote field operations as calls to `field.make` by `lib/net`. Nothing in the framework itself imposes these as movements for field operation. They're just what's established by a set of field files.
+Flogging our orchestration analogy yet some more, the field operations are the movements of the music orchestrated by the set of MUSE _field files_. For this set they are: `quarry`, `layer`, `cover`, `finish`, `harvest`, and `path`. They're listed in the `lib/farm` work function library. All are exposed as remote field operations for the `farmer` and the `logger` as calls to `field.make` by `lib/net`. Nothing in the framework itself imposes these as movements for field operation. They're just what's established by a set of field files.
 
 <a href="code/fields/cane.html" target="_blank"><IMG SRC="drawings/07Tree.jpg" ALIGN="left" hspace ="10"/></a>With this overview as context, we'll explore the `field` framework by looking at some field files (for steps 2 and 4) and _plan prototype_ files (for step 6) to make this abstraction concrete. 
 
-The first field file to explore is <a href="code/fields/cane.html" target="_blank"> `fields/cane`</a>. Declaring the <a href="code/fields/cane.html#plots" target="_blank"> `plots` </a> for each operation on a cane field does most of what's needed. It's just a lot of picky arithmetic to declare the specifics of _what_ cane fields need to be. 
+The first field file to explore is <a href="code/fields/cane.html" target="_blank"> `fields/cane`</a>. Declaring the <a href="code/fields/cane.html#plots" target="_blank"> `plots` </a> for each operation on a cane field does most of what's needed. It's just a lot of picky arithmetic to declare the specifics of _what_ cane fields need to be. The rest of what's needed in a `fields` file is the definition of the <a href="code/fields/cane.html#ops" target="_blank">  operation functions </a> executed in support of each field operation. 
 
-The rest of what's needed in a `fields` file is the definition of the <a href="code/fields/cane.html#ops" target="_blank">  operation functions </a> executed in support of each field operation. 
-
-There's a field operation we haven't mentioned previously, the `testOp`. It's simply a way to check that that picky arithmetic we spoke of is correct before plowing up a mess in the game. 
+_(There's a field operation we haven't mentioned previously, `test`. It's simply a way to check that that picky arithmetic we spoke of is correct before plowing up a mess in the game.)_
 
 All these field operations are pretty simple functions as you can see. They are specified as functions since it didn't seem worthwhile to define a declarative language just for this purpose. 
 
-A _plan prototype_ is like the _plan_ files we looked when exploring mines. Except that all its bounds geometry is provided by parameters supplied by `lib/fields` and all its path geometry is provided by its call to `fields.paths` back in `lib/fields`. 
+A _plan prototype_ is like the _plan_ files we looked when exploring mines. Except that all its bounds geometry is provided by parameters supplied by `lib/fields` and all its path geometry is provided by its call to `fields.paths` back in `lib/fields`. So it's quite simple. That's the point really.
 
 Loading a _plan prototype_ with the bounds parameters from `lib/fields` generates that _plan function_, <b>&Popf;</b> we spoke of. <a href="drawings/07Paths.pdf" target="_blank"><IMG SRC="drawings/07Paths.png" ALIGN="left" hspace="10" vspace="17"/></a>.It calls <a href="code/lib/field.html#paths" target="_blank"> `field.paths` </a> to generate a set of efficient paths to work on the volume of a plot. The path generator produces flying <a href="https://www.ri.cmu.edu/pub_files/pub4/choset_howie_1997_3/choset_howie_1997_3.pdf" target="_blank"> ox plow</a> paths through the given three dimensional rectangular bound. Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions. That's the only hard part. It's in `lib/fields`. Together with the resulting (admittedly, relative) simplicity and generality of _field files_ and _plan prototypes_, it's sort of the payoff for getting involved with the framework. 
 
@@ -398,7 +398,7 @@ If you've gone along on this ride, you've been with me on an exploration into so
 
 Together we've looked at mindfully managing state because there, there be dragons. We've seen how structuring code in libraries can isolate dependencies and create layers of abstraction. All so design, testing, and maintenance can focus when dealing with changes. We looked especially at factoring to anticipate (the inevitable) changes to the user interface. 
 
-We (or at least I) have had fun with functions. We've dealt with state distributed across a network and persisting over time. Distributing state across a network led us into the issues of concurrency, service discovery, and remote procedure calls (with error conditions).  
+We (or at least I) have had fun with functions. We've dealt with state distributed across a network and persisting over time. Distributing state across a network led us into the issues of concurrency, service discovery, and remote procedure calls (dealing with error conditions).  
 
 As part of a developer's bag of tricks (some more magical than others), hey presto, there be declarative little languages and frameworks. If you need them, there they are.
 
@@ -406,7 +406,7 @@ The code we've looked at is peppered with documentation. In MUSE, given its goal
 
 Following all those hyperlinks, there's been the opportunity for many field trips outside MUSE. I hope you didn't get too lost.
 
-The code for MUSE is part of what's supplied for you to use, experiment with, and evolve. There are `TODO:` comments throughout the code with suggestions for that. I'll be interested in what you do with it and to it.
+The code for MUSE is part of what's supplied (under an MIT license) for you to use, experiment with, and evolve. There are `TODO:` comments throughout the code with suggestions for that. All with the intent of learning to develop maintainable code. I'll be interested in what you do with it and to it.
 
 Code well.
 

@@ -11,19 +11,7 @@
 
 --:> farmOpName: <i>Specifies operation on field</i> -> <code>"quarry"|"layer"|"cover"|"finish"|"fence"|"harvest"|"path"|"test"</code>  
 
---:: farm.logs(seedlings: ":"[], :direction:) -> <i>Logs down and sides, plants found seedlings.</i> -> <code>report: ":" &!</code>  
-
---:: farm.plant(planting: ":") -> <i>Tills and plants found planting.</i> -> <code>report: ":" &!</code>   
-
---:: farm.put(putAim: direction, item: ":"[]|":") -> <i>Puts found item in aimed direction.</i> ->  <code>report: ":" &!</code>  
-
---:: farm.replacer(putAim: direction, item: ":"[]|":", removables: ":"[]) -> <i>Remove, put.</i> -> <code>(:_, :direction:): ":" &!</code>     
---:+ <i>Returns a function used by <code>lib/worker</code> to inspect aimed direction, farm out any removeable, replace with found item.</i>    
---:+ <i>The direction of movement parameter in that function is used to reface turtle after replacement.</i>  
-
---:- field <code>quarry|layer|cover|finish|harvest|path</code> -> <i>Prepare and harvest field for farming.</i>   
-
---:# <b>Remote Commands for farm operations (<code>fieldOpNames</code>) on plots of fields bounded by ranges</b>  
+--:# <b>Remote Commands for <code>farmer</code> and <code>logger</code> farm operations (<code>fieldOpNames</code>) on plots of fields bounded by ranges</b>  
 
 --:- quarry range firstPlot? lastPlot?? -> <i>Dig out the field to level it.</i>  
 
@@ -36,6 +24,16 @@
 --:- harvest range firstPlot lastPlot?? -> <i>Harvest (and replant if needed).</i>  
 
 --:- path range firstPlot lastPlot?? -> <i>Test harvest path (safely).</i>  
+
+--:: farm.logs(seedlings: ":"[], :direction:) -> <i>Logs down and sides, plants found seedlings.</i> -> <code>report: ":" &!</code>  
+
+--:: farm.plant(planting: ":") -> <i>Tills and plants found planting.</i> -> <code>report: ":" &!</code>   
+
+--:: farm.put(putAim: direction, item: ":"[]|":") -> <i>Puts found item in aimed direction.</i> ->  <code>report: ":" &!</code>  
+
+--:: farm.replacer(putAim: direction, item: ":"[]|":", removables: ":"[]) -> <i>Remove, put.</i> -> <code>(:_, :direction:): ":" &!</code>     
+--:+ <i>Returns a function used by <code>lib/worker</code> to inspect aimed direction, farm out any removeable, replace with found item.</i>    
+--:+ <i>The direction of movement parameter in that function is used to reface turtle after replacement.</i>  
 
     </pre>
   </body> 

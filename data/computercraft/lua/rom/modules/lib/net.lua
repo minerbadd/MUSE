@@ -40,6 +40,7 @@ local tasks = require("task"); local task = tasks.task ---@module "signs.task"
 local execs = require("exec"); local exec = execs.exec ---@module "signs.exec"
 local ports = require("port"); local port = ports.port ---@module "signs.port"
 local fields = require("field"); local field = fields.field ---@module "signs.field"
+local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
 --[[
 ```
 <a id="op"></a> 
@@ -136,17 +137,18 @@ net["fill"] = field.fill; as["fill "] = field.hints["fill"] --:= fill:
 --:= Seed:
 net["till"] = field.till; as["till "] = field.hints["till"] --:= till:
 
+net["fence"] = field.fence; as["fence "] = field.hints["fence"]  --:= fence:
+
 --:# **Remote Farm Operations** (where a range feature value is a `fieldName` keyed by `field`, a string literal).
 --:+ _A `fieldName` is a file name without its suffix, e.g. `cane` rather than `cane.lua`, in the `fields` directory._
-net["field"] = field.make; as["field "] = field.hints["field"] --:= field:
-net["quarry"] = op(field.make, "quarry"); as["quarry "] = field.hints["quarry"] --:= quarry:
-net["layer"] = op(field.make, "layer"); as["layer "] = field.hints["layer"]  --:= layer:
-net["cover"] = op(field.make, "cover"); as["cover "] = field.hints["cover"]  --:= cover:
-net["finish"] = op(field.make, "finish"); as["finish "] = field.hints["finish"]  --:= finish:
-net["harvest"] = op(field.make, "harvest"); as["harvest "] = field.hints["harvest"] --:= harvest:
-net["path"] = op(field.make, "path"); as["path "] = field.hints["path"] --:= path:
+net["farm"] = field.make; as["farm "] = farm.hints["farm"] --:= farm:
+net["quarry"] = op(field.make, "quarry"); as["quarry "] = farm.hints["quarry"] --:= quarry:
+net["layer"] = op(field.make, "layer"); as["layer "] = farm.hints["layer"]  --:= layer:
+net["cover"] = op(field.make, "cover"); as["cover "] = farm.hints["cover"]  --:= cover:
+net["finish"] = op(field.make, "finish"); as["finish "] = farm.hints["finish"]  --:= finish:
+net["harvest"] = op(field.make, "harvest"); as["harvest "] = farm.hints["harvest"] --:= harvest:
+net["path"] = op(field.make, "path"); as["path "] = farm.hints["path"] --:= path:
 
-net["fence"] = field.fence; as["fence "] = field.hints["fence"]  --:= fence:
 
 --:# **Command Computer Setup and Port Commands** (e.g., `locate gantry launch`)
 net["locate"] = op(exec.op, "locate"); --:= locate:

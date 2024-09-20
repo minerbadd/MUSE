@@ -113,10 +113,11 @@
 
 --:- till point point seed -> _Till the seed bounds by named points (defining a rectangular solid)._  
 
---:# **Remote Farm Operations** (where a range feature value is a `fieldName` keyed by `field`, a string literal).    
---:+ _A `fieldName` is a file name without its suffix, e.g. `cane` rather than `cane.lua`, in the `fields` directory._  
+--:- fence range [item] -> _Put item or available wooden fence from one point to another in range._  
 
---:- field `quarry|layer|cover|finish|harvest|path` -> _Prepare and harvest field for farming._   
+--:# **Remote Farm Operations** (where a range feature value is a `fieldName` keyed by `field`, a string literal).    
+--:+ _A `fieldName` is a file name without its suffix, e.g. `cane` rather than `cane.lua`, in the `fields` directory._    
+--:= farm:  
 
 --:- quarry range firstPlot? lastPlot?? -> _Dig out the field to level it._  
 
@@ -129,8 +130,6 @@
 --:- harvest range firstPlot lastPlot?? -> _Harvest (and replant if needed)._  
 
 --:- path range firstPlot lastPlot?? -> _Test harvest path (safely)._  
-
---:- fence range [item] -> _Put item or available wooden fence from one point to another in range._  
 
 --:# **Command Computer Setup and Port Commands** (e.g., `locate gantry launch`)  
 
