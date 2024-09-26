@@ -17,6 +17,8 @@
 
 --:- path range firstPlot lastPlot?? -> _Test harvest path (safely)._  
 
+--:# **Work Funcions for a `farm`**  
+
 --:: farm.logs(seedlings: ":"[], :direction:) -> _Logs down and sides, plants found seedlings._ -> `report: ":" &!`  
 
 --:: farm.plant(planting: ":") -> _Tills and plants found planting._ -> `report: ":" &!`   

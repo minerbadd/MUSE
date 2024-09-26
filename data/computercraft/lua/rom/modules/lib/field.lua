@@ -87,7 +87,7 @@ Fences expect a linear traversal between points at the same height. They may be 
 ```Lua
 --]]
 
-local function getSelectorRange(ranger) -- ranger could be site.farm40:canes, farm40:canes, canes
+local function getSelectorRange(ranger) -- ranger could be site.farm:canes, farm:canes, canes
   local _, _, site, first, second = string.find(ranger, "(%w-)%.?(%w*):?(%w*)$")
   local nosite, nosecond = site == "", second == ""; local sited = nosite and first or site.."."..first
   return not nosecond and sited, nosecond and sited or second -- farm, selector (selector is range name if no farm)
@@ -323,7 +323,7 @@ function field.make(commands, faced) -- loads and runs field file which calls `f
   --:> fieldCommands: _For CLI_ -> :`[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`
   --:+ _The second entry, `ranger` in `fieldCommands` is a string which may simply be a name for a `range`, (a kind of `place`)._
   --:+ _If so, the range name gets the range's features dictionary and the field file name to load (keyed as `features.fields`)._
-  --:+ _It could also be a string specifying the name of a farm and a field name in that farm (separated by a colon)._
+  --:+ _It could also be a string specifying the name of a farm and a farm field name in that farm (separated by a colon)._
   --:+ _If so, the farm name specifies the farm's `range` and so the farm range's features dictionary._
   --:+ _The `fields` entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name._
   --:+ _With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified._

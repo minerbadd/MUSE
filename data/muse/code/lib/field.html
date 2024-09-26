@@ -90,7 +90,7 @@ field.hints["till"] = {["?point "] = {["?point "] = {["?seed" ] = {}}}}
 Fences expect a linear traversal between points at the same height. They may be made of any wooden material. Fences will only be placed for ranges whose <code>fields</code> features include <code>fences</code>.
 <pre><code class="language-lua">
 
-local function getSelectorRange(ranger) -- ranger could be site.farm40:canes, farm40:canes, canes
+local function getSelectorRange(ranger) -- ranger could be site.farm:canes, farm:canes, canes
   local _, _, site, first, second = string.find(ranger, "(%w-)%.?(%w<i>):?(%w</i>)$")
   local nosite, nosecond = site == "", second == ""; local sited = nosite and first or site.."."..first
   return not nosecond and sited, nosecond and sited or second -- farm, selector (selector is range name if no farm)
@@ -314,7 +314,7 @@ function field.make(commands, faced) -- loads and runs field file which calls <c
   --:> fieldCommands: <i>For CLI</i> -> :<code>[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]</code>
   --:+ <i>The second entry, <code>ranger</code> in <code>fieldCommands</code> is a string which may simply be a name for a <code>range</code>, (a kind of <code>place</code>).</i>
   --:+ <i>If so, the range name gets the range's features dictionary and the field file name to load (keyed as <code>features.fields</code>).</i>
-  --:+ <i>It could also be a string specifying the name of a farm and a field name in that farm (separated by a colon).</i>
+  --:+ <i>It could also be a string specifying the name of a farm and a farm field name in that farm (separated by a colon).</i>
   --:+ <i>If so, the farm name specifies the farm's <code>range</code> and so the farm range's features dictionary.</i>
   --:+ <i>The <code>fields</code> entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name.</i>
   --:+ <i>With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified.</i>

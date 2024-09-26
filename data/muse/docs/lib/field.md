@@ -69,7 +69,7 @@
 --:> fieldCommands: _For CLI_ -> :`[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`    
 --:+ _The second entry, `ranger` in `fieldCommands` is a string which may simply be a name for a `range`, (a kind of `place`)._    
 --:+ _If so, the range name gets the range's features dictionary and the field file name to load (keyed as `features.fields`)._    
---:+ _It could also be a string specifying the name of a farm and a field name in that farm (separated by a colon)._    
+--:+ _It could also be a string specifying the name of a farm and a farm field name in that farm (separated by a colon)._    
 --:+ _If so, the farm name specifies the farm's `range` and so the farm range's features dictionary._    
 --:+ _The `fields` entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name._    
 --:+ _With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified._  

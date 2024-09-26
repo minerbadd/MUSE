@@ -34,6 +34,7 @@ farm.hints["harvest"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
 farm.hints["path"] = {["?range "] = {["??first "] = {["???last"] = {}}}}
 --:- path range firstPlot lastPlot?? -> _Test harvest path (safely)._
 
+--:# **Work Funcions for a `farm`**
 
 local sides = { -- for logging
   -- north = {"up"}, east = {"up"}, south = {"up"}, west = {"up"}, up = {"up"}, down = {"up"}, -- for debug: force unblocking

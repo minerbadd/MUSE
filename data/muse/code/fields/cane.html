@@ -71,15 +71,15 @@ local function coverOp(index) -- called by <code>field.make</code>
 end
 
 local function finishOp(index) -- called by <code>field.make</code>
-  local crops = {"minecraft:kelp", "minecraft:reeds", "minecraft:reeds"}; local crop = crops[(index % 3) + 1]
-  local offsets = { {0, 0, 0}, {0, 1, 0}, {0, 1, 0} }; local offset = offsets[(index % 3) + 1]
+  local crops = {"minecraft:kelp", "minecraft:reeds", "minecraft:reeds"}; local crop = crops[(index % #crops) + 1]
+  local offsets = { {0, 0, 0}, {0, 1, 0}, {0, 1, 0} }; local offset = offsets[(index % #offsets) + 1]
   local result = field.plan("layer", {plots.finish[index], {crop} }, offset)
   core.status(4, "cane", "finish", index, result)
   return result
 end
 
 local function harvestPath(index, plan) -- called by <code>field.make</code>; harvest one plot of cane field
-  local offsets = { {0, 1, 0}, {0, 4, 0}, {0, 4, 0} }; local offset = offsets[(index % 3) + 1]
+  local offsets = { {0, 1, 0}, {0, 4, 0}, {0, 4, 0} }; local offset = offsets[(index % #offsets) + 1]
   local result = field.plan(plan, {plots.harvest[index]}, offset)
   core.status(4, "cane", "harvestPath", index, result)
   return result
