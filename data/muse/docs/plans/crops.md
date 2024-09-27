@@ -1,2 +1,0 @@
---:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- **To Plant and Harvest Crops** -> muse/docs/plans/crops.md      
---:+ _Plan prototype given borders, returns plans to harvest and plant with `farm.plant`._    

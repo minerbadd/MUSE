@@ -1,4 +1,4 @@
---:~ field.plot() <- **Create Four Animal Pens with Central Access Alley** -> muse/docs/fields/pens.md    
+--:~ field.plot() <- **Create Four Animal Pens with Central Access Alley** -> muse/docs/fields/pen.md    
 --:+ _Loaded by `field.make` with operation name, span of plots for the operation, and field bounds._    
 --:+ **Supported operations are `quarry`, `layer`, `finish`, `path`, and `test`**    
 --:+ _Calls `field.plot` with specified plot span, field operation function, and total field plots for that operation._    

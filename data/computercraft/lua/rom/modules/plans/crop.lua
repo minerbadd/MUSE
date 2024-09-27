@@ -1,7 +1,7 @@
 --[[
 ## Plan Prototype for Common Crop Fields
 ```md
---:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- **To Plant and Harvest Crops** -> muse/docs/plans/crops.md  
+--:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- **To Plant and Harvest Crops** -> muse/docs/plans/crop.md  
 --:+ _Plan prototype given borders, returns plans to harvest and plant with `farm.plant`._  
 ```
 Each `run` is planted and harvested with the crop specified by the `plots` `index`. The work function uses the upvalues of the plan prototype rather than the arguments it's called with.

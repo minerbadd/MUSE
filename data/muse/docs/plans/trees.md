@@ -1,2 +1,0 @@
---:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- **Trees: To Log Start, Odd, and Even Rows** -> muse/docs/plans/trees.md    
---:+ _Plan prototype returns plans to log one level of a birch tree farm given bounds. Work function is `farm.logs`._  

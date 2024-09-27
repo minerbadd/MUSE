@@ -1,30 +1,22 @@
-<!DOCTYPE html> 
-  <html> 
-  <head> 
-  <link href="../../../../assets/prism.css" rel="stylesheet" /> 
-  <link href="../../../../assets/downmark.css" rel="stylesheet" /> 
-  </head> 
-  <body> 
-     <script src="../../../../assets/prism.js"></script> 
-
-<h2> Quarry, Layer, Finish, Path, and Test Operations to Create Animal Farm</h2>
-<pre><code class="language-markdown">
---:~ field.plot() <- <b>Create Four Animal Pens with Central Access Alley</b> -> muse/docs/fields/pens.md
---:+ <i>Loaded by <code>field.make</code> with operation name, span of plots for the operation, and field bounds.</i>
---:+ <b>Supported operations are <code>quarry</code>, <code>layer</code>, <code>finish</code>, <code>path</code>, and <code>test</code></b>
---:+ <i>Calls <code>field.plot</code> with specified plot span, field operation function, and total field plots for that operation.</i>
---:+ <i>Operation functions call <code>field.plan</code> with plot bounds, xyz offset, and prototype plan for the operation.</i>
---:+ <i>Leaves margins around finished area fencing, fences quadrants with internal alley, uses <code>"fence"</code> material.</i>
---:+ <i>Gates are to be placed by player (replacing fence) as desired.</i>
-</code></pre>
-<pre><code class="language-lua">
+--[[
+## Quarry, Layer, Finish, Path, and Test Operations to Create Animal Farm
+```md
+--:~ field.plot() <- **Create Four Animal Pens with Central Access Alley** -> muse/docs/fields/pen.md
+--:+ _Loaded by `field.make` with operation name, span of plots for the operation, and field bounds._
+--:+ **Supported operations are `quarry`, `layer`, `finish`, `path`, and `test`**
+--:+ _Calls `field.plot` with specified plot span, field operation function, and total field plots for that operation._
+--:+ _Operation functions call `field.plan` with plot bounds, xyz offset, and prototype plan for the operation._
+--:+ _Leaves margins around finished area fencing, fences quadrants with internal alley, uses `"fence"` material._
+--:+ _Gates are to be placed by player (replacing fence) as desired._
+```Lua
+--]]
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 
 local vectorPairs = core.vectorPairs
 
-local commands, bounds, faced = ... -- <b>parameters from the <code>lib/field</code> call of the field function for this file</b> 
+local commands, bounds, faced = ... -- **parameters from the `lib/field` call of the field function for this file** 
 local bottom, top = bounds.bottom, bounds.top
 local strides = {quarry = 1, layer = 1, finish = 1}
 local nplots, slots, stride, run, striding, turn = field.extents(bounds, strides, faced)
@@ -36,13 +28,15 @@ local moreAlley = (vWidth - runFences - minimumAlley) % 2; local alleyWidth = mi
 local penWidth = (vWidth - runFences - alleyWidth) / 2
 if penWidth <= 0 then error("pens: Can't be "..penWidth.." blocks wide") end
 
-local fences = (runFences <i> vLength) + (2 </i> penWidth) + (2 * (vWidth - 2))
+local fences = (runFences * vLength) + (2 * penWidth) + (2 * (vWidth - 2))
 core.status(2, "pens", slots.quarry, "slots each plot", fences, "fences")
-</code></pre>
+--[[
+```
 <a id="plots"><IMG SRC="../../drawings/07Pens.png" ALIGN="center" hspace="10"/>
-The field is parcelled into <code>plots</code> appropriate to each <i>field operation</i>. Each <code>plot</code> is generated referencing the virtual <code>stride</code> and  <code>run</code> axes. If there is no <code>turn</code> property, <code>orient</code> performs no transform.  The <code>stride</code> axis is then simply west to east in game coordinates and operations will <code>run</code> along north to south game coordinates.
-<p>
-<pre><code class="language-lua">
+The field is parcelled into `plots` appropriate to each _field operation_. Each `plot` is generated referencing the virtual `stride` and  `run` axes. If there is no `turn` property, `orient` performs no transform.  The `stride` axis is then simply west to east in game coordinates and operations will `run` along north to south game coordinates.
+
+```Lua
+--]]
 local divider = vN + core.round(vLength/2) -- half way along run
 local startAlley = vW + penWidth + 2; local endAlley = startAlley + alleyWidth 
 local plots = {
@@ -59,10 +53,12 @@ local plots = {
     orient { {startAlley, bottom, vN + 1}, {startAlley, bottom, vS - 1} }, -- along start of alley back to near end
   },
 }; nplots.finish = #plots.finish; plots.path = plots.finish; nplots.path = nplots.finish
-</code></pre>
+--[[
+```
 <a id="ops"></a> 
-Each <code>operation</code> supported by this field (<code>quarry</code>, <code>layer</code>, <code>finish</code>, <code>path</code>, and <code>test</code>) corresponds to a <code>field operation</code> function. These call <code>field.plan</code> with the name of a <i>plan prototype</i> file in the <code>plans</code> directory and the <code>fieldParameters</code> including the <code>plots</code> that the <i>plan prototype</i> will need. 
-<pre><code class="language-lua">
+Each `operation` supported by this field (`quarry`, `layer`, `finish`, `path`, and `test`) corresponds to a `field operation` function. These call `field.plan` with the name of a _plan prototype_ file in the `plans` directory and the `fieldParameters` including the `plots` that the _plan prototype_ will need. 
+```Lua
+--]]
 local function quarryOp(index)
   local quarryResult = field.plan("quarry", {plots.quarry[index]}) -- from, to
   core.status(2, "pens", "quarrying", index, quarryResult)
@@ -86,16 +82,14 @@ local function finishOp(index, offset) return finishPath(index, offset, "layer")
 local function pathOp(index, offset) return finishPath(index, offset, "path") end
 
 local function testOp() return "pens "..core.string(plots.finish) end
-</code></pre>
+--[[
+```
 <a id="plot"></a> 
-Call <code>field.plot</code> with a <i>field operation</i> callback as well as the number of plots and offsets for the operation.
-<pre><code class="language-lua">
+Call `field.plot` with a _field operation_ callback as well as the number of plots and offsets for the operation.
+```Lua
+--]]
 local fieldOps = {layer = layerOp, quarry = quarryOp, finish = finishOp, path = pathOp, test = testOp}; 
 local offsets = {finish = {0, 1, 0}, path = {0, 2, 0}}; local fieldOpName = commands[1]; local fieldsOp = fieldOps[fieldOpName]
 if not fieldsOp then error("pens: doesn't "..fieldOpName) end
 
-return field.plot(commands, fieldsOp, fieldOpName, nplots[fieldOpName], offsets[fieldOpName]) -- back to <code>lib/field</code>
-
-  </body> 
-</html>
-
+return field.plot(commands, fieldsOp, fieldOpName, nplots[fieldOpName], offsets[fieldOpName]) -- back to `lib/field`

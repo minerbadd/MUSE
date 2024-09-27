@@ -1,7 +1,7 @@
 --[[
 ## Plan Prototype to Harvest Trees and Plant Saplings
 ```md
---:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- **Trees: To Log Start, Odd, and Even Rows** -> muse/docs/plans/trees.md
+--:~ {start: plan, odd: plan, even: plan}, yDelta: #: <- **Trees: To Log Start, Odd, and Even Rows** -> muse/docs/plans/tree.md
 --:+ _Plan prototype returns plans to log one level of a birch tree farm given bounds. Work function is `farm.logs`._
 ```Lua
 --]]
