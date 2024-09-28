@@ -2,7 +2,7 @@
 ## Framework for Field Operations: lib/field.lua
 ```md
 --:! {field: []: (:)} <- **Field Functions Library: Produce and Execute Field Plans** -> muse/docs/lib/field.md  
---:| field: _Fields are rectangular solids defined by a range (a `situation` pair with `field` keyed properties)._ -> field, _field
+--:| field: _Fields are rectangular solids defined by a range (a `situation` pair with `fields` keyed properties)._ -> field, _field
 --:+ _Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations._
 ```
 ```Lua
@@ -18,94 +18,7 @@ local places = require("places"); local place = places.place ---@module "signs.p
 local maps = require("map"); local map = maps.map ---@module "signs.map"
 local planners = require("planner"); local planner = planners.planner ---@module "signs.planner"
 local workers = require("worker"); local worker = workers.worker ---@module "signs.worker"
---[[
-```
-<a id="volumes"></a> 
-In lieu of a `field file`, a pair of points as named places will do for simple operations on volumes.
-```Lua
---]]
---:# **Cut, fill, till, and traverse points defining rectangular volumes** using `field.plan`
 
-local function protect(op, parameters, selector) -- catch bad parameters and other errors
-  local ok, report = core.pass(pcall(op, parameters, selector)) -- finish turtle operation, report failures to player
-  if ok then return report else return "field.protect: Failed operation because "..report end
-end
-
-function _field.makeBounds(nearPlace, farPlace)
-  --:: `_field.makeBounds(nearPlace: ":", farPlace: ":")` -> _Get coordinate pair for named places._ -> `xyz, xyz, #:, #:`
-  local xyzNear, xyzFar = place.xyzf(nearPlace), place.xyzf(farPlace) 
-  assert(xyzNear and xyzFar, "field.makeBounds: "..nearPlace.." or "..farPlace.." place unknown")
-  local xN, yN, zN = table.unpack(xyzNear); local xF, yF, zF = table.unpack(xyzFar)
-  return {xN, yN, zN}, {xF, yF, zF}, yN, yF; -- start, finish
-end
-
-function _field.cut(places)
-  --:: `_field.cut(places: :[nearPlace: ":", farPlace: ":"])` -> _Use plan.quarry to cut._ -> `report: ":" &:`
-  local nearPlace, farPlace = table.unpack(places) -- {"nearPlace", "farPlace"}
-  local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
-  local start, finish = nearY >= farY and near or far, nearY >= farY and far or near
-  local ok, report = core.pass(pcall(field.plan, "quarry", { {start, finish} }, {0, 1, 0}))
-  if ok then return report else return "field.cutPath: Failed because "..report end
-end; 
-
-function field.cut(places) return protect(_field.cut, places) end
---:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`
---:- cut point point -> _Quarry out blocks bound by named points (defining a rectangular solid)._
-field.hints["cut"] = {["?point "] = {["?point"] = {}}}
-
-function _field.put(thePlan, start, finish, filling, target)
-  --:: `_field.put(thePlan: ":", start: #:, finish: #:, filling: ":", target: ":"?)` -> _Use`layer` or `till` plan._ -> `":" &:`
-  local fillings, targets = turtle.category(filling), target and turtle.category(target)
-  local found = turtle.find(fillings); if not found then return ("field.put: can not find "..filling) end
-  local ok, report = core.pass(pcall(field.plan, thePlan, { {start, finish}, {found.name}, targets}, {0, 1, 0})) 
-  if ok then return report else return "field.put: Failed because "..report end
-end 
-
-function _field.fillTill(thePlan, parameters) 
-  --:: `_field.fillTill(thePlan: ":", parameters: :[nearPlace: ":", farPlace: ":", filling: ":", target: ":"?])`-> _To `put``._ -> `":"`
-  local nearPlace, farPlace, filling, target = table.unpack(parameters);
-  local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
-  local start, finish = nearY <= farY and near or far, nearY <= farY and far or near
-  return _field.put(thePlan, start, finish, filling, target)
-end
-
-function field.fill(parameters) return protect(_field.fillTill, "layer", parameters) end
---:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`
---:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:` 
---:- fill point point filling [target] -> _Layer fill bounds by points; optionally swaps out only target blocks._
-field.hints["fill"] = {["?point "] = {["?point "] = {["?filling "] = {["??target"] = {}}}}}
-
-function field.till(parameters) return protect(_field.fillTill, "till", parameters) end
---:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`
---:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `"minecraft:"`
---:- till point point seed -> _Till the seed bounds by named points (defining a rectangular solid)._
-field.hints["till"] = {["?point "] = {["?point "] = {["?seed" ] = {}}}} 
---[[
-```
-<a id="fences"/a>
-Fences expect a linear traversal between points at the same height. They may be made of any wooden material. Fences will only be placed for ranges whose `fields` features include `fences`.
-```Lua
---]]
-
-local function getSelectorRange(ranger) -- ranger could be site.farm:canes, farm:canes, canes
-  local _, _, site, first, second = string.find(ranger, "(%w-)%.?(%w*):?(%w*)$")
-  local nosite, nosecond = site == "", second == ""; local sited = nosite and first or site.."."..first
-  return not nosecond and sited, nosecond and sited or second -- farm, selector (selector is range name if no farm)
-end
-
-local function fence(parameters)
-  local ranger, fencing = table.unpack(parameters); assert(ranger, "field.fence: need range"); 
-  local farm, selector = getSelectorRange(ranger); -- farm40:canes gets range name
-  local range = farm and map.get(farm, "fields")[selector] or selector -- range from farm fields property
-  local _, features, from, to = map.borders(range) -- got the range from the farm (or given directly)
-  assert(features and features.fences, "field.fence: missing fences feature")
-  local xyzFrom, xyzTo = {from.x, from.y, from.z}, {to.x, to.y, to.z}
-  return _field.put("layer", xyzFrom, xyzTo, fencing or "fence") -- put the fence as filling using `layer` plan
-end; field.hints["fence"] = {["?range "] = {["??fencing"] = {}}}
-
-function field.fence(parameters) return protect(fence, parameters) end
---:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`
---:- fence range [item] -> _Put item or available wooden fence from one point to another in range._
 --[[
 ```
 <a id="paths"></a> 
@@ -312,11 +225,17 @@ end
 --[[
 ```
 <a id="make"></a> 
-The `field.make` command interface is called with a command table which specifies(directly or indirctly) a `range`, a kind of `place` as described in <a href="../lib/map.html" target="_blank">`lib/map`</a>. The `range` is used by `map.borders` to compute the three dimensional `bounds` of the field and find its `features`, a dictionary of properties. The operations on a `field` make use of that dictionary, retrieving the name of a `field file`, for example, `crops` as a property accessed by the dictionary's `fields` key. The `field.make` function loads the named _field file_ from the `fields` directory as, for example, `fields/crops.lua`, to get what we'll call the _field function_. The `fields.make` function calls this function with the command table it received and the `bounds` it computed.
+The `field.make` command interface is called with a command table which specifies(directly or indirctly) a `range`, a kind of `place` as described in <a href="../lib/map.html" target="_blank">`lib/map`</a>. The `range` is used by `map.borders` to compute the three dimensional `bounds` of the field and find its `features`, a dictionary of properties. The operations on a `field` make use of that dictionary, retrieving the name of a `field file`, for example, `crop` as a property accessed by the dictionary's `fields` key. The `field.make` function loads the named _field file_ from the `fields` directory as, for example, `fields/crop.lua`, to get what we'll call the _field function_. The `fields.make` function calls this function with the command table it received and the `bounds` it computed.
 
 The _field function_ uses the command table and the `bounds` to compute values it will pass to `field.plot` back here in `lib/field`. One of these values is a function we'll call the _field operation_. It is selected for the operation (for example, farm's `quarry` operation) specified in the command table and defined in the _field file_. Another of these values is the number of plots in the field for that operation.
 ```Lua
 --]]
+local function getSelectorRange(ranger) -- ranger could be site.farm:canes, farm:canes, canes
+  local _, _, site, first, second = string.find(ranger, "(%w-)%.?(%w*):?(%w*)$")
+  local nosite, nosecond = site == "", second == ""; local sited = nosite and first or site.."."..first
+  return not nosecond and sited, nosecond and sited or second -- farm, selector (selector is range name if no farm)
+end
+
 --:# **Execution train runs from `field.make` to `field.plot` to `field.plan` to execute the plan**
 function field.make(commands, faced) -- loads and runs field file which calls `field.plot`
   --:: field.make(commands: fieldCommands, faced: ^:) -> _Load field files; return their `field.plot` calls_ -> `report: ":" &:`
@@ -334,6 +253,87 @@ function field.make(commands, faced) -- loads and runs field file which calls `f
   local field = loadfile(fieldFile) -- get the field function (TODO: cache?)
   local _, report = core.pass(pcall(field, commands, borders, faced)) -- **run field file** (calling `field.plots`)
   return report
+end;
+--[[
+```
+<a id="volumes"></a> 
+In lieu of a `field file`, a pair of points as named places will do for simple operations on volumes.
+```Lua
+--]]
+--:# **Cut, fill, till, and traverse points defining rectangular volumes** using `field.plan`
+
+local function protect(op, parameters, selector) -- catch bad parameters and other errors
+  local ok, report = core.pass(pcall(op, parameters, selector)) -- finish turtle operation, report failures to player
+  if ok then return report else return "field.protect: Failed operation because "..report end
+end
+
+function _field.makeBounds(nearPlace, farPlace)
+  --:: `_field.makeBounds(nearPlace: ":", farPlace: ":")` -> _Get coordinate pair for named places._ -> `xyz, xyz, #:, #:`
+  local xyzNear, xyzFar = place.xyzf(nearPlace), place.xyzf(farPlace) 
+  assert(xyzNear and xyzFar, "field.makeBounds: "..nearPlace.." or "..farPlace.." place unknown")
+  local xN, yN, zN = table.unpack(xyzNear); local xF, yF, zF = table.unpack(xyzFar)
+  return {xN, yN, zN}, {xF, yF, zF}, yN, yF; -- start, finish
+end
+
+function _field.cut(places)
+  --:: `_field.cut(places: :[nearPlace: ":", farPlace: ":"])` -> _Use plan.quarry to cut._ -> `report: ":" &:`
+  local nearPlace, farPlace = table.unpack(places) -- {"nearPlace", "farPlace"}
+  local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
+  local start, finish = nearY >= farY and near or far, nearY >= farY and far or near
+  local ok, report = core.pass(pcall(field.plan, "quarry", { {start, finish} }, {0, 1, 0}))
+  if ok then return report else return "field.cutPath: Failed because "..report end
 end; 
+
+function field.cut(places) return protect(_field.cut, places) end
+--:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`
+--:- cut point point -> _Quarry out blocks bound by named points (defining a rectangular solid)._
+field.hints["cut"] = {["?point "] = {["?point"] = {}}}
+
+function _field.put(thePlan, start, finish, filling, target)
+  --:: `_field.put(thePlan: ":", start: #:, finish: #:, filling: ":", target: ":"?)` -> _Use`layer` or `till` plan._ -> `":" &:`
+  local fillings, targets = turtle.category(filling), target and turtle.category(target)
+  local found = turtle.find(fillings); if not found then return ("field.put: can not find "..filling) end
+  local ok, report = core.pass(pcall(field.plan, thePlan, { {start, finish}, {found.name}, targets}, {0, 1, 0})) 
+  if ok then return report else return "field.put: Failed because "..report end
+end 
+
+function _field.fillTill(thePlan, parameters) 
+  --:: `_field.fillTill(thePlan: ":", parameters: :[nearPlace: ":", farPlace: ":", filling: ":", target: ":"?])` -> _To `put``._ -> `":"`
+  local nearPlace, farPlace, filling, target = table.unpack(parameters);
+  local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
+  local start, finish = nearY <= farY and near or far, nearY <= farY and far or near
+  return _field.put(thePlan, start, finish, filling, target)
+end
+
+function field.fill(parameters) return protect(_field.fillTill, "layer", parameters) end
+--:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`
+--:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:` 
+--:- fill point point filling ?target -> _Layer fill bounds by points; optionally swaps out only target blocks._
+field.hints["fill"] = {["?point "] = {["?point "] = {["?filling "] = {["??target"] = {}}}}}
+
+function field.till(parameters) return protect(_field.fillTill, "till", parameters) end
+--:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`
+--:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `"minecraft:"`
+--:- till point point seed -> _Till the seed bounds by named points (defining a rectangular solid)._
+field.hints["till"] = {["?point "] = {["?point "] = {["?seed" ] = {}}}} 
+--[[
+```
+<a id="fences"/a>
+Fences expect a linear traversal between points at the same height. They may be made of any wooden material. Fences will only be placed for ranges whose `fields` features include `fences`.
+```Lua
+--]]
+local function fence(parameters)
+  local ranger, fencing = table.unpack(parameters); assert(ranger, "field.fence: need range"); 
+  local farm, selector = getSelectorRange(ranger); -- farm40:canes gets range name
+  local range = farm and map.get(farm, "fields")[selector] or selector -- range from farm fields property
+  local _, features, from, to = map.borders(range) -- got the range from the farm (or given directly)
+  assert(features and features.fences, "field.fence: missing fences feature")
+  local xyzFrom, xyzTo = {from.x, from.y, from.z}, {to.x, to.y, to.z}
+  return _field.put("layer", xyzFrom, xyzTo, fencing or "fence") -- put the fence as filling using `layer` plan
+end; field.hints["fence"] = {["?range "] = {["??fencing"] = {}}}
+
+function field.fence(parameters) return protect(fence, parameters) end
+--:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`
+--:- fence range [item] -> _Put item or available wooden fence from one point to another in range._
 
 return {field = field}

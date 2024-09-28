@@ -30,7 +30,7 @@ print(5.2, field.fence {"farm3000", "minecraft:birch_fence"})
 --map.op {"test", "farm40", "testing", "-1320", "63", "773", "north"}
 map.op {"test", "tara", "testing", "100", "20", "300", "east"}
 print(6, map.op {"chart", "farm40", "tara", "SE", "64"}); print(6, map.op {"view", "tara"})
---print(6.1, map.op {"chart", "farm40ES", "corner", "ES", "64"}); print(6.1, map.op {"view", "farm40ES"})
+--print(6.1, map.op {"chart", "tara", "corner", "ES", "64"}); print(6.1, map.op {"view", "tara"})
 
 print(7, field.fence {"tara:east", "birch"})
 

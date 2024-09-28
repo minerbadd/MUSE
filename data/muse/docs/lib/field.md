@@ -1,28 +1,6 @@
 --:! {field: []: (:)} <- **Field Functions Library: Produce and Execute Field Plans** -> muse/docs/lib/field.md      
---:| field: _Fields are rectangular solids defined by a range (a `situation` pair with `field` keyed properties)._ -> field, _field    
+--:| field: _Fields are rectangular solids defined by a range (a `situation` pair with `fields` keyed properties)._ -> field, _field    
 --:+ _Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations._  
-
---:# **Cut, fill, till, and traverse points defining rectangular volumes** using `field.plan`  
-
---:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`  
-
---:- cut point point -> _Quarry out blocks bound by named points (defining a rectangular solid)._  
-
---:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`  
-
---:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:`   
-
---:- fill point point filling [target] -> _Layer fill bounds by points; optionally swaps out only target blocks._  
-
---:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`  
-
---:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `"minecraft:"`  
-
---:- till point point seed -> _Till the seed bounds by named points (defining a rectangular solid)._  
-
---:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`  
-
---:- fence range [item] -> _Put item or available wooden fence from one point to another in range._  
 
 --:# **Path generator: flying ox plow paths through given three dimensional rectangular bounds.**    
 --:+ _Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions._  
@@ -73,3 +51,25 @@
 --:+ _If so, the farm name specifies the farm's `range` and so the farm range's features dictionary._    
 --:+ _The `fields` entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name._    
 --:+ _With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified._  
+
+--:# **Cut, fill, till, and traverse points defining rectangular volumes** using `field.plan`  
+
+--:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`  
+
+--:- cut point point -> _Quarry out blocks bound by named points (defining a rectangular solid)._  
+
+--:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`  
+
+--:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:`   
+
+--:- fill point point filling ?target -> _Layer fill bounds by points; optionally swaps out only target blocks._  
+
+--:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`  
+
+--:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `"minecraft:"`  
+
+--:- till point point seed -> _Till the seed bounds by named points (defining a rectangular solid)._  
+
+--:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`  
+
+--:- fence range [item] -> _Put item or available wooden fence from one point to another in range._  
