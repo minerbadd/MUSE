@@ -158,14 +158,14 @@ function field.plan(planName, fielding, offset) -- <code>fieldsOp</code> calls <
   if not moveOK then core.status(2, "field", "plan move.to", moveReport); return moveReport end
   local planFile = _G.Muse.path.."plans/"..planName..".lua"; 
   local planFunction = assert(loadfile(planFile), "field.plan: "..planFile.." failed") -- TODO: cache?
-  local plans, yDelta = planFunction(fielding) -- prototype plan file calls <code>field.paths</code>
+  local plans, yDelta = planFunction(fielding) -- <b>prototype plan file</b> calls <code>field.paths</code>
   local levels = math.abs(yDelta) + 1; core.status(4, "field", "starting", planName, levels, "levels")
   turtle.block(turtle.blocking())-- block in next operation if blocking enabled for out-game test
   return _field.execute(plans, levels, fielding, planName)
 end
 </code></pre>
 <a id="plot"></a> 
-The <code>field.plot</code> function does command line processing to select plots and handles error conditions raised by the <i>field operation</i> it calls for each plot (step 3). The back and forth continues as the <i>field operation</i> for the plot calls <code>field.plan</code> (step 4) to fill in the plan for the prototype plan (for example, <code>plans/quarry.lua</code>) specified by the operation (for example, <code>"quarry"</code>). The <i>field operation</i> call on <code>field.plan</code> includes the <code>fieldParameters</code> that the prototype plan will need.
+The <code>field.plot</code> function does command line processing to select plots and handles error conditions raised by the <i>field operation</i> it calls for each plot (step 3). The back and forth continues as the <i>field operation</i> for the plot calls <code>field.plan</code> above (step 4) to fill in the plan for the prototype plan (for example, <code>plans/quarry.lua</code>) specified by the operation (for example, <code>"quarry"</code>). The <i>field operation</i> call on <code>field.plan</code> includes the <code>fieldParameters</code> that the prototype plan will need.
 <pre><code class="language-lua">
 
 local function home(xyz, result)

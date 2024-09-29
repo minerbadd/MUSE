@@ -157,7 +157,7 @@ function field.plan(planName, fielding, offset) -- `fieldsOp` calls `field.plan`
   if not moveOK then core.status(2, "field", "plan move.to", moveReport); return moveReport end
   local planFile = _G.Muse.path.."plans/"..planName..".lua"; 
   local planFunction = assert(loadfile(planFile), "field.plan: "..planFile.." failed") -- TODO: cache?
-  local plans, yDelta = planFunction(fielding) -- prototype plan file calls `field.paths`
+  local plans, yDelta = planFunction(fielding) -- **prototype plan file** calls `field.paths`
   local levels = math.abs(yDelta) + 1; core.status(4, "field", "starting", planName, levels, "levels")
   turtle.block(turtle.blocking())-- block in next operation if blocking enabled for out-game test
   return _field.execute(plans, levels, fielding, planName)
@@ -165,7 +165,7 @@ end
 --[[
 ```
 <a id="plot"></a> 
-The `field.plot` function does command line processing to select plots and handles error conditions raised by the _field operation_ it calls for each plot (step 3). The back and forth continues as the _field operation_ for the plot calls `field.plan` (step 4) to fill in the plan for the prototype plan (for example, `plans/quarry.lua`) specified by the operation (for example, `"quarry"`). The _field operation_ call on `field.plan` includes the `fieldParameters` that the prototype plan will need.
+The `field.plot` function does command line processing to select plots and handles error conditions raised by the _field operation_ it calls for each plot (step 3). The back and forth continues as the _field operation_ for the plot calls `field.plan` above (step 4) to fill in the plan for the prototype plan (for example, `plans/quarry.lua`) specified by the operation (for example, `"quarry"`). The _field operation_ call on `field.plan` includes the `fieldParameters` that the prototype plan will need.
 ```Lua
 --]]
 
