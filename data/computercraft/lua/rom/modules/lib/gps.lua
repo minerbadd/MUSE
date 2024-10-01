@@ -7,7 +7,7 @@
 The module introduction here is much like that for other MUSE modules but note the special handling for out-of-game testing.
 ```Lua
 --]]
-local _gps, gps = {}, {}; gps.hints = {} ---@module "signs.gps"-- for functions internal and exported from library 
+local gps, _gps = {}, {}; gps.hints = {} ---@module "signs.gps"-- exports, internal for analysis, and hints
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"

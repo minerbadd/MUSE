@@ -7,7 +7,7 @@
 <a id="introduction"></a> 
 ```Lua
 --]]
-local _mine, mine = {}, {}; mine.hints = {} ---@module "signs.mine" -- for functions local to and exported from library
+local mine, _mine = {}, {}; mine.hints = {} ---@module "signs.mine" -- exports, internal for analysis
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"

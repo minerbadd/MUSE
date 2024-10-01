@@ -35,18 +35,19 @@ function field.extents() end
 ---@type fun(parameters: [string, string, string, string?]):  string 
 function field.fill() end
 
--- Called by plan prototype file to generate plans for plot.
--- field.paths(bounds: xyz[]):  `paths, yDelta: #:, xzEdge: facing` <-
----@type fun(bounds: xyz[]):  paths,  yDelta: number,  xzEdge: facing 
-function field.paths() end
+-- field.plotSpan: _ :`[_:, _:, first: #:?, last: #:??]`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias field.plotSpan [any, any, number?, number?] # {}` spans all plots; if only first, default plots after first
+
 
 -- paths:  `{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}`
 ---@alias paths {start: string[],  odd: string[],  even: string[],  last: string[]} # Flying ox traverse of three dimensional rectangular solid
 
 
--- strides:  `[fieldOp]: #:`
----@alias strides {[fieldOp]: number} # dictionary keyed by `opName` for the distance along the stride axis for a striding
-
+-- Plots Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`).
+-- field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?):  `report: ":" &: &!` <-
+---@type fun(commands: field.plotSpan,  fieldsOp: function,  fieldOpName: string,  plots: number,  offset: xyz?):  report: string 
+function field.plot() end
 
 -- craft:  `":"`
 ---@alias craft  string # Minecraft item `detail.name` without `minecraft:` prefix
@@ -56,15 +57,14 @@ function field.paths() end
 ---@alias eP [xyz, xyz] # pair of coordinates for extents
 
 
--- Run plan, default offset {0,0,0}. Loads and executes the prototype plan (which calls `field.paths`) for each (odd, even, or last) level of a plot.
--- field.plan(planName: ":", fielding: fieldParameters, offset: xyz?):  `report: ":" &: &!` <-
----@type fun(planName: string,  fielding: fieldParameters,  offset: xyz?):  report: string 
-function field.plan() end
+-- strides:  `[fieldOp]: #:`
+---@alias strides {[fieldOp]: number} # dictionary keyed by `opName` for the distance along the stride axis for a striding
 
--- field.plotSpan: _ :`[_:, _:, first: #:?, last: #:??]`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias field.plotSpan [any, any, number?, number?] # {}` spans all plots; if only first, default plots after first
 
+-- Called by plan prototype file to generate plans for plot.
+-- field.paths(bounds: xyz[]):  `paths, yDelta: #:, xzEdge: facing` <-
+---@type fun(bounds: xyz[]):  paths,  yDelta: number,  xzEdge: facing 
+function field.paths() end
 
 -- Quarry out blocks from one place to the other.
 -- field.cut(places: :[nearPlace: ":", farPlace: ":"]):  `":" &:` <-
@@ -89,10 +89,10 @@ function field.make() end
 ---@type fun(parameters: [string, string, string]):  string 
 function field.till() end
 
--- Plots Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`).
--- field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?):  `report: ":" &: &!` <-
----@type fun(commands: field.plotSpan,  fieldsOp: function,  fieldOpName: string,  plots: number,  offset: xyz?):  report: string 
-function field.plot() end
+-- Run plan, default offset {0,0,0}. Loads and executes the prototype plan (which calls `field.paths`) for each (odd, even, or last) level of a plot.
+-- field.plan(planName: ":", fielding: fieldParameters, offset: xyz?):  `report: ":" &: &!` <-
+---@type fun(planName: string,  fielding: fieldParameters,  offset: xyz?):  report: string 
+function field.plan() end
 
 -- field.count:  `[fieldOp]: #:`
 ---@diagnostic disable-next-line: duplicate-doc-alias

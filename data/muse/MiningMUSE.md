@@ -325,18 +325,18 @@ The next chapter takes the declarative idea to another level. Sometimes rather t
 
 <IMG SRC="drawings/07Fields.png"/>
 
-The MUSE framework built around `lib/field` supports work on a `field` as defined by a three dimensional rectangular `bounds`. Each of the files in the `fields` directory is, as you might guess, a _field file_. Each includes declarative representations of what is to be done in their `field`. One idea they have in common is the idea of a `plot`. Primarily to deal with the limitations of turtle inventory, plots break the field into pieces that can be dealt with separately. Another thing they have in common is participation in a control framework orchestrated by `lib/field`.
+The MUSE framework built around `lib/field` supports work on a `field` as defined by a three dimensional rectangular `bounds`. Each of the files in the `fields` directory is, as you might guess, a _field file_. Each includes declarative representations of what is to be done in their _field_. One idea they have in common is the idea of a `plot`. Primarily to deal with the limitations of turtle inventory, plots break the field into pieces that can be dealt with separately. Another thing they have in common is participation in a control framework orchestrated by `lib/field`.
 
 As we'll see, there is a complicated flow of control split between `lib/field` and its clients. This complexity opens up many unfortunate opportunities for <a href="https://en.wikipedia.org/wiki/Software_rot" target="_blank"> _bit rot_</a>. So whether to create a framework is a design decision to consider carefully. Sometimes though, it's the right way. And sometimes somebody else has made that decision for you. The blow-by-blow flow documented below is intended as something you can keep in mind in the event that you are confronted by that somebody else's framework or can't resist creating one of your own.
 
 For MUSE, the hoped  for compensating benefit from this complicated flow of control is the ability to use the framework to readily define the _what_ for the work to be done on a wide variety of `fields` because the framework:
 
-- leaves the three dimensional `bounds` geometry of plots in the control of the `field`
-- while generating an fuel efficient `path` through all the blocks in that geometry;
-- supporting whatever suite of operations on the field is established by a set of `field files`; and
-- allowing specification of any `plan` to do the work for the field along the path.
+- leaves the three dimensional `bounds` geometry of plots in the control of the _field_
+- while generating an fuel efficient _path_ through all the blocks in that geometry;
+- supporting whatever suite of operations on the field is established by a set of _field files_; and
+- allowing specification of any _plan_ to do the work for the field along the path.
 
-It's not like what we saw in `lib/mine` which knew (in grim detail) all about going down shafts and back up shafts to get to bores which could be used to mine ores. Here `lib/field` doesn't presume much at all about what's to be done in a `field`. It's just there to (efficiently) conduct the score that it's given. Here's how:
+It's not like what we saw in `lib/mine` which knew (in grim detail) all about going down shafts and back up shafts to get to bores which could be used to mine ores. Here `lib/field` doesn't presume much at all about what's to be done in a _field_. It's just there to (efficiently) conduct the score that it's given. Here's how:
 
 <IMG SRC="drawings/07FrameCalls.png"/>
 
@@ -346,13 +346,11 @@ That score is constrained by `lib/field` to fit into a specific set of steps to 
 
 - Which is used to call <a href="code/lib/field.html#plot" target="_blank"> `field.plot`</a> (step 2) with its expected arguments. 
 
-- Those expected arguments include an operation function, &Oopf;<b>&Popf;</b>, associated with the command we were looking to execute. The framework calls that function, `fieldsOp`, in `field.plot` (step 3). 
+- Those expected arguments include an operation function, &Oopf;<b>&Popf;</b>, associated with the command we were looking to execute. The framework calls that function, `fieldsOp`, in <a href="code/lib/field.html#plot" target="_blank"> `field.plot`</a> (step 3). 
 
-- That function produces the arguments for the call to <a href="code/lib/field.html#plan" target="_blank"> `field.plan`</a> (step 4). The arguments include the name of the plan (prototype) file for the operation. 
+- That function produces the arguments for the call to `field.plan` (step 4). The arguments include the name of the plan (prototype) file for the operation. 
 
-The music continues when `field.plan` 
-
-- Loads that file (step 5) from the `plans` directory to produce and call the plan function, <b>&Popf;</b>.
+- The music continues when <a href="code/lib/field.html#plan" target="_blank">`field.plan`</a> loads that file (step 5) from the `plans` directory to produce and call the plan function, <b>&Popf;</b>.
 
 - The plan function, <b>&Popf;</b> given the game coordinate bounds of the field, calls <a href="code/lib/field.html#paths" target="_blank"> `field.paths` </a>, a utility not shown. This generates an fuel efficient set of paths (in a surprisingly involved computation). It provides these for the framework (step 6) along with the work function for each path. 
 
@@ -362,7 +360,7 @@ There's a `lib/field` utility function, <a href="code/lib/field.html#extents" ta
 
 Making a farm involves a lot of work both out there in reality and here in a game. The land needs to be levelled, the soil prepared, and crops planted. Finally, with the farm established, it can be harvested and, perhaps, new seeds planted for the next harvest. Each of these stages coresponds to each of the the _field operations_ defined for a `farm`.
 
-Continuing the flog of our orchestration analogy, the field operations are the movements of the music orchestrated by the set of MUSE _field files_. For a `farm` they are: `quarry`, `layer`, `cover`, `finish`, `harvest`, and `path`. They're documented in the `lib/farm` library of work functions. All are exposed as remote field operations for the `farmer` and the `logger` as calls to `field.make` by `lib/net`. Nothing in the framework itself imposes these as movements for field operation. They're just what's established by a set of field files.
+Flogging our orchestration analogy yet more, the field operations are the movements of the music orchestrated by the set of MUSE _field files_. For a `farm` they are: `quarry`, `layer`, `cover`, `finish`, `harvest`, and `path`. They're documented in the `lib/farm` library of work functions. All are exposed as remote field operations for the `farmer` and the `logger` as calls to `field.make` by `lib/net`. Nothing in the framework itself imposes these as movements for field operation. They're just what's established by a set of field files.
 
 <a href="code/fields/cane.html" target="_blank"><IMG SRC="drawings/07Tree.jpg" ALIGN="left" hspace ="10"/></a>With this overview as context, we'll explore the `field` framework by looking at some field files (for steps 2 and 4) and _plan prototype_ files (for step 6) to make this abstraction concrete. 
 
@@ -372,9 +370,9 @@ _(There's a field operation we haven't mentioned previously, `test`. It's simply
 
 All these field operations are pretty simple functions as you can see. They are specified as functions since it didn't seem worthwhile to define a declarative language just for this purpose. 
 
-A _plan prototype_ is like the _plan_ files we looked when exploring mines. Except that all its bounds geometry is provided by parameters supplied by `lib/fields` and all its path geometry is provided by its call to `fields.paths` and `field.extents` back in `lib/fields`. So it's quite simple. That's the point really.
+A _plan prototype_ is like the _plan_ files we looked when exploring mines. Except that all its bounds geometry is provided by parameters supplied by `lib/fields` and all its path geometry is provided by its call to <a href="code/lib/field.html#paths" target="_blank">`field.paths`</a> and <a href="code/lib/field.html#extents" target="_blank">`field.extents`</a> back in `lib/fields`. So it's quite simple. That's the point really.
 
-Loading a _plan prototype_ with the bounds parameters from `lib/fields` generates that _plan function_, <b>&Popf;</b> we spoke of <a href="drawings/07Paths.pdf" target="_blank"><IMG SRC="drawings/07Paths.png" ALIGN="left" hspace="10" vspace="17"/></a>. It calls <a href="code/lib/field.html#paths" target="_blank"> `field.paths` </a> and <a href="code/lib/field.html#rxtents" target="_blank"> `field.extents` </a>to generate a set of efficient paths to work on the volume of a plot. The path generator produces flying <a href="https://www.ri.cmu.edu/pub_files/pub4/choset_howie_1997_3/choset_howie_1997_3.pdf" target="_blank"> ox plow</a> paths through the given three dimensional rectangular bound. Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions. That's the only hard part. It's in `lib/fields`. Together with the resulting (admittedly, relative) simplicity and generality of _field files_ and _plan prototypes_, it's sort of the payoff for getting involved with the framework. 
+Loading a _plan prototype_ with the bounds parameters from <a href="code/lib/field.html#plan" target="_blank">`lib/field`</a> generates that _plan function_, <b>&Popf;</b> we spoke of <a href="drawings/07Paths.pdf" target="_blank"><IMG SRC="drawings/07Paths.png" ALIGN="left" hspace="10" vspace="17"/></a>. It calls <a href="code/lib/field.html#paths" target="_blank"> `field.paths` </a> and <a href="code/lib/field.html#extents" target="_blank"> `field.extents` </a>to generate a set of efficient paths to work on the volume of a plot. The path generator produces flying <a href="https://www.ri.cmu.edu/pub_files/pub4/choset_howie_1997_3/choset_howie_1997_3.pdf" target="_blank"> ox plow</a> paths through the given three dimensional rectangular bound. Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions. That's the only hard part. It's in <a href="code/lib/field.html#paths" target="_blank">`lib/fields`. Together with the resulting (relative) simplicity and generality of _field files_ and _plan prototypes_, it's what we get for getting involved with the framework. 
 
 There's not much there there in plan prototypes. Look, for example, at the prototype <a href="code/plans/cane.html" target="_blank"> plans/cane</a> file for <a href="code/fields/cane.html" target="_blank"> fields/cane</a>. 
 
@@ -392,13 +390,13 @@ Generating and using this framework involved us in what's been called a <a href=
 
 The field parts geometry and a set of appropriate _field operations_ is established by `fields` files. They don't concern themselves with doing the actual work of farming or how to efficiently traverse the plots of fields. The set does create a common protocol for farm operations exposed by `lib/net`. This is the user interface for farming.
 
-Given all this, the actual work to be done is determined by `plans`. Because the plans don't concern themselves with geometry, they can be reused by several `fields` as appropriate. 
+Given all this, the actual work to be done is determined by `plans`. Because the plans don't concern themselves with geometry, they can be reused by `fields` as appropriate. 
 
 Some common operations for the work specified by `plans` is provided by `lib/farms`. They too have a narrow focus on some specifics of how to do particular tasks. 
 
 Each piece of this puzzle has a distinct collection of concerns and exposes just the abstractions that the other pieces need. The benefits are reuse of the pieces and focussed maintenance on just the piece needing revision.
 
-<a href="drawings/07ModelFarm.pdf" target="_blank"> <IMG SRC="drawings/07ModelFarm.png" ALIGN="left" hspace="10"/></a>With this in mind, there's a final level of abstraction we'll explore. We mentioned `charts` back when we explored `lib/map`. They're used here to setup the related fields of a farm in a common geometry. This is laid out, for example in <a href="code/charts/farm40.html" target="_blank"> `charts/farm40`</a>. In the example, for each of the related fields, `farm40.lua` creates a _range_. Each range is offset from a common `corner` _reference point_ of the farm, the _farm name_,  supplied by the user.  The `fields` _feature_ of this reference point is a dictionary. If a key in this dictionary is the _field name_ of the farm, the value associated with such a key is the name of a _range_. The `features.fields` of this range, in turn, is the name of a `field file` (like `crop`, `cane`, `tree`, and an animal `pen`) for the kind of field you might find on a farm (or at least a Minecraft farm). 
+<a href="drawings/07ModelFarm.pdf" target="_blank"> <IMG SRC="drawings/07ModelFarm.png" ALIGN="left" hspace="10"/></a>With this in mind, there's a final level of abstraction we'll explore. We mentioned `charts` back when we explored `lib/map`. They're used here to setup the related fields of a farm in a common geometry. This is laid out, for example in <a href="code/charts/farm40.html" target="_blank"> `charts/farm40`</a>. In the example, for each of the related fields, `farm40.lua` creates a _range_. Each range is offset from a common `corner` _reference point_ of the farm, the _farm name_,  supplied by the user.  The `fields` _feature_ of this reference point is a dictionary. If a key in this dictionary is the _field name_ of the farm, the value associated with such a key is the name of a _range_. The `features.fields` of this range, in turn, is the name of a `field file` (like `crop`, `cane`, `tree`, and an animal `pen`) for the kind of field you might find on a farm (or at least a Minecraft farm). The `features` design idea developed back in <a href="code/lib/map.html#get" target="_blank"> `lib/map`</a> let's us extend what's in a `range` and get all the support of a `range` without changing anything in `lib/map`.
 
 As we've discussed, the `field.make` function kicks off a _field operation_. It expects either the name of a _range_ or a _ranged field_. This latter is a string including the name of a _reference point_ (like the farm name `corner` above) and the _field name_ of a field associated with that reference point (separated by a colon). Together they specify a range for a field. As described above, the `field` feature of this range is a dictionary whose keys are names of field files. The work for a _field operation_ is found in that field file.
 

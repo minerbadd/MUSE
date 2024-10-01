@@ -14,7 +14,7 @@
 </code></pre>
 The <code>task</code> library uses the <code>direction</code> table abstractions built by <code>lib/turtle</code> to provide the new and improved turtle. It supports a few tasks, like <code>dig</code>, done while in motion. Those use the <code>step</code> closures of motion last seen in <code>lib/motion</code>. For motions along trails, it folds and xyz change into a scalar direction for the change. Finally, it uses the same implementation pattern for CLI support as other CLLs. 
 <pre><code class="language-lua">
-local task, _task = {}, {}; task.hints =  {} ---@module "signs.task" -- internal and exported library functions and CLI hints
+local task, _task = {}, {}; task.hints =  {} ---@module "signs.task" -- exports, internal for analysis, CLI hints
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"

@@ -2,13 +2,22 @@
 --:| field: _Fields are rectangular solids defined by a range (a `situation` pair with `fields` keyed properties)._ -> field, _field    
 --:+ _Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations._  
 
---:# **Path generator: flying ox plow paths through given three dimensional rectangular bounds.**    
---:+ _Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions._  
+--:# **Execution train runs from `field.make` to `field.plot` to `field.plan` to execute the plan**  
 
---:: field.paths(bounds: xyz[]) -> _Called by plan prototype file to generate plans for plot._ -> `paths, yDelta: #:, xzEdge: facing`  
+--:: field.make(commands: fieldCommands, faced: ^:) -> _Load field files; return their `field.plot` calls_ -> `report: ":" &:`  
 
---:> paths: __Flying ox traverse of three dimensional rectangular solid_ -> `{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}`    
---:+ _Returns paths, vertical traverse (`yDelta: #:`), and orientation of longest horizontal edge for bounded block._  
+--:> fieldCommands: _For CLI_ -> :`[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`    
+--:+ _The second entry, `ranger` in `fieldCommands` is a string which may simply be a name for a `range`, (a kind of `place`)._    
+--:+ _If so, the range name gets the range's features dictionary and the field file name to load (keyed as `features.fields`)._    
+--:+ _It could also be a string specifying the name of a farm and a farm field name in that farm (separated by a colon)._    
+--:+ _If so, the farm name specifies the farm's `range` and so the farm range's features dictionary._    
+--:+ _The `fields` entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name._    
+--:+ _With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified._  
+
+--:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> _Plots_ -> `report: ":" &: &!`    
+--:+ _Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`)._  
+
+--:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ :`[_:, _:, first: #:?, last: #:??]`  
 
 --:: field.plan(planName: ":", fielding: fieldParameters, offset: xyz?) -> _Run plan, default offset {0,0,0}._ -> `report: ":" &: &!`    
 --:+ _Loads and executes the prototype plan (which calls `field.paths`) for each (odd, even, or last) level of a plot._  
@@ -20,11 +29,6 @@
 --:> fieldParameters.removeables: _Material replaced by fill_ -> `group|craft[]`  
 
 --:> craft: _Minecraft item `detail.name` without `minecraft:` prefix_ -> `":"`  
-
---:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> _Plots_ -> `report: ":" &: &!`    
---:+ _Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`)._  
-
---:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ :`[_:, _:, first: #:?, last: #:??]`  
 
 --:: field.extents(:bounds:, :strides:, faced: ":"?) -> _Plots placed_ -> `field.count, field.count , eP, eP, striding, ^:, ^:`    
 --:+ Returns `nplots:[fieldOp #:}, slots:[fieldOp]: #:}, strides: eP, run: eP, striding, turn: ^:, back: ^:`    
@@ -40,19 +44,15 @@
 
 --:> fieldOp: _Operation name in the set for a particular kind of field_ -> ":"  
 
---:# **Execution train runs from `field.make` to `field.plot` to `field.plan` to execute the plan**  
+--:# **Path generator: flying ox plow paths through given three dimensional rectangular bounds.**    
+--:+ _Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions._  
 
---:: field.make(commands: fieldCommands, faced: ^:) -> _Load field files; return their `field.plot` calls_ -> `report: ":" &:`  
+--:: field.paths(bounds: xyz[]) -> _Called by plan prototype file to generate plans for plot._ -> `paths, yDelta: #:, xzEdge: facing`  
 
---:> fieldCommands: _For CLI_ -> :`[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`    
---:+ _The second entry, `ranger` in `fieldCommands` is a string which may simply be a name for a `range`, (a kind of `place`)._    
---:+ _If so, the range name gets the range's features dictionary and the field file name to load (keyed as `features.fields`)._    
---:+ _It could also be a string specifying the name of a farm and a farm field name in that farm (separated by a colon)._    
---:+ _If so, the farm name specifies the farm's `range` and so the farm range's features dictionary._    
---:+ _The `fields` entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name._    
---:+ _With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified._  
+--:> paths: __Flying ox traverse of three dimensional rectangular solid_ -> `{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}`    
+--:+ _Returns paths, vertical traverse (`yDelta: #:`), and orientation of longest horizontal edge for bounded block._  
 
---:# **Cut, fill, till, and traverse points defining rectangular volumes** using `field.plan`  
+--:# **Cut, fill, till, and traverse points defining rectangular volumes** using `field.plan` to optimize traversal.  
 
 --:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`  
 

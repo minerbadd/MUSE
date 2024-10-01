@@ -13,7 +13,7 @@ At the dance waiting to be asked, all but the player's pocket computer (and the 
 We'll get to more about the dancing in a bit but first, the expected library introduction. Loading `lib/net` generates a dispatch table with references to the libraries that actually do the work of the remote call. 
   ```Lua
 --]]
-local _remote, remote = {}, {} ---@module "signs.remote" -- for functions that are internal and exported from library
+local remote, _remote = {}, {} ---@module "signs.remote" -- exports, internal for analysis
 
 package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
