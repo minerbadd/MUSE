@@ -206,7 +206,7 @@ function field.extents(bounds, strides, faced)
 --:+ _Extents for `stride` (shorter) and `run` (longer) virtual axes for each `opName` in the `strides` entries unless `faced`._
 --:> field.count: _dictionary keyed by 'opName` for number of elements in field for that operation_ -> `[fieldOp]: #:`
 --:> strides: _dictionary keyed by `opName` for the distance along the stride axis for a striding_ -> `[fieldOp]: #:`
---:> striding: _dictionary keyed by `opName` of vectors incrementing game coordinate positions_ -> `[fieldOp]: xyz`
+--:> striding: _dictionary keyed by `opName` of vectors incrementing game coordinate positions for `turn`_ -> `[fieldOp]: xyz`
 --:> eP: _pair of coordinates for extents_  -> `:[xyz, xyz]`
 --:> fieldOp: _Operation name in the set for a particular kind of field_ -> ":"
 

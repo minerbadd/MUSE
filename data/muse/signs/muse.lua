@@ -2117,7 +2117,7 @@ Plans for runs at even and odd numbered levels.",
   ["returns"] = " `[fieldOp]: xyz`",
   ["name"] = "striding",
   ["description"] = "\
-dictionary keyed by `opName` of vectors incrementing game coordinate positions",
+dictionary keyed by `opName` of vectors incrementing game coordinate positions for `turn",
 }
 ,
   [":fieldParameters.fills"] = {

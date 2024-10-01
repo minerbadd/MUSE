@@ -13,7 +13,7 @@ function field.extents() end
 
 
 -- striding:  `[fieldOp]: xyz`
----@alias striding {[fieldOp]: xyz} # dictionary keyed by `opName` of vectors incrementing game coordinate positions
+---@alias striding {[fieldOp]: xyz} # dictionary keyed by `opName` of vectors incrementing game coordinate positions for `turn
 
 
 -- fieldParameters.fills:  `group|craft[]`

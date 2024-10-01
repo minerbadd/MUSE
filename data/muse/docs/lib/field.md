@@ -34,7 +34,7 @@
 
 --:> strides: _dictionary keyed by `opName` for the distance along the stride axis for a striding_ -> `[fieldOp]: #:`  
 
---:> striding: _dictionary keyed by `opName` of vectors incrementing game coordinate positions_ -> `[fieldOp]: xyz`  
+--:> striding: _dictionary keyed by `opName` of vectors incrementing game coordinate positions for `turn`_ -> `[fieldOp]: xyz`  
 
 --:> eP: _pair of coordinates for extents_  -> `:[xyz, xyz]`  
 

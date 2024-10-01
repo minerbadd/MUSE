@@ -2,5 +2,4 @@
 --:+ _Loaded by `field.make` with operation name, span of plots for the operation, and field bounds._    
 --:+ **Supported operations are `quarry`, `layer`, `cover`, `finish`, `harvest`, `path`, and `test`**    
 --:+ _Calls `field.plot` with specified plot span, field operation function, and total number of field plots for operation._    
---:+ _Operation functions call `field.plan` with plot bounds, xyz offset, and prototype plan for the operation._    
---:+ _Cane fields are built on fields prepared for crops by `fields/cane.lua`._  
+--:+ _Operation functions call `field.plan` with plot bounds, xyz offset, and prototype plan for the operation._  
