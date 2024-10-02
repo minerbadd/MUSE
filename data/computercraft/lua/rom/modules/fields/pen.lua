@@ -32,8 +32,8 @@ local fences = (runFences * vLength) + (2 * penWidth) + (2 * (vWidth - 2))
 core.status(2, "pens", slots.quarry, "slots each plot", fences, "fences")
 --[[
 ```
-<a id="plots"><IMG SRC="../../drawings/07Pens.png" ALIGN="center" hspace="10"/>
 The field is parcelled into `plots` appropriate to each _field operation_. Each `plot` is generated referencing the virtual `stride` and  `run` axes. If there is no `turn` property, `orient` performs no transform.  The `stride` axis is then simply west to east in game coordinates and operations will `run` along north to south game coordinates.
+<a id="plots"><IMG SRC="../../drawings/07Pens.png" ALIGN="center" hspace="10"/>
 
 ```Lua
 --]]

@@ -28,7 +28,7 @@ core.status(2, "cane", slots, "slots each plot")
 <a id="plots"><IMG SRC="../../drawings/07Cane.png" ALIGN="right" hspace="10" /></a> 
 The field is parcelled into `plots` appropriate to each _field operation_. Each `plot` is generated referencing the virtual `stride` and  `run` axes. If there is no `turn` property, `orient` performs no transform. The `stride` axis is then simply west to east in game coordinates and operations will `run` along north to south game coordinates.
 
-The `plots` are defined so that `quarry` operates on the entire three block wide `slice` from `vW` through `vW+2` to let water into the `bottom` level of field. The dirt `layer` is at that same level but only on a two block wide part of the slice from `vW` through `vW+1`. The sand `cover` is one level up from the bottom on the same part of the slice. Cane is planted one level above that to `finish` the field. Finally, to `harvest` operations are done for kelp `offset :0, 1, 0}` and at the top of mature cane, `offset {0, 4, 0}`.
+The `plots` are defined so that `quarry` operates on the entire three block wide `slice` from `vW` through `vW+2` to let water into the `bottom` level of field. The dirt `layer` is at that same level but only on a two block wide part of the slice from `vW` through `vW+1`. The sand `cover` is one level up from the bottom on the same part of the slice. Cane is planted one level above that to `finish` the field. Finally, to `harvest` operations are done for kelp `offset {0, 1, 0}` and at the top of mature cane, `offset {0, 4, 0}`.
 ```Lua
 --]]
 local first = orient { {vW, bottom - 1, vN}, {vW, top, vS} } -- for kelp; runs north - south on virtual west bound for water

@@ -141,6 +141,7 @@ net["fence"] = field.fence; as["fence "] = field.hints["fence"]  --:= fence:
 
 --:# **Remote Farm Operations** (where a range feature value is a `fieldName` keyed by `field`, a string literal).
 --:+ _A `fieldName` is a file name without its suffix, e.g. `cane` rather than `cane.lua`, in the `fields` directory._
+-- <a id="farm">
 net["farm"] = field.make; as["farm "] = farm.hints["farm"] --:= farm:
 net["quarry"] = op(field.make, "quarry"); as["quarry "] = farm.hints["quarry"] --:= quarry:
 net["layer"] = op(field.make, "layer"); as["layer "] = farm.hints["layer"]  --:= layer:
