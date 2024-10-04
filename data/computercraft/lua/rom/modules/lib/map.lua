@@ -546,5 +546,5 @@ Players can use
 
 Follow the links just provided to see their (fairly trivial and boringly similar) implementations. It's easy to fiddle with this layer. That's good because experience with a UI usually suggests changes to it.
 
-That's it for `lib/map`. Follow the <a href="../../MiningMUSE.html#Chapter4"> link</a> to return to _MiningMUSE_.
+That's it for `lib/map`. Follow the <a href="../../MiningMUSE.html#Chapter5"> link</a> to return to _MiningMUSE_.
 --]]

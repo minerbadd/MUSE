@@ -6,7 +6,7 @@ MUSE is a collection of resources built on the <a href="https://tweaked.cc/" tar
 
 Looking about in MUSE, as we'll do here, is a different kind of exploration. It is the exploration into how to develop clean, maintainable code intended for those worlds (as a start). <IMG SRC="drawings/00Compost.png" hspace ="10" ALIGN="right"/> Avoiding a mess might not be too easy. The hope is making it easier to avoid so it's less likely to happen.
 
-But why would you want to do that? Because, even if you're working all on your own, looking at what you wrought in fevered moments not so long past, you just know deep down that it was some visitor from another planet who wrote the tangled mess you're facing. And, of course, in the real world, code development is generally something done with others, sometimes a lot of others. It's good to play well with those others.
+But why would you want to do that? Because, even if you're working all on your own, looking at what you wrought in fevered moments not long past, you just know deep down that it was some visitor from another planet who wrote the tangled mess you're facing. And, of course, in the real world, code development is generally something done with others, sometimes a lot of others. It's good to play well with those others.
 
 ## Chapter 1 - Exploring Why, What, What Not, and How
 <br/>
@@ -54,21 +54,74 @@ The two libraries we'll explore in this chapter are foundational in two ways. As
 With that understanding, it's time to climb about in that tree we spoke of. Try clicking the following link to explore the implementation of the <a href="code/lib/motion.html" target="_blank"> `lib/motion` </a> module. Then look at <a href="code/lib/places.html" target="_blank"> `lib/places`</a>,  its companion. <a href="code/lib/motion.html" target="_blank"><IMG SRC="drawings/01Tree.png" hspace ="10" ALIGN="left"/> </a>Explore the structure of the libraries in these modules, the issues they raise in dealing cleanly with state, and some of the ways to use Lua functions to structure code. The exported interfaces for <a href="docs/lib/motion.html" target="_blank"> `lib/motion` 
 </a> and <a href="docs/lib/places.html" target="_blank"> `lib/places` </a> might help you to see where you've been climbing. (Just to start out, it might be better to just scan summaries for now. They'll mean more to you after spending some time on implementations.)
 
-These libraries rely on <a href="docs/lib/core.html" target="_blank"> `lib/core`</a>, a collection, as you might expect, of generally useful (core) functions. Look at the exported interfaces for that library. We'll discuss the implementations of these functions as needed.
+These libraries rely on `lib/core`, a collection, as you might expect, of generally useful (core) functions. For now, just look at the exported <a href="docs/lib/core.html" target="_blank">interfaces</a> for that library. We'll discuss the implementations of these functions as needed.
 
-When that's done come back here to explore how to establish state that persists across <a href="https://en.wikipedia.org/wiki/Session_(computer_science)" target="_blank"> _sessions_</a>, how to deal with state distributed over a network, how error handling works in network environments, and how to build a simple and easily maintainable command line user interface.
-<br/>
-<a id="Chapter3"></a>
-## Chapter 3 - Places: Persistence, Distributed State, Remote Errors, Thinning the CLI  
-This chapter is less about how to write code in general. We've just got finished flogging that particular horse. This chapter (and pretty much all that follow) is more about how to approach a design and <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank"> <IMG SRC="drawings/03CLI.png" ALIGN="right" vspace = "10" hspace ="10"/> </a> how to provide some important mechanisms dealing with networked computers. They're the ones that you may need to design (or understand how someone else did). It also deals with how to design some more maintainable user control facilities that are based on a <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank">  _Command Line Interface_  </a>(CLI). 
+When you're ready, let's press on to the next chapter where there'll be ideas about what to expose and what to hide in a design and how to build a simple and easily maintainable command line user interface.
+
+<a id="Chapter3"></a> 
+## Chapter 3 - Choosing Abstractions, Tables That Make Functions, Commands Keeping Thin
+<a href="https://en.wikipedia.org/wiki/Information_hiding#:~:text=In%20computer%20science%2C%20information%20hiding,the%20design%20decision%20is%20changed." target="_blank"> _Information hiding_  </a>is an important part of what a library does. The choice of what to expose as an interface is the choice of what to hide. One aspect of choosing what (detail) to hide is choosing the abstractions to create. Exposing the wrong detail gets in the way of delivering an evolving yet maintainable system. Thus, the task of design is often about exposing the right abstractions. 
+
+For MUSE, some abstractions are obvious. They closely relate to what's in the game, our _problem domain_, and have fairly intuitive expression in the _solution domain_ that we're <a href="https://shahworld.wordpress.com/2015/09/22/what-is-problem-domain-and-solution-domain/" target="_blank"> building</a>. For changes in the position and orientation of a turtle, the right abstractions might expose interfaces for movement in the four cardinal directions ("north", "south", "east", and "west") rather than relative directions ("right" and "left"). The <a href="docs/lib/motion.html" target="_blank"> `lib/motion` </a> library exposed these abstractions for movement. 
+
+</a><IMG SRC="drawings/03Compass.png" ALIGN="right" hspace ="10"/>
+
+The `lib/turtle` library extends this abstraction consistently with the other interesting things turtles can be made to do. The consistency itself helps in maintenance. As we said, ComputerCraft's primitives deal with turns "right" and "left". They deal separately with those other things turtles can do in terms of "forward", "up", and "down".  A useful set of abstractions would be to hide all this detail and expose turtle interfaces uniformly in terms of six directions: the four cardinal and the two vertical directions (while still allowing `forward`). <a href="code/lib/turtle.html" target="_blank"> <IMG SRC="drawings/03Tree.jpg" hspace ="10" ALIGN="left"/> </a>
+
+There's a pretty long list of turtle operations that would need fitting into this abstraction. The fitting is so repetitive that it lends itself to representation as a table. There's a couple of maker functions executed when `lib/turtle` is loaded. They make the functions that `lib/turtle` exports. Each of those exported turtle operation functions is then exposed as a table indexed by `direction`. 
+
+Functions making tables is the _dog bites man_ story. With a little license, this is the  _tables make functions_ story. It's a small step toward a <a href="https://en.wikipedia.org/wiki/Declarative_programming" target="_blank"> declarative programming </a>style. Larger ones to follow. For now, look at the `lib/turtle` <a href="code/lib/turtle.html" target="_blank"> implementation </a> to see how to have yet more fun with functions. 
+
+Another detail needing abstracting is the notion of what's in which `slot` of a turtle's  <a href="code/lib/turtle.html#inventory" target="_blank"> inventory</a>. What's where exactly is something worth hiding. What we generally just want to know is whether the turtle's `inventory` includes certain items. Or better, whether it includes certain kinds, `categories`, of items.  These might be, for example,  `fuels`, `stones`, or `ores`. You might want to know about whether a turtle's got stones but not care what kind exactly. A category could be items useful as `fills` or the kinds of `dirt`. We might be more interested in the total fuel energy available to a turtle rather than any specific kind of fuel.
+
+Finally, `lib/turtle` also abstracts <a href="code/lib/turtle.html#unblock" target="_blank"> dealing with some of the difficulties </a> turtles face when attempting to move to a position. Hiding the detail of dealing with obstacles presents a simpler notion of movement. 
+
+With all these changes, `lib/turtle` has superseded the ComputerCraft definition of a turtle. Behold, all turtles are made new. (At least if you load `lib/turtle`.) There are two clients of the born again turtle that we'll discuss  next: `lib/roam` and `lib/task`. First `lib/roam`.
+
+<a id="roam"/>
+
+The `lib/roam` <a href="code/lib/roam.html" target="_blank"> library </a> provides yet more movement extensions for our turtles: 
+
+- _**try again strategies**_ controlled by a `.start` parameter to look for ways around blockages, 
+  
+- _**going to a `place`**_ (as well as specified xyz coordinates)
+  
+- _**turtle side support**_ for following the `player` around (as befits, say, a squire turtle), and
+  
+- _**a very tiny language**_ to chain together commands to move a turtle piecewise in all those abstracted directions, 
+  
+All this is done using both the abstractions of `lib/turtle` and the primitives of `lib/motion`. The library also shows a way to design a more maintainable <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank">  _Command Line Interface_  </a>(CLI) based user control facility.
+<a href="code/lib/roam.html" target="_blank"> <IMG SRC="drawings/03ATree.jpg" hspace ="20" ALIGN="left"/> </a> 
+The `lib/roam` library centralizes error handling, safety checks on turtle dead reckoning, and simulated blockage testing for all the commands it supports. It does all this in its CLI <a href="code/lib/roam#op.html" target="_blank">dispatch </a> mechanism, one part of keeping command code thin. 
 
 <a id="UI"></a>
 Managing the inevitable and ongoing changes to the user interface is an important issue for maintainable code. MUSE keeps the actual UI code "thin" in the command programs that provide the UI. All the hard stuff is in the support libraries. Changes to the UI itself are generally pretty easy. That's good because experience with a UI is the most likely generator of reasons to change it.
 
- _(We have it a bit easier since the user interface for MUSE is just a <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank"> command line interface, CLI</a>. The commands are simple text inputs to the <a href="https://www.computercraft.info/wiki/CraftOS" target="_blank"> CraftOS</a> command line. The design issues for a <a href="https://en.wikipedia.org/wiki/Graphical_user_interface" target="_blank"> graphical user interface, a GUI</a> are the subject of a whole other exploration.)_
+ _(We have it a bit easier since the user interface for MUSE is just a CLI. The commands are simple text inputs to the <a href="https://www.computercraft.info/wiki/CraftOS" target="_blank"> CraftOS</a> command line. The design issues for a <a href="https://en.wikipedia.org/wiki/Graphical_user_interface" target="_blank"> graphical user interface, a GUI</a> are the subject of a whole other exploration.)_
 
 A desire to ease testing is a second motivation for minimizing the work of the command itself. It's easier to test function interfaces than creating the testing facilities that drive simulated user interactions. Because of this, almost all of the work of providing MUSE CLIs is done by libraries supporting the commands. More elaborate command interfaces (including GUIs) would require more elaborate testing support systems. Sometimes project goals demand such interfaces. They would be distractions for MUSE.
 
+Lua has a <a href="https://www.lua.org/doc/sblp2005.pdf" target="_blank"> one pass compiler</a>. Functions build on each other from the beginning of the file to the end. The tree image <a href="code/lib/roam.html" target="_blank"> links </a> to the beginning of the file. Alternatively, you may want to follow the code backward toward the beginning through the support for <a href="code/lib/roam.html#go" target="_blank"> `go` </a> and <a href="code/lib/roam.html#to" target="_blank"> `to` </a> and then look at <a href="code/lib/roam.html#come" target="_blank"> `come` </a> to see how this is done. Or just read it as written by clicking the tree.
+</br></br>
+<a id="task"></a>
+You might have been driven to abstraction by what we've been going on (and on) about. But it's the new and improved turtle that lets us build the <a href="code/lib/task.html" target="_blank"> `lib/task` library</a>. It supports a CLI for low level turtle tasks in terms of those abstracted directions. Some, like `dig`, involve chewing gum while walking. These last use the `step` closures from `lib/motion` to do the work, as for `dig`, one small step (for a turtle) at a time. The implementation for each of those low level turtle operations in `lib/task` uses the table (indexed by `direction`) that was made for that operation by `lib/turtle`. Oh, the things a turtle can do.
+
+There's a <a href="code/lib/task.html#movement" target="_blank">technique </a> in the `lib/task` implementation that folds particular kinds of movement vectors into a (scalar) `direction` for that vector. It takes advantage of a property of the set of some such vectors that they only make changes in one axis at a time. It's the same sort of thing as done in <a href="code/lib/map.html#cardinal" target="_blank"> `lib/map`</a> to settle on a compass direction. You may find use for the technique in this or other kinds of folding.
+
+A similar pattern as described for `lib/roam` is used for the implementation of this CLL (CLI support library). There's little need to see how, in particular, `lib/task` does this unless to see another example of how thin CLI support might be built. But follow the <a href="code/lib/task.html#dispatch" target="_blank"> link </a> if you're interested.
+
+If all you're looking for right now is how these libraries fit into the overall design, here are links to the interfaces for <a href="docs/lib/turtle.html" target="_blank"> `lib/turtle` </a>,  <a href="docs/lib/task.html" target="_blank"> `lib/task` </a>, and <a href="docs/lib/roam.html" target="_blank">`lib/roam`</a>. Working on code this way is a good strategy to have available to you. Sometimes in coming to grips with a body of code written by that visitor from another planet, just understanding the library interfaces for what's been exhumed can be helpful.
+
+<a href="drawings/03Abstractions.pdf" target="_blank"><IMG SRC="drawings/03Abstractions.png" ALIGN="right" hspace ="10"/></a>
+
+ Additionally, there's a <a href="drawings/03Abstractions.pdf" target="_blank"> drawing</a>, the one that's thumbnailed here, showing how these MUSE libraries work together with what's gone before. Together they form and make use of (wait for it) increasing levels of abstraction for MUSE.
+
+When that's done come back here to explore how to establish state that persists across <a href="https://en.wikipedia.org/wiki/Session_(computer_science)" target="_blank"> _sessions_</a>, how to deal with state distributed over a network,and how error handling works in network environments.
+<br/>
+
+<a id="Chapter4"></a>
+## Chapter 4 - Persistence, Distributed State, Remote Errors 
+This chapter is less about how to write code in general. We've just got finished flogging that particular horse. This chapter (and pretty much all that follow) is more about how to approach a design and <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank"> <IMG SRC="drawings/03CLI.png" ALIGN="right" vspace = "10" hspace ="10"/> </a> how to provide some important mechanisms dealing with networked computers. They're the ones that you may need to design (or understand how someone else did). 
 Look at the implementation of the `lib/map`<a href="code/lib/map.html#ops" target="_blank"> operations dispatch</a> and then follow a couple of the <a href="code/lib/map.html#commands" target="_blank">links </a> provided there to look at the actual command programs. 
 
 As suggested when we introduced this chapter, MUSE needs to deal with networked computers (like turtles and pocket computers). They'll be operating on distributed persistent state. The operations may throw exceptions to signal errors. We'll discuss in a bit how to deal with them. But first, persistent state itself.
@@ -93,72 +146,17 @@ In MUSE, all the simulated computers do share a ROM image but this is, by defini
 
 If there's one design idea for maintainable code in all the above, it's to seek to keep it simple. Design goals for a project may not allow the simple approach just described for run time organization. There might be tools to mitigate risks inherent in more complicated organizations. They might work. But perhaps you can find a way to isolate complexity in the design so that most of what is developed can rely on simple assumptions about what happens at run time.
 
-<a href="drawings/03Foundations.pdf" target="_blank"> <IMG SRC="drawings/03Foundations.png" ALIGN="right"/>
+<a href="code/lib/map.html" target="_blank"><IMG SRC="drawings/04Tree.jpg" hspace="10" ALIGN="left"/></a>
 
-<a href="code/lib/map.html" target="_blank"><IMG SRC="drawings/03Tree.jpg" hspace ="10" ALIGN="left"/></a>
+<IMG SRC="drawings/04Persistence.png" ALIGN="right" hspace="10"> </a> 
 
-A design handling persistence, management of distributed state, and remote error handling is demonstrated by the <a href="code/lib/map.html" target="_blank"> implementation </a> and the <a href="docs/lib/map.html" target="_blank"> interface </a> of the `lib/map` library . The library is built on the <a href="code/lib/motion.html" target="_blank"> `lib/motion` </a> and <a href="code/lib/places.html" target="_blank"> `lib/places` </a> libraries we've already looked at. Here's the <a href="docs/lib/motion.html" target="_blank"> interface </a> for `lib/motion`, the <a href="docs/lib/places.html" target="_blank"> interface </a> for `lib/places`, and a <a href="drawings/03Foundations.pdf" target="_blank"> drawing </a> showing how these libraries form the foundation for MUSE. We'll add more libraries to this drawing as we continue our explorations.
+A design handling persistence, management of distributed state, and remote error handling is demonstrated by the <a href="code/lib/map.html" target="_blank"> implementation </a> and the <a href="docs/lib/map.html" target="_blank"> interface </a> of the `lib/map` library.  The library is built on the <a href="code/lib/motion.html" target="_blank"> `lib/motion` </a> and <a href="code/lib/places.html" target="_blank"> `lib/places` </a> libraries we've already looked at. Here's the <a href="docs/lib/motion.html" target="_blank"> interface </a> for `lib/motion`, the <a href="docs/lib/places.html" target="_blank"> interface </a> for `lib/places`, and a <a href="drawings/04Persistence.pdf" target="_blank"> drawing </a>showing how these libraries form the foundation for MUSE. We'll add more libraries to this drawing as we continue our explorations.
 
-There's an operation in `lib/map` that needs noting. It's there for a reason we'll get to downstream. However it needs saying now that the <a href="code/lib/map.html#chart" target="_blank"> `chart`</a> operation is one of those things your parents might have warned you about. (I suppose it depends on the parents.) It's almost a cartoon for a big, gaping, really scary security hole. Invoking it loads and executes a file in the `charts` directory. Which could do anything that a ComputerCraft computer could do. Now, to be sure, here be no nuclear reactors. More to the point, as someone creating the code for these computers, you've already been empowered to do anything with a ComputerCraft computer that it can do. Nonetheless, if you're tempted to do what I did and do it in the real world, rather than what I said you shouldn't, think again. It might be appropriate. Or not.
+There's an operation in `lib/map` that needs noting. It's there for a reason we'll get to downstream. However it needs saying now that the <a href="code/lib/map.html#chart" target="_blank"> `chart`</a> operation is one of those things your parents might have warned you about. (I suppose it depends on the parents.) It's almost a cartoon for a big, gaping, really scary security hole. Invoking it loads and executes a file in the `charts` directory. Which could do anything that a ComputerCraft computer could do. 
 
-With parental warnings duly noted (and  forgotten), let's press on to the next chapter where there'll be more examples of constructing CLIs as well as ideas about what to expose and what to hide in a design.
-<br/>
-<a id="Chapter4"></a> 
-## Chapter 4 - Choosing Abstractions, Tables That Make Functions
-<a href="https://en.wikipedia.org/wiki/Information_hiding#:~:text=In%20computer%20science%2C%20information%20hiding,the%20design%20decision%20is%20changed." target="_blank"> _Information hiding_  </a>is an important part of what a library does. The choice of what to expose as an interface is the choice of what to hide. One aspect of choosing what (detail) to hide is choosing the abstractions to create. Exposing the wrong detail gets in the way of delivering an evolving yet maintainable system. Thus, the task of design is often about exposing the right abstractions. 
+Now, to be sure, here be no nuclear reactors. More to the point, as someone creating the code for these computers, you've already been empowered to do anything with a ComputerCraft computer that it can do. Nonetheless, if you're tempted to do what I did and do it in the real world, rather than what I said you shouldn't, think again. It might be appropriate. Or not.
 
-For MUSE, some abstractions are obvious. They closely relate to what's in the game, our _problem domain_, and have fairly intuitive expression in the _solution domain_ that we're <a href="https://shahworld.wordpress.com/2015/09/22/what-is-problem-domain-and-solution-domain/" target="_blank"> building</a>. For changes in the position and orientation of a turtle, the right abstractions might expose interfaces for movement in the four cardinal directions ("north", "south", "east", and "west") rather than relative directions ("right" and "left"). The <a href="docs/lib/motion.html" target="_blank"> `lib/motion`  </a> library exposed these abstractions for movement. 
-
-</a><IMG SRC="drawings/04Compass.png" ALIGN="right" hspace ="10"/>
-
-The `lib/turtle` library extends this abstraction consistently with the other interesting things turtles can be made to do. The consistency itself helps in maintenance. As we said, ComputerCraft's primitives deal with turns "right" and "left". They deal separately with those other things turtles can do in terms of "forward", "up", and "down".  A useful set of abstractions would be to hide all this detail and expose turtle interfaces uniformly in terms of six directions: the four cardinal and the two vertical directions (while still allowing `forward`). <a href="code/lib/turtle.html" target="_blank"> <IMG SRC="drawings/04Tree.jpg" hspace ="10" ALIGN="left"/> </a>
-
-There's a pretty long list of turtle operations that would need fitting into this abstraction. The fitting is so repetitive that it lends itself to representation as a table. There's a couple of maker functions executed when `lib/turtle` is loaded. They make the functions that `lib/turtle` exports. Each of those exported turtle operation functions is then exposed as a table indexed by `direction`. 
-
-Functions making tables is the _dog bites man_ story. With a little license, this is the  _tables make functions_ story. It's a small step toward a <a href="https://en.wikipedia.org/wiki/Declarative_programming" target="_blank"> declarative programming </a>style. Larger ones to follow. For now, look at the `lib/turtle` <a href="code/lib/turtle.html" target="_blank"> implementation </a> to see how to have yet more fun with functions. 
-
-Another detail needing abstracting is the notion of what's in which `slot` of a turtle's  <a href="code/lib/turtle.html#inventory" target="_blank"> inventory</a>. What's where exactly is something worth hiding. What we generally just want to know is whether the turtle's `inventory` includes certain items. Or better, whether it includes certain kinds, `categories`, of items.  These might be, for example,  `fuels`, `stones`, or `ores`. You might want to know about whether a turtle's got stones but not care what kind exactly. A category could be items useful as `fills` or the kinds of `dirt`. We might be more interested in the total fuel energy available to a turtle rather than any specific kind of fuel.
-
-Finally, `lib/turtle` also abstracts <a href="code/lib/turtle.html#unblock" target="_blank"> dealing with some of the difficulties </a> turtles face when attempting to move to a position. Hiding the detail of dealing with obstacles presents a simpler notion of movement. 
-
-_With all these changes, `lib/turtle` has superseded the ComputerCraft definition of a turtle. Behold, all turtles are made new._ 
-
-At least if you load `lib/turtle`.
-
-There are two clients of the born again turtle that we'll discuss  next: `lib/roam` and `lib/task`. First `lib/roam`.
-
-<a id="roam"/>
-
-<a href="code/lib/roam.html" target="_blank"> <IMG SRC="drawings/04ATree.jpg" hspace ="20" ALIGN="left"/> </a>. The `lib/roam` <a href="code/lib/roam.html" target="_blank"> library </a> provides yet more movement extensions for our turtles: 
-
-- _try again strategies_ controlled by a `.start` parameter to look for ways around blockages, 
-  
-- _going to a `place`_ (as well as specified xyz coordinates)
-  
-- _turtle side support_ for following the `player` around (as befits, say, a squire), and
-  
-- _a very tiny language_ to chain together commands to move a turtle piecewise in all those abstracted directions, 
-  
-All this is done using both the abstractions of `lib/turtle` and the primitives of `lib/motion`. 
-
-The `lib/roam` library centralizes error handling, safety checks on turtle dead reckoning, and simulated blockage testing for all the commands it supports. It does all this in its CLI <a href="code/lib/roam#op.html" target="_blank">dispatch </a> mechanism, the same one that keeps command code thin. 
-
-Lua has a <a href="https://www.lua.org/doc/sblp2005.pdf" target="_blank"> one pass compiler</a>. Functions build on each other from the beginning of the file to the end. The tree image above <a href="code/lib/roam.html" target="_blank"> links </a> to the beginning of the file. Alternatively, you may want to follow the code backward toward the beginning through the support for <a href="code/lib/roam.html#go" target="_blank"> `go` </a> and <a href="code/lib/roam.html#to" target="_blank"> `to` </a> and then look at <a href="code/lib/roam.html#come" target="_blank"> `come` </a> to see how this is done. Or just read it as written by clicking the tree.
-</br></br>
-<a id="task"></a>
-You might have been driven to abstraction by what we've been going on (and on) about. But it's the new and improved turtle that lets us build the <a href="code/lib/task.html" target="_blank"> `lib/task` library</a>. It supports a CLI for low level turtle tasks in terms of those abstracted directions. Some, like `dig`, involve chewing gum while walking. These last use the `step` closures from `lib/motion` to do the work, as for `dig`, one small step (for a turtle) at a time. The implementation for each of those low level turtle operations in `lib/task` uses the table (indexed by `direction`) that was made for that operation by `lib/turtle`. Oh, the things a turtle can do.
-
-There's a <a href="code/lib/task.html#movement" target="_blank">technique </a> in the `lib/task` implementation that folds particular kinds of movement vectors into a (scalar) `direction` for that vector. It takes advantage of a property of the set of some such vectors that they only make changes in one axis at a time. It's the same sort of thing as done in <a href="code/lib/map.html#cardinal" target="_blank"> `lib.map`</a> to settle on a compass direction. You may find use for the technique in this or other kinds of folding.
-
-A similar pattern as described for `lib/roam` is used for the implementation of this CLL (CLI support library). There's little need to see how, in particular, `lib/task` does this unless to see another example of how thin CLI support might be built. But follow the <a href="code/lib/task.html#dispatch" target="_blank"> link </a> if you're interested.
-
-If all you're looking for right now is how these libraries fit into the overall design, here are links to the interfaces for <a href="docs/lib/turtle.html" target="_blank"> `lib/turtle` </a>,  <a href="docs/lib/task.html" target="_blank"> `lib/task` </a>, and <a href="docs/lib/roam.html" target="_blank">`lib/roam`</a>. Working on code this way is a good strategy to have available to you. Sometimes in coming to grips with a body of code written by that visitor from another planet, just understanding the library interfaces for what's been exhumed can be helpful.
-
-<a href="drawings/04Abstractions.pdf" target="_blank"><IMG SRC="drawings/04Abstractions.png" ALIGN="right" hspace ="10"/></a>
-
- Additionally, there's a <a href="drawings/04Abstractions.pdf" target="_blank"> drawing</a>, the one that's thumbnailed here, showing how these MUSE libraries work together with what's gone before. Together they form and make use of (wait for it) increasing levels of abstraction for MUSE.
-
-As we'll see in the next chapter, remote CLIs are provided through a <a href="https://en.wikipedia.org/wiki/Remote_procedure_call" target="_blank">  _remote procedure call_  </a> (RPC) that uses the local CLI dispatch we've just been exploring to command remote computers over the network. 
+With parental warnings duly noted (and  forgotten), we'll see in the next chapter, how remote CLIs are provided through a <a href="https://en.wikipedia.org/wiki/Remote_procedure_call" target="_blank">  _remote procedure call_  </a> (RPC) that uses the local CLI dispatch we've just been exploring to command remote computers over the network. 
 <br/>
 <a id="Chapter5"></a>
 ## Chapter 5 - Remote Procedure Calls,  Distributed Service Discovery, Remote CLIs
@@ -196,18 +194,18 @@ Look first at <a href="code/lib/remote.html" target="_blank"> `lib/remote` </a> 
 
 This all works given that roles and a site have been established to start with. MUSE turtles and the player's pocket computer are assigned roles at their site (as ComputerCraft computer labels). This is done by running <a href="code/programs/join.html" target="_blank"> `join`</a> which calls <a href="code/lib/dds.html#join" target="_blank"> `dds.join`</a>. The current site is established by the <a href="code/programs/site.html" target="_blank"> site </a> command implemented by <a href="code/lib/map.html#sited"> `map.site`</a>.
 
-Finally, while most of the remote CLI commands are prefaced by a role (`farmer`, `miner`, `logger`, or `rover`) to target a given turtle, as a convenience some commands assume a role (and so, a target). For the `rover`, these are <a href="code/programs/come.html" target="_blank"> `come` </a> and <a href="code/programs/tail.html" target="_blank"> `tail` </a>. You may have looked at their implementations in <a href="code/lib/roam.html#come" target="_blank"> `lib/roam`</a>. There's the other part of their implementation in <a href="code/lib/remote.html#come" target="_blank"> `lib/remote`</a>.
+Finally, while most of the remote CLI commands are prefaced by a role (`farmer`, `miner`, `logger`, or `rover`) to target a given turtle, as a convenience some commands assume a role (and so, a target). For the `rover`, these are <a href="code/programs/come.html" target="_blank"> `come` </a> and <a href="code/programs/tail.html" target="_blank"> `tail` </a>. You may have looked at turtle part of their implementations in <a href="code/lib/roam.html#come" target="_blank"> `lib/roam`</a>. The other part of their implementations is in <a href="code/lib/remote.html#come" target="_blank"> `lib/remote`</a>.
 
 A CLI command prefaced by a role needs a dispatch to the `lib/remote` handler for that command. As you've likely come to expect, there's not much to these. They're boringly (and helpfully) similar: <a href="code/programs/farmer.html" target="_blank"> `farmer`</a>, <a href="code/programs/miner.html" target="_blank"> `miner`</a>, <a href="code/programs/logger.html" target="_blank"> `logger`</a>, <a href="code/programs/roamer.html" target="_blank"> `roamer`</a> and <a href="code/programs/porter.html" target="_blank"> `porter`</a>. 
 
 We'll talk about the `porter`, a command computer, next.  There's just one of them in the MUSE environment. While, for generality, it's possible to send the `porter` a CLI command prefaced by its role, actually only a very few of them are useful. It's not a turtle.
 
-A library, <a href="code/lib/exec.html" target="_blank"> `lib/exec`</a> uses the `porter` to provide support for setting up MUSE operations. The <a href="code/lib/exec.html" target="_blank"> `lib/exec`</a> library helps aligning Minecraft coordinates with turtle dead reckoning for ComputerCraft GPS deployment with <a href="code/lib/gps.html" target="_blank"> `lib/gps` </a>. This is done by the <a href="code/programs/locate.html" target="_blank"> `locate` </a> command, implemented by <a href="code/lib/exec.html#locate" target="_blank"> `exec.locate`</a>. The library also supports supplying a MUSE `range` for the Minecraft's <a href="https://www.digminecraft.com/game_commands/forceload_command.php" target="_blank"> `/forceload add`</a> operation. The command is <a href="code/programs/activate.html" target="_blank"> `activate` </a> implemented by <a href="code/lib/exec.html#activate" target="_blank"> `exec.activate`</a>.
+A library, <a href="code/lib/exec.html" target="_blank"> `lib/exec`</a> uses the `porter` to provide support for setting up MUSE operations. The <a href="code/lib/exec.html" target="_blank"> `lib/exec`</a> library helps aligning Minecraft coordinates with turtle dead reckoning for ComputerCraft GPS deployment with <a href="code/lib/gps.html" target="_blank"> `lib/gps` </a>. This is done by the <a href="code/programs/locate.html" target="_blank"> `locate` </a> command, implemented by <a href="code/lib/exec.html#locate" target="_blank"> `exec.locate`</a>. The library also supports supplying a named MUSE `range` for the Minecraft's <a href="https://www.digminecraft.com/game_commands/forceload_command.php" target="_blank"> `/forceload add`</a> operation. The command is <a href="code/programs/activate.html" target="_blank"> `activate` </a> implemented by <a href="code/lib/exec.html#activate" target="_blank"> `exec.activate`</a>.
 
 <a href="drawings/05CommandIntegration.pdf" target="_blank">
 <IMG SRC="drawings/05CommandIntegration.png" ALIGN="right" hspace ="10"/></a>
 
-Since we've gone ahead and used a command computer, we've already demonstrated a shameful lack of constraint. Another command computer indulgence, the <a href="code/lib/port.html" target="_blank"> `lib/port` </a> library, provides an integration with `lib/map places` and the Minecraft `teleport` command. The   <a href="drawings/05CommandIntegration.pdf" target="_blank"> drawing </a> shows the library in the overall context of MUSE. 
+Since we've gone ahead and used a command computer, we've already demonstrated a shameful lack of constraint. Another command computer indulgence, the <a href="code/lib/port.html" target="_blank"> `lib/port` </a> library, provides an integration with `map.places` and the Minecraft `teleport` command. The   <a href="drawings/05CommandIntegration.pdf" target="_blank"> drawing </a> shows the library in the overall context of MUSE. 
 
 There's a bit of application design involved in adding a `teleport` facility to MUSE. The approach was to make parallels with real world trips. There's advance booking a trip from somewhere to somewhere else. That generally involves figuring out what the trip costs. Doing the trip with baggage increases the costs. When all that's settled, actually taking the trip makes use of the booking and incurs the cost. Look at <a href="code/lib/port.html" target="_blank"> `lib/port` </a> to see how that's all worked out in a Minecraft context.
 
@@ -411,6 +409,8 @@ One final note as we conclude. There are a few utility functions we can just poi
 ## Chapter 8 - So This Is Goodbye
 
 If you've gone along on this ride, you've been with me on an exploration into some of the ideas and implementation approaches for more maintainable code. It may seem like over engineered work. Of an obsessive compulsive engineer. With way too much time on their hands. (After all, it's just a game.) Perhaps. But, you know, it's never been about the game. At any rate, I hope it will have proved useful to you, maybe even (someday) in the deadline fevered heat of a moment. Maybe you'll just do nothing, stand there for a bit, and think about those aliens from another planet. The ones we met when we first started down this road. You will meet them again.
+
+<a href="drawings/08LibrariesAll.pdf" target="_blank"> <IMG SRC="drawings/08LibrariesAll.png" ALIGN="right" vspace = "10" hspace="10"/></a>
 
 Together we've looked at mindfully managing state because there, there be dragons. We've seen how structuring code in libraries can isolate dependencies and create layers of abstraction. All this so design, testing, and maintenance can focus on what's changed when dealing with changes. We looked especially at factoring the code to anticipate (the inevitable) changes to the user interface. 
 
