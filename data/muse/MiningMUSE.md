@@ -120,7 +120,7 @@ When that's done come back here to explore how to establish state that persists 
 <br/>
 
 <a id="Chapter4"></a>
-## Chapter 4 - Persistence, Distributed State, Remote Errors 
+## Chapter 4 - Persistence, Concurrency, Remote Errors 
 This chapter is less about how to write code in general. We've just got finished flogging that particular horse. This chapter (and pretty much all that follow) is more about how to approach a design and <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank"> <IMG SRC="drawings/03CLI.png" ALIGN="right" vspace = "10" hspace ="10"/> </a> how to provide some important mechanisms dealing with networked computers. They're the ones that you may need to design (or understand how someone else did). 
 Look at the implementation of the `lib/map`<a href="code/lib/map.html#ops" target="_blank"> operations dispatch</a> and then follow a couple of the <a href="code/lib/map.html#commands" target="_blank">links </a> provided there to look at the actual command programs. 
 
@@ -159,7 +159,7 @@ Now, to be sure, here be no nuclear reactors. More to the point, as someone crea
 With parental warnings duly noted (and  forgotten), we'll see in the next chapter, how remote CLIs are provided through a <a href="https://en.wikipedia.org/wiki/Remote_procedure_call" target="_blank">  _remote procedure call_  </a> (RPC) that uses the local CLI dispatch we've just been exploring to command remote computers over the network. 
 <br/>
 <a id="Chapter5"></a>
-## Chapter 5 - Remote Procedure Calls,  Distributed Service Discovery, Remote CLIs
+## Chapter 5 - Distributed Service Discovery, Remote Procedure Calls and CLIs,  
 This chapter looks at systems with distributed operations on distributed state. The principle mechanisms considered are distributed name servers to discover providers of available services and remote procedure calls (RPCs) to make use of those services.
 
 An RPC in a <a href="https://en.wikipedia.org/wiki/Client%E2%80%93server_model" target="_blank"> _client-server model_  </a> lets (ahem) clients get services from, well, servers. For MUSE, the client is generally the player's pocket computer. The servers are turtles perhaps with specific roles for farming, mining, or logging.  The roles are established by ComputerCraft computer labels in an area: `farmer`, `miner`, and `logger`. 
@@ -348,7 +348,7 @@ That score is constrained by `lib/field` to fit into a specific set of steps to 
 
 - Those expected arguments include an operation function, &Oopf;<b>&Popf;</b>, associated with the command we were looking to execute. The framework calls that function (as `fieldsOp`), in <a href="code/lib/field.html#plot" target="_blank"> `field.plot`</a> (step 3). 
 
-- That function produces the arguments for the call to `field.plan` (step 4). The arguments include the name of what we'll call a `plans` file, from the `plans` directory for the operation. 
+- That function produces the arguments for the call to `field.plan` (step 4). The arguments include the name of what we'll call a `plans` file for the operation. The `plans` files are in the `plans` directory.
 
 - The music continues when <a href="code/lib/field.html#plan" target="_blank">`field.plan`</a> loads that file (step 5) to produce and call the plan function, <b>&Popf;</b>.
 
@@ -360,13 +360,13 @@ There's a `lib/field` utility function, <a href="code/lib/field.html#extents" ta
 
 Making a farm involves a lot of work both out there in reality and here in a game. The land needs to be levelled, the soil prepared, and crops planted. Finally, with the farm established, it can be harvested and, perhaps, new seeds planted for the next harvest. Each of these stages coresponds to each of the the _field operations_ defined for a `farm`.
 
-Flogging our orchestration analogy yet some more, the field operations are the movements of the music orchestrated by the set of MUSE `fields` files. For a <a href="code/lib/farm.html" target="_blank">`farm`</a> they are: `quarry`, `layer`, `cover`, `finish`, `harvest`, and `path`. They're documented in the <a href="code/lib/farm.html" target="_blank">`lib/farm`</a> library of work functions. All are exposed as remote field operations for the `farmer` and the `logger` as calls to `field.make` by <a href="code/lib/net.html#farm" target="_blank">`lib/net`</a>. Nothing in the framework itself imposes these as movements for field operation. They're just what's established by a set of field files.
+Beating on our orchestration analogy yet some more, the field operations are the movements of the music orchestrated by the set of MUSE `fields` files. For a <a href="code/lib/farm.html" target="_blank">`farm`</a> they are: `quarry`, `layer`, `cover`, `finish`, `harvest`, and `path`. They're documented in the <a href="code/lib/farm.html" target="_blank">`lib/farm`</a> library of work functions. All are exposed as remote field operations for the `farmer` and the `logger` as calls to `field.make` by <a href="code/lib/net.html#farm" target="_blank">`lib/net`</a>. Nothing in the framework itself imposes these as movements for field operation. They're just what's established by a set of field files.
+
+_(There's another field operation, `test`. It's simply a way to do an out of game check that that picky arithmetic we spoke of is correct before plowing up a mess in the game.)_
 
 <a href="code/fields/cane.html" target="_blank"><IMG SRC="drawings/07Tree.jpg" ALIGN="left" hspace ="10"/></a>With this overview as context, we'll explore the `lib/field` framework by looking at some `fields` files (for steps 2 and 4) and `plans` files (for step 6) to make this abstraction concrete. 
 
 The first `fields` file to explore is <a href="code/fields/cane.html" target="_blank"> `fields/cane`</a>. Declaring the <a href="code/fields/cane.html#plots" target="_blank"> `plots` </a> for each operation on a cane field does most of what's needed. It's just a lot of picky arithmetic to declare the specifics of _what_ cane fields need to be. The rest of what's needed in a `fields` file is the definition of the <a href="code/fields/cane.html#ops" target="_blank"> operation functions </a> (&Oopf;<b>&Popf;</b>) executed in support of each field operation. 
-
-_(There's a field operation we haven't mentioned previously, `test`. It's simply a way to check that that picky arithmetic we spoke of is correct before plowing up a mess in the game.)_
 
 All these operation functions are pretty simple functions as you can see. They are specified as functions since it didn't seem worthwhile to define a declarative language just for this purpose. 
 
@@ -376,11 +376,11 @@ Loading a plans prototype with the bounds parameters from <a href="code/lib/fiel
 
 As indicated, there's not much there there in plan prototypes. Look, for example, at the prototype <a href="code/plans/cane.html" target="_blank"> plans/cane</a> file for <a href="code/fields/cane.html" target="_blank"> fields/cane</a>. 
 
-The other fields files for farming are similarly conceived: <a href="code/fields/crop.html" target="_blank"> crop</a>,<a href="code/fields/tree.html" target="_blank"> tree</a>, and <a href="code/fields/pen.html" target="_blank"> pen</a>. They make use of `plans` prototypes that look much like what we've already looked at: <a href="code/plans/crop.html" target="_blank"> crop </a>, <a href="code/plans/tree.html" target="_blank"> tree </a>, <a href="code/plans/quarry.html" target="_blank"> quarry</a>, <a href="code/plans/layer.html" target="_blank"> layer</a>, and <a href="code/plans/till.html" target="_blank"> till</a>. 
+The other fields files for farming are similarly conceived: <a href="code/fields/crop.html" target="_blank"> crop</a>,<a href="code/fields/tree.html" target="_blank"> tree</a>, and <a href="code/fields/pen.html" target="_blank"> pen</a>. They make use of `plans` prototypes that look much like the one we've already seen: <a href="code/plans/crop.html" target="_blank"> crop </a>, <a href="code/plans/tree.html" target="_blank"> tree </a>, <a href="code/plans/quarry.html" target="_blank"> quarry</a>, <a href="code/plans/layer.html" target="_blank"> layer</a>, <a href="code/plans/till.html" target="_blank"> till</a>, and <a href="code/plans/path.html" target="_blank"> path</a>. 
 
-This commonality can lead to an unfortunate amount of ill considered boilerplate. The good news is that it's easy to produce new uses of the framework. The bad news is that it's easy to produce mindless stuff that almost works.
+The `path` plan prototype is used to traverse the path for a `range` without doing anything else. In the game it provides a way to be a bit more confident that turtles will be doing what you expect when they work the fields. As you may have already seen, it's also exposed as a remote field operation as a call to `field.make` by `lib/net`.  
 
-There's one more plan file, <a href="code/plans/path.html" target="_blank"> path</a>. It's used to traverse the path for a `range` without doing anything else. In the game it provides a way to be a bit more confident that turtles will be doing what you expect when they work the fields. As you may have already seen, it's also exposed as a remote field operation as a call to `field.make` by `lib/net`.  
+The plan prototype files are all a little different just the same. This commonality can lead to an unfortunate amount of ill considered boilerplate. The good news is that it's easy to produce new uses of the framework. The bad news is that it's easy to produce mindless stuff that almost works.
 
 <a href="drawings/07Frameworks.pdf" target="_blank"> <IMG SRC="drawings/07Frameworks.png" ALIGN="right" vspace = "10" hspace="10"/></a>
 

@@ -9,7 +9,7 @@
 
 <h2> Quarry, Layer, Finish, harvest, Path, and Test Operations for Common Crop Fields</h2>
 <pre><code class="language-markdown">
---:~ field.plot() <- <b>Create and harvest Crops Fields, Water Strips Every Eight Blocks</b> -> muse/docs/fields/crop.md
+--:~ field.plot() <- <b>Create and Harvest Crop Fields, Water Strips Every Eight Blocks</b> -> muse/docs/fields/crop.md
 --:+ <i>Loaded by <code>field.make</code> with operation name, span of plots for the operation, and points bounding field.</i>
 --:+ <b>Supported operations are <code>quarry</code>, <code>layer</code>, <code>finish</code>, <code>harvest</code>, <code>path</code>, and <code>test</code></b>
 --:+ <i>Calls <code>field.plot</code> with the specified field operation function and all the field's plots for that operation.</i>
@@ -31,10 +31,10 @@ local nplots, slots, stride, run, striding, turn = field.extents(bounds, strides
 local vW, _, vN, vS = stride[1], stride[2], run[1], run[2] -- vN to vS run axis and vW to VE stride axis for each plot
 local orient = function(xyzAB) return turn and core.orient(xyzAB) or xyzAB end -- transform for turn
 </code></pre>
-<a id="plots"><IMG SRC="../../drawings/07Crops.png" ALIGN="right" hspace="10" /></a> 
+<a id="plots"><IMG SRC="../../drawings/07Crop.png" ALIGN="right" hspace="10" /></a> 
 The field is parcelled into <code>plots</code> appropriate to each <i>field operation</i>. Each <code>plot</code> is generated referencing the virtual <code>stride</code> and  <code>run</code> axes. If there is no <code>turn</code> property, <code>orient</code> performs no transform. The <code>stride</code> axis is then simply west to east in game coordinates and operations will <code>run</code> along north to south game coordinates.
 <p>
-The <code>quarry</code> operation for the <code>field</code> digs out <code>plots</code> for <code>crops</code> 9 blocks wide and a <code>first</code> strip adjacent to the <code>field</code> for water. Each <code>plot</code> has only an 8 block wide dirt <code>layer</code>. The 9th block is left open for water. The <code>finish</code> operation for <code>crops</code> plants a <code>run</code> for each 1 block wide <code>stride</code> that is one block above the level of the <code>layer</code>. The <code>harvest</code> operation harvests <code>crops</code> one block above that.
+The <code>quarry</code> operation for the <code>field</code> digs out <code>plots</code> for the <code>crop</code> 9 blocks wide and a <code>first</code> strip adjacent to the <code>field</code> for water. Each <code>plot</code> has only an 8 block wide dirt <code>layer</code>. The 9th block is left open for water. The <code>finish</code> operation for <code>the crop</code> plants a <code>run</code> for each 1 block wide <code>stride</code> that is one block above the level of the <code>layer</code>. The <code>harvest</code> operation harvests the <code>crop</code> one block above that.
 <pre><code class="language-lua">
 local first = orient { {vW, bottom, vN}, {vW, top, vS} } -- runs north - south off west bound
 local plots = {-- pattern is 8 parts of crops, 1 water; extra first quarry plot is water strip; <code>harvest</code> to harvest then plant
@@ -51,34 +51,34 @@ Each <code>operation</code> supported by this field (<code>quarry</code>, <code>
 <pre><code class="language-lua">
 local function quarryOp(index)
   local quarryResult = field.plan("quarry", {plots.quarry[index]})
-  core.status(3, "crops", "quarrying", index, slots, quarryResult)
+  core.status(3, "crop", "quarrying", index, slots, quarryResult)
   return quarryResult
 end
 
 local function layerOp(index)
   local layerResult = field.plan("layer", {plots.layer[index], {"minecraft:dirt"}})
-  core.status(3, "crops", "layering", index, slots, layerResult)
+  core.status(3, "crop", "layering", index, slots, layerResult)
   return layerResult
 end
 
 local function finishOp(index)
   local finishResult = field.plan("till", {plots.finish[index], index}) -- index is plot number
-  core.status(3, "crops", "finishing", index, slots, finishResult)
+  core.status(3, "crop", "finishing", index, slots, finishResult)
   return finishResult
 end
 
 local function harvestPath(index, plan)
   local harvestResult = field.plan(plan, {plots.harvest[index], index})
-  core.status(3, "crops", "harvestPath", index, slots, harvestResult)
+  core.status(3, "crop", "harvestPath", index, slots, harvestResult)
   return harvestResult
 end
 
-local function harvestOp(index) return harvestPath(index, "crops") end
+local function harvestOp(index) return harvestPath(index, "crop") end
 local function pathOp(index) return harvestPath(index, "path") end
 
 local function testOp() 
   local reports = {}; for i, plot in ipairs(plots.test) do reports[i] = core.string(plot) end
-  return "crops "..core.string(nplots, "\n", table.concat(reports, "\n")) 
+  return "crop "..core.string(nplots, "\n", table.concat(reports, "\n")) 
 end
 </code></pre>
 <a id="plot"></a> 
@@ -86,7 +86,7 @@ Call <code>field.plot</code> with a <i>field operation</i> callback as well as t
 <pre><code class="language-lua">
 local fieldOps = {quarry = quarryOp, layer = layerOp, finish = finishOp, harvest = harvestOp, path = pathOp, test = testOp}; 
 local fieldOpName = commands[1]; local fieldsOp = fieldOps[fieldOpName]
-if not fieldsOp then error("crops: doesn't "..fieldOpName) end
+if not fieldsOp then error("crop: doesn't "..fieldOpName) end
 
 return field.plot(commands, fieldsOp, fieldOpName, #plots[fieldOpName]) -- to <code>lib/field</code> 
 

@@ -1,7 +1,7 @@
 --[[
 ## Quarry, Layer, Finish, harvest, Path, and Test Operations for Common Crop Fields
 ```md
---:~ field.plot() <- **Create and harvest Crops Fields, Water Strips Every Eight Blocks** -> muse/docs/fields/crop.md
+--:~ field.plot() <- **Create and Harvest Crop Fields, Water Strips Every Eight Blocks** -> muse/docs/fields/crop.md
 --:+ _Loaded by `field.make` with operation name, span of plots for the operation, and points bounding field._
 --:+ **Supported operations are `quarry`, `layer`, `finish`, `harvest`, `path`, and `test`**
 --:+ _Calls `field.plot` with the specified field operation function and all the field's plots for that operation._
@@ -24,10 +24,10 @@ local vW, _, vN, vS = stride[1], stride[2], run[1], run[2] -- vN to vS run axis 
 local orient = function(xyzAB) return turn and core.orient(xyzAB) or xyzAB end -- transform for turn
 --[[
 ```
-<a id="plots"><IMG SRC="../../drawings/07Crops.png" ALIGN="right" hspace="10" /></a> 
+<a id="plots"><IMG SRC="../../drawings/07Crop.png" ALIGN="right" hspace="10" /></a> 
 The field is parcelled into `plots` appropriate to each _field operation_. Each `plot` is generated referencing the virtual `stride` and  `run` axes. If there is no `turn` property, `orient` performs no transform. The `stride` axis is then simply west to east in game coordinates and operations will `run` along north to south game coordinates.
 
-The `quarry` operation for the `field` digs out `plots` for `crops` 9 blocks wide and a `first` strip adjacent to the `field` for water. Each `plot` has only an 8 block wide dirt `layer`. The 9th block is left open for water. The `finish` operation for `crops` plants a `run` for each 1 block wide `stride` that is one block above the level of the `layer`. The `harvest` operation harvests `crops` one block above that.
+The `quarry` operation for the `field` digs out `plots` for the `crop` 9 blocks wide and a `first` strip adjacent to the `field` for water. Each `plot` has only an 8 block wide dirt `layer`. The 9th block is left open for water. The `finish` operation for `the crop` plants a `run` for each 1 block wide `stride` that is one block above the level of the `layer`. The `harvest` operation harvests the `crop` one block above that.
 ```Lua
 --]]
 local first = orient { {vW, bottom, vN}, {vW, top, vS} } -- runs north - south off west bound
@@ -47,34 +47,34 @@ Each `operation` supported by this field (`quarry`, `layer`, `finish`, `harvest`
 --]]
 local function quarryOp(index)
   local quarryResult = field.plan("quarry", {plots.quarry[index]})
-  core.status(3, "crops", "quarrying", index, slots, quarryResult)
+  core.status(3, "crop", "quarrying", index, slots, quarryResult)
   return quarryResult
 end
 
 local function layerOp(index)
   local layerResult = field.plan("layer", {plots.layer[index], {"minecraft:dirt"}})
-  core.status(3, "crops", "layering", index, slots, layerResult)
+  core.status(3, "crop", "layering", index, slots, layerResult)
   return layerResult
 end
 
 local function finishOp(index)
   local finishResult = field.plan("till", {plots.finish[index], index}) -- index is plot number
-  core.status(3, "crops", "finishing", index, slots, finishResult)
+  core.status(3, "crop", "finishing", index, slots, finishResult)
   return finishResult
 end
 
 local function harvestPath(index, plan)
   local harvestResult = field.plan(plan, {plots.harvest[index], index})
-  core.status(3, "crops", "harvestPath", index, slots, harvestResult)
+  core.status(3, "crop", "harvestPath", index, slots, harvestResult)
   return harvestResult
 end
 
-local function harvestOp(index) return harvestPath(index, "crops") end
+local function harvestOp(index) return harvestPath(index, "crop") end
 local function pathOp(index) return harvestPath(index, "path") end
 
 local function testOp() 
   local reports = {}; for i, plot in ipairs(plots.test) do reports[i] = core.string(plot) end
-  return "crops "..core.string(nplots, "\n", table.concat(reports, "\n")) 
+  return "crop "..core.string(nplots, "\n", table.concat(reports, "\n")) 
 end
 --[[
 ```
@@ -84,6 +84,6 @@ Call `field.plot` with a _field operation_ callback as well as the number of plo
 --]]
 local fieldOps = {quarry = quarryOp, layer = layerOp, finish = finishOp, harvest = harvestOp, path = pathOp, test = testOp}; 
 local fieldOpName = commands[1]; local fieldsOp = fieldOps[fieldOpName]
-if not fieldsOp then error("crops: doesn't "..fieldOpName) end
+if not fieldsOp then error("crop: doesn't "..fieldOpName) end
 
 return field.plot(commands, fieldsOp, fieldOpName, #plots[fieldOpName]) -- to `lib/field` 

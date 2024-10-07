@@ -26,14 +26,14 @@ local orient = function(xyzAB) return turn and core.orient(xyzAB) or xyzAB end -
 local runFences, minimumAlley, vWidth, vLength = 4, 3, vE - vW + 1, vS - vN + 1
 local moreAlley = (vWidth - runFences - minimumAlley) % 2; local alleyWidth = minimumAlley + moreAlley
 local penWidth = (vWidth - runFences - alleyWidth) / 2
-if penWidth <= 0 then error("pens: Can't be "..penWidth.." blocks wide") end
+if penWidth <= 0 then error("pen: Can't be "..penWidth.." blocks wide") end
 
 local fences = (runFences * vLength) + (2 * penWidth) + (2 * (vWidth - 2))
-core.status(2, "pens", slots.quarry, "slots each plot", fences, "fences")
+core.status(2, "pen", slots.quarry, "slots each plot", fences, "fences")
 --[[
 ```
 The field is parcelled into `plots` appropriate to each _field operation_. Each `plot` is generated referencing the virtual `stride` and  `run` axes. If there is no `turn` property, `orient` performs no transform.  The `stride` axis is then simply west to east in game coordinates and operations will `run` along north to south game coordinates.
-<a id="plots"><IMG SRC="../../drawings/07Pens.png" ALIGN="center" hspace="10"/>
+<a id="plots"><IMG SRC="../../drawings/07Pen.png" ALIGN="center" hspace="10"/>
 
 ```Lua
 --]]
@@ -61,19 +61,19 @@ Each `operation` supported by this field (`quarry`, `layer`, `finish`, `path`, a
 --]]
 local function quarryOp(index)
   local quarryResult = field.plan("quarry", {plots.quarry[index]}) -- from, to
-  core.status(2, "pens", "quarrying", index, quarryResult)
+  core.status(2, "pen", "quarrying", index, quarryResult)
   return quarryResult
 end
 
 local function layerOp(index)
   local layerResult = field.plan("layer", {plots.layer[index], "dirt"})
-  core.status(2, "pens", "layering", index, layerResult)
+  core.status(2, "pen", "layering", index, layerResult)
   return layerResult
 end
 
 local function finishPath(index, offset, plan)
   local finishResult = field.plan(plan, {plots.finish[index], "fence"}, offset)
-  core.status(2, "pens", "finishingPath", index, finishResult)
+  core.status(2, "pen", "finishingPath", index, finishResult)
   return finishResult
 end
 
@@ -81,7 +81,7 @@ local function finishOp(index, offset) return finishPath(index, offset, "layer")
 
 local function pathOp(index, offset) return finishPath(index, offset, "path") end
 
-local function testOp() return "pens "..core.string(plots.finish) end
+local function testOp() return "pen "..core.string(plots.finish) end
 --[[
 ```
 <a id="plot"></a> 
@@ -90,6 +90,6 @@ Call `field.plot` with a _field operation_ callback as well as the number of plo
 --]]
 local fieldOps = {layer = layerOp, quarry = quarryOp, finish = finishOp, path = pathOp, test = testOp}; 
 local offsets = {finish = {0, 1, 0}, path = {0, 2, 0}}; local fieldOpName = commands[1]; local fieldsOp = fieldOps[fieldOpName]
-if not fieldsOp then error("pens: doesn't "..fieldOpName) end
+if not fieldsOp then error("pen: doesn't "..fieldOpName) end
 
 return field.plot(commands, fieldsOp, fieldOpName, nplots[fieldOpName], offsets[fieldOpName]) -- back to `lib/field`

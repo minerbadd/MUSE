@@ -1,5 +1,5 @@
 --[[
-## Quarry, Layer, Cover, Finish, Harvest, Path, and Test Operations for Tree Farm
+## Quarry, Layer, Cover, Finish, Harvest, Path, and Test Operations for a Tree Farm
 ```md
 --:~ field.plot() <- **Create Tree Farm Spacing Trees by Threes and Harvest Them** -> muse/docs/fields/tree.md
 --:+ _Loaded by `field.make` with operation name, span of plots for the operation, and field bounds._
@@ -28,16 +28,16 @@ local orient = function(xyzAB) return turn and core.orient(xyzAB) or xyzAB end -
 local bottom, top = bounds.bottom, bounds.top; local cross = turn and {3, 0, 0} or {0, 0, 3}-- rotated for crosswise sand
 nplots.finish = math.floor((vS - vN + 1) / 3) -- sand finish is crosswise to runs
 
-core.status(2, "trees", nplots.cover, "by", nplots.finish, "plots", slots, "slots each plot to level")
+core.status(2, "tree", nplots.cover, "by", nplots.finish, "plots", slots, "slots each plot to level")
 --[[
 ```
-<a id="plots"><IMG SRC="../../drawings/07Trees.png" ALIGN="right" hspace="10" /></a> 
+<a id="plots"><IMG SRC="../../drawings/07Tree.png" ALIGN="right" hspace="10" /></a> 
 The field is parcelled into `plots` appropriate to each _field operation_. Each `plot` is generated referencing the virtual `stride` and  `run` axes. If there is no `turn` property, `orient` performs no transform. The `stride` axis is then simply west to east in game coordinates and operations will `run` along north to south game coordinates.
 
 <a href="../../drawings/07TreesField.pdf" target="_blank"> 
 <IMG SRC="../../drawings/07TreesField.png" ALIGN="right" hspace="10"/> </a>
 
-The `quarry` operation for the `field` digs out 3 block wide `plots` along each `run`. The `layer` operation provides a layer of dirt at the bottom of the `field`. The `cover` and `finish` operations replace the dirt with sand in 2 block wide `plots` crosswise along the `stride` and `run` axes. This leaves dirt 3 blocks apart along both axes for the `trees` plan prototype.
+The `quarry` operation for the `field` digs out 3 block wide `plots` along each `run`. The `layer` operation provides a layer of dirt at the bottom of the `field`. The `cover` and `finish` operations replace the dirt with sand in 2 block wide `plots` crosswise along the `stride` and `run` axes. This leaves dirt 3 blocks apart along both axes for the `tree` plan prototype.
 ```Lua
 --]]
 local plots = {-- quarry & layer to plane, replace dirt/grass with sand in 2 wide strips in run then stride directions
@@ -48,9 +48,9 @@ local plots = {-- quarry & layer to plane, replace dirt/grass with sand in 2 wid
   harvest = vectorPairs(orient{ {vW + 2, bottom + 8, vN + 2}, {vW + 2, bottom + 1, vS}}, striding.harvest, nplots.harvest), 
   path = vectorPairs(orient{ {vW + 2, bottom + 8, vN + 2}, {vW + 2, bottom + 1, vS}}, striding.harvest, nplots.harvest), 
 } 
-core.status(2, "trees", "cover to", plots.cover[#plots.cover])
-core.status(2, "trees", "finish to", plots.finish[#plots.finish])
-core.status(2, "trees", "harvest to", plots.harvest[#plots.harvest])
+core.status(2, "tree", "cover to", plots.cover[#plots.cover])
+core.status(2, "tree", "finish to", plots.finish[#plots.finish])
+core.status(2, "tree", "harvest to", plots.harvest[#plots.harvest])
 --[[
 ```
 <a id="ops"></a> 
@@ -61,39 +61,39 @@ local replaces = {"minecraft:dirt", "minecraft:grass_block"}
 
 local function quarryOp(index)
   local quarryResult = field.plan("quarry", {plots.quarry[index]})
-  core.status(4, "trees", "quarrying", index, quarryResult)
+  core.status(4, "tree", "quarrying", index, quarryResult)
   return quarryResult
 end
 
 local function layerOp(index)
   local layerResult = field.plan("layer", {plots.layer[index], {"minecraft:dirt"}})
-  core.status(4, "trees", "layering", index, layerResult)
+  core.status(4, "tree", "layering", index, layerResult)
   return layerResult
 end
 
-local function coverOp(index) -- do the  sand cover for one plot of the `trees` field
+local function coverOp(index) -- do the  sand cover for one plot of the `tree` field
   local coverResult = field.plan("layer", {plots.cover[index], {"minecraft:sand"},  replaces})
-  core.status(3, "trees", "covering", index, coverResult)
+  core.status(3, "tree", "covering", index, coverResult)
   return coverResult
 end
 
-local function finishOp(index) -- finish the sand cover for one plot of the `trees` field
+local function finishOp(index) -- finish the sand cover for one plot of the `tree` field
   local finishResult = field.plan("layer", {plots.finish[index], {"minecraft:sand"},  replaces})
-  core.status(3, "trees", "finishing", index, finishResult)
+  core.status(3, "tree", "finishing", index, finishResult)
   return finishResult
 end
 
 local function harvestPath(index, plan) --  harvest one plot of tree field
   local harvestResult = field.plan(plan, {plots.harvest[index]})
-  core.status(3, "trees", "harvestPath", index, harvestResult)
+  core.status(3, "tree", "harvestPath", index, harvestResult)
   return harvestResult
 end 
 
-local function harvestOp(index) return harvestPath(index, "trees") end
+local function harvestOp(index) return harvestPath(index, "tree") end
 
 local function pathOp(index) return harvestPath(index, "path") end
 
-local function testOp() return "trees "..#plots.harvest.." plots "..(vS - vN + 1).." long" end
+local function testOp() return "tree "..#plots.harvest.." plots "..(vS - vN + 1).." long" end
 --[[
 ```
 <a id="plot"></a> 
