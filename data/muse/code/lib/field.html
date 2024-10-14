@@ -31,6 +31,8 @@ The <code>field.make</code> command interface is called with a command table whi
 The <i>field function</i> uses the command table and the <code>bounds</code> to compute values it will pass to <code>field.plot</code> back here in <code>lib/field</code>. One of these values is a function we'll call the <i>field operation</i>. It is selected for the operation (for example, farm's <code>quarry</code> operation) specified in the command table and defined in the <i>field file</i>. Another of these values is the number of plots in the field for that operation.
 <p>
 This is the beginning of the execution train in <code>lib/field</code> that runs from here to <code>field.plot</code> to <code>field.plan</code> to <code>_field.execute</code>. There are excursions to files in the <code>fields/</code> and <code>plans</code> diectories.
+<p>
+TODO: Use this framework for something other than a <code>farm</code>. Perhaps something like a schoolroom, a village, or an underground city.
 <pre><code class="language-lua">
 local function getSelectorRange(ranger) -- ranger could be site.farm:canes, farm:canes, canes
   local _, _, site, first, second = string.find(ranger, "(%w-)%.?(%w<i>):?(%w</i>)$")

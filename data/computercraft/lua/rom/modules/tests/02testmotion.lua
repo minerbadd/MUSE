@@ -2,8 +2,8 @@
 
 dofile(arg[0]:match('.*[/\\]').."/preface.lua") -- set test environment using `preface` in execution path
 
-local core = require("core").core -- --local core = dofile(_G.Muse.lib.."core.lua").core
-local motion = require("motion") -- --local motion = dofile(_G.Muse.lib.."motion.lua"); 
+local core = require("core").core 
+local motion = require("motion") 
 local move, step = motion.move, motion.step
 
 core.log.level(5) -- just a default, set lower to report less, higher to report more
@@ -52,14 +52,14 @@ end
 
 local more = step.forward(3)
 
-prints(19, "steps 1 forward 3", more(), core.ats())
-prints(20, "steps 2 forward 3", more(), core.ats())
-prints(21, "steps 3 forward 3", more(), core.ats())
-prints(22, "steps 4 forward 3", more(), core.ats()) 
+print(19, "steps 1 forward 3", more(), move.ats())
+print(20, "steps 2 forward 3", more(), move.ats())
+print(21, "steps 3 forward 3", more(), move.ats())
+print(22, "steps 4 forward 3", more(), move.ats()) 
 
 print(23, "step to 105 156 207 west")
 for code, remaining, at, direction, all in step.to({105, 156, 207}) do
-  print(23, code, remaining, core.string(at), direction, all)
+  --print(23, code, remaining, core.string(at), direction, all)
 end  
 print(23, "stepped to", core.ats())
 

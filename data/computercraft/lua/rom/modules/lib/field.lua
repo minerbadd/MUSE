@@ -25,6 +25,8 @@ The `field.make` command interface is called with a command table which specifie
 The _field function_ uses the command table and the `bounds` to compute values it will pass to `field.plot` back here in `lib/field`. One of these values is a function we'll call the _field operation_. It is selected for the operation (for example, farm's `quarry` operation) specified in the command table and defined in the _field file_. Another of these values is the number of plots in the field for that operation.
 
 This is the beginning of the execution train in `lib/field` that runs from here to `field.plot` to `field.plan` to `_field.execute`. There are excursions to files in the `fields/` and `plans` diectories.
+
+TODO: Use this framework for something other than a `farm`. Perhaps something like a schoolroom, a village, or an underground city.
 ```Lua
 --]]
 local function getSelectorRange(ranger) -- ranger could be site.farm:canes, farm:canes, canes
