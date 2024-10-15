@@ -531,7 +531,6 @@ return {map = map}
 <a id="commands"></a> 
 Players can use 
 <a href="../programs/erase.html" target="_blank"> `erase`</a>, 
-<a href="../programs/store.html" target="_blank"> `store`</a>, 
 <a href="../programs/sync.html" target="_blank"> `sync`</a>, 
 <a href="../programs/point.html" target="_blank"> `point`</a>, 
 <a href="../programs/range.html" target="_blank"> `range`</a>, 
