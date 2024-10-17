@@ -218,7 +218,7 @@ In the following chapter we'll look at the MUSE libraries that create and make u
 
 In this chapter, as threatened, we'll explore the idea of <a href="https://en.wikipedia.org/wiki/Declarative_programming" target="_blank"> declarative programming </a>. We'll look at using this approach for digging shafts and tunnels to mine ores.  The _what_ of all this will get pretty detailed. In some sense, that's the point. The luxury of just saying _what_ is particularly important when there's a lot of detail (that inevitably will get changed). Apologies in advance: this chapter will be unavoidably detailed in the _what_ in order to ground our exploration.
 
-The _what_ that is to done for our examples is to dig some holes. In particular, shafts down to a given level and tunnels to mine at that level. However, digging is only part of the work. Provisioning a shaft needs, for example, ladders, torches, and storage barrels put just right. For the player's safety, we also need platforms to stand on. 
+The _what_ that is to done for our examples is to dig some holes. In particular, shafts down to a given level and tunnels to mine ore at that level. However, digging is only part of the work. Provisioning a shaft needs, for example, ladders, torches, and storage barrels put just right. For the player's safety, we also need platforms to stand on. 
 
 Let's start looking at where we want to end up. So that we stay within blocks that Minecraft has <a href="https://minecraft.gamepedia.com/Chunk" target="_blank"> loaded </a>, we want to dig (mostly) down rather than out. Straight down has its own preferably avoidable excitements. So we want to dig in a pattern that snakes back and forth digging 
 
@@ -241,7 +241,7 @@ The ladder on the left of this picture is the same one we saw above. Next, imagi
 
 Looking west at that level across the platform looks like the picture below. 
 
-As you look across the platform you can see the ladder down to the next (odd numbered) layer. If we went down that ladder to the (odd numbered) level just below, it would look like the first picture in this series. Good news: we have a repeating pattern to code to. 
+As you look across the platform you can see the ladder down to the next (odd numbered) layer. If we went down that ladder to the (odd numbered) level just below, it would look like the first picture in this series. That's good: we have a repeating pattern to code to. 
 
 <br/>
 <IMG SRC="drawings/06EvenLeft.png" ALIGN="left" hspace ="20"/> 
@@ -292,9 +292,7 @@ As you'll see, the only tricky bit in the code, an admittedly tricky <a href=" h
 For reference, here are the summaries for these files: for the <a href="docs/plans/snake.html" target="_blank"> shaft plan</a>, for the <a href="docs/lib/planner.html" target="_blank">  planner </a>, and for the <a href="docs/lib/worker.html" target="_blank">  worker</a>.
 
 As we mentioned, The CLL for mining is `lib/mine`. Here's its <a href="docs/lib/mine.html" target="_blank"> summary</a>. It supports the  remote CLI for mine operations in <a href="code/lib/net.html#mine" target="_blank">`lib/net`
-</a>. 
-
-The <a href="code/lib/mine.html#mine" target="_blank"> implementation </a> is straight forward (and frankly kinda ugly) with a lot of status monitoring and error checking as it loads and runs plans. If you must look, it might be best studied working from the end of the file to the beginning.
+</a>. The `lib/mine` <a href="code/lib/mine.html#mine" target="_blank"> implementation </a> is straight forward (and frankly kinda ugly) with a lot of status monitoring and error checking as it loads and runs plans. If you must look, it might be best studied working from the end of the file to the beginning.
 
 So far we've only been dealing with the `shaft` command. Actually drilling tunnels (`bore`), navigating in the mine (`post`), and mining the ore (`ores`) is next.
 

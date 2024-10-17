@@ -301,7 +301,7 @@ A design handling persistence, management of distributed state, and remote error
 <p><a id="Chapter6"></a></p>
 <h2 id="chapter-6---planners-and-workers-declarative-programming">Chapter 6 - Planners and Workers, Declarative Programming</h2>
 <p>In this chapter, as threatened, we'll explore the idea of <a href="https://en.wikipedia.org/wiki/Declarative_programming" target="_blank"> declarative programming </a>. We'll look at using this approach for digging shafts and tunnels to mine ores.  The <em>what</em> of all this will get pretty detailed. In some sense, that's the point. The luxury of just saying <em>what</em> is particularly important when there's a lot of detail (that inevitably will get changed). Apologies in advance: this chapter will be unavoidably detailed in the <em>what</em> in order to ground our exploration.</p>
-<p>The <em>what</em> that is to done for our examples is to dig some holes. In particular, shafts down to a given level and tunnels to mine at that level. However, digging is only part of the work. Provisioning a shaft needs, for example, ladders, torches, and storage barrels put just right. For the player's safety, we also need platforms to stand on.</p>
+<p>The <em>what</em> that is to done for our examples is to dig some holes. In particular, shafts down to a given level and tunnels to mine ore at that level. However, digging is only part of the work. Provisioning a shaft needs, for example, ladders, torches, and storage barrels put just right. For the player's safety, we also need platforms to stand on.</p>
 <p>Let's start looking at where we want to end up. So that we stay within blocks that Minecraft has <a href="https://minecraft.gamepedia.com/Chunk" target="_blank"> loaded </a>, we want to dig (mostly) down rather than out. Straight down has its own preferably avoidable excitements. So we want to dig in a pattern that snakes back and forth digging</p>
 <ul>
 <li><strong>down and east</strong> (say), then <strong>down and west</strong> (say) to get to a given (odd numbered) level</li>
@@ -319,7 +319,7 @@ The ladder on the left of this picture is the same one we saw above. Next, imagi
 <IMG SRC="drawings/06Blank.png"/>
 <IMG SRC="drawings/06EvenRight.png" ALIGN="right" hspace ="10"/>
 <p>Looking west at that level across the platform looks like the picture below.</p>
-<p>As you look across the platform you can see the ladder down to the next (odd numbered) layer. If we went down that ladder to the (odd numbered) level just below, it would look like the first picture in this series. Good news: we have a repeating pattern to code to.</p>
+<p>As you look across the platform you can see the ladder down to the next (odd numbered) layer. If we went down that ladder to the (odd numbered) level just below, it would look like the first picture in this series. That's good: we have a repeating pattern to code to.</p>
 <br/>
 <IMG SRC="drawings/06EvenLeft.png" ALIGN="left" hspace ="20"/> 
 <br/><br/><br/><br/>
@@ -355,8 +355,7 @@ Follow the link to see a <a href="drawings/06SnakeShaft.pdf" target="_blank"> sc
 <p>As you'll see, the only tricky bit in the code, an admittedly tricky <a href=" https://en.wikipedia.org/wiki/Mutual_recursion#:~:text=In%20mathematics%20and%20computer%20science,in%20terms%20of%20each%20other" target="_blank"> mutual recursion</a>, is the code handling (and potentially recovering from) the things that make life tricky for turtles: getting <code>blocked</code>, getting <code>lost</code>, and getting <code>empty</code> (running out of fuel).</p>
 <p>For reference, here are the summaries for these files: for the <a href="docs/plans/snake.html" target="_blank"> shaft plan</a>, for the <a href="docs/lib/planner.html" target="_blank">  planner </a>, and for the <a href="docs/lib/worker.html" target="_blank">  worker</a>.</p>
 <p>As we mentioned, The CLL for mining is <code>lib/mine</code>. Here's its <a href="docs/lib/mine.html" target="_blank"> summary</a>. It supports the  remote CLI for mine operations in <a href="code/lib/net.html#mine" target="_blank"><code>lib/net</code>
-</a>.</p>
-<p>The <a href="code/lib/mine.html#mine" target="_blank"> implementation </a> is straight forward (and frankly kinda ugly) with a lot of status monitoring and error checking as it loads and runs plans. If you must look, it might be best studied working from the end of the file to the beginning.</p>
+</a>. The <code>lib/mine</code> <a href="code/lib/mine.html#mine" target="_blank"> implementation </a> is straight forward (and frankly kinda ugly) with a lot of status monitoring and error checking as it loads and runs plans. If you must look, it might be best studied working from the end of the file to the beginning.</p>
 <p>So far we've only been dealing with the <code>shaft</code> command. Actually drilling tunnels (<code>bore</code>), navigating in the mine (<code>post</code>), and mining the ore (<code>ores</code>) is next.</p>
 <p>The <code>plan</code> for mine shafts get us down to a given level for mining ore (and back again). Tunnels need to be bored at a given level to find and dig ore at that level. To minimize fuel consumption, all the digging at a given position is done while the turtle is at that position. This results in a cross shaped pattern for tunnels. Here's what that looks like at an even numbered level looking south-west:</p>
 <IMG SRC="drawings/06CrossEvenTunnels.png"/>
