@@ -55,11 +55,10 @@ function turtle.getItemDetail(i) return turtle.slots[i or selected] end
 function turtle.refuel() _G.Muse.fuel = refuelLevel; return _G.Muse.fuel > 0 end
 function turtle.getFuelLevel() return _G.Muse.fuel end
 
---:# <i>Inspection shows dirt for down direction, otherwise nothing.</i>
-local function turtleInspect(direction)
-  if direction == "down" then return true, {name="minecraft:dirt"} end
-  return false, "nothing " 
-end
+--:# <i>Inspection shows dirt for down direction coal for up, otherwise nothing.</i>
+local function turtleInspect()   return false, {name = "nothing here"} end
+local function turtleInspectDown() return true, {name="minecraft:dirt"} end
+local function turtleInspectUp() return true, {name="minecraft:coal"} end
 
 function turtle.inspect() return turtleInspect() end
 function turtle.inspectUp() return turtleInspect("up") end
