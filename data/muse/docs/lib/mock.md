@@ -7,7 +7,7 @@
 --:+ _As well as barrels, granite, potatoes, carrots, beetroot seeds, and kelp._    
 --:+ _And advanced computers, ender modems, disk drives and floppies in its slots._  
 
---:# _Inspection shows dirt for down direction coal for up, otherwise nothing._  
+--:# _Inspection shows dirt for down direction, otherwise nothing._  
 
 --:# turtle.block(blocked: ^:) -> _Sets blocked status to `blocked` for debug_ -> blocked: `^:`  
 

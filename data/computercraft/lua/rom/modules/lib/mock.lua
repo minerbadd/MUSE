@@ -49,14 +49,9 @@ function turtle.refuel() _G.Muse.fuel = refuelLevel; return _G.Muse.fuel > 0 end
 function turtle.getFuelLevel() return _G.Muse.fuel end
 
 --:# _Inspection shows dirt for down direction, otherwise nothing._
-local function turtleInspect(direction)
-  if direction == "down" then return true, {name="minecraft:dirt"} end
-  return false, "nothing " 
-end
-
-function turtle.inspect() return turtleInspect() end
-function turtle.inspectUp() return turtleInspect("up") end
-function turtle.inspectDown() return turtleInspect("down") end
+function turtle.inspect() return false, {name="nothing here"} end
+function turtle.inspectUp() return  true, {name="minecraft:coal"} end
+function turtle.inspectDown() return true, {name="minecraft:dirt"}  end
 
 --:# turtle.block(blocked: ^:) -> _Sets blocked status to `blocked` for debug_ -> blocked: `^:`
 function turtle.block(blocked) _G.Muse.blocked = blocked; return _G.Muse.blocked end -- for testing

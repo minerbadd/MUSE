@@ -121,7 +121,7 @@ local fences = {
 }
 
 local dirts = {"minecraft:dirt", "minecraft:coarse_dirt",}
-local fills, tests = core.merge(stones, dirts), {"found item"}
+local fills, tests = core.merge(stones, dirts), {"found test item"}
 
 local categories = {fuel = fuels, ore = ores, fill = fills, dirt = dirts, stone = stones, fence = fences, test = tests}
 --:> group: _Materials_ -> `"fuel" | "ore"| "fill" | "dirt" | "stone" | "fence" | "test"`
