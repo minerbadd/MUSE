@@ -20,7 +20,7 @@ After the usual library introduction, there's a table,  `pickMove`, of anonymous
 ```Lua
 --]]
 -- :# **How the turtle moves toward the player (allowing for repeats to deal with blockages)**
-local function to(a, b, c) move.to({a, b, c, "north"}) end 
+local function to(x, y, z) move.to({x, y, z, "north"}) end 
 
 local pickMove = { -- t* turtle, tt* target; hy is ty or tty -- ToDO: make this into a little (declarative) language
 
@@ -59,6 +59,7 @@ end
 
 local function moveHere(picker, tx, ty, tz, ttx, tty, ttz) --t* turtle, tt* target
   pickMove[picker](tx, ty, tz, ttx, tty, ttz) -- sequentially to deal with blockages
+  return "done", 0, move.ats()
 end
 
 local function fueled(tx, ty, tz, ttx, tty, ttz)
@@ -78,7 +79,7 @@ function roam.come(xyz) -- **needs GPS for {xyz}**, lib/remote RPC "come" dispat
   local ttx = px - 1 * (dx == 0 and 0 or math.abs(dx)/dx) -- turtle target 1 away from player along travel vector
   local ttz = pz - 1 * (dz == 0 and 0 or math.abs(dz)/dz) -- turtle target 1 away from player along travel vector
   local tty = py - 1; local hy = fueled(tx, ty, tz, ttx, tty, ttz)
-  local moveOK, report = core.pass(pcall(moveHere, comes, tx, hy, tz, ttx, tty, ttz)) 
+  local moveOK, report = core.pass(pcall(moveHere, comes(), tx, hy, tz, ttx, tty, ttz)) 
   if moveOK then return "At "..core.xyzf({ttx, tty, ttz}) end
   return report -- failure report
 end 
@@ -94,10 +95,10 @@ Modulo arithmetic incrementing a global variable bound to `roam.picks.try` is us
 --]]
 local function tryTo(arguments) -- repeated calls try each direction in turn
   --:- to place | x y z face?-> _To named place or position and face. Retry for different first direction._ 
-  local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = move.at() -- from
+  local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
   local to = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
   local ttx, tty, ttz = table.unpack(to); local hy = fueled(tx, ty, tz, ttx, tty, ttz)
-  local moveOK, code, index, xyzfacing =  core.pass(pcall(moveHere, trys, tx, hy, tz, ttx, tty, ttz))
+  local moveOK, code, index, xyzfacing =  core.pass(pcall(moveHere, trys(), tx, hy, tz, ttx, tty, ttz))
   if not moveOK then error("roam.tryTo: Could not roam to ".. to.." because "..code.." at "..move.ats()) end
   return code, index, xyzfacing
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}

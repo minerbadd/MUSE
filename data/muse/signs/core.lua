@@ -22,10 +22,10 @@ function core.xyzf() end
 ---@type fun(targets: string[]):  detail? 
 function core.findItems() end
 
--- Next integer down if below half fraction
--- core.round(n: #:):  `#:` <-
----@type fun(n: number):  number 
-function core.round() end
+-- Iterator over table beginning at index.
+-- core.inext(table: {:}, index: #:):  `(:), {:}, #:` <-
+---@type fun(table: table,  index: number):  function,  table,  number 
+function core.inext() end
 
 -- bounds:  :`[xyz, xyz]`
 ---@alias bounds [xyz, xyz] # Vector pair defining a rectangular solid
@@ -80,9 +80,10 @@ function core.sleep() end
 ---@type fun(id: number?):  id: number 
 function core.getComputerID() end
 
--- closing:  `(value: any): value: any`
----@alias closing fun(value: any):  value: any # Returns value or sets it and optional table entry to non `nil` `value`.
-
+-- Out of game returns label; label ignored in game.
+-- core.getComputerLabel(label: ":"?):  `label: ":"` <-
+---@type fun(label: string?):  label: string 
+function core.getComputerLabel() end
 
 -- If level less than `status` threshold, report `rest` as string.
 -- core.report(level: #:, ...: any):  `nil` <-
@@ -107,77 +108,76 @@ function core.pass() end
 ---@alias xyzMap  xyz[] # Table of vectors either an array or dictionary
 
 
--- For testing; just returns its arguments.
--- core.echo(...: any):  ...: `any` <-
----@type fun(...: any):  ...: any 
-function core.echo() end
-
--- Set threshold level [and local log file] for status reports
--- core.logging(arguments: :[level: #:, filename: ":"]):  `nil` <-
----@type fun(arguments: [number, string]):  nil 
-function core.logging() end
-
--- Deep copy source table or return source if not table.
--- core.clone(source: {:}|any):  `{:}|any` <-
----@type fun(source: table|any):  table|any 
-function core.clone() end
-
--- detail.damage:  `#:`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias detail.damage  number # Distinguishing value
-
-
--- Register command completions for shell
--- core.completer(completions: {:}):  `(:)` <-
----@type fun(completions: table):  function 
-function core.completer() end
-
--- If level less than (elimination) threshold, then report rest as string. If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol. If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.
--- core.status(level: #:, ...: any):  `nil` <-
----@type fun(level: number,  ...: any):  nil 
-function core.status() end
-
--- detail:  `{name: detail.name, count: detail.count, damage: detail.damage}`
----@alias detail {name: detail.name,  count: detail.count,  damage: detail.damage} # Defined by Computercraft
-
-
--- Executable string to instantiate input.
--- core.serialize(input: any):  `"return "..":" &!` <-
----@type fun(input: any):  "return "..string 
-function core.serialize() end
-
--- Makes string from any inputs, simplifies single entry tables.
--- core.string(...: any):  `":"` <-
----@type fun(...: any):  string 
-function core.string() end
-
--- Out of game returns label; label ignored in game.
--- core.getComputerLabel(label: ":"?):  `label: ":"` <-
----@type fun(label: string?):  label: string 
-function core.getComputerLabel() end
-
--- core.faces:  "north"|"south"|"east"|"west"|"up"|"down"|"rotate"
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias core.faces  "north"|"south"|"east"|"west"|"up"|"down"|"rotate" # Key for composed function dictionary
-
+-- Make plots. Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result. The number n is the number of bounds in result where each bound is offset by addend from the prior bounds. Optionally the partial bounds are included as the first bounds in the result.
+-- core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?):  `bounds[]` <-
+---@type fun(start: bounds,  addend: xyz,  number: number,  partial: bounds?):  bounds[]
+function core.vectorPairs() end
 
 -- Find first matching item in pair of item tables.
 -- core.match(tableA: any[], tableB: any[]):  `nil` | `any` <-
 ---@type fun(tableA: any[],  tableB: any[]):  nil | any 
 function core.match() end
 
+-- Deep copy source table or return source if not table.
+-- core.clone(source: {:}|any):  `{:}|any` <-
+---@type fun(source: table|any):  table|any 
+function core.clone() end
+
+-- If level less than (elimination) threshold, then report rest as string. If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol. If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.
+-- core.status(level: #:, ...: any):  `nil` <-
+---@type fun(level: number,  ...: any):  nil 
+function core.status() end
+
+-- Register command completions for shell
+-- core.completer(completions: {:}):  `(:)` <-
+---@type fun(completions: table):  function 
+function core.completer() end
+
+-- detail.damage:  `#:`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias detail.damage  number # Distinguishing value
+
+
+-- detail:  `{name: detail.name, count: detail.count, damage: detail.damage}`
+---@alias detail {name: detail.name,  count: detail.count,  damage: detail.damage} # Defined by Computercraft
+
+
+-- Next integer down if below half fraction
+-- core.round(n: #:):  `#:` <-
+---@type fun(n: number):  number 
+function core.round() end
+
+-- core.faces:  "north"|"south"|"east"|"west"|"up"|"down"|"rotate"
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias core.faces  "north"|"south"|"east"|"west"|"up"|"down"|"rotate" # Key for composed function dictionary
+
+
+-- closing:  `(value: any): value: any`
+---@alias closing fun(value: any):  value: any # Returns value or sets it and optional table entry to non `nil` `value`.
+
+
+-- Makes string from any inputs, simplifies single entry tables.
+-- core.string(...: any):  `":"` <-
+---@type fun(...: any):  string 
+function core.string() end
+
+-- Executable string to instantiate input.
+-- core.serialize(input: any):  `"return "..":" &!` <-
+---@type fun(input: any):  "return "..string 
+function core.serialize() end
+
 -- detail.count:  `#:`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias detail.count  number # Available in inventory
 
 
--- Iterator over table beginning at index.
--- core.inext(table: {:}, index: #:):  `(:), {:}, #:` <-
----@type fun(table: table,  index: number):  function,  table,  number 
-function core.inext() end
+-- Set threshold level [and local log file] for status reports
+-- core.logging(arguments: :[level: #:, filename: ":"]):  `nil` <-
+---@type fun(arguments: [number, string]):  nil 
+function core.logging() end
 
--- Make plots. Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result. The number n is the number of bounds in result where each bound is offset by addend from the prior bounds. Optionally the partial bounds are included as the first bounds in the result.
--- core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?):  `bounds[]` <-
----@type fun(start: bounds,  addend: xyz,  number: number,  partial: bounds?):  bounds[]
-function core.vectorPairs() end
+-- For testing; just returns its arguments.
+-- core.echo(...: any):  ...: `any` <-
+---@type fun(...: any):  ...: any 
+function core.echo() end
 return { core =  core}

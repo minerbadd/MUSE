@@ -19,6 +19,7 @@ _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtl
 _G.Muse.tracking = {limit = 500, enabled = nil}; 
 _G.Muse.delays = {gps = 1, dds = 3} -- for game setup before running dds
 _G.Muse.stack, _G.Muse.slots, _G.Muse.attempts = 64, 16, 5
+_G.Muse.sequenced = true
 
 _G.Muse.package = _G.Muse.lib.."?.lua"
 package.path = _G.Muse.package

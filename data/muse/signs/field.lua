@@ -35,36 +35,36 @@ function field.extents() end
 ---@type fun(parameters: [string, string, string, string?]):  string 
 function field.fill() end
 
--- Put fencing using `layer` plan.
--- field.fence(parameters: :[ranger: ":", fencing: ":"?]):  `":"` <-
----@type fun(parameters: [string, string?]):  string 
-function field.fence() end
+-- field.plotSpan: _ :`[_:, _:, first: #:?, last: #:??]`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias field.plotSpan [any, any, number?, number?] # {}` spans all plots; if only first, default plots after first
+
 
 -- paths:  `{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}`
 ---@alias paths {start: string[],  odd: string[],  even: string[],  last: string[]} # Flying ox traverse of three dimensional rectangular solid
 
 
--- fieldOp:  ":"
----@alias fieldOp  string # Operation name in the set for a particular kind of field
-
+-- Plots Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`).
+-- field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?):  `report: ":" &: &!` <-
+---@type fun(commands: field.plotSpan,  fieldsOp: function,  fieldOpName: string,  plots: number,  offset: xyz?):  report: string 
+function field.plot() end
 
 -- craft:  `":"`
 ---@alias craft  string # Minecraft item `detail.name` without `minecraft:` prefix
 
 
--- field.count:  `[fieldOp]: #:`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias field.count {[fieldOp]: number} # dictionary keyed by 'opName` for number of elements in field for that operation
+-- eP:  `:[xyz, xyz]`
+---@alias eP [xyz, xyz] # pair of coordinates for extents
 
 
 -- strides:  `[fieldOp]: #:`
 ---@alias strides {[fieldOp]: number} # dictionary keyed by `opName` for the distance along the stride axis for a striding
 
 
--- field.plotSpan: _ :`[_:, _:, first: #:?, last: #:??]`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias field.plotSpan [any, any, number?, number?] # {}` spans all plots; if only first, default plots after first
-
+-- Called by plan prototype file to generate plans for plot.
+-- field.paths(bounds: xyz[]):  `paths, yDelta: #:, xzEdge: facing` <-
+---@type fun(bounds: xyz[]):  paths,  yDelta: number,  xzEdge: facing 
+function field.paths() end
 
 -- Quarry out blocks from one place to the other.
 -- field.cut(places: :[nearPlace: ":", farPlace: ":"]):  `":" &:` <-
@@ -76,10 +76,9 @@ function field.cut() end
 ---@type fun(commands: fieldCommands,  faced: boolean):  report: string 
 function field.make() end
 
--- Plots Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`).
--- field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?):  `report: ":" &: &!` <-
----@type fun(commands: field.plotSpan,  fieldsOp: function,  fieldOpName: string,  plots: number,  offset: xyz?):  report: string 
-function field.plot() end
+-- fieldOp:  ":"
+---@alias fieldOp  string # Operation name in the set for a particular kind of field
+
 
 -- fieldParameters:  :`[bounds, fieldParameters.fills?, fieldParameters.removeables??]`
 ---@alias fieldParameters [bounds, fieldParameters.fills?, fieldParameters.removeables?] # bounds` (and materials to fill and replace)
@@ -95,8 +94,9 @@ function field.till() end
 ---@type fun(planName: string,  fielding: fieldParameters,  offset: xyz?):  report: string 
 function field.plan() end
 
--- eP:  `:[xyz, xyz]`
----@alias eP [xyz, xyz] # pair of coordinates for extents
+-- field.count:  `[fieldOp]: #:`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias field.count {[fieldOp]: number} # dictionary keyed by 'opName` for number of elements in field for that operation
 
 
 -- fieldParameters.removeables:  `group|craft[]`
@@ -104,10 +104,10 @@ function field.plan() end
 ---@alias fieldParameters.removeables  group|craft[] # Material replaced by fill
 
 
--- Called by plan prototype file to generate plans for plot.
--- field.paths(bounds: xyz[]):  `paths, yDelta: #:, xzEdge: facing` <-
----@type fun(bounds: xyz[]):  paths,  yDelta: number,  xzEdge: facing 
-function field.paths() end
+-- Put fencing using `layer` plan.
+-- field.fence(parameters: :[ranger: ":", fencing: ":"?]):  `":"` <-
+---@type fun(parameters: [string, string?]):  string 
+function field.fence() end
 
 -- To `put``.
 -- _field.fillTill(thePlan: ":", parameters: :[nearPlace: ":", farPlace: ":", filling: ":", target: ":"?]):  `":"` <-
@@ -119,20 +119,20 @@ function _field.fillTill() end
 ---@type fun(plans: _field.plans,  levels: number,  fieldings: fieldParameters,  planName: string):  string 
 function _field.execute() end
 
--- Use`layer` or `till` plan.
--- _field.put(thePlan: ":", start: #:, finish: #:, filling: ":", target: ":"?):  `":" &:` <-
----@type fun(thePlan: string,  start: number,  finish: number,  filling: string,  target: string?):  string 
-function _field.put() end
+-- Get coordinate pair for named places.
+-- _field.makeBounds(nearPlace: ":", farPlace: ":"):  `xyz, xyz, #:, #:` <-
+---@type fun(nearPlace: string,  farPlace: string):  xyz,  xyz,  number,  number 
+function _field.makeBounds() end
 
 -- Fly ox.
 -- _field.runElements(bounds: :[xyzStart: xyz, xyzFinish: xyz]):  `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing` <-
 ---@type fun(bounds: [xyz, xyz]):  runs:_field.runs,  yDelta: number,  xzDelta: number,  xzEdge: facing 
 function _field.runElements() end
 
--- Get coordinate pair for named places.
--- _field.makeBounds(nearPlace: ":", farPlace: ":"):  `xyz, xyz, #:, #:` <-
----@type fun(nearPlace: string,  farPlace: string):  xyz,  xyz,  number,  number 
-function _field.makeBounds() end
+-- Use`layer` or `till` plan.
+-- _field.put(thePlan: ":", start: #:, finish: #:, filling: ":", target: ":"?):  `":" &:` <-
+---@type fun(thePlan: string,  start: number,  finish: number,  filling: string,  target: string?):  string 
+function _field.put() end
 
 -- Use plan.quarry to cut.
 -- _field.cut(places: :[nearPlace: ":", farPlace: ":"]):  `report: ":" &:` <-

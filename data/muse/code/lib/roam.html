@@ -26,7 +26,7 @@ local places = require("places") local place, moves = places.place, places.moves
 After the usual library introduction, there's a table,  <code>pickMove</code>, of anonymous functions differing only in the order of x, y, and z coordinate movement. On each call to <code>picks</code> the order number gets incremented modulo the number of entries in the table so each <code>pickMove[picks()]</code> tries a different sequence of x, y, z to <code>move.to</code> the target position. There's a bit of defensive programming, <code>here</code>, before each try as a player repetitively commands the turtle to <code>come</code>.
 <pre><code class="language-lua">
 -- :# <b>How the turtle moves toward the player (allowing for repeats to deal with blockages)</b>
-local function to(a, b, c) move.to({a, b, c, "north"}) end 
+local function to(x, y, z) move.to({x, y, z, "north"}) end 
 
 local pickMove = { -- t<i> turtle, tt</i> target; hy is ty or tty -- ToDO: make this into a little (declarative) language
 
@@ -65,6 +65,7 @@ end
 
 local function moveHere(picker, tx, ty, tz, ttx, tty, ttz) --t<i> turtle, tt</i> target
   pickMove[picker](tx, ty, tz, ttx, tty, ttz) -- sequentially to deal with blockages
+  return "done", 0, move.ats()
 end
 
 local function fueled(tx, ty, tz, ttx, tty, ttz)
@@ -84,7 +85,7 @@ function roam.come(xyz) -- <b>needs GPS for {xyz}</b>, lib/remote RPC "come" dis
   local ttx = px - 1 * (dx == 0 and 0 or math.abs(dx)/dx) -- turtle target 1 away from player along travel vector
   local ttz = pz - 1 * (dz == 0 and 0 or math.abs(dz)/dz) -- turtle target 1 away from player along travel vector
   local tty = py - 1; local hy = fueled(tx, ty, tz, ttx, tty, ttz)
-  local moveOK, report = core.pass(pcall(moveHere, comes, tx, hy, tz, ttx, tty, ttz)) 
+  local moveOK, report = core.pass(pcall(moveHere, comes(), tx, hy, tz, ttx, tty, ttz)) 
   if moveOK then return "At "..core.xyzf({ttx, tty, ttz}) end
   return report -- failure report
 end 
@@ -98,10 +99,10 @@ Modulo arithmetic incrementing a global variable bound to <code>roam.picks.try</
 <pre><code class="language-lua">
 local function tryTo(arguments) -- repeated calls try each direction in turn
   --:- to place | x y z face?-> <i>To named place or position and face. Retry for different first direction.</i> 
-  local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = move.at() -- from
+  local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
   local to = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
   local ttx, tty, ttz = table.unpack(to); local hy = fueled(tx, ty, tz, ttx, tty, ttz)
-  local moveOK, code, index, xyzfacing =  core.pass(pcall(moveHere, trys, tx, hy, tz, ttx, tty, ttz))
+  local moveOK, code, index, xyzfacing =  core.pass(pcall(moveHere, trys(), tx, hy, tz, ttx, tty, ttz))
   if not moveOK then error("roam.tryTo: Could not roam to ".. to.." because "..code.." at "..move.ats()) end
   return code, index, xyzfacing
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
