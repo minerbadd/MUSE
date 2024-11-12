@@ -32,7 +32,7 @@ local function makeDirections(front, up, down, op, lib) -- TODO: extend `directi
     lib[op][cardinal] = function(q) move[cardinal](0) return front(q) end 
   end
   lib[op].up = function(q) return up(q) end; lib[op].down = function(q) return down(q) end; 
-  lib[op].forward = function(q) return front(q) end -- `q` is quantity argument if needed
+  lib[op].forward = function(q) return front(q) end -- `q` is argument if needed
 end
 
 local function makeOperations(operations, library)

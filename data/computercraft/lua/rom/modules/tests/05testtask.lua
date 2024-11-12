@@ -9,13 +9,14 @@ core.log.level(3); place.site("TT")
 local function test(number, ...) print(".."..number, core.string(...)) end
 
 test(1, "look", task.op {"look", "east"})
+test(1.1, "look", task.op {"look", "up"})
 test(2, "attack", task.op {"attack", "east"})
 test(3, "find coal", task.op {"find", "coal"})
 test(4, "find fuel", task.op {"find", "fuel"})
 test(5, "drop east 1", task.op {"drop", "coal", "east", "1"})
 test(6, "drop east", task.op {"drop", "coal", "east"})
 local result = task.op {"find", }
-test(7, "find\n"..result)
+test(7, "found the following\n"..result)
 test(8, "suck", task.op {"suck", "east"})
 test(9, "inspect air", task.op {"look", "up"})
 test(10, "dig up", task.op {"dig", "up", "6", "up"})

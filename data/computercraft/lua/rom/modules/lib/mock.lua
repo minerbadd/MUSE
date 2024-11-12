@@ -49,7 +49,7 @@ function turtle.refuel() _G.Muse.fuel = refuelLevel; return _G.Muse.fuel > 0 end
 function turtle.getFuelLevel() return _G.Muse.fuel end
 
 --:# _Inspection shows dirt for down direction, otherwise nothing._
-function turtle.inspect() return false, {name="nothing here"} end
+function turtle.inspect() return false, "nothing here" end
 function turtle.inspectUp() return  true, {name="minecraft:coal"} end
 function turtle.inspectDown() return true, {name="minecraft:dirt"}  end
 

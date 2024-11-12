@@ -3,7 +3,8 @@
 dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using `preface` in execution path
 local core, turtle = require("core").core, require("turtle").turtle
 
-do local result, item = turtle.inspects.down(); print (1, result, item.name) end
+do local result, item = turtle.inspects.east(); print (1, result, result and item.name or item) end
+do local result, item = turtle.inspects.up(); print (1.1, result, result and item.name or item) end
 
 -- checkTarget(targets, itemDetail) -- item inspected by turtle is in targets?
 local ores = {"minecraft:coal_ore", "minecraft:iron_ore", "minecraft:gold_ore",}
