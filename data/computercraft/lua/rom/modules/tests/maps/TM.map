@@ -1,63 +1,20 @@
-return {"TM.neathe", "testing", {{facing="east", fuel=0, position={y=70, x=100, z=200, }, level="same", }, }, {}, }
-return {"TM.neathe:02", "shaft", {{facing="south", fuel=56, position={y=62, x=100, z=200, }, level="same", }, }, {shaft="snake", }, }
-return {"TM.neathe:02", "shaft", {{facing="south", fuel=56, position={y=62, x=100, z=200, }, level="same", }, }, {}, }
-return {"TM.neathe:01", "shaft", {{facing="south", fuel=68, position={y=66, x=100, z=200, }, level="same", }, }, {shaft="snake", }, }
-return {"TM.neathe:01", "shaft", {{facing="south", fuel=68, position={y=66, x=100, z=200, }, level="same", }, }, {}, }
-return {"TM.neathe:00", "shaft", {{facing="east", fuel=0, position={y=70, x=100, z=200, }, level="same", }, }, {shaft="snake", }, }
-return {"TM.neathe:00", "shaft", {{facing="east", fuel=0, position={y=70, x=100, z=200, }, level="same", }, }, {}, }
-return {"TM.neathe", "testing", {{facing="east", fuel=0, position={y=70, x=100, z=200, }, level="same", }, }, {}, }
-return {"TM.neathe:03", "shaft", {{facing="south", fuel=44, position={y=58, x=100, z=200, }, level="same", }, }, {bore="cross", shaft="snake", }, }
-return {"TM.neathe:05", "shaft", {{facing="south", fuel=20, position={y=50, x=100, z=200, }, level="same", }, }, {shaft="snake", }, }
-return {"TM.neathe:05", "shaft", {{facing="south", fuel=20, position={y=50, x=100, z=200, }, level="same", }, }, {}, }
-return {"TM.neathe:04", "shaft", {{facing="south", fuel=32, position={y=54, x=100, z=200, }, level="same", }, }, {shaft="snake", }, }
-return {"TM.neathe:04", "shaft", {{facing="south", fuel=32, position={y=54, x=100, z=200, }, level="same", }, }, {}, }
-return {"TM.neathe:03", "shaft", {{facing="south", fuel=44, position={y=58, x=100, z=200, }, level="same", }, }, {shaft="snake", }, }
-return {"TM.neathe:03", "shaft", {{facing="south", fuel=44, position={y=58, x=100, z=200, }, level="same", }, }, {}, }
-return {"TM.neathe:03:SW21", "outer", {{facing="west", fuel=45, position={y=58, x=76, z=221, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:SW21", "outer", {{facing="west", fuel=45, position={y=58, x=76, z=221, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:S21", "inner", {{facing="west", fuel=73, position={y=58, x=100, z=221, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:S21", "inner", {{facing="west", fuel=73, position={y=58, x=100, z=221, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:SE21", "outer", {{facing="south", fuel=3, position={y=58, x=124, z=221, }, level="same", }, }, {bore="cross", }, }
-return {"TM.neathe:03:SE21", "outer", {{facing="south", fuel=3, position={y=58, x=124, z=221, }, level="same", }, }, {}, }
-return {"TM.neathe:03:SE15", "outer", {{facing="east", fuel=9, position={y=58, x=124, z=215, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:SE15", "outer", {{facing="east", fuel=9, position={y=58, x=124, z=215, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:S15", "inner", {{facing="east", fuel=37, position={y=58, x=100, z=215, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:S15", "inner", {{facing="east", fuel=37, position={y=58, x=100, z=215, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:SW15", "outer", {{facing="south", fuel=67, position={y=58, x=76, z=215, }, level="same", }, }, {bore="cross", }, }
-return {"TM.neathe:03:SW15", "outer", {{facing="south", fuel=67, position={y=58, x=76, z=215, }, level="same", }, }, {}, }
-return {"TM.neathe:03:SW09", "outer", {{facing="west", fuel=73, position={y=58, x=76, z=209, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:SW09", "outer", {{facing="west", fuel=73, position={y=58, x=76, z=209, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:S09", "inner", {{facing="west", fuel=1, position={y=58, x=100, z=209, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:S09", "inner", {{facing="west", fuel=1, position={y=58, x=100, z=209, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:SE09", "outer", {{facing="south", fuel=31, position={y=58, x=124, z=209, }, level="same", }, }, {bore="cross", }, }
-return {"TM.neathe:03:SE09", "outer", {{facing="south", fuel=31, position={y=58, x=124, z=209, }, level="same", }, }, {}, }
-return {"TM.neathe:03:SE03", "outer", {{facing="east", fuel=37, position={y=58, x=124, z=203, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:SE03", "outer", {{facing="east", fuel=37, position={y=58, x=124, z=203, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:S03", "inner", {{facing="east", fuel=65, position={y=58, x=100, z=203, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:S03", "inner", {{facing="east", fuel=65, position={y=58, x=100, z=203, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:SW03", "outer", {{facing="south", fuel=95, position={y=58, x=76, z=203, }, level="same", }, }, {bore="cross", }, }
-return {"TM.neathe:03:SW03", "outer", {{facing="south", fuel=95, position={y=58, x=76, z=203, }, level="same", }, }, {}, }
-return {"TM.neathe:03:NW03", "outer", {{facing="west", fuel=1, position={y=58, x=76, z=197, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:NW03", "outer", {{facing="west", fuel=1, position={y=58, x=76, z=197, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:N03", "inner", {{facing="west", fuel=29, position={y=58, x=100, z=197, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:N03", "inner", {{facing="west", fuel=29, position={y=58, x=100, z=197, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:NE03", "outer", {{facing="south", fuel=59, position={y=58, x=124, z=197, }, level="same", }, }, {bore="cross", }, }
-return {"TM.neathe:03:NE03", "outer", {{facing="south", fuel=59, position={y=58, x=124, z=197, }, level="same", }, }, {}, }
-return {"TM.neathe:03:NE09", "outer", {{facing="east", fuel=65, position={y=58, x=124, z=191, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:NE09", "outer", {{facing="east", fuel=65, position={y=58, x=124, z=191, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:N09", "inner", {{facing="east", fuel=93, position={y=58, x=100, z=191, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:N09", "inner", {{facing="east", fuel=93, position={y=58, x=100, z=191, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:NW09", "outer", {{facing="south", fuel=23, position={y=58, x=76, z=191, }, level="same", }, }, {bore="cross", }, }
-return {"TM.neathe:03:NW09", "outer", {{facing="south", fuel=23, position={y=58, x=76, z=191, }, level="same", }, }, {}, }
-return {"TM.neathe:03:NW15", "outer", {{facing="west", fuel=29, position={y=58, x=76, z=185, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:NW15", "outer", {{facing="west", fuel=29, position={y=58, x=76, z=185, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:N15", "inner", {{facing="west", fuel=57, position={y=58, x=100, z=185, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:N15", "inner", {{facing="west", fuel=57, position={y=58, x=100, z=185, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:NE15", "outer", {{facing="south", fuel=87, position={y=58, x=124, z=185, }, level="same", }, }, {bore="cross", }, }
-return {"TM.neathe:03:NE15", "outer", {{facing="south", fuel=87, position={y=58, x=124, z=185, }, level="same", }, }, {}, }
-return {"TM.neathe:03:NE21", "outer", {{facing="east", fuel=93, position={y=58, x=124, z=179, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:NE21", "outer", {{facing="east", fuel=93, position={y=58, x=124, z=179, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:N21", "inner", {{facing="east", fuel=21, position={y=58, x=100, z=179, }, level="rise", }, }, {bore="cross", }, }
-return {"TM.neathe:03:N21", "inner", {{facing="east", fuel=21, position={y=58, x=100, z=179, }, level="rise", }, }, {}, }
-return {"TM.neathe:03:NW21", "outer", {{facing="north", fuel=51, position={y=58, x=76, z=179, }, level="same", }, }, {bore="cross", }, }
-return {"TM.neathe:03:NW21", "outer", {{facing="north", fuel=51, position={y=58, x=76, z=179, }, level="same", }, }, {}, }
+return {"TM.test0", "label0", {{facing="east", fuel=0, position={y=66, x=199, z=262, }, level="same", }, }, {}, }
+return {"TM.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TM.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TM.rome", "home", {{facing="east", fuel=0, position={y=25, x=15, z=35, }, level="same", }, }, {}, }
+return {"TM.test3", "label3", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TM.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields="trees", }, }
+return {"TM.head20", "trail2021", {{facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="north", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="east", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="south", fuel=70, position={y=150, x=100, z=210, }, level="same", }, {facing="south", fuel=60, position={y=160, x=100, z=210, }, level="rise", }, {facing="west", fuel=60, position={y=160, x=100, z=210, }, level="same", }, {facing="north", fuel=60, position={y=160, x=100, z=210, }, level="same", }, {facing="east", fuel=50, position={y=160, x=110, z=210, }, level="same", }, {facing="south", fuel=40, position={y=160, x=110, z=220, }, level="same", }, {facing="south", fuel=30, position={y=170, x=110, z=220, }, level="rise", }, {facing="east", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="south", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="west", fuel=20, position={y=170, x=120, z=220, }, level="same", }, }, {}, }
+return {"TM.tail21", "trail2021", {{facing="west", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="south", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="east", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="south", fuel=30, position={y=170, x=110, z=220, }, level="rise", }, {facing="south", fuel=40, position={y=160, x=110, z=220, }, level="same", }, {facing="east", fuel=50, position={y=160, x=110, z=210, }, level="same", }, {facing="north", fuel=60, position={y=160, x=100, z=210, }, level="same", }, {facing="west", fuel=60, position={y=160, x=100, z=210, }, level="same", }, {facing="south", fuel=60, position={y=160, x=100, z=210, }, level="rise", }, {facing="south", fuel=70, position={y=150, x=100, z=210, }, level="same", }, {facing="east", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="north", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, }, {}, }
+return {"TM.trail20", "test20", {{facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, }, {trueKey=true, tableKey={1, 2, 3, }, textKey="theText", }, }
+return {"TM.trail20", "test20", {{facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, }, {textKey="theText", trueKey=true, }, }
+return {"TM.trail20", "test20", {{facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, }, {trueKey=true, }, }
+return {"TM.tail21", "trail2021", {{facing="west", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="south", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="east", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="south", fuel=30, position={y=170, x=110, z=220, }, level="rise", }, {facing="south", fuel=40, position={y=160, x=110, z=220, }, level="same", }, {facing="east", fuel=50, position={y=160, x=110, z=210, }, level="same", }, {facing="north", fuel=60, position={y=160, x=100, z=210, }, level="same", }, {facing="west", fuel=60, position={y=160, x=100, z=210, }, level="same", }, {facing="south", fuel=60, position={y=160, x=100, z=210, }, level="rise", }, {facing="south", fuel=70, position={y=150, x=100, z=210, }, level="same", }, {facing="east", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="north", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, }, {}, }
+return {"TM.head20", "trail2021", {{facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="north", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="east", fuel=0, position={y=150, x=100, z=200, }, level="same", }, {facing="south", fuel=70, position={y=150, x=100, z=210, }, level="same", }, {facing="south", fuel=60, position={y=160, x=100, z=210, }, level="rise", }, {facing="west", fuel=60, position={y=160, x=100, z=210, }, level="same", }, {facing="north", fuel=60, position={y=160, x=100, z=210, }, level="same", }, {facing="east", fuel=50, position={y=160, x=110, z=210, }, level="same", }, {facing="south", fuel=40, position={y=160, x=110, z=220, }, level="same", }, {facing="south", fuel=30, position={y=170, x=110, z=220, }, level="rise", }, {facing="east", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="south", fuel=20, position={y=170, x=120, z=220, }, level="same", }, {facing="west", fuel=20, position={y=170, x=120, z=220, }, level="same", }, }, {}, }
+return {"TM.trail20", "test20", {{facing="west", fuel=0, position={y=150, x=100, z=200, }, level="same", }, }, {}, }
+return {"TM.tests", "range", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, {facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {fields="trees", }, }
+return {"TM.test3", "label3", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TM.rome", "home", {{facing="east", fuel=0, position={y=25, x=15, z=35, }, level="same", }, }, {}, }
+return {"TM.test2", "label2", {{facing="east", fuel=0, position={y=20, x=10, z=40, }, level="same", }, }, {}, }
+return {"TM.test1", "label1", {{facing="east", fuel=0, position={y=20, x=10, z=30, }, level="same", }, }, {}, }
+return {"TM.test0", "label0", {{facing="east", fuel=0, position={y=66, x=199, z=262, }, level="same", }, }, {}, }

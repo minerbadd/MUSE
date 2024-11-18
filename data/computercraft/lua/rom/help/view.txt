@@ -2,4 +2,4 @@
 
 view place
  
-Report place details including all situations and features.
+Report place details including name, label (if any), features and all situations.

@@ -438,7 +438,7 @@ If we got here, we're at the end of the (ahem) trail. The `return` peels all the
 local resetTrack -- forward reference --:# **Tracking Movement: completing movement**
 
 trackMotion = function(current) -- from turn operations and xyzUpdate, add a situation only for turns and level changes 
-  local situations = move.situations(); situations[situations + 1] = current; 
+  local situations = move.situations(); situations[#situations + 1] = current; 
   local reset = (_G.Muse.tracking.limit and #situations + 1 > _G.Muse.tracking.limit) 
   return reset and resetTrack(current) or "done" -- #situations and at() returned by `moveCount` or `stepCount`
 end

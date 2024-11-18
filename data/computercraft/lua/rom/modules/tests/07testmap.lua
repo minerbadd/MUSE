@@ -10,29 +10,35 @@ map.map(path.."maps/TM.map"); place.site("TM"); map.charts(path.."charts/")
 core.log.level(4); turtle.blocking(false); core.setComputerLabel("tester")
 local function test(number, ...) print(".."..number, ...) end
 
-print(0, map.op({"test", "test", "test", "199", "66", "262", "east"}))
-local x, y, z, f = move.where(10, 20, 30, "east"); print(0.1, x, y, z, f)
+test(0, map.op({"test", "test0", "label0", "199", "66", "262", "east"}))
+local x, y, z, f = move.where(10, 20, 30, "east"); test(0.1, x, y, z, f)
 -- face (dx, dz, ew, we, ns, sn) -- face(dx, dz, "east", "west", "south", "north") -> 
 local facing = map.testFacing(0, -10, {"east", "west", "south", "north"})
-print(0.2, facing, "expect north")
-do local xyzf = place.fix({10, 20, 30,"east"});print(0.3,core.string(xyzf)) end
+test(0.2, facing, "expect north")
+do local xyzf = place.fix({10, 20, 30,"east"});test(0.3,core.string(xyzf)) end
 
-print(1, core.string(map.op {"point", "test1", "label1"} ))
-do local xyzf = place.fix({10, 20, 40,"east"}); print(1.1, core.string(xyzf)) end
-print(1.2, core.string(map.op {"point","test2", "label2"} ))
-test(1.5, core.string(map.op {"test", "rome", "home", "15", "25", "35", "east"}))
-test(1.6, core.string(map.op {"test", "test3", "label3", "10", "20", "30", "east"}))
+test(1, core.string(map.op {"point", "test1", "label1"} ))
+do local xyzf = place.fix({10, 20, 40,"east"}); test(1.1, core.string(xyzf)) end
+test(1.2, core.string(map.op {"point","test2", "label2"} ))
+test(1.3, core.string(map.op {"test", "rome", "home", "15", "25", "35", "east"}))
+test(1.4, core.string(map.op {"test", "test3", "label3", "10", "20", "30", "east"}))
 
 test(2, core.string(map.op {"near"}))
-test(2.1, core.string(map.op {"near", 10}))
+test(2.1, core.string(map.op {"near", "10"})) -- span as placeName
 test(2.2, core.string(map.op {"near", "test1"}))
-test(2.3, core.string(map.op {"near", "test1", 10}))
-
+test(2.3, core.string(map.op {"near", "test1", "10"}))
+--[[
 test(3, core.string(map.op {"where", nil, 10, 20, 20}))
 test(3.1, core.string(map.op {"where", nil, 2, 10, 20, 20}))
 test(3.2, core.string(map.op {"where", nil, nil, 15, 20, 25}))
 test(3.3, core.string(map.op {"where","test1", nil, 15, 20, 25}))
-test(3.4, core.string(map.op {"where", "test1", nil, "15", "20", "25"}))
+test(3.4, core.string(map.op {"where", "test1", "2", "15", "20", "25"}))
+--]]
+test(3, core.string(map.op {"where", "10", "20", "20"}))
+test(3.1, core.string(map.op {"where", 2, 10, 20, 20}))
+test(3.2, core.string(map.op {"where", nil, nil, 15, 20, 25}))
+test(3.3, core.string(map.op {"where","test1", nil, 15, 20, 25}))
+test(3.4, core.string(map.op {"where", "test1", "2", "15", "20", "25"}))
 
 test(4, core.string(map.op {"range", "tests", "range", "test1", "test2", "fields", "trees"}))
 test(5, map.op {"view", "tests"}); 
@@ -41,7 +47,9 @@ move.set(100, 150, 200, "west"); move.to({100, 150, 200,"west"});
 test(6, core.string(map.op {"point", "trail20", "test20", "head20"}))
 move.set(100, 150, 200,"west"); move.to({100, 160, 210,"west"}); move.to({110, 170, 220,"east"}); move.to({120, 170, 220,"north"})
 test(6.1, core.string(map.op {"trail", "tail21", "trail2021"}))
-test(6.2, map.op {"view", "trail20"}); test(6.3, map.op {"view", "head20"}); test(6.4, map.op {"view", "tail21"})
+test(6.2, map.op {"view", "trail20"}); -- name, label, features, situations
+test(6.3, map.op {"view", "head20"}); 
+test(6.4, map.op {"view", "tail21"})
 
 test(7, map.borders("trail20")) -- map.borders({range}) -> _Get range_ -> `{:borders}, {:features}, {:xyzFirst}, {:xyzSecond}`
 

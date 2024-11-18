@@ -255,13 +255,15 @@ end
 All the turtle movement we've just spoken of is in support of establishing a known position and orientation (a `fix`) to anchor future dead reckoning of turtle position and orientation. The `fix` function also fixes the beginning of a `trail`.
 ```Lua
 --]]
-_G.Muse.trailhead = _G.Muse.trailhead or {}; local trailhead = _G.Muse.trailhead -- survives between commands
+_G.Muse.trailhead = _G.Muse.trailhead or {}; 
 
-local function fix(trail, tx, ty, tz, tf) -- just for turtles, t* for no gps -> "report:
+local trailhead = _G.Muse.trailhead -- survives between commands
+
+local function fix(trail, tx, ty, tz, tf) -- just for turtles in-game , t* for test (no gps) -> "report:
   --:- fix trail? -> _Set and report GPS turtle position for dead reckoning. Optionally begin named trailhead._
-  if not turtle then return "Not a turtle" end -- only interesting for turtles, not player, command, or GPS cluster computers
+  if not turtle and not tf then return "Not a turtle" end -- in-game for turtles, not for player or other computers
   local x, y, z, _, ok = move.where(tx, ty, tz, tf); if not ok then return "(No GPS)" end
-  local facing = tf or changes(x, y, z) -- **turtle dance to find orientation**
+  local facing = tf or changes(x, y, z) -- if no tf **turtle dance to find orientation**
   local fixed = place.fix({x, y, z, facing}, trail) -- set position and start a track if starting a trail
   if trail then trailhead.name = place.qualify(trail) end -- use trailhead.name in call to `trail`
   local xf, yf, zf = table.unpack(fixed); local fixes = core.round(xf)..", "..core.round(yf)..", "..core.round(zf)
@@ -281,7 +283,7 @@ local function point(name, label, trail, tx, ty, tz, tf) -- t* for no gps; tf fo
   local x, y, z, f = move.where(tx, ty, tz, tf);
   if trail then fix(trail, x, y, z, f or "north") end -- dance and track in `fix` if trail
   local serial, index = place.name(name, label); update(serial) -- append 
-  return place.qualify(name)..", "..label.." in "..index.. " of places", index
+  return place.qualify(name)..", "..label.." ("..index..")", index
 end; map.hints["point"] = {["?name "] = {["?label "] = {["??trailname"] = {}}} }
 
 function map.set(name, label, x, y, z, f) return point(name, label, false, x, y, z, f) end
@@ -472,14 +474,15 @@ end; map.hints["headings"] = {["??place "] = {["??rate "] = {["???#lines"] = {}}
 Note the use of the `place.near` iterator and the anonymous function argument to `table.sort`.
 ```Lua
 --]]
-local function near(span, placeName) -- list places near span (or all) near place (or player position or turtle situation)
+local function near(placeName, span) -- list places near span (or all) near place (or player position or turtle situation)
 --:- near place? span?? -> _Report points within span blocks (or all) of named place (or current player or turtle position)._
   local itemCount, report, position = 0, {}, player and {core.where()}
   if position and #position == 0 then error("map.near: GPS failure "..core.string(position)) end
+  local spanned = tonumber(placeName) and placeName or tonumber(span)-- consider span as placeName
   
-  for namepoint, labelpoint, xyzfpoint, distance, situations in place.near(tonumber(span), placeName or position) do 
+  for namepoint, labelpoint, xyzfpoint, distance, situations in place.near(spanned, placeName or position) do 
     itemCount = itemCount +1; local x, y, z = table.unpack(xyzfpoint); local xyzfString = core.xyzf({x, y, z})
-    report[#report + 1] = {core.round(distance), " "..namepoint..": "..xyzfString.." "..labelpoint.." ("..#situations..")"}
+    report[#report + 1] = {core.round(distance), " "..namepoint..": "..xyzfString.." "..labelpoint.." ["..#situations.."]"}
   end; table.sort(report, function(a,b) return a[1] < b[1] end) -- anonymous sort function on `distance`
   
   for i = 1, #report do local distance, text = table.unpack(report[i]); report[i] = tostring(distance)..text end
@@ -488,7 +491,7 @@ local function near(span, placeName) -- list places near span (or all) near plac
 end; map.hints["near"] = {["?place "] = {["??span"] = {}}}
 
 local function view(target)
-  --:- view place -> _Report place details including all situations and features._
+  --:- view place -> _Report place details including name, label (if any), features and all situations._
   local index, placed = place.match(assert(target, "map: need place to view")); 
   assert(placed, "map value: no match for "..place.qualify(target))
   local name, label, situations, features = table.unpack(placed)
@@ -496,7 +499,6 @@ local function view(target)
   local situationStrings = {} for _, situation in ipairs(situations) do 
     situationStrings[#situationStrings + 1] = core.xyzf({move.get(situation)})
   end; local situationList = table.concat(situationStrings, "\n")
-  
   return name..": "..(label or "_").." ("..index..")\n"..core.string(features).."\n"..situationList
 end; map.hints["view"] = {["?place"] = {}}
 --[[

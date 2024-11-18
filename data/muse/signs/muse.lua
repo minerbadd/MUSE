@@ -700,9 +700,9 @@ CLL operates plan to manage mines: shaft, bore, move to posts (between and withi
 }
 ,
   ["_view_"] = {
-  ["line"] = "  --:- view place -> _Report place details including all situations and features._",
+  ["line"] = "  --:- view place -> _Report place details including name, label (if any), features and all situations._",
   ["sign"] = "view place  ",
-  ["text"] = "Report place details including all situations and features.",
+  ["text"] = "Report place details including name, label (if any), features and all situations.",
   ["kind"] = "cli",
 }
 ,
@@ -2651,7 +2651,7 @@ Resets places to the empty table.",
   ["type"] = "function",
   ["name"] = "place.near",
   ["description"] = "\
- If both the span and name or position are specified, return places within a span of blocks of the named place or position. If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.",
+ If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position). If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.",
 }
 ,
   ["xyzf"] = {

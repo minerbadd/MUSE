@@ -38,7 +38,7 @@
 --:# **Answering "where?"**  
 
 --:: place.near(span: #:?, reference?: ":"|position) -> __ -> (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"`    
---:+ _If both the span and name or position are specified, return places within a span of blocks of the named place or position._    
+--:+ _If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position)._    
 --:+ _If only the span is specified, return places within a span of blocks of the current situation or player position._    
 --:+ _If neither is specified return each of the named places. In any case, iterator returns include serialized places._  
 

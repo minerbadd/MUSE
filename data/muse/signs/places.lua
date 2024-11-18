@@ -29,7 +29,7 @@ function place.reset() end
 ---@type fun(name: string?,  number: number?):  xyzf?,  index: number? 
 function place.xyzf() end
 
---  If both the span and name or position are specified, return places within a span of blocks of the named place or position. If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.
+--  If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position). If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.
 -- place.near(span: #:?, reference?: ":"|position):  (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"` <-
 ---@type fun(span: number?,  reference?: string|position): fun():  name: string,  label: string,  xyz,  distance: number,  situations,  serial: string 
 function place.near() end

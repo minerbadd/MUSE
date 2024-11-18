@@ -46,7 +46,7 @@ sync: Muse Update (MU) broadcast local map to (MQ) registered units.
 
 tail rate?: Move `rover` every rate (default 5) seconds towards GPS player position.
 
-view place: Report place details including all situations and features.
+view place: Report place details including name, label (if any), features and all situations.
 
 wait: Locally on turtle, wait for rednet message. Useful as recovery for uncaught turtle error.
 

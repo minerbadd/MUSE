@@ -133,7 +133,7 @@ The upvalues of iterators establish part of its execution context. It's tempting
 
 function place.near(span, reference) -- iterator: places in span distance of current situation|place or all places
 --:: place.near(span: #:?, reference?: ":"|position) -> __ -> (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"`
---:+ _If both the span and name or position are specified, return places within a span of blocks of the named place or position._
+--:+ _If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position)._
 --:+ _If only the span is specified, return places within a span of blocks of the current situation or player position._
 --:+ _If neither is specified return each of the named places. In any case, iterator returns include serialized places._
   local situation = type(reference) == "string" and placeSituation(reference) or _G.Muse.situation
@@ -146,7 +146,8 @@ function place.near(span, reference) -- iterator: places in span distance of cur
       local namePlace, labelPlace, situations = table.unpack(place.places[index])
       local positionPlace = situations[1].position;
       local xyzPlace = {positionPlace.x, positionPlace.y, positionPlace.z}
-      local distance = place.distance(xyzPlace, xyzSituation); if not span or distance <= span then 
+      local distance = place.distance(xyzPlace, xyzSituation); 
+      if not span or distance <= span then 
         return namePlace, labelPlace, xyzPlace, distance, situations, core.serialize(place.places[index]) 
       end
     end

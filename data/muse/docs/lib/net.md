@@ -67,7 +67,7 @@
 
 --:- near place? span?? -> _Report points within span blocks (or all) of named place (or current player or turtle position)._  
 
---:- view place -> _Report place details including all situations and features._  
+--:- view place -> _Report place details including name, label (if any), features and all situations._  
 
 --:- where place? count?? -> _Report movement direction, distance to named place (or all) three (or count) closest places._   
 
