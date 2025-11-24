@@ -1,0 +1,6 @@
+return {"TH:rome", "home", {{facing="west", fuel=0, position={y=68, x=210, z=262, }, level="same", }, }, {}, }
+return {"TH.rome", "home", {{facing="north", fuel=0, position={y=0, x=0, z=0, }, level="same", }, }, {}, }
+return {"TH.rome", "home", {{facing="north", fuel=0, position={y=0, x=0, z=0, }, level="same", }, }, {}, }
+return {"TH.rome", "home", {{facing="west", fuel=0, position={y=68, x=210, z=262, }, level="same", }, }, {}, }
+return {"TH.rome", "home", {{facing="west", fuel=0, position={y=68, x=210, z=262, }, level="same", }, }, {}, }
+return {"TH.rome", "home", {{facing="west", fuel=0, position={y=68, x=210, z=262, }, level="same", }, }, {}, }

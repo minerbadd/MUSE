@@ -9,7 +9,7 @@
 package.path = _G.Muse.package
 ---@diagnostic disable-next-line: undefined-field
 local rednet, turtle = _G.rednet, _G.turtle or require("mock").turtle -- mock out game
-local core = {}; core.hints = {}; --- @module "signs.core"                     
+local core = {}; core.hints = {}; --- @module "signs.core"  
 --[[
 ```
 <a id="clone"></a>
@@ -22,13 +22,11 @@ Finally although MUSE makes no use of them, the <a href="https://www.lua.org/pil
 --:# **Managing state: clone table, generate closure for session (non-persistent) state, cache loads**
 function core.clone(source)
   --:: core.clone(source: {:}|any) -> _Deep copy source table or return source if not table._ -> `{:}|any`
-  if type(source) ~= "table" then return source end; local result = {}
+  if type(source) ~= "table" then return source end 
+  local result = {}
   for key, value in pairs(source) do
-    if type(value) == "table" then
-      result[key] = core.clone(value)
-    else
-      result[key] = value
-    end
+    if type(value) == "table" then result[key] = core.clone(value)
+    else result[key] = value end
   end; setmetatable(result, getmetatable(source));
   return result
 end
@@ -45,11 +43,11 @@ function core.state(table, key)
   --:: core.state(table: {:}?, key: ":"?) -> _Returns closure over closure variable_ -> `closing`
   local variable = nil
   return
-      function(value)
-        if type(value) == "nil" then return variable end
-        variable = value; if table then table[key] = value end
-        return variable
-      end
+  function(value)
+    if type(value) == "nil" then return variable end
+    variable = value; if table then table[key] = value end
+    return variable
+  end
 end
 
 --[[
@@ -206,7 +204,8 @@ _G.Muse.log = _G.Muse.log or {};  -- log controls
 _G.Muse.quit = false; 
 
 function core.quit(value)
-  if value then _G.Muse.quit = value end; return _G.Muse.quit
+  if value then _G.Muse.quit = value end 
+  return _G.Muse.quit
 end
 
 local function resume() _G.Muse.quit = false end
@@ -290,9 +289,10 @@ local function complete(current, commands, completions)
   -- adapted from https://www.computercraft.info/wiki/Shell.setCompletionFunction
   local tree = completions; for i = 2, #commands do
     local key = tree[commands[i] .. " "]      -- start tree traversal with pattern
-    if not key then return {} end; tree = key -- at end of match or traverse the tree to current node for commands so far
-  end; local results = {};                    -- traversed to current node; now accumulate possible completions at its leaves
-  for word, _ in pairs(tree) do
+    if not key then return {} end
+    tree = key -- at end of match or traverse the tree to current node for commands so far
+  end; -- traversed to current node; now accumulate possible completions at its leaves
+  local results = {}; for word, _ in pairs(tree) do
     if word:sub(1, #current) == current then results[#results + 1] = word:sub(#current + 1) end
   end; return results
 end
@@ -335,11 +335,11 @@ In what is a common pattern, the exported `core.vectorPairs` function sets up th
 --:# **Math utilities**
 local function inVectors(start, addends, number, result, count)
   if count > number then return result end
-  local inner = {}; for j = 1, #addends do                    -- each addend is an x, y, z vector
-    local sx, sy, sz = table.unpack(start[j])                 -- assume same number of addend vectors as start vectors
-    local ax, ay, az = table.unpack(addends[j])               -- for clarity rather than efficiency
-    inner[j] = { sx + ax, sy + ay, sz + az }                  -- make one of the result vectors
-  end; result[count] = inner                                  -- include it in the accumulated result for next start vector
+  local inner = {}; for j = 1, #addends do      -- each addend is an x, y, z vector
+    local sx, sy, sz = table.unpack(start[j])   -- assume same number of addend vectors as start vectors
+    local ax, ay, az = table.unpack(addends[j]) -- for clarity rather than efficiency
+    inner[j] = { sx + ax, sy + ay, sz + az }    -- make one of the result vectors
+  end; result[count] = inner                    -- include it in the accumulated result for next start vector
   return inVectors(inner, addends, number, result, count + 1) -- and cumulatively produce the next result
 end
 
@@ -353,7 +353,6 @@ function core.vectorPairs(start, addend, number, partial) -- each table element 
   partial = partial and { partial } or {}; partial[#partial + 1] = start
   return inVectors(start, { addend, addend }, number, partial, #partial + 1) -- #addends = 2 for pairs
 end
-
 --[[
 ```
 More vector arithmetic. And a simple example of <a> href="https://en.wikipedia.org/wiki/Function_composition" target="_blank"> function composition </a>.
@@ -422,10 +421,10 @@ function core.findItems(targets) -- nil if no slot with target otherwise slot de
   --:> detail.count: _Available in inventory_ -> `#:`
   --:> detail.damage: _Distinguishing value_ -> `#:`
   ---@diagnostic disable-next-line: undefined-field
-  local slots = _G.turtle and _G.Muse.slots or #turtle.slots                                     -- for out-of-game testing
+  local slots = _G.turtle and _G.Muse.slots or #turtle.slots -- for out-of-game testing
   for i = 1, slots do
     local detail = turtle.getItemDetail(i)
-    for _, target in ipairs(targets) do                                               -- if target == "" then return true end --TODO: OK??
+    for _, target in ipairs(targets) do  -- if target == "" then return true end --TODO: OK??
       if detail and detail.name == target then return detail, i, turtle.select(i) end -- select if success
     end
   end; return nil

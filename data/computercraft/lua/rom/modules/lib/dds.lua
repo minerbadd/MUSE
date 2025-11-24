@@ -8,7 +8,7 @@ This module provides a library handling the mapping of numbers (ComputerCraft co
 
 Some MUSE roles are native to a MUSE `site`. Unsited turtles in these `landed` roles will be given the player's site. 
 
-This library provides the DDS facilities needed for remote calls. Remote calls allow errors to be reported back to the player. Otherwise, errors would only be visible locally so this library's file operation errors, for example, wouldn't be seen by player.
+The library provides the DDS facilities needed for remote calls. Remote calls allow errors to be reported back to the player. Otherwise, errors would only be visible locally so this library's file operation errors, for example, wouldn't be seen by player.
 
 The so-called DDS facilities only work in-game. The ComputerCraft network interfaces are not mocked. However, the library exports a default mapping.
 ```Lua
