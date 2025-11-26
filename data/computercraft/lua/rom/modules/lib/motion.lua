@@ -584,11 +584,16 @@ The important issue, though, is testing.
 
 Testing. Developing the tests for a library is just part of developing that library. If done as the library is developed, the tests can be really help in keeping the development on course. The test is also a check on the utility and expressiveness of the library's interface. Done during library development, it's easier (costs less) to change. A test provides usage examples as a complement to interface documentation. Perhaps most importantly, when a library's code (inevitably) needs to be restructured for whatever reason (clarity, better fit into its context, whatever), the tests support the will to make the necessary changes. In the case of development for environments such as ComputerCraft with limited debugging support, it's a crucial aid (together with an IDE). Additionally, tests provide a sandbox where errors have limited, easily repaired, consequences.
 
-Most of the `lib/motion` test is straightforward and needs no discussion. (You'll need to look at the `lua/rom/modules/tests` directory if you're interested.) The `steps` facility, however, might be worth a look:
+Most of the `lib/motion` test is straightforward and needs no discussion. (You'll need to look at the `lua/rom/modules/tests` directory and `lua/rom/lib/checks.lua` if you're interested.) The `steps` facility, however, might be worth a look:
 ```Lua
-for code, remaining, ats in step.east(3) do 
-  print(18, "step.east(3)", code, remaining, ats)
-end
+local testMotion = check.open(_G.Muse.checks, _G.Muse.testSetName, testName) 
+local function checking(partID, result) testMotion.part(testName, partID, result) end
+.......
+local stepping = 26
+for code, remaining, at, direction, all in step.to({105, 156, 207}) do stepping = stepping + 0.001
+  print (stepping, code, remaining, core.string(at), direction, all)
+end  
+checking(28, "stepped to", core.ats())
 ```
 The output looks like this:
 <pre>
@@ -601,7 +606,7 @@ At each step east, the body of the `do` statement is executed and the result of 
 Here's another example:
 ```Lua
 local function prints(n, op, code, remaining, xyzf)
-  print(n, xyzf, code, remaining, "...", op)
+  checking(n, xyzf, code, remaining, "...", op)
 end
 
 local more = step.forward(3)

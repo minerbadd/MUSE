@@ -143,7 +143,8 @@ function place.near(span, reference) -- iterator: places in span distance of cur
       local namePlace, labelPlace, situations = table.unpack(place.places[index])
       local positionPlace = situations[1].position;
       local xyzPlace = {positionPlace.x, positionPlace.y, positionPlace.z}
-      local distance = place.distance(xyzPlace, xyzSituation); if not span or distance <= span then 
+      local distance = place.distance(xyzPlace, xyzSituation); 
+      if not span or distance <= span then 
         return namePlace, labelPlace, xyzPlace, distance, situations, core.serialize(place.places[index]) 
       end
     end

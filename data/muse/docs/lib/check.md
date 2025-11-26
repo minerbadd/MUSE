@@ -1,0 +1,2 @@
+--:! {check: []: (:)} <- **Regression Check Functions Library** -> muse/docs/lib/check.md    
+--:| check: _Setup context, save and match expected results for parts of tests, run regression for those tests_ -> check  

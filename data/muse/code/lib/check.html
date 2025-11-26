@@ -1,19 +1,26 @@
---[[
-```
+<!DOCTYPE html> 
+  <html> 
+  <head> 
+  <link href="../../../../assets/prism.css" rel="stylesheet" /> 
+  <link href="../../../../assets/downmark.css" rel="stylesheet" /> 
+  </head> 
+  <body> 
+     <script src="../../../../assets/prism.js"></script> 
+
+</code></pre>
 <a id="tests"></a>
-#Doing the Tests
-
-There's not much here. Just a way with `check.open` to create a `check` object with the context needed to save results by the `part` operation for each part of a given test. Those _expected_ results are compared with actuals during a regression validation. There's a cleanup operation to `close` the opened `check` object.
-
-_The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> `poor man's objects`</a>. (This link dumps you into a theory heavy digression. Go there when you're ready for that.)_
-
-Finally, `check.tests` is an `iterator` that provides the file names of tests for which there are _expected_ values for regression testing.
-
-For MUSE, all this is enabled by files in a specified checks directory. One file there at the `testSetTablePath` instantiates as a table keyed by names of test files. The keyed values are names of results files. These are found at the `testPartsResultsPath` for the test. The results files instantiate as tables of result strings keyed by part identifiers (as strings) in the test.
-```Lua
---]]
---:! {check: []: (:)} <- **Regression Check Functions Library** -> muse/docs/lib/check.md
---:| check: _Setup context, save and match expected results for parts of tests, run regression for those tests_ -> check
+<h3>Doing the Tests</h3>
+<p>
+There's not much here. Just a way with <code>check.open</code> to create a <code>check</code> object with the context needed to save results by the <code>part</code> operation for each part of a given test. Those <i>expected</i> results are compared with actuals during a regression validation. There's a cleanup operation to <code>close</code> the opened <code>check</code> object.
+<p>
+<i>The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> <code>poor man's objects</code></a>. (This link dumps you into a theory heavy digression. Go there when you're ready for that.)</i>
+<p>
+Finally, <code>check.tests</code> is an <code>iterator</code> that provides the file names of tests for which there are <i>expected</i> values for regression testing.
+<p>
+For MUSE, all this is enabled by files in a specified checks directory. One file there at the <code>testSetTablePath</code> instantiates as a table keyed by names of test files. The keyed values are names of results files. These are found at the <code>testPartsResultsPath</code> for the test. The results files instantiate as tables of result strings keyed by part identifiers (as strings) in the test.
+<pre><code class="language-lua">
+--:! {check: []: (:)} <- <b>Regression Check Functions Library</b> -> muse/docs/lib/check.md
+--:| check: <i>Setup context, save and match expected results for parts of tests, run regression for those tests</i> -> check
 
 ---@diagnostic disable-next-line: undefined-field
 local core = require("core").core ---@module "signs.core"
@@ -28,7 +35,7 @@ local function save(theTable, path) -- utility
 end
 
 local function getTestSetTable(testSetTablePath, testSetName) -- returns testSetTable, newTestSetTable
-  -- `testSetTable`: `testName` keyed names of files with expected results for regressions in `testSetTablePath` directory
+  -- <code>testSetTable</code>: <code>testName</code> keyed names of files with expected results for regressions in <code>testSetTablePath</code> directory
   local openedTestSetTable, failure = loadfile(testSetTablePath..testSetName)
   if openedTestSetTable then return openedTestSetTable(), false end -- testSetTable, newTestSetTable
   if regression and not openedTestSetTable then error("No test set results in "..testSetTablePath..", "..failure) end
@@ -36,7 +43,7 @@ local function getTestSetTable(testSetTablePath, testSetName) -- returns testSet
 end
 
 local function getTestPartsResults(testSetTablePath, testSetTable, testName)
-  -- `testPartsResults`:expected values (as strings) for regression keyed by `partID` of test (as string)
+  -- <code>testPartsResults</code>:expected values (as strings) for regression keyed by <code>partID</code> of test (as string)
   local testPartsResultsPath = testSetTablePath..testSetTable[testName]
   local openedTestPartResults, failure = loadfile(testPartsResultsPath)
   if regression and not openedTestPartResults then -- no expected results file for test!
@@ -45,9 +52,9 @@ local function getTestPartsResults(testSetTablePath, testSetTable, testName)
   return not openedTestPartResults and {} or openedTestPartResults() -- testPartResults
 end
 
-local function open(testSetTablePath, testSetName, testName) -- `testSetTablePath` is e.g. <checks directory path>
+local function open(testSetTablePath, testSetName, testName) -- <code>testSetTablePath</code> is e.g. <checks directory path>
   local testSetTable, newTestSetTable = getTestSetTable(testSetTablePath..testSetName)
-  -- `testSetTable` keys are test names for which regression is valid in test set, values are names of files with test results
+  -- <code>testSetTable</code> keys are test names for which regression is valid in test set, values are names of files with test results
   return getTestPartsResults(testSetTablePath, testSetTable, testName), testSetTable, newTestSetTable -- testPartResults, ...
 end
 
@@ -57,7 +64,7 @@ function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create 
   local this = { -- context (instance) variables, each check object is independent in itself
     testPartResults = testPartResults, testSetTable = testSetTable, newTestSetTable = newTestSetTable,
     testSetTablePath = theTestSetTablePath, testSetName = theTestSetName, testName = theTestName
-  } -- following are the access functions for the `check` object
+  } -- following are the access functions for the <code>check</code> object
   
   local function part(partID, ...) -- at each part of the test
     local partName = tostring(partID); local result, expected = core.string(...), this.testPartResults[partName]
@@ -71,12 +78,16 @@ function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create 
     save(this.testPartResults, this.testSetTablePath..this.testSetTable[this.testName])
     this = nil -- free up now for GC
   end; return {part = part, close = close}
-end -- check object created by `check.open`
+end -- check object created by <code>check.open</code>
 
-function check.tests(testSetTablePath, testSetName) -- returns iterator of `testName` keys of `testSetTablePath` sorted by `testName`
+function check.tests(testSetTablePath, testSetName) -- returns iterator of <code>testName</code> keys of <code>testSetTablePath</code> sorted by <code>testName</code>
   local testSetTable = getTestSetTable(testSetTablePath, testSetName) -- regression appropriate tests
   local tests, i = {}, 1; for testName in pairs(testSetTable) do tests[i] = testName; i = i + 1 end
   table.sort(tests); local j, n = 0, #tests; return function() j = j + 1; if j <= n then return tests[j] end end -- iterator
 end
 
 return {check = check}
+
+  </body> 
+</html>
+

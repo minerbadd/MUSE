@@ -447,7 +447,7 @@ local function near(placeName, span) -- list places near span (or all) near plac
 --:- near place? span?? -> <i>Report points within span blocks (or all) of named place (or current player or turtle position).</i>
   local itemCount, report, position = 0, {}, player and {core.where()}
   if position and #position == 0 then error("map.near: GPS failure "..core.string(position)) end
-  local spanned = type(placeName) == "number" and placeName or tonumber(span)-- consider span as placeName
+  local spanned = tonumber(placeName) and placeName or tonumber(span)-- consider span as placeName
   
   for namepoint, labelpoint, xyzfpoint, distance, situations in place.near(spanned, placeName or position) do 
     itemCount = itemCount +1; local x, y, z = table.unpack(xyzfpoint); local xyzfString = core.xyzf({x, y, z})
