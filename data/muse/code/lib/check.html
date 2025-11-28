@@ -58,6 +58,7 @@ end
 
 -- poor man's object.... encapsulates but no inheritance (didn't see the need to go there)
 function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create check object with context variables
+  --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> <i>Return object(closure).</i> -> <code>:[part:(:), close:(:)]</code>
   local testPartResults, testSetTable, newTestSetTable = open(theTestSetTablePath, theTestSetName, theTestName) 
   local this = { -- context (instance) variables, each check object is independent in itself
     testPartResults = testPartResults, testSetTable = testSetTable, newTestSetTable = newTestSetTable,
@@ -75,10 +76,13 @@ function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create 
     if this.newTestSetTable then save(this.testSetTable, this.testSetTablePath..this.testSetName) end
     save(this.testPartResults, this.testSetTablePath..this.testSetTable[this.testName])
     this = nil -- free up now for GC
-  end; return {part = part, close = close}
+  end
+  
+  return {part = part, close = close}
 end -- check object created by <code>check.open</code>
 
 function check.tests(testSetTablePath, testSetName) -- returns iterator of <code>testName</code> keys of <code>testSetTablePath</code> sorted by <code>testName</code>
+  --:: check.tests(testSetTablePath:":", testSetName:":") -> <i>Return iterator.</i> -> <code>(:)</code>
   local testSetTable = getTestSetTable(testSetTablePath, testSetName) -- regression appropriate tests
   local tests, i = {}, 1; for testName in pairs(testSetTable) do tests[i] = testName; i = i + 1 end
   table.sort(tests); local j, n = 0, #tests; return function() j = j + 1; if j <= n then return tests[j] end end -- iterator
