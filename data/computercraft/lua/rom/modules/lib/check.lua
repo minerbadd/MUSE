@@ -3,11 +3,9 @@
 <a id="tests"></a>
 #Doing the Tests
 
-There's not much here. Just a way with `check.open` to create a `check` object with the context needed to save results by the `part` operation for each part of a given test. Those _expected_ results are compared with actuals during a regression validation. There's a cleanup operation to `close` the opened `check` object.
+There's not much here. Just a way with `check.open` to create a `check` object with the context needed to save results by the `part` operation for each part of a given test. Those _expected_ results are compared with actuals during a regression validation. There's a cleanup operation to `close` the opened `check` object. Finally, `check.tests` is an `iterator` that provides the file names of tests for which there are _expected_ values for regression testing.
 
-_The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> `poor man's objects`</a>. (This link dumps you into a theory heavy digression. Go there when you're ready for that.)_
-
-Finally, `check.tests` is an `iterator` that provides the file names of tests for which there are _expected_ values for regression testing.
+_(The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> `poor man's objects`</a>. This link dumps you into a theory heavy digression. Go there when you're ready for that.)_
 
 For MUSE, all this is enabled by files in a specified checks directory. One file there at the `testSetTablePath` instantiates as a table keyed by names of test files. The keyed values are names of results files. These are found at the `testPartsResultsPath` for the test. The results files instantiate as tables of result strings keyed by part identifiers (as strings) in the test.
 ```Lua
@@ -53,6 +51,7 @@ end
 
 -- poor man's object.... encapsulates but no inheritance (didn't see the need to go there)
 function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create check object with context variables
+  --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> _Return object(closure)._ -> `:[part:(:), close:(:)]`
   local testPartResults, testSetTable, newTestSetTable = open(theTestSetTablePath, theTestSetName, theTestName) 
   local this = { -- context (instance) variables, each check object is independent in itself
     testPartResults = testPartResults, testSetTable = testSetTable, newTestSetTable = newTestSetTable,
@@ -70,10 +69,13 @@ function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create 
     if this.newTestSetTable then save(this.testSetTable, this.testSetTablePath..this.testSetName) end
     save(this.testPartResults, this.testSetTablePath..this.testSetTable[this.testName])
     this = nil -- free up now for GC
-  end; return {part = part, close = close}
+  end
+  
+  return {part = part, close = close}
 end -- check object created by `check.open`
 
 function check.tests(testSetTablePath, testSetName) -- returns iterator of `testName` keys of `testSetTablePath` sorted by `testName`
+  --:: check.tests(testSetTablePath:":", testSetName:":") -> _Return iterator._ -> `(:)`
   local testSetTable = getTestSetTable(testSetTablePath, testSetName) -- regression appropriate tests
   local tests, i = {}, 1; for testName in pairs(testSetTable) do tests[i] = testName; i = i + 1 end
   table.sort(tests); local j, n = 0, #tests; return function() j = j + 1; if j <= n then return tests[j] end end -- iterator
