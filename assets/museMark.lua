@@ -18,9 +18,11 @@ local modules, programs, helps = rom.."modules/", rom.."programs/", rom.."help/"
 local docs, code = muse.."docs/", muse.."code/"; local help = docs.."help.txt"
 local verbose = true
 
-local sourceDirectories = {modules.."lib", modules.."fields", modules.."plans", modules.."charts", modules, programs}
+local sourceDirectories = {
+  modules.."lib", modules.."fields", modules.."plans", modules.."charts", modules, programs, modules.."tests"}
+local codeDirectories = {
+  code.."lib", code.."fields", code.."plans", code.."charts", code.."daemons", code.."programs", code.."tests"}
 local docsDirectories = {docs.."lib", docs.."fields", docs.."plans", docs.."charts", docs.."daemons", docs.."programs"}
-local codeDirectories = {code.."lib", code.."fields", code.."plans", code.."charts", code.."daemons", code.."programs"}
 
 local Mark = require("Mark")
 Mark(apiDirectory, apiFile, sourceDirectories, docsDirectories, codeDirectories, verbose)

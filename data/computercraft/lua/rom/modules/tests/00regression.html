@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+ <html>
+<head>
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.css" rel="stylesheet" />
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/downmark.css" rel="stylesheet" />
+</head>
+<body>
+<script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
+
+<p>
+local here = arg[0]:match('.*[/\\]') -- tests directory
+<p>
+local check = require("check").check
+_G.Muse.regression = true
+<p>
+for _, test in check.tests() do dofile(here..test) end
+-- TODO: maybe catch any thown errors and raise regression failed exception
+<p>
+  </body> 
+</html>
+

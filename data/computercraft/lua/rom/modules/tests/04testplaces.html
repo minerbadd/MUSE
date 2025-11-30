@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+ <html>
+<head>
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.css" rel="stylesheet" />
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/downmark.css" rel="stylesheet" />
+</head>
+<body>
+<script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
+
+-- <b>Tests for <code>place</code>, <code>moves</code>, and <code>steps</code> interfaces of lib/places</b> 
+<p>
+dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using <code>preface</code> in execution path
+<p>
+local core, places = require("core").core, require("places")
+local place, moves, steps = places.place, places.moves, places.steps
+<p>
+place.site("TP")
+<p>
+-- fix = fixPlace, -- (x,y,z,f) for gps calibration ->  {x, y, z, facing} 
+do local xyzf = place.fix({10, 20, 30,"east"}); print(1, table.unpack(xyzf)) end
+<p>
+--name = namePlace, -- (name, label) a situation then adds to global places -> string, index
+print(2, place.name("test1", "label1"))
+<p>
+-- xyzf = xyzfPlace, -- (name) looks up name -> <code>nil</code> | {xyzf}
+do local xyzf = place.fix({20, 30, 40,"west"}); print(3, table.unpack(xyzf)) end
+print(4, place.name("test2", "label2"))
+<p>
+do local xyzf, index = place.xyzf("test1"); print(5, index, core.string(xyzf)) end
+do local xyzf, index = place.xyzf("test2"); print(6, index, core.string(xyzf)) end
+<p>
+-- match = matchPlace, -- (name) looks up name, nil if not found -> <code>nil</code> | (<code>index, place</code>) 
+local a1, a2 = place.match("test1"); print(7, a1, core.serialize(a2))
+<p>
+-- distance = distance, -- ({xyzf}, {xyzf}) -> # Manhatten distance
+print(8, place.distance(place.xyzf("test1"), place.xyzf("test2")))
+-- near = nearPlaces, -- ([span, [place] ])] iterator -> name, label, xyz, index, string
+for name, label, xyz, index, situations in place.near(20, {10, 20, 30}) do 
+  print(9, name, label, core.string(xyz), index, #situations) 
+end
+<p>
+--nearby = nearby, -- (xyz,[cardinal]) -> namedPlaces, a list of named places sorted by distance from xyz
+print(10, core.string(place.nearby({20,35,40})))
+<p>
+do local a, b = place.erase("test1"); print(11,a,b); end
+print(12, core.string(place.nearby({20,35,40})))
+<p>
+do local xyzf = place.fix({10, 15, 25, "west"}); print(13, table.unpack(xyzf)) end --replace
+print(14, place.name("test2", "label2"))
+<p>
+do local xyzf = place.fix({10, 20, 30,"east"}); print(15, table.unpack(xyzf)) end
+print(16, place.name("test1", "label1"))
+<p>
+do local code, remaining, at = moves.to("test2", "y") -- -- test2: 10, max(15, 50), 25, "west" 
+  print(16, code, remaining, core.string(at)) 
+end 
+<p>
+do local xyzf = place.fix({10, 25, 35, "west"}); print(17, table.unpack(xyzf)) end
+print(18, place.name("test2", "label2")) -- start trail at test2: 10,25,35,"west"
+<p>
+for name, label, xyz, index, situations in place.near() do -- check places
+  print(19, name, label, core.string(xyz), index, #situations) 
+end
+<p>
+--to = goToPlace, --(placename) -> y-first movement, returns code, remaining, xyzf
+do local code, remaining, at = moves.to("test1"); 
+  print(20, code, remaining, core.string(at)) 
+end -- go from test2 to test1
+<p>
+--trail = makeTrail, -- headName, tailName, label -> headString, tailString 
+do local hs, ts = place.trail("head2", "tail1", "trail21"); 
+  print(21, hs); print(22, ts) 
+end -- trails goes from test2(head2) to test1(tail1) and back from tail1(test1) back to test2(head2); at test1
+<p>
+for name, label, xyz, index, situations in place.near() do -- check places with trails
+  print(23, name, label, core.string(xyz), index, #situations) 
+end
+<p>
+--test2	{10, 25, 35, }	test1	{10, 20, 30, }	head2	{10, 25, 35, }	tail1	{10, 20, 30, }
+<p>
+-- along = goTrail, --(head|tail) traverse situations returns code, index into situations or nil , xyzf
+do local code, remaining, at = moves.along("tail1"); -- goes to head2(test2) {10, 25, 35, }
+  print(24, code, remaining, core.string(at)) 
+end 
+<p>
+-- to = stepToPlace, --  (place) -> iterator() -> returns code, remaining, xyzf
+for code, remaining, at, direction, all in steps.to("test1") do -- {10, 25, 35, } to {10, 20, 30, }
+  print(25, code, remaining, core.string(at), direction, all)
+end
+<p>
+-- along = stepTrail, -- (head|tail) -> iterator() that will step along each situation of a trail
+for code, remaining, at, direction, all, indexSituations in steps.along("tail1") do -- reverse to {10, 25, 35, }
+  print(26, code, remaining, core.string(at), direction, all, indexSituations)
+end
+<p>
+  </body> 
+</html>
+

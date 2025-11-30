@@ -585,7 +585,7 @@ The important issue, though, is testing.
 
 Testing. Developing the tests for a library is just part of developing that library. If done as the library is developed, the tests can be really help in keeping the development on course. The test is also a check on the utility and expressiveness of the library's interface. Done during library development, it's easier (costs less) to change. A test provides usage examples as a complement to interface documentation. Perhaps most importantly, when a library's code (inevitably) needs to be restructured for whatever reason (clarity, better fit into its context, whatever), the tests support the will to make the necessary changes. In the case of development for environments such as ComputerCraft with limited debugging support, it's a crucial aid (together with an IDE). Additionally, tests provide a sandbox where errors have limited, easily repaired, consequences.
 
-Look at `lua/rom/modules/tests/02testmotion.lua` and <a href="check.html"> `lib/check`</a>` to see how testing works for this module.
+Look at <a href="../tests/02testmotion.html" target = "_blank"> `02testmotion` </a>  and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module.
 
 That's the end of this excursion. Next up is <a href="places.html"> `lib/places` </a> or follow the <a href="../../MiningMUSE.html#Chapter3"> link </a> to return to _MiningMUSE_.
 --]]
