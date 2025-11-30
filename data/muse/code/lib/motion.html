@@ -12,14 +12,15 @@
 The first chunk of code using ComputerCraft that we'll look at is the <code>lib/motion</code> module. Of course, it's about moving turtles. Each <a href="https://en.wikipedia.org/wiki/Library_(computing)" target="_blank">
 <i>library</i></a>, in the module is a collection of code elements for moving turtles in some way. Libraries often build upon each other. That's the case for MUSE and since <code>lib/motion</code> is fundamental in that build, it's where we'll start our exploration. 
 <p>
-It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Spoonful of sugar time I'm afraid.
+It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Spoonful of sugar time I'm afraid. Buckle up.
 <p>
 We'll use this module to illustrate how functions, a fundamental part of Lua, are used to implement our libraries. We'll also use it to introduce some ideas for managing the <a href="https://en.wikipedia.org/wiki/State<i>(computer</i>science)" target="_blank">
 <i>state</i></a> of a turtle and handling the history of that state.
 <p>
 <h3>Introduction and Exports: the overview</h3>
 To help readers and maintainers understand a module, it's useful to organize it by leading it off with an introductory section. We can look at the introduction of this module to get an overall understanding of what it does, its <a href="https://en.wikipedia.org/wiki/Global_variable" target="_blank">
-<i>global</i></a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The <code>motion</code> module includes two libraries, <code>move</code>, and <code>step</code> as noted in the CodeMark <code>API</code> <a href = "../CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following the <code>API</code> filemark, the <code>LIB</code> <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. Annotated type declarations not particular to either the <code>move</code> or <code>step</code> library are saved in the project's API file in a <a href="https://en.wikibooks.org/wiki/A-level<i>Computing/AQA/Paper</i>1/Fundamentals<i>of</i>data_structures/Dictionaries" target="_blank"> dictionary</a> with the module name.
+<i>global</i></a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The <code>motion</code> module includes two libraries, <code>move</code>, and <code>step</code> as noted in the CodeMark <code>API</code> <a href = "../CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following the <code>API</code> filemark, the <code>LIB</code> <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. The exported interfaces of each library along with annotated type declarations not particular to either library are saved in the project's API file. The latter are saved in a <a href="https://en.wikibooks.org/wiki/A-level<i>Computing/AQA/Paper</i>1/Fundamentals<i>of</i>data<i>structures/Dictionaries" target="_blank"> dictionary</a> with the module name. The ZeroBrane Studio <a href="https://en.wikipedia.org/wiki/Integrated</i>development_environment" target="_blank">
+<i>IDE</i></a>, an integrated development environment, can make use of this file for code completion and other API documentation when it it most needed: when you're coding a call to an API. None of this is executable code; it's just documentation.
 <pre><code class="language-lua">
 --:! {move: []: (:), step: []: (:): (:) } <- <b>Move and Step Function Libraries</b> -> muse/docs/lib/motion.md  
 --:| motion: <i>Libraries to move turtles and move turtles by steps allowing operations at each step.</i> -> motion, move, step
@@ -31,28 +32,20 @@ To help readers and maintainers understand a module, it's useful to organize it 
 --:+ <i>Throw some errors as tables rather than strings to allow for attempted recovery operations.</i> 
 </code></pre>
 The first line of the introduction above sets the stage. It tells us that moving turtles is implemented using tables (as dictionaries) of <code>move</code> functions and of something we've called <code>step</code> functions (producing <a href="https://en.wikipedia.org/wiki/Closure<i>(computer</i>programming)" target="_blank">
-<i>closures</i>)</a> . It exports these functions as libraries producing APIs whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank"><i>Markdown</i></a> documentation, <code>muse/docs/lib/motion.md</code>, is found in the <code>docs</code> sub-directory of the <code>muse</code> project directory. Below are those tables of exported functions. We'll fill them in as we go.
+<i>closures</i> </a> which we'll talk about a bit further on). It exports these functions as libraries producing APIs whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank"><i>Markdown</i></a> documentation, <code>muse/docs/lib/motion.md</code>, is found in the <code>docs</code> sub-directory of the <code>muse</code> project directory (for when you might want to look at them later). Below are those tables of exported functions. We'll fill them in as we go.
 <pre><code class="language-lua">
 local move, step = {}, {} ---@module "signs.motion"
 </code></pre>
-The library checks to see that fuel is consumed for all turtle movements that are supposed to have consumed fuel. <a href="https://en.wikipedia.org/wiki/Dead_reckoning" target="_blank">
-<i>Dead reckoning</i></a> 
-keeps track of the whereabouts of the turtle depending on its supposed movement. It does this by updating the <a href="https://en.wikipedia.org/wiki/State<i>(computer</i>science)" target="_blank">
-<i>state</i></a> representing turtle position and orientation, that is, the <code>xyz</code> co-ordinates and the direction the turtle is facing. Doing this for every instructed turtle movement, it assumes a valid starting position and orientation. It checks that each instructed movement actually occurred. If fuel was not consumed by a movement that was reported to have been done successfully, dead reckoning has failed: the turtle is presumed <code>"lost"</code>.  If movement was attempted but reportedly failed, the turtle is said to be <code>"blocked"</code>. If the turtle is out of fuel, and the attempt to refuel failed, the turtle is presumed <code>"empty"</code>.
-<p>
-The <code>"lost"</code>, <code>"blocked"</code>, and <code>"empty"</code> conditions each raise an <code>error</code> reported to callers of <code>lib/motion</code> (and to their callers in turn).  The caller, for example <code>lib/roam</code> (discussed in another chapter), may attempt recovery operations depending on the error information or might just report the error.
-<p>
-As mentioned, the exported APIs for these libraries is provided in two tables of functions: <code>move</code> and <code>step</code>.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the library with <code>require</code> returns these tables. Just below we'll see that done for libraries that <code>lib/motion</code> depends on. <i>(Binding <code>package.path</code> provides the context for <code>require</code>.)</i>
+As mentioned, the exported APIs for these libraries is provided in two tables of functions: <code>move</code> and <code>step</code>.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the library with<a href="https://www.lua.org/pil/8.1.html" target="_blank"> <code>require</code> </a> returns these tables. Just below we'll see that done for libraries that <code>lib/motion</code> depends on.
 <p>
 The <code>lib/motion</code> libraries fit into a larger context.  That context is described by global references and dependencies on other libraries. The <code>@module</code> anotations tell the <a href="https://luals.github.io/wiki/annotations/" target="_blank"> Lua Language server</a>, LLS, where to find the information needed to check references to functions exported, used by and external to this module. (The particular way the external references are made local to this module seemed to be how LLS needed them.) 
 <p>
 Here's what all that looks like for these libraries:
 <pre><code class="language-lua">
-package.path = _G.Muse.package -- to bind locally from global context for <code>require</code>
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 local turtles = require("mock"); local turtle = _G.turtle or turtles.turtle ---@module "signs.mock"
 </code></pre>
-All the MUSE globals are collected in a single global table, <code>_G.Muse</code>, to avoid litter. The table is initialized <a href="../.start.html" target="_blank"> at startup</a> to the empty table if it doesn't yet exist. The <code>rednet</code> local variable is used to determine whether execution is in the game or in a test environment we'll discuss in just a bit: it is bound to <code>nil</code> unless running in the game environment.
+The <code>_G.turtle</code> variable is a ComputerCraft global used to determine whether execution is in the game or in a test environment we'll discuss in just a bit: it is bound to <code>nil</code> unless running in the game environment.
 <p>
 Each ComputerCraft computer including turtles and pocket computers have their own set of globals. These globals are not persistent. They don't stick around after server shutdown, that is, between <a href="https://en.wikipedia.org/wiki/Session<i>(computer</i>science)" target="_blank"><i>sessions</i></a>.  
 However, they do stick around between program executions within a session; they survive <a href="https://en.wikipedia.org/wiki/Garbage<i>collection</i>(computer_science)" target="_blank">
@@ -60,10 +53,18 @@ However, they do stick around between program executions within a session; they 
 <p>
 The <code>lib/motion</code> libraries are quite low level.  A number of other libraries are built upon the functions exported here. As indicated however, they do use some functions exported from <code>lib/core</code>, a collection of generally useful routines for MUSE libraries and programs. We'll get to those as we come across them. The functions are made available to these libraries in a table generated by applying the <code>require</code> function on the <code>lib/core</code> library file. 
 <p>
-The <code>_G.turtle</code> table includes references to the ComputerCraft turtle API functions in-game. However, it turns out to be very helpful to do development in an <a href="https://en.wikipedia.org/wiki/Integrated<i>development</i>environment" target="_blank">
-<i>IDE</i></a>, an integrated development environment, outside the ComputerCraft game. To do so we need mock ups of the most critical <code>turtle</code> functions. These are in the <code>lib/mock.lua</code> library file. The <code>turtle</code> table provides references to functions from ComputerCraft when running in the game environment. It provides references to corresponding mock turtle functions when running in the IDE (for testing and debugging).
+The <code>_G.turtle</code> table includes references to the ComputerCraft turtle API functions in-game. However, it turns out to be very helpful to do development in an IDE, outside the ComputerCraft game. To do so we need mock ups of the most critical <code>turtle</code> functions. These are in the <code>lib/mock</code> library file. The <code>turtle</code> table provides references to functions from ComputerCraft when running in the game environment. It provides references to corresponding mock turtle functions when running in the IDE (for testing and debugging).
 <p>
-We spoke about dead reckoning turtle state earlier. This state is collected in the <code>_G.Muse.situation</code> <a href="https://en.wikipedia.org/wiki/Associative_array" target="_blank">
+MUSE also has global variables. As you'll see, we'll be obsessively careful about changing global values. Additionally, all the MUSE globals are collected as above in a single global table, <code>_G.Muse</code>, to avoid litter. The table is initialized <a href="../.start.html" target="_blank"> at startup</a> to the empty table if it doesn't yet exist.
+<p>
+The library checks to see that fuel is consumed for all turtle movements that are supposed to have consumed fuel. <a href="https://en.wikipedia.org/wiki/Dead_reckoning" target="_blank">
+<i>Dead reckoning</i></a> 
+keeps track of the whereabouts of the turtle depending on its supposed movement. It does this by updating the <a href="https://en.wikipedia.org/wiki/State<i>(computer</i>science)" target="_blank">
+<i>state</i></a> representing turtle position and orientation, that is, the <code>xyz</code> co-ordinates and the direction the turtle is facing. Doing this for every instructed turtle movement, it assumes a valid starting position and orientation. It checks that each instructed movement actually occurred. If fuel was not consumed by a movement that was reported to have been done successfully, dead reckoning has failed: the turtle is presumed <code>"lost"</code>.  If movement was attempted but reportedly failed, the turtle is said to be <code>"blocked"</code>. If the turtle is out of fuel, and the attempt to refuel failed, the turtle is presumed <code>"empty"</code>.
+<p>
+The <code>"lost"</code>, <code>"blocked"</code>, and <code>"empty"</code> conditions each raise an <code>error</code> reported to callers of <code>lib/motion</code> (and to their callers in turn).  The caller, for example <code>lib/roam</code> (discussed in another chapter), may attempt recovery operations depending on the error information or might just report the error.
+<p>
+The dead reckoning turtle state, its <code>situation</code>, is collected in the <code>_G.Muse.situation</code> <a href="https://en.wikipedia.org/wiki/Associative_array" target="_blank">
 <i>dictionary</i></a>, a table indexed (keyed) by named fields. If there isn't one of these when the <code>lib/motion</code> library is loaded, a default set is provided (generally, for testing out of game in the IDE). Cleanly managing this state is one of the implementation issues we'll need to address. 
 <p>
 A turtle's <code>situation</code> includes its position (as a keyed table of numbers) for its <code>x</code>, <code>y</code>, and <code>z</code> Minecraft coordinate values, its orientation (as a string) for the direction it's facing), its fuel (as a number), and an indication (as a string) of whether its level, the y-coordinate in ComputerCraft, is rising, falling, or staying the same . A <code>situation</code> table includes named fields, keys, for <code>position</code>, <code>facing</code>, <code>fuel</code>, and <code>level</code>. Here's how that's annotated with CodeMark type declarations. We'll use the definitions for <code>position</code> and <code>facing</code> throughout MUSE so we document those independently from their inclusion in a <code>situation</code>.
@@ -81,9 +82,9 @@ A turtle's <code>situation</code> includes its position (as a keyed table of num
 _G.Muse.situation = _G.Muse.situation or {position = {x=0, y=0, z=0}, facing = "north", fuel = 0, level = "same"} -- out game testing
 _G.Muse.situations = _G.Muse.situations or {}; -- for session
 </code></pre>
-As we'll see, these libraries provide a tracking facility for repeated movement back and forth along a <code>trail</code> defined by certain changes in a turtle's <code>situation</code>. Trails (<code>_G.Muse.situations</code>) represent a history of turtle state accumulated in a numerically indexed table, each element of which is a (copy of a) <code>situation</code>. Generally turtles are not tracked but they can be by calls to <code>turtle.tracking(true)</code>. 
+As we'll see, <code>lib/motion</code> provide a tracking facility for repeated movement back and forth along a <code>trail</code> defined by certain changes in a turtle's <code>situation</code>. Trails, as <code>_G.Muse.situations</code>, represent a history of turtle state accumulated in an <i>array</i> , a numerically indexed table, each element of which is a (copy of a) <code>situation</code>. Generally turtles are not tracked but they can be by calls to <code>move.track(true)</code>. 
 <p>
-Data structures like these are some of the most pervasive and long lasting elements of a design. You and the aliens from another planet will be working with them for a long time. Some thought about that could payoff in maintenance.
+Data structures like these are some of the most pervasive and long lasting elements of a design. You and the visitors from another planet will be working with them for a long time. Some thought about that could payoff in maintenance.
 <p>
 So much for the introduction.  To know what a MUSE module file exports look at the end of the file. At the end of <code>lib/motion</code> we find:
 <pre><code class="language-lua">
@@ -91,7 +92,7 @@ return {move = move, step = step}
 </code></pre>
 No surprise here. As promised in the first lines of the file, this module exports a table providing two tables of functions. Each table for each exported library. One table is for <code>move</code> functions. These functions are fairly obvious in nature. The other, a mostly parallel set, is for <code>step</code> functions. These, as noted in the introduction, produce Lua <a href="https://www.lua.org/pil/7.1.html" target="_blank"><i>iterators</i></a>. The <code>lib/motion</code> iterators step turtle movement through a count (default 1) of movements in a direction (or to a position) one step at a time.  Operations defined in the body of the <code>do</code> loop controlled by the iterator are executed at each step of the movement. This turns out to be useful later.
 <p>
-The module's CodeMark <a href="../../docs/lib/motion.html" target="_blank"> documentation</a> tells you about each (exported) function in terms of its <code>parameters</code> <code>-></code> <code>operation</code> <code>-></code> <code>values</code> (returned). Some parameters are documented as optional: <code>?</code> and may suggest a default value. The <a href = "../CodeMark/Annotations.html#type" target = "_blank"> type</a> of parameters and return values are also documented: numbers as <code>#:</code>, strings as <code>":"</code>, tables as <code>{:}</code>, functions as <code>(:)</code> The unspecified type is annotated as <code>any</code>. An ignored item is indicated by <code>:_</code>. Parameters and return values may be tagged with a label followed by a colon to provide information to the language server. Sometimes a parameter's name is the same as its definition as in the annotation for <code>move.get</code> below. We'll see these annotations when looking at a library's summary documentation.
+The module's CodeMark <a href="../../docs/lib/motion.html" target="_blank"> documentation</a> tells you about each (exported) function in terms of its <code>parameters</code> <code>-></code> <code>operation</code> <code>-></code> <code>values</code> (returned). Some parameters are documented as optional: <code>?</code> and may suggest a default value. The <a href = "../CodeMark/Annotations.html#type" target = "_blank"> type</a> of parameters and return values are also documented: numbers as <code>#:</code>, strings as <code>":"</code>, tables as <code>{:}</code> or <code>:[]</code>, functions as <code>(:)</code> The unspecified type is annotated as <code>any</code>. An ignored item is indicated by <code>:_</code>. Parameters and return values may be tagged with a label followed by a colon to provide information to the language server. Sometimes a parameter's name is the same as its definition as in the annotation for <code>move.get</code> below. We'll see these annotations when looking at a library's summary documentation.
 <p>
 <h3>Foundation (Utility) Functions</h3>
 It helps to define utility functions used in the module toward the beginning of the file. They are referenced throughout. The ones for <code>lib/motion</code> are pretty simple. They define an interface to a turtle's <code>situation</code> state to provide better hygiene than working directly with the corresponding globals.
@@ -132,7 +133,7 @@ The local function global mutators are collected together here as well. (Yes, th
 <p>
 There's a design decision in foregoing the introduction of 
 <a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank">
-<i>objects</i></a>. Lua provides primitives that can be used to organize state into objects, another means of localizing state. We don't need to introduce the associated concepts here since we:
+<i>objects</i></a> for now. Lua provides primitives that can be used to organize state into objects, another means of localizing state. We don't need to introduce the associated concepts here since we:
 <ul>
 <li><i>get information hiding from Lua's scoping rules for chunks, and</i></li>
 <li><i>don't need to build an 
@@ -142,7 +143,7 @@ There's a design decision in foregoing the introduction of
 <p>
 Implicitly there's another design decision in arranging to modify <code>situation</code> state rather than creating a new <code>situation</code> for each change (and relying on the garbage collector to dispose of the detritus) . A 
 <a href="https://en.wikipedia.org/wiki/Functional_programming" target="_blank">
-<i>purely functional style</i></a> would require creating a new <code>situation</code> table for every change in turtle position or orientation. At the cost of that purity, the decision here is to only create a new situation, cloning one from the current <code>situation</code>, when we need the old situation in <code>situations</code>, a <code>situation</code> history. MUSE uses that history to optionally provide <code>tracking</code>. The history records (and clones) position and orientation for tracking only when either orientation or the kind of vertical movement changes.
+<i>purely functional style</i></a> would require creating a new <code>situation</code> table for every change in turtle position or orientation. At the cost of that purity, the decision here is to only create a new situation, cloning one from the current <code>situation</code>, when we need the old situation in <code>situations</code>, a <code>situation</code> history. MUSE uses that history to optionally provide <code>tracking</code> as mentioned previously. The history records (and clones) position and orientation for tracking only when either orientation or the kind of vertical movement changes.
 <pre><code class="language-lua">
 local function situation(setting) _G.Muse.situation = setting or _G.Muse.situation; return _G.Muse.situation end
 
@@ -243,7 +244,7 @@ end
 </code></pre>
 <a id="way"></a>
 <h3>Finding the Way</h3>
-Tables are an important oart of Lua. MUSE uses a lot of them to better expose operation. The <code>advance</code>, <code>retreat</code>, <code>rise</code>, and <code>fall</code> movement tables use the direction a turtle is <code>facing</code> to indicate changes in <code>position</code> for each kind of movement. For example, <code>advance.north</code> shows a decrement, <code>{0, 0, -1}</code>, of the <code>z-axis</code> position. Further, MUSE encapsulates the parameters of motion in each of the four <code>way</code> tables using the movement tables. These supply the arguments for actual turtle <code>motion</code> (like <code>turtle.forward</code>), the kind of <code>movement</code> (like <code>"advance"</code>, the nature of any change in <code>level</code> (like <code>"same"</code>), and the <code>direction</code> of movement (for reporting and debugging convenience). In this way they effectively package up the variations in handling turtle movement so that all the variations can be dealt with by common routines to actually move the turtle beyond simple turning. Which we'll be coming to. Eventually.
+Tables are an important part of Lua. MUSE uses a lot of them to better expose operation. The <code>advance</code>, <code>retreat</code>, <code>rise</code>, and <code>fall</code> movement tables use the direction a turtle is <code>facing</code> to indicate changes in <code>position</code> for each kind of movement. For example, <code>advance.north</code> shows a decrement, <code>{0, 0, -1}</code>, of the <code>z-axis</code> position. Further, MUSE encapsulates the parameters of motion in each of the four <code>way</code> tables using the movement tables. These supply the arguments for actual turtle <code>motion</code> (like <code>turtle.forward</code>), the kind of <code>movement</code> (like <code>"advance"</code>, the nature of any change in <code>level</code> (like <code>"same"</code>), and the <code>direction</code> of movement (for reporting and debugging convenience). In this way they effectively package up the variations in handling turtle movement so that all the variations can be dealt with by common routines to actually move the turtle beyond simple turning. Which we'll be coming to. Eventually.
 <pre><code class="language-lua">
 -- <b>The <code>movement</code> tables, the <code>way</code> tables and the parameters of (trackable) motion</b>
 local advance = {north = {0, 0, -1}, east = {1, 0, 0}, south = {0, 0, 1}, west = {-1, 0, 0}} -- changes in position
@@ -548,47 +549,8 @@ The important issue, though, is testing.
 <p>
 Testing. Developing the tests for a library is just part of developing that library. If done as the library is developed, the tests can be really help in keeping the development on course. The test is also a check on the utility and expressiveness of the library's interface. Done during library development, it's easier (costs less) to change. A test provides usage examples as a complement to interface documentation. Perhaps most importantly, when a library's code (inevitably) needs to be restructured for whatever reason (clarity, better fit into its context, whatever), the tests support the will to make the necessary changes. In the case of development for environments such as ComputerCraft with limited debugging support, it's a crucial aid (together with an IDE). Additionally, tests provide a sandbox where errors have limited, easily repaired, consequences.
 <p>
-Most of the <code>lib/motion</code> test is straightforward and needs no discussion. (You'll need to look at the <code>lua/rom/modules/tests</code> directory and <code>lua/rom/lib/checks.lua</code> if you're interested.) The <code>steps</code> facility, however, might be worth a look:
-<pre><code class="language-lua">
-local testMotion = check.open(_G.Muse.checks, _G.Muse.testSetName, testName) 
-local function checking(partID, result) testMotion.part(testName, partID, result) end
-.......
-local stepping = 26
-for code, remaining, at, direction, all in step.to({105, 156, 207}) do stepping = stepping + 0.001
-  print (stepping, code, remaining, core.string(at), direction, all)
-end  
-checking(28, "stepped to", core.ats())
-</code></pre>
-The output looks like this:
-<pre>
-18	step.east(3)	done	2	{11, 15, 20}, east
-18	step.east(3)	done	1	{12, 15, 20}, east
-18	step.east(3)	done	0	{13, 15, 20}, east
-</pre>
-At each step east, the body of the <code>do</code> statement is executed and the result of moving that step printed.  Of course, other work could have been done (and will be in libraries dependent on <code>lib/motion</code>).
+Look at <code>lua/rom/modules/tests/02testmotion.lua</code> and <a href="check.html"> <code>lib/check</code></a>` to see how testing works for this module.
 <p>
-Here's another example:
-<pre><code class="language-lua">
-local function prints(n, op, code, remaining, xyzf)
-  checking(n, xyzf, code, remaining, "...", op)
-end
-
-local more = step.forward(3)
-
-prints(19, "steps 1 forward 3", more())
-prints(20, "steps 2 forward 3", more())
-prints(21, "steps 3 forward 3", more())
-prints(22, "steps 4 forward 3", more()) 
-</code></pre>
-The variable <code>more</code> is bound to the result of calling <code>steps.forward(3)</code> This is an iterator that as you might imagine, steps forward three blocks, one block at a time.  Here each call to <code>more</code>, moves one step and provides its results as the last three arguments to the <code>prints</code> statement. The output looks like this:
-<pre>
-19	{10, 15, 19}, north	done	2	...	steps 1 forward 3
-20	{10, 15, 18}, north	done	1	...	steps 2 forward 3
-21	{10, 15, 17}, north	done	0	...	steps 3 forward 3
-22	{10, 15, 17}, north	nil	0	...	steps 4 forward 3
-</pre>
-Notice that the fourth attempt to step three blocks forward makes no change to turtle position and outputs <code>nil</code>  rather than <code>"done"</code>.
-</code></pre>
 That's the end of this excursion. Next up is <a href="places.html"> <code>lib/places</code> </a> or follow the <a href="../../MiningMUSE.html#Chapter3"> link </a> to return to <i>MiningMUSE</i>.
 <p>
   </body> 

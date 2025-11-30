@@ -6,8 +6,6 @@
 ```Lua
 --]]
 ---@diagnostic disable-next-line: undefined-field
-package.path = _G.Muse.package
----@diagnostic disable-next-line: undefined-field
 local rednet, turtle = _G.rednet, _G.turtle or require("mock").turtle -- mock out game
 local core = {}; core.hints = {}; --- @module "signs.core"  
 --[[
