@@ -552,7 +552,9 @@ VSC's integration with GitHub makes source control pretty easy. With its help yo
 
 - To take advantage of Lua code completion and type checking in VSC you'll need the `sumneko.lua` (Lua Language Server) extension.
   
-- If you change `MiningMuse.md`, you'll also need the `yzhang.markdown-all-in-one` (Markdown All In One) extension to recreate its HTML file. After it's loaded, go to the VSC settings for Markdown CSS and add `markdown.css` to the markdown style paths.
+- If you change `MiningMuse.md`, you'll also need the `manuth.markdown-converter` MarkdownConverter extension to recreate its HTML and PDF files. After it's loaded, go to the VSC settings for Markdown CSS and add `markdown.css` to the markdown style paths.
+
+- Then set the CODEMARK_ASSETS environment variable to the Codemark/assets directory.
 
 - You may want a couple of additional extensions: `MinecraftCommands.syntax-mcfunction` and `be5invis.toml` (TOML Language Support)</a>.
 
@@ -566,7 +568,7 @@ There's not much left to do in setting up your development environment for MUSE 
 - Copy <a href="https://github.com/pkulchenko/ZeroBranePackage/blob/master/README.md" target="_blank">packages </a>:  `analyzeall.lua` and possibly `cloneview.lua` into the ZBS `package` directory
 - Create a symbolic link from `CodeMark/apiMark.lua` in your project directory to the ZBS `package` directory. You'll be able to update (but not remove) ZBS code completions for the file you're editing directly from ZBS in the `Project` drop down menu.
 - Create a symbolic link from `MUSE/data/muse/signs/muse.lua` to  ZeroBraneStudio's `api/lua/` directory.
-- Edit (or create) the `cfg/user.lua` file in your ZBS installation to include `api = {'muse'}`. You might wat to look at the <a href="(http://studio.zerobrane.com/documentation.html" target = "_blank"> documentation</a> for information about ZBS configuration.
+- Edit (or create) the `cfg/user.lua` file in your ZBS installation to include `api = {'muse'}`. You might want to look at the <a href="(http://studio.zerobrane.com/documentation.html" target = "_blank"> documentation</a> for information about ZBS configuration.
 - Set the project directory to the MUSE folder in your project directory.
 - Open `MUSE/data/muse/assets/museMark.lua` and execute it (without debugging). This should produce all fresh, all new, all the code completion, all the type checking files, and all the code documentation for MUSE. 
 
