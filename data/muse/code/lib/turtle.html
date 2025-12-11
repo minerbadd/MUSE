@@ -13,7 +13,7 @@
 --:| turtle: <i>Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down.</i> -> turtle
 --:+ <i>Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking.</i>  
 </code></pre>
-The MUSE <code>turtle</code> module introduction is much like any other. One thing is a little different: a <a href="../CodeMark/Annotations.html" target="_blank"> CodeMark </a> <code>VALUE</code> mark, describing <code>direction</code> as a unification of the four cardinal and two vertical directions. We've seen a limited bit of this in <code>lib/motion</code>.  Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by <code>lib/mock</code>) are accessed in the <code>mock</code> table.
+The MUSE <code>turtle</code> module introduction is much like any other. One thing is notable, like the <code>situation</code> state variable in <code>lib/motion</code>, there's a <a href="../CodeMark/Annotations.html" target="_blank"> CodeMark </a> <code>VALUE</code> mark, describing <code>direction</code> as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by <code>lib/mock</code>) are accessed in the <code>mock</code> table.
 <pre><code class="language-lua">
 local turtle = {} ---@module "signs.turtle" -- for functions exported from library
 
@@ -21,7 +21,7 @@ package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
 local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module "signs.mock"
--- if no _G.turtle then mock turtle: out-of-game
+-- if no <code>_G.turtle</code> then <code>mock</code> is the out-of-game mocked turtle, otherwise <code>mock</code> is the in game turtle.
 
 --:> direction: <i>Four compass points and verticals</i> -> <code>"north"|"east"|"south"|"west"|"up"|"down"</code>
 </code></pre>
@@ -193,26 +193,17 @@ function turtle.digAround(orientation, name, diggings)
   --:: turtle.digAround(orientation: ":", name: ":", diggings: ":"[]) -> <i>Unblocking dig.</i> -> <code>"done" &: &!</code>
   --:+ <i>Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.</i>
   for _, digging in ipairs(diggings) do core.status(5, "turtle", "around", orientation, diggings)
-    local OK, fail = core.pass(pcall(turtle.unblock, digging)); if not OK then
+    local OK, fail = core.pass(pcall(turtle.unblock, digging)); if not OK then -- restore initial orientation
       move[orientation](0); error("turtle.digAround: "..name.." "..digging.." failed, "..fail..", refacing "..orientation)
     end
   end; return "done"
 end
-</code></pre>
-<a id="block"></a> 
-Lastly, allow blocking to be simulated for out-of-game debug.
-<pre><code class="language-lua">
---:: turtle.block(blocked: ^:) -> <i>Out-of-game debug: sets blocking for simulating turtle being blocked.</i> ->  <code>blocked: ^:</code>
-function turtle.block(blocked) -- enable/disable blocking for out-game test
----@diagnostic disable-next-line: undefined-field
-  if not _G.turtle then return mock.block(blocked) end 
-end
---:: turtle.blocking(^:) -> <i>Isolate global to control blocking for out-of-game debug.</i> -> <code>^:</code>
-function turtle.blocking(blocking) _G.Muse.blocking = blocking; return _G.Muse.blocking end
 
 return {turtle = turtle}
 </code></pre>
-And we're done making the new and improved <code>turtle</code>. No more the old. Return to <a href="../../MiningMUSE.html#roam"> MiningMUSE</a> 
+Look at <a href="../tests/04testturtle.html" target = "_blank"> <code>04testturtle</code> </a> and <a href="check.html" target = "_blank"> <code>lib/check</code></a>` to see how testing works for this module.
+<p>
+And now we're done making the new and improved <code>turtle</code>. No more the old. Go to <a href="../../MiningMUSE.html#roam"> MiningMUSE</a> 
 to see how these functions are used to roam around a Minecraft world.
 <p>
   </body> 

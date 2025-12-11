@@ -1,5 +1,0 @@
-
-
-erase name
- 
-Remove named place, broadcast Muse eXcise (MX).

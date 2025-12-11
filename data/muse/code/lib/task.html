@@ -7,7 +7,7 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> Task Commands for Turtles: lib/roam.lua</h2>
+<h2> Task Commands for Turtles: lib/task</h2>
 <pre><code class="language-markdown">
 --:! {task: []: (:) } <- <b>Command Line Library for Tasks: Low Level Turtle Operations</b> -> muse/docs/lib/task.md  
 --:| task: <i>Dispatch targets for</i> <code>net</code> <i>library.</i> -> task, _task
@@ -16,7 +16,6 @@ The <code>task</code> library uses the <code>direction</code> table abstractions
 <pre><code class="language-lua">
 local task, _task = {}, {}; task.hints =  {} ---@module "signs.task" -- exports, internal for analysis, CLI hints
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
 local places = require("places"); local moves, place = places.moves, places.place ---@module "signs.places"
@@ -80,7 +79,7 @@ local function suck(...) --:- suck direction quantity? -> <i>Suck quantity items
   return sucked and core.string(turtle.item()) or "Suck "..direction.." failed"
 end; task.hints["suck"] = {["?direction "] = {["?count"] = {}}}
 </code></pre>
-<h3>Movement For Tasks in Motion</h3>
+<h3>Movement For Doing Tasks While Moving</h3>
 <a id=movement"/>
 <pre><code class="language-lua">
 local function doOnce(puttings, op, fill, targets) 
@@ -135,7 +134,7 @@ function _task.doTask(arguments, op, clear, fill, targets)
   table.insert(puttings, 1, distance); return doOnce(puttings, op, fill, targets) -- <code>here</code>, <code>distance</code> alias <code>direction</code>
 end
 </code></pre>
-<h3>The Tasks in Motion Themselves</h3>
+<h3>The Tasks Themselves</h3>
 <pre><code class="language-lua">
 local function dig(...) return _task.doTask({...}, function(direction) turtle.digs[direction]() end, true) end
 --:- dig direction distance hoeing... -> <i>Direction and distance to (possibly blocked) move, hoeings directions to hoe.</i>
@@ -179,7 +178,7 @@ local function put(...)
 
   return {task = task}
 </code></pre>
-Return to <a href="../../MiningMUSE.html#Chapter4"> MiningMUSE</a> to continue the exploration.
+Look at <a href="../tests/06testtask.html" target = "_blank"> <code>06testtask</code> </a> and <a href="check.html" target = "_blank"> <code>lib/check</code></a>` to see how testing works for this module. Then return to <a href="../../MiningMUSE.html#Chapter4"> MiningMUSE</a> to continue the exploration.
 <p>
   </body> 
 </html>

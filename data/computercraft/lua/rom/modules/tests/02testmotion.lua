@@ -1,5 +1,7 @@
--- **Tests for `move` and step` interfaces of lib/motion**
-
+--[[
+**Tests for `move` and step` interfaces of lib/motion**
+```Lua
+--]]
 dofile(arg[0]:match('.*[/\\]').."/preface.lua") -- set test environment 
 local testName = arg[0]:match('%w*%.%w*$') -- the last words in the execution path
 

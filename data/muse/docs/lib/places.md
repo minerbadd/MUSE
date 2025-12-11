@@ -1,4 +1,4 @@
---:! {place: []: (:), moves: []: (:), steps: []: (:) } <- **Places Functions Library** -> muse/docs/lib/places.md      
+--:! {place: []: (:), moves: []: (:), steps: []: (:) } <- **Places Functions Libraries** -> muse/docs/lib/places.md      
 --:| places: _Naming places at MUSE coordinates, moving there, stepping there for operations._ -> places, place, moves, steps    
 --:+ place: **Name places (points, trails, ranges); serialize and load serializations for disk and network operations.**      
 --:+ moves: **Move turtles to named places or along named trails.**     

@@ -106,7 +106,6 @@ function field.plan(planName, fielding, offset) -- `fieldsOp` calls `field.plan`
   local planFunction = assert(loadfile(planFile), "field.plan: "..planFile.." failed") -- TODO: cache?
   local plans, yDelta = planFunction(fielding) -- **prototype plan file** calls `field.paths` utility
   local levels = math.abs(yDelta) + 1; core.status(4, "field", "starting", planName, levels, "levels")
-  turtle.block(turtle.blocking())-- block in next operation if blocking enabled for out-game test
   return _field.execute(plans, levels, fielding, planName)
 end
 --[[
@@ -136,7 +135,7 @@ function _field.execute(plans, levels, fieldings, planName)
   end; if plans.last then local ok, report = executePlan(plans.last, levels); 
     if not ok then error("field.execute: Last "..report) end 
   end-- finish with y-movement to position for fill (if any)
-  turtle.block(false) -- out-game testing: disable blocking for finish operations 
+  turtle.blocking(0) -- out-game testing: disable blocking for finish operations 
   return planName..": "..core.string(fieldings) 
 end
 --[[

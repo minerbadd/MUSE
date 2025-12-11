@@ -1,53 +1,52 @@
-activate range: Add borders from west and north to east and south of range for Minecraft forceload.
-
-book name label from to span? item??...: Spanned range with (default) items as properties; return cost less bank.
 
 
 
-chart filename ...: Loads and runs named file in `charts` directory to create named point and associated ranges.
+
+
+
+
 
 come: rover turtle towards GPS player position.
 
-echo arguments ...: For testing: just returns its arguments.
 
-erase name: Remove named place, broadcast Muse eXcise (MX).
+
+
 
 farmer command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
-headings rate? place? count??: Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds).
+
 
 join role id: Temporarily set mapping for next startup, id from turtle nameplate.
 
-locate name label?: Create launch point having Minecraft coordinates above `porter`.
+
 
 logger command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
 miner command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
-near place? span??: Report points within span blocks (or all) of named place (or current player or turtle position).
 
-point name label trail?: Add named labeled point, can start trail, MU updated map. (Player situation needs GPS.)
 
-port booking: As provided in booking, consume player inventory to teleport entities from one area to another.
+
+
+
 
 porter command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
-range name label point point key? value??: Volume by named points, optional key and value for feature.
+
 
 
 
 rover command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
-site name?: Remote operation to report or change site (persistently) after, e.g., porting `rover`.
+
 
 status level [filename]: Set reporting hurdle and optionally save reporting in log file.The status level controls reporting: the higher the level the more detailed the reports.Log files are stored locally in a computer's `muse` directory.
 
-sync: Muse Update (MU) broadcast local map to (MQ) registered units.
+
 
 tail rate?: Move `rover` every rate (default 5) seconds towards GPS player position.
 
-view place: Report place details including name, label (if any), features and all situations.
+
 
 wait: Locally on turtle, wait for rednet message. Useful as recovery for uncaught turtle error.
 
-where place? count??: Report movement direction, distance to named place (or all) three (or count) closest places.

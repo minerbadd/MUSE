@@ -1,5 +1,0 @@
-
-
-where place? count??
- 
-Report movement direction, distance to named place (or all) three (or count) closest places.

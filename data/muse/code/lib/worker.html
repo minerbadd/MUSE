@@ -45,7 +45,7 @@ local function blocked(plan, pathOperations, index, direction, remaining, at, mo
   core.status(3, "worker", "blocked so unblocking at", at, "for", plan.name,  movement, motion) 
   turtle.unblock(direction, 5); move[direction](0) -- unblocking failure raises error, <code>operate</code> if unblocked
   -- turned in original direction, work not done, continue current operation for remaining blocks
-  turtle.block(false) -- for out-game operation, imagine that the blockage has been removed
+  turtle.blocking(0) -- for out-game operation, imagine that the blockage has been removed
   return operate(plan, pathOperations, index, remaining) -- plan, pathOperations, index, more; 
 end 
 </code></pre>
@@ -120,7 +120,8 @@ function worker.execute(plan, pathOperations, fuelOK, pathDistance)
   if plan.base then local moveOK, report = core.pass(pcall(moves.to, plan.base)) -- start from base
     if not moveOK then error("worker.execute: failed at "..move.ats().." for "..plan.name.." because "..report) end
     core.status(2, "work", "at plan base") 
-  end; turtle.block(turtle.blocking())-- block in next operation if blocking has been enabled for out-game test
+  end
+  
   return operate(plan, pathOperations, 1); -- <b>do it all</b> (uncaught errors thrown if anything fails)
   -- plan, pathOperations, index, more (<code>more</code> is nil at start of plan operation)
 end

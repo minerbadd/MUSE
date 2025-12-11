@@ -5,7 +5,7 @@
 --:| turtle: _Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down._ -> turtle
 --:+ _Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking._  
 ```
-The MUSE `turtle` module introduction is much like any other. One thing is a little different: a <a href="../CodeMark/Annotations.html" target="_blank"> CodeMark </a> `VALUE` mark, describing `direction` as a unification of the four cardinal and two vertical directions. We've seen a limited bit of this in `lib/motion`.  Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by `lib/mock`) are accessed in the `mock` table.
+The MUSE `turtle` module introduction is much like any other. One thing is notable, like the `situation` state variable in `lib/motion`, there's a <a href="../CodeMark/Annotations.html" target="_blank"> CodeMark </a> `VALUE` mark, describing `direction` as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by `lib/mock`) are accessed in the `mock` table.
 ```Lua
 --]]
 local turtle = {} ---@module "signs.turtle" -- for functions exported from library
@@ -14,7 +14,7 @@ package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
 local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module "signs.mock"
--- if no _G.turtle then mock turtle: out-of-game
+-- if no `_G.turtle` then `mock` is the out-of-game mocked turtle, otherwise `mock` is the in game turtle.
 
 --:> direction: _Four compass points and verticals_ -> `"north"|"east"|"south"|"west"|"up"|"down"`
 --[[
@@ -194,28 +194,17 @@ function turtle.digAround(orientation, name, diggings)
   --:: turtle.digAround(orientation: ":", name: ":", diggings: ":"[]) -> _Unblocking dig._ -> `"done" &: &!`
   --:+ _Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation._
   for _, digging in ipairs(diggings) do core.status(5, "turtle", "around", orientation, diggings)
-    local OK, fail = core.pass(pcall(turtle.unblock, digging)); if not OK then
+    local OK, fail = core.pass(pcall(turtle.unblock, digging)); if not OK then -- restore initial orientation
       move[orientation](0); error("turtle.digAround: "..name.." "..digging.." failed, "..fail..", refacing "..orientation)
     end
   end; return "done"
 end
---[[
-```
-<a id="block"></a> 
-Lastly, allow blocking to be simulated for out-of-game debug.
-```Lua
---]]
---:: turtle.block(blocked: ^:) -> _Out-of-game debug: sets blocking for simulating turtle being blocked._ ->  `blocked: ^:`
-function turtle.block(blocked) -- enable/disable blocking for out-game test
----@diagnostic disable-next-line: undefined-field
-  if not _G.turtle then return mock.block(blocked) end 
-end
---:: turtle.blocking(^:) -> _Isolate global to control blocking for out-of-game debug._ -> `^:`
-function turtle.blocking(blocking) _G.Muse.blocking = blocking; return _G.Muse.blocking end
 
 return {turtle = turtle}
 --[[
 ```
-And we're done making the new and improved `turtle`. No more the old. Return to <a href="../../MiningMUSE.html#roam"> MiningMUSE</a> 
+Look at <a href="../tests/04testturtle.html" target = "_blank"> `04testturtle` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module.
+
+And now we're done making the new and improved `turtle`. No more the old. Go to <a href="../../MiningMUSE.html#roam"> MiningMUSE</a> 
 to see how these functions are used to roam around a Minecraft world.
 --]]

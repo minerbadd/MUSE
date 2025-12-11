@@ -1,87 +1,72 @@
 --[[
-##Commands `go`, `to`, `trace`, `come` `tail` : lib/roam.lua
+##Commands `go`, `to`, `trace`, `come` `tail` : lib/roam
 ```md
 --:! {roam: []: (:)} <- **Command Line Library for Turtle Movement** -> muse/docs/lib/roam.md  
---:| roam: _Server (turtle) side support for_ `come` _and_ `tail`, _chained motion commands, motion to or tracing._ -> roam
+--:| roam: _Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go` _commands, motion_ `to` _or_ `trace`. -> roam
 ```Lua
 --]]
 local roam = {}; roam.hints = {} ---@module "signs.roam" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local places = require("places") local place, moves = places.place, places.moves ---@module "signs.places"
+
+local axes = _G.Muse.permutations
 --[[
 ```
 <a id="come"></a>
-#Directed Movement: `come` to follow the player
-After the usual library introduction, there's a table,  `pickMove`, of anonymous functions differing only in the order of x, y, and z coordinate movement. On each call to `picks` the order number gets incremented modulo the number of entries in the table so each `pickMove[picks()]` tries a different sequence of x, y, z to `move.to` the target position. There's a bit of defensive programming, `here`, before each try as a player repetitively commands the turtle to `come`.
+#Directed Movement: `come` (and`tail`) to follow the player
+After the usual library introduction, there are functions to attempt movement toward a target trying all the permutations in turn along the x, y, and z axes to deal with any blockages. Attempted movements return a message indicating eventual success or failure.
 ```Lua
 --]]
--- :# **How the turtle moves toward the player (allowing for repeats to deal with blockages)**
-local function to(x, y, z) move.to({x, y, z, "north"}) end 
+-- :# **Movement along each axis in turn. The sequence is set by the permutation**.
+-- :# {"y", "z", "x"} -> z x y, x z y, x y z, y x z, z y x, y z x
 
-local pickMove = { -- t* turtle, tt* target; hy is ty or tty -- ToDO: make this into a little (declarative) language
-
-  function (tx, hy, tz, ttx, tty, ttz) to(tx,hy,tz); to(ttx,hy,tz); to(ttx,tty,tz); to(ttx,tty,ttz) end, -- hy, ttx, tty, ttz
-  function (tx, hy, tz, ttx, tty, ttz) to(tx,hy,tz); to(ttx,hy,tz); to(ttx,hy,ttz); to(ttx,tty,ttz) end, -- hy, ttx, ttz, tty
-  function (tx, hy, tz, ttx, tty, ttz) to(tx,hy,tz); to(tx,tty,tz); to(ttx,tty,tz); to(ttx,tty,ttz) end, -- hy, tty, ttx, ttz
-  function (tx, hy, tz, ttx, tty, ttz) to(tx,hy,tz); to(tx,tty,tz); to(tx,tty,ttz); to(ttx,tty,ttz) end, -- hy, tty, ttz, ttx
-  function (tx, hy, tz, ttx, tty, ttz) to(tx,hy,tz); to(tx,hy,ttz); to(ttx,hy,ttz); to(ttx,tty,ttz) end, -- hy, ttz, ttx, tty
-  function (tx, hy, tz, ttx, tty, ttz) to(tx,hy,tz); to(tx,hy,ttz); to(tx,tty,ttz); to(ttx,tty,ttz) end, -- hy, ttz, tty, ttx
-
-  function (_, ty, tz, ttx, tty, ttz) to(ttx,ty,tz); to(ttx,tty,tz); to(ttx,tty,ttz) end, -- ttx, tty, ttz (not hy first)
-  function (_, ty, tz, ttx, tty, ttz) to(ttx,ty,tz); to(ttx,ty,ttz); to(ttx,tty,ttz) end, -- ttx, ttz, tty (not hy first)
-  function (tx, _, tz, ttx, tty, ttz) to(tx,tty,tz); to(ttx,tty,tz); to(ttx,tty,ttz) end, -- tty, ttx, ttz (not hy first)
-  function (tx, _, tz, ttx, tty, ttz) to(tx,tty,tz); to(tx,tty,ttz); to(ttx,tty,ttz) end, -- tty, ttz, ttx (not hy first)
-  function (tx, ty, _, ttx, tty, ttz) to(tx,ty,ttz); to(ttx,ty,ttz); to(ttx,tty,ttz) end, -- ttz, ttx, tty (not hy first)
-  function (tx, ty, _, ttx, tty, ttz) to(tx,ty,ttz); to(tx,tty,ttz); to(ttx,tty,ttz) end, -- ttz, tty, ttx (not hy first)
-}; 
-_G.Muse.picks = _G.Muse.picks or {come = 0, try = 0}; roam.picks = _G.Muse.picks -- just another name for the global table
-
-local function comes() 
-  roam.picks.come = _G.Muse.sequenced and ((roam.picks.come + 1) % #pickMove) or math.random(#pickMove)
-  core.status(3, "roam pickCome", roam.picks.come); return roam.picks.come 
-end 
-
-local function trys() 
-  roam.picks.try = _G.Muse.sequenced and ((roam.picks.try + 1)) % #pickMove or math.random(#pickMove)
-  core.status(3, "roam pick try", roam.picks.try)
-  return roam.picks.try 
-end 
-
-local function here() -- are we actually here? (defensive programming, checking dead reckoning against GPS)
-  local gx, gy, gz, _, ok = move.where(); if not ok then return end -- can't check without GPS
-  local ax, ay, az = table.unpack(move.at()); if not (gx == ax and gy == ay and gz == az) then error("roam.here: Lost!") end
-  return core.ats()
+local function toAxes(change, currentAxes, targetAxes) 
+  local targets = {}; 
+  for i in ipairs(change) do targets[change[i]] =  targetAxes[change[i]] 
+    for _, axis in ipairs(change) do -- set up to try `move.to`
+      currentAxes[axis] = targets[axis] or currentAxes[axis] 
+    end; -- if failure, get another permutation; otherwise, try the next axis of the permutation
+    core.status(5, "roam axes", change, currentAxes, targetAxes)
+    if move.to({currentAxes.x, currentAxes.y, currentAxes.z, "north"}) ~= "done" then return end
+  end; return "done" -- success! (`move.to` worked for movement along each axis)
 end
 
-local function moveHere(picker, tx, ty, tz, ttx, tty, ttz) --t* turtle, tt* target
-  pickMove[picker](tx, ty, tz, ttx, tty, ttz) -- sequentially to deal with blockages
-  return "done", 0, move.ats()
+local function permuting(currentAxes, targetAxes) 
+  local code; local x, y, z = move.get()  -- dead reckoning 
+  for change in core.permute(axes) do code = toAxes(change, currentAxes, targetAxes); 
+    if code == "done" then return "done" end -- successful movement; else try another permutation
+  end -- tried all permutations but not at target; if any movement, try permutations from new position
+  local mx, my, mz = move.get(); local distance = math.abs(x - mx) + math.abs(y - my) + math.abs(z - mz)
+  core.status(4, "roam retry", distance, mx, my, mz)
+  return distance == 0 and code or permuting({x = mx, y = my, z = mz}, targetAxes)
 end
 
-local function fueled(tx, ty, tz, ttx, tty, ttz)
-  local hy = math.max(ty, tty) -- go high first
+local function moveHere(tx, ty, tz, ttx, tty, ttz)
+  return permuting({x = tx, y = ty, z = tz}, {x = ttx, y= tty, z = ttz}) -- currentAxes, targetAxes
+end
+
+local function fueling(tx, ty, tz, ttx, tty, ttz)
   local distance = math.abs(ttx-tx) + math.abs(tty-ty) + math.abs(ttz-tz) 
-  local fuel = turtle.fuel(); local fuelOK = fuel > distance
-  if fuelOK then return hy end
-  return "roam: Insufficient fuel ("..fuel..") for "..distance.." blocks to {"..ttx..","..tty..","..ttz.."}" 
+  local fuel = turtle.fuel(); local fueled = fuel - distance
+  return fueled > 0, "fuel "..fueled.." for "..distance.." blocks to {"..ttx..","..tty..","..ttz.."}"
 end
 
+local function moving(tx, ty, tz, ttx, tty, ttz, op) -- `op` is `roam.come` or `to`
+  local fuelOK, message = fueling(tx, ty, tz, ttx, tty, ttz); if not fuelOK then return "empty", message end
+  local code, at = moveHere(tx, ty, tz, ttx, tty, ttz), move.ats()
+  return code == "done" and "At "..at.." "..message or op..code.." at "..at -- failure report
+end
 
+--:: roam.come(:xyz:) -> _Server side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come. -> `":" &:`
 function roam.come(xyz) -- **needs GPS for {xyz}**, lib/remote RPC "come" dispatched by lib/net 
-  --:: roam.come(:xyz:) -> _Server side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come. -> `":" &:`
-  turtle.block(turtle.blocking())-- try motion and block if blocking has been enabled for testing
-  local px, py, pz = table.unpack(xyz); local txyz = assert(place.xyzf(), "roam come: no place for a turtle")
+  local px, py, pz = table.unpack(xyz); local txyz = assert(place.xyzf(), "roam come: no turtle situation??")
   local tx, ty, tz = table.unpack(txyz); local dx, dz = px - tx, pz - tz -- x and z distance to turtle from player's px, pz
   local ttx = px - 1 * (dx == 0 and 0 or math.abs(dx)/dx) -- turtle target 1 away from player along travel vector
   local ttz = pz - 1 * (dz == 0 and 0 or math.abs(dz)/dz) -- turtle target 1 away from player along travel vector
-  local tty = py - 1; local hy = fueled(tx, ty, tz, ttx, tty, ttz)
-  local moveOK, report = core.pass(pcall(moveHere, comes(), tx, hy, tz, ttx, tty, ttz)) 
-  if moveOK then return "At "..core.xyzf({ttx, tty, ttz}) end
-  return report -- failure report
+  local tty = py - 1; return moving(tx, ty, tz, ttx, tty, ttz, "rome.come ")
 end 
 
 roam.tail = roam.come; roam.hints["tail"] = {["?rate"] = {}} -- separate but equal, allow for future discriminate action 
@@ -90,17 +75,14 @@ roam.tail = roam.come; roam.hints["tail"] = {["?rate"] = {}} -- separate but equ
 ```
 <a id="to"></a> 
 #Coordinate Movement: `to` a `place` or a `position
-Modulo arithmetic incrementing a global variable bound to `roam.picks.try` is used to pick a different coordinate to try on each `to` command. The `tryTo` function is used in order to move to a `position` (with `move.to`) or a `place` (with `moves.to`). 
+The `to` function is used in order to move to a `position` (with `move.to`) or a `place` (with `moves.to`). 
 ```Lua
 --]]
-local function tryTo(arguments) -- repeated calls try each direction in turn
-  --:- to place | x y z face?-> _To named place or position and face. Retry for different first direction._ 
+local function to(arguments) -- repeated calls try each direction in turn
+  --:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._ 
   local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
   local to = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
-  local ttx, tty, ttz = table.unpack(to); local hy = fueled(tx, ty, tz, ttx, tty, ttz)
-  local moveOK, code, index, xyzfacing =  core.pass(pcall(moveHere, trys(), tx, hy, tz, ttx, tty, ttz))
-  if not moveOK then error("roam.tryTo: Could not roam to ".. to.." because "..code.." at "..move.ats()) end
-  return code, index, xyzfacing
+  local ttx, tty, ttz = table.unpack(to); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ")
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
 --[[
 ```
@@ -111,9 +93,9 @@ end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
 local function trace(arguments) 
   --:- trace trailname ->  _Move turtle along traced situations in named trail from one end of trail to the other._
   local _, trailname = table.unpack(arguments) -- first argument is command
-  local moveOK, code, index, xyzfacing = core.pass(pcall(moves.along, trailname))
-  if moveOK then return code, index, xyzfacing end
-  error("roam.trace: "..trailname.." failed because "..code.." with "..index.." remaining at "..xyzfacing) 
+  local moveOK, code, index = core.pass(pcall(moves.along, trailname))
+  if moveOK then return "trace "..index.." to "..move.ats() end
+  return "roam.trace: "..trailname.." failed because "..code.." with "..index.." remaining at "..move.ats() 
 end roam.hints["trace"] = {["?trail"] = {}} 
 --[[
 ```
@@ -154,12 +136,12 @@ end
 local function go(line) -- returns the result from last chain command attempted
   --:# Movements are `r[ight], l[eft], f[orward], b[ack], u[p], d[own], n[orth], e[ast], s[outh], w[est]`.
   --:- go _(first letter of) directions followed by optional counts, e.g. `r 10 u east 3 u 4 d n`._ -> _Chained movement._
-  local commandOK, code, remaining, xyzfacing; local commands = chain(2, line, {}); -- line[1] is  "go"
-  for _, command in ipairs(commands) do commandOK, code, remaining, xyzfacing = core.pass(pcall(doChain, command))
+  local commandOK, code, remaining; local commands = chain(2, line, {}); -- line[1] is  "go"
+  for _, command in ipairs(commands) do commandOK, code, remaining  = core.pass(pcall(doChain, command))
     if not commandOK then 
       error("roam.go: Failed "..core.string(command).." in "..core.string(line).." because "..code.." at "..move.ats()) 
     end
-  end; return code, remaining, xyzfacing
+  end; return "roamed to "..move.ats()
 end; roam.hints["go"] = {["?chain"] = {}}
 --[[
 ```
@@ -168,17 +150,22 @@ end; roam.hints["go"] = {["?chain"] = {}}
 Just a simple dispatch, some error handling, and our work here is done. Look at what goes before to see how.
 ```Lua
 --]]
-local ops = {go = go, to = tryTo, trace = trace, } 
+local ops = {go = go, to = to, trace = trace, } 
+
+local function here() -- are we actually here? (defensive programming, checking dead reckoning against GPS)
+  local gx, gy, gz, _, ok = move.where(); if not ok then return end -- can't check without GPS
+  local ax, ay, az = table.unpack(move.at()); if not (gx == ax and gy == ay and gz == az) then error("roam.here: Lost!") end
+  return core.ats()
+end
 
 function roam.op(arguments) --:: roam.op(arguments: ":"[]) -> _Move turtle:_ -> `":" &:`
-  local from = here(); turtle.block(turtle.blocking()) -- check dead reckoning, try motion and block if enabled for testing
-  local roamOK, code, _, xyzfacing = core.pass(pcall(ops[arguments[1]], arguments))
-  if not roamOK then return "Roam error command: "..arguments[1].." in "..core.string(arguments).." because "..code end
-  return from.." to "..xyzfacing 
+  local from = here() -- as a defensive move, check dead reckoning
+  local roamOK, message = core.pass(pcall(ops[arguments[1]], arguments))
+  return roamOK and message.." "..from or "Roam failed to "..arguments[1].." in "..core.string(arguments).." because "..message
 end
 
 return {roam = roam}
 --[[
 ```
-Return to <a href="../../MiningMUSE.html#task"> MiningMUSE</a> to continue the exploration.
+Look at <a href="../tests/05testroam.html" target = "_blank"> `02testroam` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module. Return to <a href="../../MiningMUSE.html#task"> MiningMUSE</a> to continue the exploration.
 --]]

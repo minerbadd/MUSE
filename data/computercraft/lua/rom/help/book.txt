@@ -1,5 +1,0 @@
-
-
-book name label from to span? item??...
- 
-Spanned range with (default) items as properties; return cost less bank.

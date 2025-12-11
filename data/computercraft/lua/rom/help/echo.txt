@@ -1,5 +1,0 @@
-
-
-echo arguments ...
- 
-For testing: just returns its arguments.

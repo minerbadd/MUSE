@@ -1,5 +1,5 @@
 --[[
-## Task Commands for Turtles: lib/roam.lua
+## Task Commands for Turtles: lib/task
 ```md
 --:! {task: []: (:) } <- **Command Line Library for Tasks: Low Level Turtle Operations** -> muse/docs/lib/task.md  
 --:| task: _Dispatch targets for_ `net` _library._ -> task, _task
@@ -9,7 +9,6 @@ The `task` library uses the `direction` table abstractions built by `lib/turtle`
 --]]
 local task, _task = {}, {}; task.hints =  {} ---@module "signs.task" -- exports, internal for analysis, CLI hints
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
 local places = require("places"); local moves, place = places.moves, places.place ---@module "signs.places"
@@ -76,7 +75,7 @@ local function suck(...) --:- suck direction quantity? -> _Suck quantity items [
 end; task.hints["suck"] = {["?direction "] = {["?count"] = {}}}
 --[[
 ```
-#Movement For Tasks in Motion
+#Movement For Doing Tasks While Moving
 <a id=movement"/>
 ```Lua
 --]]
@@ -133,7 +132,7 @@ function _task.doTask(arguments, op, clear, fill, targets)
 end
 --[[
 ```
-#The Tasks in Motion Themselves
+#The Tasks Themselves
 ```Lua
 --]]
 local function dig(...) return _task.doTask({...}, function(direction) turtle.digs[direction]() end, true) end
@@ -181,5 +180,5 @@ local function put(...)
   return {task = task}
 --[[
 ```
-Return to <a href="../../MiningMUSE.html#Chapter4"> MiningMUSE</a> to continue the exploration.
+Look at <a href="../tests/06testtask.html" target = "_blank"> `06testtask` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module. Then return to <a href="../../MiningMUSE.html#Chapter4"> MiningMUSE</a> to continue the exploration.
 --]]

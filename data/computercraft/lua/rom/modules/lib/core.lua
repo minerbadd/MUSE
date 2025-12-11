@@ -392,7 +392,7 @@ function core.round(n) return n % 1 >= 0.5 and math.ceil(n) or math.floor(n) end
 ```
 <a id="inext"></a>
 #Fun With Functions
-How to make an iterator that exposes its index.
+How to make an iterator that exposes its index. And how to make an iterator for coroutine partials.
 ```Lua
 --]]
 --:# **Example iterator, restartable at index**
@@ -405,6 +405,24 @@ function core.inext(table, index)
   index = index or 0; return iter, table, index
 end
 
+--local function printResult (a) for i,v in ipairs(a) do io.write(v, " ") end; io.write("\n") end
+
+--:# **Example iterator for coroutine partials of (factorial) permutations**
+local function perm(array, n) -- adapted from https://www.lua.org/pil/9.3.html
+  if n == 0 then coroutine.yield(array) -- or printResult(a) to test
+  else
+    for i = 1, n do
+      array[n], array[i] = array[i], array[n] -- put i-th element as the last one
+      perm(array, n - 1) -- generate all permutations of the other elements      
+      array[n], array[i] = array[i], array[n] -- -- restore i-th element
+    end
+  end
+end
+
+function core.permute(array) -- return iterator for (factorial) permutations
+  --:: core.permute(array: any[]) -> `(:)`
+  return coroutine.wrap(function() perm(array, #array) end)
+end
 --[[
 ```
 <a id="findItems"></a>

@@ -60,8 +60,12 @@ function turtle.inspect() return false, "nothing here" end
 function turtle.inspectUp() return  true, {name="minecraft:coal"} end
 function turtle.inspectDown() return true, {name="minecraft:dirt"}  end
 
---:# turtle.block(blocked: ^:) -> <i>Sets blocked status to <code>blocked</code> for debug</i> -> blocked: <code>^:</code>
-function turtle.block(blocked) _G.Muse.blocked = blocked; return _G.Muse.blocked end -- for testing
+_G.Muse.block = 0
+--:# turtle.block(blocker: #:?) -> <i>Counts down, reports or sets</i> <code>blocked</code> <i>status for debug</i> -> blocked: <code>^:</code>
+function turtle.blocking(blocker) 
+  if _G.Muse.block > 0 then _G.Muse.block = _G.Muse.block - 1 end
+  if blocker then _G.Muse.block = blocker end; return _G.Muse.block > 0 
+end
 
 --:# <i>Turns just report success, other motions decrement the simulated fuel and report success unless blocked.</i>
 --:+ <i>Only forward motion can be blocked in simulation.</i>
@@ -72,7 +76,7 @@ function turtle.back() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.up() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.down() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.forward() 
-  if not _G.Muse.blocked then _G.Muse.fuel = _G.Muse.fuel - 1; return success end 
+  if turtle.blocking() then _G.Muse.fuel = _G.Muse.fuel - 1; return success end 
   return false
 end
 
