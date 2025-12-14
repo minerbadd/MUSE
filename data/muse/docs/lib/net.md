@@ -41,7 +41,7 @@
 
 --:# **Remote Turtle Motion Commands** (e.g., `farmer come`)  
 
---:- to place | x y z face?-> _To named place or position and face. Retry for different first direction._   
+--:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._   
 
 --:- go _(first letter of) directions followed by optional counts, e.g. `r 10 u east 3 u 4 d n`._ -> _Chained movement._  
 

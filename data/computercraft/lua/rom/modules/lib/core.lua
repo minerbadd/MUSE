@@ -405,10 +405,10 @@ function core.inext(table, index)
   index = index or 0; return iter, table, index
 end
 
---local function printResult (a) for i,v in ipairs(a) do io.write(v, " ") end; io.write("\n") end
+--:# **Iterator for coroutine partials of permutations** 
+-- </a>adapted from <a href="https://www.lua.org/pil/9.3.html" target="_blank">Programming in Lua</a> <a id="permute">
 
---:# **Example iterator for coroutine partials of (factorial) permutations**
-local function perm(array, n) -- adapted from https://www.lua.org/pil/9.3.html
+local function permgen(array, n) 
   if n == 0 then coroutine.yield(array) -- or printResult(a) to test
   else
     for i = 1, n do
@@ -420,8 +420,8 @@ local function perm(array, n) -- adapted from https://www.lua.org/pil/9.3.html
 end
 
 function core.permute(array) -- return iterator for (factorial) permutations
-  --:: core.permute(array: any[]) -> `(:)`
-  return coroutine.wrap(function() perm(array, #array) end)
+  --:: core.permute(array: any[]) -> _Iterator for permutations of array_ -> `(:)`
+  return coroutine.wrap(function() permgen(array, #array) end)
 end
 --[[
 ```

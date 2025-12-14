@@ -6,21 +6,12 @@ local  motion, move, step = {}, {}, {}
 ---@alias situations  situation[] # Tracking history
 
 
--- position:  `{x: #:, y: #:, z: #:}`
----@alias position {x: number,  y: number,  z: number} # Computercraft co-ordinates (+x east, +y up, +z south)
+-- facing:  `"north"|"east"|"south"|"west"` 
+---@alias facing  "north"|"east"|"south"|"west"  # For movement in four NESW cardinal directions
 
 
--- situation.fuel:  `#:`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias situation.fuel  number # Simulated fuel level checked against reported fuel to validate dead reckoning
-
-
--- situation:  `{position:position, facing:facing, fuel: situation.fuel, level: situation.level}`
----@alias situation {position:position,  facing:facing,  fuel: situation.fuel,  level: situation.level} # Dead reckoning
-
-
--- recovery:  `{call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"}`
----@alias recovery {call: string,  failure: string,  cause: string,  remaining: number,  xyzf: xyzf,  direction: direction,  operation: string} # For some errors
+-- stepping:  `(): "done", remaining: #:, xyzf, direction &!recovery`
+---@alias stepping fun():  "done",  remaining: number,  xyzf,  direction  # Iterator (default 1 step)
 
 
 -- situation.level:  `"same"|"rise"|"fall"`
@@ -28,12 +19,21 @@ local  motion, move, step = {}, {}, {}
 ---@alias situation.level  "same"|"rise"|"fall" # For tracking
 
 
--- facing:  `"north"|"east"|"south"|"west"` 
----@alias facing  "north"|"east"|"south"|"west"  # For movement in four NESW cardinal directions
+-- recovery:  `{call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"}`
+---@alias recovery {call: string,  failure: string,  cause: string,  remaining: number,  xyzf: xyzf,  direction: direction,  operation: string} # For some errors
 
 
--- stepping:  `(): "done", remaining: #:, xyzf, direction &!recovery`
----@alias stepping fun():  "done",  remaining: number,  xyzf,  direction  # Iterator (default 1 step)
+-- situation:  `{position:position, facing:facing, fuel: situation.fuel, level: situation.level}`
+---@alias situation {position:position,  facing:facing,  fuel: situation.fuel,  level: situation.level} # Dead reckoning
+
+
+-- situation.fuel:  `#:`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias situation.fuel  number # Simulated fuel level checked against reported fuel to validate dead reckoning
+
+
+-- position:  `{x: #:, y: #:, z: #:}`
+---@alias position {x: number,  y: number,  z: number} # Computercraft co-ordinates (+x east, +y up, +z south)
 
 
 -- Count 0: just turn, 1: default

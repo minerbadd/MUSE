@@ -7,10 +7,10 @@ local  core = {}
 ---@type fun(...: table):  table 
 function core.merge() end
 
--- GPS location if available.
--- core.where():  `x: #:?, y: #:?, z: #:?` <-
----@type fun():  x: number?,  y: number?,  z: number? 
-function core.where() end
+-- Executable string to instantiate input.
+-- core.serialize(input: any):  `"return "..":" &!` <-
+---@type fun(input: any):  "return "..string 
+function core.serialize() end
 
 -- Returns specially formatted string for `xyzf`.
 -- core.xyzf(:xyzf:):  `":"` <-
@@ -80,10 +80,9 @@ function core.sleep() end
 ---@type fun(id: number?):  id: number 
 function core.getComputerID() end
 
--- Out of game returns label; label ignored in game.
--- core.getComputerLabel(label: ":"?):  `label: ":"` <-
----@type fun(label: string?):  label: string 
-function core.getComputerLabel() end
+-- closing:  `(value: any): value: any`
+---@alias closing fun(value: any):  value: any # Returns value or sets it and optional table entry to non `nil` `value`.
+
 
 -- If level less than `status` threshold, report `rest` as string.
 -- core.report(level: #:, ...: any):  `nil` <-
@@ -118,53 +117,59 @@ function core.vectorPairs() end
 ---@type fun(tableA: any[],  tableB: any[]):  nil | any 
 function core.match() end
 
--- Deep copy source table or return source if not table.
--- core.clone(source: {:}|any):  `{:}|any` <-
----@type fun(source: table|any):  table|any 
-function core.clone() end
-
 -- If level less than (elimination) threshold, then report rest as string. If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol. If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.
 -- core.status(level: #:, ...: any):  `nil` <-
 ---@type fun(level: number,  ...: any):  nil 
 function core.status() end
 
--- Register command completions for shell
--- core.completer(completions: {:}):  `(:)` <-
----@type fun(completions: table):  function 
-function core.completer() end
+-- Deep copy source table or return source if not table.
+-- core.clone(source: {:}|any):  `{:}|any` <-
+---@type fun(source: table|any):  table|any 
+function core.clone() end
 
 -- detail.damage:  `#:`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias detail.damage  number # Distinguishing value
 
 
--- detail:  `{name: detail.name, count: detail.count, damage: detail.damage}`
----@alias detail {name: detail.name,  count: detail.count,  damage: detail.damage} # Defined by Computercraft
-
+-- Register command completions for shell
+-- core.completer(completions: {:}):  `(:)` <-
+---@type fun(completions: table):  function 
+function core.completer() end
 
 -- Next integer down if below half fraction
 -- core.round(n: #:):  `#:` <-
 ---@type fun(n: number):  number 
 function core.round() end
 
+-- detail:  `{name: detail.name, count: detail.count, damage: detail.damage}`
+---@alias detail {name: detail.name,  count: detail.count,  damage: detail.damage} # Defined by Computercraft
+
+
 -- core.faces:  "north"|"south"|"east"|"west"|"up"|"down"|"rotate"
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias core.faces  "north"|"south"|"east"|"west"|"up"|"down"|"rotate" # Key for composed function dictionary
 
 
--- closing:  `(value: any): value: any`
----@alias closing fun(value: any):  value: any # Returns value or sets it and optional table entry to non `nil` `value`.
+-- GPS location if available.
+-- core.where():  `x: #:?, y: #:?, z: #:?` <-
+---@type fun():  x: number?,  y: number?,  z: number? 
+function core.where() end
 
+-- Out of game returns label; label ignored in game.
+-- core.getComputerLabel(label: ":"?):  `label: ":"` <-
+---@type fun(label: string?):  label: string 
+function core.getComputerLabel() end
 
 -- Makes string from any inputs, simplifies single entry tables.
 -- core.string(...: any):  `":"` <-
 ---@type fun(...: any):  string 
 function core.string() end
 
--- Executable string to instantiate input.
--- core.serialize(input: any):  `"return "..":" &!` <-
----@type fun(input: any):  "return "..string 
-function core.serialize() end
+-- Iterator for permutations of array
+-- core.permute(array: any[]):  `(:)` <-
+---@type fun(array: any[]):  function 
+function core.permute() end
 
 -- detail.count:  `#:`
 ---@diagnostic disable-next-line: duplicate-doc-alias

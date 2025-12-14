@@ -7,25 +7,23 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
+<h3>Check: Doing the Tests, Performing Regression Testing</h3>
+<pre><code class="language-markdown">
+--:! {check: []: (:)} <- Regression Check Functions Library -> muse/docs/lib/check.md
+--:| check: Setup context, save and match expected results for parts of tests, run regression for those tests -> check
+</code></pre>
+<pre><code class="language-lua">
+local core = require("core").core ---@module "signs.core"
+local check = {}; --- @module "signs.check"  
+local regression = _G.Muse.regression
 </code></pre>
 <a id="tests"></a>
-<h3>Doing the Tests</h3>
-<p>
 There's not much here. Just a way with <code>check.open</code> to create a <code>check</code> object with the context needed to save results by the <code>part</code> operation for each part of a given test. Those <i>expected</i> results are compared with actuals during a regression validation. There's a cleanup operation to <code>close</code> the opened <code>check</code> object. Finally, <code>check.tests</code> is an <code>iterator</code> that provides the file names of tests for which there are <i>expected</i> values for regression testing.
 <p>
 <i>(The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> <code>poor man's objects</code></a>. This link dumps you into a theory heavy digression. Go there when you're ready for that.)</i>
 <p>
 For MUSE, all this is enabled by files in a specified checks directory. One file there at the <code>testSetTablePath</code> instantiates as a table keyed by names of test files. The keyed values are names of results files. These are found at the <code>testPartsResultsPath</code> for the test. The results files instantiate as tables of result strings keyed by part identifiers (as strings) in the test.
 <pre><code class="language-lua">
---:! {check: []: (:)} <- <b>Regression Check Functions Library</b> -> muse/docs/lib/check.md
---:| check: <i>Setup context, save and match expected results for parts of tests, run regression for those tests</i> -> check
-
----@diagnostic disable-next-line: undefined-field
-local core = require("core").core ---@module "signs.core"
-
-local check = {}; --- @module "signs.check"  
-local regression = _G.Muse.regression
-
 local function save(theTable, path) -- utility
   local serialized = core.serialize(theTable)
   local handle = assert(io.open(path, "w"), "Can't open "..path.." in check.lua")

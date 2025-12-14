@@ -1,11 +1,11 @@
 --:! {roam: []: (:)} <- **Command Line Library for Turtle Movement** -> muse/docs/lib/roam.md      
---:| roam: _Server (turtle) side support for_ `come` _and_ `tail`, _chained motion commands, motion to or tracing._ -> roam  
+--:| roam: _Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go` _commands, motion_ `to` _or_ `trace`. -> roam  
 
 --:: roam.come(:xyz:) -> _Server side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come. -> `":" &:`  
 
 --:: roam.tail(:xyz:) -> _Server side: move turtle (close to) player's GPS_ `xyz` (_from_ `remote.tail)` -> `":" &:`  
 
---:- to place | x y z face?-> _To named place or position and face. Retry for different first direction._   
+--:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._   
 
 --:- trace trailname ->  _Move turtle along traced situations in named trail from one end of trail to the other._  
 

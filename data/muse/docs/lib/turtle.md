@@ -77,7 +77,3 @@
 
 --:: turtle.digAround(orientation: ":", name: ":", diggings: ":"[]) -> _Unblocking dig._ -> `"done" &: &!`    
 --:+ _Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation._  
-
---:: turtle.block(blocked: ^:) -> _Out-of-game debug: sets blocking for simulating turtle being blocked._ ->  `blocked: ^:`  
-
---:: turtle.blocking(^:) -> _Isolate global to control blocking for out-of-game debug._ -> `^:`  

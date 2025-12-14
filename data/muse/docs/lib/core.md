@@ -83,6 +83,10 @@
 
 --:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `(:), {:}, #:`  
 
+--:# **Iterator for coroutine partials of permutations**   
+
+--:: core.permute(array: any[]) -> _Iterator for permutations of array_ -> `(:)`  
+
 --:# **Lowest level turtle and mock turtle support used by several libraries including lib/motion**  
 
 --:: core.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`  

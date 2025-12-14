@@ -1,0 +1,5 @@
+
+
+near place? span??
+ 
+Report points within span blocks (or all) of named place (or current player or turtle position).

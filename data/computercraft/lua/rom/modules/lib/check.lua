@@ -1,8 +1,16 @@
 --[[
+#Check: Doing the Tests, Performing Regression Testing
+```md
+--:! {check: []: (:)} <- Regression Check Functions Library -> muse/docs/lib/check.md
+--:| check: Setup context, save and match expected results for parts of tests, run regression for those tests -> check
+```Lua
+--]]
+local core = require("core").core ---@module "signs.core"
+local check = {}; --- @module "signs.check"  
+local regression = _G.Muse.regression
+--[[
 ```
 <a id="tests"></a>
-#Doing the Tests
-
 There's not much here. Just a way with `check.open` to create a `check` object with the context needed to save results by the `part` operation for each part of a given test. Those _expected_ results are compared with actuals during a regression validation. There's a cleanup operation to `close` the opened `check` object. Finally, `check.tests` is an `iterator` that provides the file names of tests for which there are _expected_ values for regression testing.
 
 _(The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> `poor man's objects`</a>. This link dumps you into a theory heavy digression. Go there when you're ready for that.)_
@@ -10,15 +18,6 @@ _(The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquiva
 For MUSE, all this is enabled by files in a specified checks directory. One file there at the `testSetTablePath` instantiates as a table keyed by names of test files. The keyed values are names of results files. These are found at the `testPartsResultsPath` for the test. The results files instantiate as tables of result strings keyed by part identifiers (as strings) in the test.
 ```Lua
 --]]
---:! {check: []: (:)} <- **Regression Check Functions Library** -> muse/docs/lib/check.md
---:| check: _Setup context, save and match expected results for parts of tests, run regression for those tests_ -> check
-
----@diagnostic disable-next-line: undefined-field
-local core = require("core").core ---@module "signs.core"
-
-local check = {}; --- @module "signs.check"  
-local regression = _G.Muse.regression
-
 local function save(theTable, path) -- utility
   local serialized = core.serialize(theTable)
   local handle = assert(io.open(path, "w"), "Can't open "..path.." in check.lua")

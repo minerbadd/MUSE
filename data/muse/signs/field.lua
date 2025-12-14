@@ -35,10 +35,10 @@ function field.extents() end
 ---@type fun(parameters: [string, string, string, string?]):  string 
 function field.fill() end
 
--- field.plotSpan: _ :`[_:, _:, first: #:?, last: #:??]`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias field.plotSpan [any, any, number?, number?] # {}` spans all plots; if only first, default plots after first
-
+-- Called by plan prototype file to generate plans for plot.
+-- field.paths(bounds: xyz[]):  `paths, yDelta: #:, xzEdge: facing` <-
+---@type fun(bounds: xyz[]):  paths,  yDelta: number,  xzEdge: facing 
+function field.paths() end
 
 -- paths:  `{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}`
 ---@alias paths {start: string[],  odd: string[],  even: string[],  last: string[]} # Flying ox traverse of three dimensional rectangular solid
@@ -61,10 +61,10 @@ function field.plot() end
 ---@alias strides {[fieldOp]: number} # dictionary keyed by `opName` for the distance along the stride axis for a striding
 
 
--- Called by plan prototype file to generate plans for plot.
--- field.paths(bounds: xyz[]):  `paths, yDelta: #:, xzEdge: facing` <-
----@type fun(bounds: xyz[]):  paths,  yDelta: number,  xzEdge: facing 
-function field.paths() end
+-- field.plotSpan: _ :`[_:, _:, first: #:?, last: #:??]`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias field.plotSpan [any, any, number?, number?] # {}` spans all plots; if only first, default plots after first
+
 
 -- Quarry out blocks from one place to the other.
 -- field.cut(places: :[nearPlace: ":", farPlace: ":"]):  `":" &:` <-

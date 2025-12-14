@@ -14,32 +14,18 @@ local data =  table.concat(files, "/", 1, #files - 1).."/data/"
 
 local muse, rom  = data.."muse/", data.."computercraft/lua/rom/"
 local apiDirectory, apiFile = muse.."signs/", "muse.lua"
-local modules, programs, helps = rom.."modules/", rom.."programs/", rom.."help/"
-local docs, code = muse.."docs/", muse.."code/"; local help = docs.."help.txt"
-local verbose = true
+local modules, programs  = rom.."modules/", rom.."programs/" 
+local helps = rom.."help/" -- `helps` must be aligned with `sign` fields of `HELP` file marks 
+local docs, code = muse.."docs/", muse.."code/"
+local verbose = false
 
 local sourceDirectories = {
   modules.."lib", modules.."fields", modules.."plans", modules.."charts", modules, programs, modules.."tests"}
 local codeDirectories = {
   code.."lib", code.."fields", code.."plans", code.."charts", code.."daemons", code.."programs", code.."tests"}
-local docsDirectories = {docs.."lib", docs.."fields", docs.."plans", docs.."charts", docs.."daemons", docs.."programs"}
+local docsDirectories = {
+  docs.."lib", docs.."fields", docs.."plans", docs.."charts", docs.."daemons", docs.."programs", docs.."tests"}
 
-local Mark = require("Mark")
-Mark(apiDirectory, apiFile, sourceDirectories, docsDirectories, codeDirectories, verbose)
-
-local function makeHelp(helps, help) -- helps directory and output concatenated help file
-  local helpers = {}; for helpFile in lfs.dir(helps) do 
-    local helpPath = helps..helpFile
-    local helpFileHandle = io.open(helpPath, "r")
-    if helpFileHandle then 
-      local helpLines = helpFileHandle:read("*all"); helpFileHandle:close()
-      local helpLine = string.gsub(helpLines, "\n \n", ": ")
-      helpers[#helpers + 1] = string.gsub(helpLine, "\n", "")
-    end
-  end; local helpText = table.concat(helpers, "\n\n")
-  local helpsHandle = assert(io.open(help, "w"))
-  helpsHandle:write(helpText); helpsHandle:close()
-end
-
-makeHelp(helps, help) -- 
-
+local marks = require("Mark"); local marker, helper = marks.marker, marks.helper
+marker(apiDirectory, apiFile, sourceDirectories, docsDirectories, codeDirectories, verbose)
+helper(helps, docs.."programs.txt"); helper(docs.."tests", docs.."tests.txt")

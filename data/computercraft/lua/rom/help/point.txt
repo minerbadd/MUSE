@@ -1,0 +1,5 @@
+
+
+point name label trail?
+ 
+Add named labeled point, can start trail, MU updated map. (Player situation needs GPS.)

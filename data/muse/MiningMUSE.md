@@ -104,13 +104,13 @@ With all these changes, `lib/turtle` has superseded the ComputerCraft definition
 
 The `lib/roam` <a href="code/lib/roam.html" target="_blank"> library </a> provides yet more movement extensions for our turtles: 
 
-- _**try again strategies**_ controlled by a `.start` parameter to look for ways around blockages, 
+- _**try again strategies**_  using permutations to look for ways around blockages, 
   
-- _**going to a `place`**_ (as well as specified xyz coordinates)
+- _**going to a `place`**_ (as well as specified xyz coordinates) with `to`
   
-- _**turtle side support**_ for following the `player` around (as befits, say, a squire turtle), and
+- _**turtle side support**_ for following the `player` around (as befits, say, a squire turtle) with `come`, and
   
-- _**a very tiny language**_ to chain together commands to move a turtle piecewise in all those abstracted directions, 
+- _**a very tiny language**_ to chain together commands to move a turtle piecewise in all those abstracted directions with `go`, 
   
 All this is done using both the abstractions of `lib/turtle` and the primitives of `lib/motion`. The library also shows a way to design a more maintainable <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank">  _Command Line Interface_  </a>(CLI) based user control facility.
 <a href="code/lib/roam.html" target="_blank"> <IMG SRC="drawings/03ATree.jpg" hspace ="20" ALIGN="left"/> </a> 
@@ -123,7 +123,9 @@ Managing the inevitable and ongoing changes to the user interface is an importan
 
 A desire to ease testing is a second motivation for minimizing the work of the command itself. It's easier to test function interfaces than creating the testing facilities that drive simulated user interactions. Because of this, almost all of the work of providing MUSE CLIs is done by libraries supporting the commands. More elaborate command interfaces (including GUIs) would require more elaborate testing support systems. Sometimes project goals demand such interfaces. They would be distractions for MUSE.
 
-The functions supporting 
+The function supporting `go` is a very <a href="http://staff.um.edu.mt/afra1/seminar/little-languages.pdf" target="_blank"> _little language_</a>. We'll develop a more elaborate one later on in the exploration. But here's a <a href="code/lib/roam.html#go" target="_blank"> starter </a> to look at for now.
+
+The functions supporting `to` and `come` try <a href="https://en.wikipedia.org/wiki/Permutation" target="_blank"> permuations </a> in the order of each of the three axes of movement to get around blockages. There's an iterator provided by core.permute.
 
 Lua has a <a href="https://www.lua.org/doc/sblp2005.pdf" target="_blank"> one pass compiler</a>. Functions build on each other from the beginning of the file to the end. The tree image <a href="code/lib/roam.html" target="_blank"> links </a> to the beginning of the file. Alternatively, you may want to follow the code backward toward the beginning through the support for <a href="code/lib/roam.html#go" target="_blank"> `go` </a> and <a href="code/lib/roam.html#to" target="_blank"> `to` </a> and then look at <a href="code/lib/roam.html#come" target="_blank"> `come` </a> to see how this is done. Or just read it as written by clicking the tree.
 </br></br>
