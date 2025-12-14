@@ -1,0 +1,7 @@
+
+Get feature value for key if named place.
+
+
+erase name
+ 
+Remove named place and broadcast Muse eXcise (MX) to units.

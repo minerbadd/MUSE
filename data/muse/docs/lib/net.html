@@ -25,27 +25,27 @@
 
 --:- fueling -> <i>Returns energy available in turtle slots.</i>  
 
---:- items -> <i>Returns items in turtle inventory as string.</i>  
+--:- items -> <i>Returns items in turtle inventory.</i>  
 
---:- find name...? -> <i>Report and select first slot found [or if no name, just report inventory].</i>  
+--:- find name...? -> Report and select first slot found [or if no name, just report inventory].  
 
 --:< <b>Directions are  <i><code>u</code>p, <code>d</code>own, <code>n</code>orth, <code>e</code>ast, <code>w</code>est, <code>s</code>outh, <code>f</code>orward</i></b>  
 
---:- suck direction quantity? -> <i>Suck quantity items [or all] into available slot.</i>   
+--:- suck direction quantity? -> Suck quantity items [or all] into available slot.  
 
---:- drop item direction quantity? -> <i>Drop quantity of selected items [or all].</i>   
+--:- drop item direction quantity? -> Drop quantity of selected items [or all].  
 
---:- look direction -> <i>Detect and inspect direction, return report.</i>  
+--:- look direction -> Detect and inspect direction, return report.  
 
---:- compare item direction... -> <i>Named item matches block in any of specified directions?</i>  
+--:- compare item direction+ -> <i>Named item matches block in any of specified directions?</i>  
 
---:- attack direction -> <i>Attempts attack in specified direction.</i>   
+--:- attack direction -> Attempts attack in specified direction.  
 
---:- dig direction distance hoeing... -> <i>Direction and distance to (possibly blocked) move, hoeings directions to hoe.</i>  
+--:- dig direction distance hoeings...? -> Direction and distance to (possibly blocked) move, hoeings directions to hoe.  
 
---:- put filling direction distance putting... -> <i>Direction, distance to move, placing filling in puttings directions.</i>  
+--:- put filling direction distance puttings+ -> Direction, distance to move, placing filling in puttings directions.  
 
---:- change target filling direction distance putting... -> <i>Move distance in direction replacing target with filling.</i>  
+--:- change target filling direction distance puttings+ -> Move distance in direction replacing target with filling.  
 
 --:# <b>Remote Turtle Motion Commands</b> (e.g., <code>farmer come</code>)  
 
@@ -145,9 +145,9 @@
 
 --:- activate range -> <i>Add borders from west and north to east and south of range for Minecraft forceload.</i>  
 
---:- book name label from to span? item??... ->  <i>Spanned range with (default) items as properties; return cost less bank.</i>  
+--:- book name label from to [span [item ...] ] -> <i>Spanned range with (default) items as properties; return cost less bank.</i>  
 
---:- port booking -> <i>As provided in booking, consume player inventory to teleport entities from one area to another.</i>  
+--:- port booking -> <i>As laid out in booking, consume player inventory to teleport entities from one area to another.</i>  
 
     </pre>
   </body> 

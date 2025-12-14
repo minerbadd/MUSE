@@ -19,7 +19,7 @@ local testSetTablePath, testSetName = _G.Muse.path.."tests/checks/", "00musechec
 -- <code>testSetName</code>: dictionary of file names for expected results for tests (as file names)
 <p>
 for _, test in check.tests(testSetTablePath, testSetName) do dofile(here..test) end 
---:# run each test in this test directory that has expected results 
+--:# Run each test in this test directory that has expected results 
 -- TODO: maybe catch any thown errors and raise regression failed exception
 <p>
   </body> 

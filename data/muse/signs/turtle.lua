@@ -55,10 +55,10 @@ function turtle.digAround() end
 ---@alias turtle.detects fun():  boolean # Check block in direction is solid: not air, mob, liquid or floater.
 
 
--- Selects found slot.
--- turtle.find(targets: ":"[]):  `detail?` <-
----@type fun(targets: string[]):  detail? 
-function turtle.find() end
+-- Unblocking move. Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty". Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason. Normally return just what a successful move would: "done", 0 remaining, current position.
+-- turtle.digTo(:xyzf:, limit: #:?):  `code: ":", remaining: #:, xyzf: ":" &: &!`  <-
+---@type fun(xyzf: xyzf,  limit: number?):  code: string,  remaining: number,  xyzf: string 
+function turtle.digTo() end
 
 -- fencings:  "birch" | "acacia" | "bamboo" | "cherry" | "chrimson" | "dark oak" | "mangrove" | "oak"`
 ---@alias fencings  "birch" | "acacia" | "bamboo" | "cherry" | "chrimson" | "dark oak" | "mangrove" | "oak" # Wooden materials
@@ -73,43 +73,43 @@ function turtle.find() end
 ---@alias turtle.digs fun(side: string?):  boolean,  string? # Try to dig block in direction and call_ suck().
 
 
--- Unblocking move. Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty". Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason. Normally return just what a successful move would: "done", 0 remaining, current position.
--- turtle.digTo(:xyzf:, limit: #:?):  `code: ":", remaining: #:, xyzf: ":" &: &!`  <-
----@type fun(xyzf: xyzf,  limit: number?):  code: string,  remaining: number,  xyzf: string 
-function turtle.digTo() end
-
--- Attempts to select the specified slot.
--- turtle.select(slot: #:):  `selected: ^:` <-
----@type fun(slot: number):  selected: boolean 
-function turtle.select() end
-
--- turtle.puts:  `[:direction:]: (text: ":"?): ^:, ":"?`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.puts fun(text: string?):  boolean,  string? # Attempt placing block of the selected slot in direction.
-
-
--- ores:  `ore[]`
----@alias ores  ore[] # Category
-
-
--- direction:  `"north"|"east"|"south"|"west"|"up"|"down"`
----@alias direction  "north"|"east"|"south"|"west"|"up"|"down" # Four compass points and verticals
-
-
--- turtle.inspects:  `[:direction:]: (): `^:`, `detail?`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.inspects fun():  boolean,  detail? # If true, get detail block information in direction.
-
+-- Tries to match each target against_ `detail.name`.
+-- turtle.check(targets: ":"[], :detail:):  ``matched: ^:` <-
+---@type fun(targets: string[],  detail: detail):  matched: boolean 
+function turtle.check() end
 
 -- Total energy actually available in turtle slots plus turtle fuel level.
 -- turtle.fuel():  `fuelTotal: #:` <-
 ---@type fun():  fuelTotal: number 
 function turtle.fuel() end
 
--- Tries to match each target against_ `detail.name`.
--- turtle.check(targets: ":"[], :detail:):  ``matched: ^:` <-
----@type fun(targets: string[],  detail: detail):  matched: boolean 
-function turtle.check() end
+-- turtle.puts:  `[:direction:]: (text: ":"?): ^:, ":"?`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias turtle.puts fun(text: string?):  boolean,  string? # Attempt placing block of the selected slot in direction.
+
+
+-- Attempts to select the specified slot.
+-- turtle.select(slot: #:):  `selected: ^:` <-
+---@type fun(slot: number):  selected: boolean 
+function turtle.select() end
+
+-- turtle.inspects:  `[:direction:]: (): `^:`, `detail?`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias turtle.inspects fun():  boolean,  detail? # If true, get detail block information in direction.
+
+
+-- direction:  `"north"|"east"|"south"|"west"|"up"|"down"`
+---@alias direction  "north"|"east"|"south"|"west"|"up"|"down" # Four compass points and verticals
+
+
+-- ores:  `ore[]`
+---@alias ores  ore[] # Category
+
+
+-- Selects found slot.
+-- turtle.find(targets: ":"[]):  `detail?` <-
+---@type fun(targets: string[]):  detail? 
+function turtle.find() end
 
 -- Returns currrent turtle inventory as turtle detail table_.
 -- turtle.inventory():  `detail[]` <-

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+ <html>
+<head>
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.css" rel="stylesheet" />
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/downmark.css" rel="stylesheet" />
+</head>
+<body>
+<script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
+
+--:? muse/docs/tests/10headings.txt <- <b>Run Regression Test for Muse</b> -> muse/docs/tests/10headings.md  
+-- <b>Test heaadings -- head ["#rate"] "place" ["#lines"]; head "#rate" ["#lines"]; head ["#rate"]</b>
+<p>
+dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using <code>preface</code> in execution path
+<p>
+local core, place, map = require("core").core, require("places").place, require("map").map
+<p>
+map.map(_G.Muse.path.."tests/maps/TH.map"); place.site("TH"); core.log.level(5)
+<p>
+local ok, result = map.op({"test", "rome", "home", "210", "68", "262", "west"})
+if not ok then error(result) end
+<p>
+map.op{"headings", "rome"}
+<p>
+  </body> 
+</html>
+

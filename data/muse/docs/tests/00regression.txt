@@ -1,2 +1,2 @@
 
-run each test in this test directory that has expected results
+Run each test in this test directory that has expected results
