@@ -36,7 +36,7 @@ The first line of the introduction above sets the stage. It tells us that moving
 <pre><code class="language-lua">
 local move, step = {}, {} ---@module "signs.motion"
 </code></pre>
-As mentioned, the exported APIs for these libraries is provided in two tables of functions: <code>move</code> and <code>step</code>.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the library with<a href="https://www.lua.org/pil/8.1.html" target="_blank"> <code>require</code> </a> returns these tables. Just below we'll see that done for libraries that <code>lib/motion</code> depends on.
+As mentioned, the exported APIs for these libraries is provided in two tables of functions: <code>move</code> and <code>step</code>.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the library with<a href="https://www.lua.org/pil/8.1.html" target="_blank"> <code>require</code> </a> returns these tables. Just below we'll see that done for libraries that <code>lib/motion</code> depends on. Finally, there is an annotation indicating where to find the <a href="https://github.com/LuaLS/lua-language-server/wiki" target="_blank">Lua Language Server</a>"  signatures for the functions exported by the module.
 <p>
 The <code>lib/motion</code> libraries fit into a larger context.  That context is described by global references and dependencies on other libraries. The <code>@module</code> anotations tell the <a href="https://luals.github.io/wiki/annotations/" target="_blank"> Lua Language server</a>, LLS, where to find the information needed to check references to functions exported, used by and external to this module. (The particular way the external references are made local to this module seemed to be how LLS needed them.) 
 <p>
@@ -549,7 +549,7 @@ The important issue, though, is testing.
 <p>
 Testing. Developing the tests for a library is just part of developing that library. If done as the library is developed, the tests can be really help in keeping the development on course. The test is also a check on the utility and expressiveness of the library's interface. Done during library development, it's easier (costs less) to change. A test provides usage examples as a complement to interface documentation. Perhaps most importantly, when a library's code (inevitably) needs to be restructured for whatever reason (clarity, better fit into its context, whatever), the tests support the will to make the necessary changes. In the case of development for environments such as ComputerCraft with limited debugging support, it's a crucial aid (together with an IDE). Additionally, tests provide a sandbox where errors have limited, easily repaired, consequences.
 <p>
-Look at <a href="../tests/02testmotion.html" target = "_blank"> <code>02testmotion</code> </a>  and <a href="check.html" target = "_blank"> <code>lib/check</code></a>` to see how testing works for this module.
+Look at <a href="../tests/motion.html" target = "_blank"> <code>tests/motion</code> </a> and <a href="check.html" target = "_blank"> <code>lib/check</code></a>` to see how testing works for this module.
 <p>
 That's the end of this excursion. Next up is <a href="places.html"> <code>lib/places</code> </a> or follow the <a href="../../MiningMUSE.html#Chapter3"> link </a> to return to <i>MiningMUSE</i>.
 <p>

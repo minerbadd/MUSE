@@ -9,7 +9,6 @@ The module introduction here is much like that for other MUSE modules but note t
 --]]
 local gps, _gps = {}, {}; gps.hints = {} ---@module "signs.gps"-- exports, internals for analysis, and hints
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
@@ -17,8 +16,8 @@ local places = require("places"); local place = places.place ---@module "signs.p
 
 local peripheral = _G.peripheral
 
-local installs = peripheral and "disk/install.lua" or _G.Muse.path.."tests/install.lua" --for out-game test
-local startup = peripheral and "disk/startup.lua" or _G.Muse.path.."tests/startup.lua" --for out-game test
+local installs = peripheral and "disk/install.lua" or _G.Muse.path.."tests/.install.lua" --for out-game test
+local startup = peripheral and "disk/startup.lua" or _G.Muse.path.."tests/.startup.lua" --for out-game test
 
 local computer, modem = "computercraft:computer_advanced", "computercraft:wireless_modem_advanced" -- ender
 local drive, floppy  = "computercraft:disk_drive", "computercraft:disk"

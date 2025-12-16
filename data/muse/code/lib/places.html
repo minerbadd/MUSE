@@ -7,7 +7,7 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> Serialization, Feature Lists, and Using Iterators: <code>lib/places.lua</code> to Name Positions</h2>
+<h2> Serialization, Feature Lists, and Using Iterators: <code>lib/places</code> to Name Positions</h2>
 <pre><code class="language-markdown">
 --:! {place: []: (:), moves: []: (:), steps: []: (:) } <- <b>Places Functions Libraries</b> -> muse/docs/lib/places.md  
 --:| places: <i>Naming places at MUSE coordinates, moving there, stepping there for operations.</i> -> places, place, moves, steps
@@ -261,7 +261,7 @@ function steps.to(target) assert(target, "places: Need target to step there")
 end
 </code></pre>
 <a id="tables"></a> 
-The module exports three tables: one to deal with names, one to deal with movement directed by those names, and one to deal with stepping through such movement. And that's it for the second of the MUSE foundation libraries. Look at <a href="../tests/03testplaces.html" target = "_blank"> <code>03testplaces </a>  and <a href="check.html" target = "_blank"> </code>lib/check<code></a></code> to see how testing works for this module. And then head back to <a href="../../MiningMUSE.html#Chapter3"> <i>MiningMUSE</i></a> for a discussion of persistence, distributed state, and much, much more!
+The module exports three tables: one to deal with names, one to deal with movement directed by those names, and one to deal with stepping through such movement. And that's it for the second of the MUSE foundation libraries. Look at <a href="../tests/places.html" target = "_blank"> <code>tests/places </a>  and <a href="check.html" target = "_blank"> </code>lib/check<code></a></code> to see how testing works for this module. And then head back to <a href="../../MiningMUSE.html#Chapter3"> <i>MiningMUSE</i></a> for a discussion of persistence, distributed state, and much, much more!
 <pre><code class="language-lua">
 return {place = place, moves = moves, steps = steps}
 

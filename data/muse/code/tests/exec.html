@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+ <html>
+<head>
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.css" rel="stylesheet" />
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/downmark.css" rel="stylesheet" />
+</head>
+<body>
+<script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
+
+--:? muse/docs/tests/08exec.txt <- <b>Run Regression Test for Muse</b> -> muse/docs/tests/08exec.md  
+-- <b>Tests for lib/exec interfaces</b>
+<p>
+dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using <code>preface</code> in execution path
+<p>
+local core, place, map, exec = require("core").core, require("places").place, require("map").map, require("exec").exec
+local path = _G.Muse.path.."tests/maps/TE.map"; map.map(path); place.site("TE"); core.log.level(4)
+<p>
+local function test(number, ...) print(".."..number.." done", ...) end
+<p>
+-- : exec.locateTest(name: ":", label: ":", #:, #:, #:, {:blockAboveTest}) -> <i>For testing.</i> -> ": <code>role</code>..at..<code>qualifiedName</code> "
+-- > blockAboveTest: <i>For testing</i> -> <code>{nbt = {Label = ":"}, state = {facing = ":"}}</code>
+test(1, core.string(exec.op {"locate", "test1", "located", 100, 200, 300, 
+      {nbt = {Label = "rover"}, state = {facing = "north"}}}))
+<p>
+place.fix({10, 20, 30, "east"}); map.op {"point", "test1", "label1"} 
+place.fix({10, 20, 40, "east"}); map.op {"point","test2", "label2"}
+map.op {"range", "tests", "range", "test1", "test2", "fields", "trees"}
+<p>
+test(2, core.string(exec.op {"activate", "tests"} ))
+<p>
+<p>
+<p>
+<p>
+<p>
+  </body> 
+</html>
+

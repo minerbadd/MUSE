@@ -167,5 +167,5 @@ end
 return {roam = roam}
 --[[
 ```
-Look at <a href="../tests/05testroam.html" target = "_blank"> `02testroam` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module. Return to <a href="../../MiningMUSE.html#task"> MiningMUSE</a> to continue the exploration.
+Look at <a href="../tests/roam.html" target = "_blank"> `tests/roam` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module. Return to <a href="../../MiningMUSE.html#task"> MiningMUSE</a> to continue the exploration.
 --]]

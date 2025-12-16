@@ -547,5 +547,8 @@ Players can use
 
 Follow the links just provided to see their (fairly trivial and boringly similar) implementations. It's easy to fiddle with this layer. That's good because experience with a UI usually suggests changes to it.
 
+Look at <a href="../tests/map.html" target = "_blank"> `tests/map` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module.
+
+
 That's it for `lib/map`. Follow the <a href="../../MiningMUSE.html#Chapter5"> link</a> to return to _MiningMUSE_.
 --]]

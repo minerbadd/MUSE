@@ -3,4 +3,4 @@
 
 --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> _Return object(closure)._ -> `:[part:(:), close:(:)]`  
 
---:: check.tests(testSetTablePath:":", testSetName:":") -> _Return iterator._ -> `(:)`  
+--:: check.tests(testOrder:[], testSetTablePath:":", testSetName:":") -> _Return ordered test names for regression._ -> `":"[]`  

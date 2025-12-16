@@ -7,17 +7,17 @@ local  planner, plan, moves, steps = {}, {}, {}, {}
 ---@alias plan.fixtures  string[] # for placement as specified by path elements beginning with a digit
 
 
--- plan.mark:  `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias plan.mark fun(plan: plan,  marking: marking):  markerName: string,  label: string,  report: string # for execution as specified by_ `plan.path` _markers
-
+-- Parse marker name into parts.
+-- planner.mark(markerName: ":"):  `shaft: ":"?, level: ":"?, tag: ":"?)` <-
+---@type fun(markerName: string):  shaft: string?,  level: string?,  tag: string?) 
+function planner.mark() end
 
 -- markElement:  `:[op: "mark", :marking:]`
 ---@alias markElement ["mark", marking] # Current situation in named places
 
 
--- marking:  :`[prefix: ":", base: ":", label: ":"]`
----@alias marking [string, string, string] # tuple table of marker parts
+-- putElement:  `:[op: "put", direction: ":", fixture: ":"]
+---@alias putElement ["put", string, string] # Put fixture in specified direction
 
 
 -- plan:  `{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}`
@@ -61,12 +61,12 @@ function planner.load() end
 ---@alias plan.path  string[] # table of space separated character sequence strings describing path
 
 
--- putElement:  `:[op: "put", direction: ":", fixture: ":"]
----@alias putElement ["put", string, string] # Put fixture in specified direction
+-- marking:  :`[prefix: ":", base: ":", label: ":"]`
+---@alias marking [string, string, string] # tuple table of marker parts
 
 
--- Parse marker name into parts.
--- planner.mark(markerName: ":"):  `shaft: ":"?, level: ":"?, tag: ":"?)` <-
----@type fun(markerName: string):  shaft: string?,  level: string?,  tag: string?) 
-function planner.mark() end
+-- plan.mark:  `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias plan.mark fun(plan: plan,  marking: marking):  markerName: string,  label: string,  report: string # for execution as specified by_ `plan.path` _markers
+
 return { planner =  planner, plan = plan, moves = moves, steps = steps}

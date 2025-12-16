@@ -1,5 +1,5 @@
 --[[
-## Consistency for Turtle Operations: `lib/turtle.lua` for Turtle Abstractions
+## Consistency for Turtle Operations: `lib/turtle` for Turtle Abstractions
 ```md
 --:! {turtle: []: (:) } <- **Turtle Operations Overlay Library** -> muse/docs/lib/turtle.md  
 --:| turtle: _Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down._ -> turtle
@@ -10,7 +10,6 @@ The MUSE `turtle` module introduction is much like any other. One thing is notab
 --]]
 local turtle = {} ---@module "signs.turtle" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
 local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module "signs.mock"
@@ -203,7 +202,7 @@ end
 return {turtle = turtle}
 --[[
 ```
-Look at <a href="../tests/04testturtle.html" target = "_blank"> `04testturtle` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module.
+Look at <a href="../tests/turtle.html" target = "_blank"> `tests/turtle` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module.
 
 And now we're done making the new and improved `turtle`. No more the old. Go to <a href="../../MiningMUSE.html#roam"> MiningMUSE</a> 
 to see how these functions are used to roam around a Minecraft world.

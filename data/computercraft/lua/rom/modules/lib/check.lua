@@ -11,7 +11,7 @@ local regression = _G.Muse.regression
 --[[
 ```
 <a id="tests"></a>
-There's not much here. Just a way with `check.open` to create a `check` object with the context needed to save results by the `part` operation for each part of a given test. Those _expected_ results are compared with actuals during a regression validation. There's a cleanup operation to `close` the opened `check` object. Finally, `check.tests` is an `iterator` that provides the file names of tests for which there are _expected_ values for regression testing.
+There's not much here. Just a way with `check.open` to create a `check` object with the context needed to save results by the `part` operation for each part of a given test. Those _expected_ results are compared with actuals during a regression validation. There's a cleanup operation to `close` the opened `check` object. Finally, `check.tests` is provides the file names of tests in a specified order for which there are _expected_ values for regression testing.
 
 _(The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> `poor man's objects`</a>. This link dumps you into a theory heavy digression. Go there when you're ready for that.)_
 
@@ -24,7 +24,7 @@ local function save(theTable, path) -- utility
   handle:write(serialized); handle:close()
 end
 
-local function getTestSetTable(testSetTablePath, testSetName) -- returns testSetTable, newTestSetTable
+local function getTestSetTable(testSetTablePath, testSetName) -- returns testSetTable: , newTestSetTable: boolean
   -- `testSetTable`: `testName` keyed names of files with expected results for regressions in `testSetTablePath` directory
   local openedTestSetTable, failure = loadfile(testSetTablePath..testSetName)
   if openedTestSetTable then return openedTestSetTable(), false end -- testSetTable, newTestSetTable
@@ -56,28 +56,29 @@ function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create 
     testPartResults = testPartResults, testSetTable = testSetTable, newTestSetTable = newTestSetTable,
     testSetTablePath = theTestSetTablePath, testSetName = theTestSetName, testName = theTestName
   } -- following are the access functions for the `check` object
-  
+
   local function part(partID, ...) -- at each part of the test
     local partName = tostring(partID); local result, expected = core.string(...), this.testPartResults[partName]
     if (regression and result ~= expected) then error(result.." ~= "..expected..", "..this.testName..":"..partName) end
     if not regression then this.testPartResults[partName] = result; print(result); return end -- save result for regression
   end
-  
+
   local function close(message) -- at end of test
     if regression then print(message); return end
     if this.newTestSetTable then save(this.testSetTable, this.testSetTablePath..this.testSetName) end
     save(this.testPartResults, this.testSetTablePath..this.testSetTable[this.testName])
     this = nil -- free up now for GC
   end
-  
+
   return {part = part, close = close}
 end -- check object created by `check.open`
 
-function check.tests(testSetTablePath, testSetName) -- returns iterator of `testName` keys of `testSetTablePath` sorted by `testName`
-  --:: check.tests(testSetTablePath:":", testSetName:":") -> _Return iterator._ -> `(:)`
-  local testSetTable = getTestSetTable(testSetTablePath, testSetName) -- regression appropriate tests
-  local tests, i = {}, 1; for testName in pairs(testSetTable) do tests[i] = testName; i = i + 1 end
-  table.sort(tests); local j, n = 0, #tests; return function() j = j + 1; if j <= n then return tests[j] end end -- iterator
+function check.tests(testOrder, testSetTablePath, testSetName) 
+  --:: check.tests(testOrder:[], testSetTablePath:":", testSetName:":") -> _Return ordered test names for regression._ -> `":"[]`
+  local tests = {}; for _, testName in ipairs(testOrder) do -- testSetTable: [testName: ":"]: expecteds: ":"[]
+    local testSetTable = getTestSetTable(testSetTablePath, testSetName) -- expected results for tests in set
+    if testSetTable[testName] then tests[#tests + 1] = testName end
+  end; return tests
 end
 
 return {check = check}

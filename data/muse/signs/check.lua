@@ -2,9 +2,9 @@
 
 local  check = {}
 
--- Return iterator.
--- check.tests(testSetTablePath:":", testSetName:":"):  `(:)` <-
----@type fun(testSetTablePath:string,  testSetName:string):  function 
+-- Return ordered test names for regression.
+-- check.tests(testOrder:[], testSetTablePath:":", testSetName:":"):  `":"[]` <-
+---@type fun([],  testSetTablePath:string,  testSetName:string):  string[]
 function check.tests() end
 
 -- Return object(closure).

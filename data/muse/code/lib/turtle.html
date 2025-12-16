@@ -7,7 +7,7 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> Consistency for Turtle Operations: <code>lib/turtle.lua</code> for Turtle Abstractions</h2>
+<h2> Consistency for Turtle Operations: <code>lib/turtle</code> for Turtle Abstractions</h2>
 <pre><code class="language-markdown">
 --:! {turtle: []: (:) } <- <b>Turtle Operations Overlay Library</b> -> muse/docs/lib/turtle.md  
 --:| turtle: <i>Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down.</i> -> turtle
@@ -17,7 +17,6 @@ The MUSE <code>turtle</code> module introduction is much like any other. One thi
 <pre><code class="language-lua">
 local turtle = {} ---@module "signs.turtle" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
 local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module "signs.mock"
@@ -201,7 +200,7 @@ end
 
 return {turtle = turtle}
 </code></pre>
-Look at <a href="../tests/04testturtle.html" target = "_blank"> <code>04testturtle</code> </a> and <a href="check.html" target = "_blank"> <code>lib/check</code></a>` to see how testing works for this module.
+Look at <a href="../tests/turtle.html" target = "_blank"> <code>tests/turtle</code> </a> and <a href="check.html" target = "_blank"> <code>lib/check</code></a>` to see how testing works for this module.
 <p>
 And now we're done making the new and improved <code>turtle</code>. No more the old. Go to <a href="../../MiningMUSE.html#roam"> MiningMUSE</a> 
 to see how these functions are used to roam around a Minecraft world.

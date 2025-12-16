@@ -1,5 +1,5 @@
 --[[
-## Serialization, Feature Lists, and Using Iterators: `lib/places.lua` to Name Positions
+## Serialization, Feature Lists, and Using Iterators: `lib/places` to Name Positions
 ```md
 --:! {place: []: (:), moves: []: (:), steps: []: (:) } <- **Places Functions Libraries** -> muse/docs/lib/places.md  
 --:| places: _Naming places at MUSE coordinates, moving there, stepping there for operations._ -> places, place, moves, steps
@@ -271,7 +271,7 @@ end
 --[[
 ```
 <a id="tables"></a> 
-The module exports three tables: one to deal with names, one to deal with movement directed by those names, and one to deal with stepping through such movement. And that's it for the second of the MUSE foundation libraries. Look at <a href="../tests/03testplaces.html" target = "_blank"> `03testplaces </a>  and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module. And then head back to <a href="../../MiningMUSE.html#Chapter3"> _MiningMUSE_</a> for a discussion of persistence, distributed state, and much, much more!
+The module exports three tables: one to deal with names, one to deal with movement directed by those names, and one to deal with stepping through such movement. And that's it for the second of the MUSE foundation libraries. Look at <a href="../tests/places.html" target = "_blank"> `tests/places </a>  and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module. And then head back to <a href="../../MiningMUSE.html#Chapter3"> _MiningMUSE_</a> for a discussion of persistence, distributed state, and much, much more!
 ```Lua
 --]]
 return {place = place, moves = moves, steps = steps}

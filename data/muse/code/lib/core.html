@@ -389,7 +389,7 @@ local function permgen(array, n)
   else
     for i = 1, n do
       array[n], array[i] = array[i], array[n] -- put i-th element as the last one
-      perm(array, n - 1) -- generate all permutations of the other elements      
+      permgen(array, n - 1) -- generate all permutations of the other elements      
       array[n], array[i] = array[i], array[n] -- -- restore i-th element
     end
   end
@@ -399,6 +399,21 @@ function core.permute(array) -- return iterator for (factorial) permutations
   --:: core.permute(array: any[]) -> <i>Iterator for permutations of array</i> -> <code>(:)</code>
   return coroutine.wrap(function() permgen(array, #array) end)
 end
+
+function core.map(op, table) 
+  --:# <a href="https://en.wikipedia.org/wiki/Map<i>(higher-order</i>function)" target="_blank">On Map</a>
+  --:: core.map(op: (:), table: {:}) -> <i>Create</i> <code>result</code> <i>by applying</i> <code>op</code> <i>function to elements of</i> <code>table</code> -> <code>{:}</code>
+  local result = {}; for index, element in pairs(table) do result[index] = op(element) end
+  return result
+end
+
+function core.reduce(op, initial, table) 
+  --:#<a href="https://dgr.github.io/clojurecrazy/2022/01/09/reduce-my-favorite-clojure-function.html" target="_blank">On Fold</a>
+  --:: core.reduce(op: (:), initial: any, table: {:}) -> <i>Fold</i> <code>table</code> <i>to produce</i> <code>result</code> <i>by applying</i> <code>op</code> <i>to</i> <code>table</code> -> <code>any</code>
+  local result = initial; for _, item in ipairs(table) do result = op(result, item) end
+  return result
+end
+
 </code></pre>
 <a id="findItems"></a>
 A completely straight forward implementation (for a change).

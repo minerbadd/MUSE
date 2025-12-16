@@ -87,6 +87,14 @@
 
 --:: core.permute(array: any[]) -> _Iterator for permutations of array_ -> `(:)`  
 
+--:# <a href="https://en.wikipedia.org/wiki/Map_(higher-order_function)" target="_blank">On Map</a>  
+
+--:: core.map(op: (:), table: {:}) -> _Create_ `result` _by applying_ `op` _function to elements of_ `table` -> `{:}`  
+
+--:#<a href="https://dgr.github.io/clojurecrazy/2022/01/09/reduce-my-favorite-clojure-function.html" target="_blank">On Fold</a>  
+
+--:: core.reduce(op: (:), initial: any, table: {:}) -> _Fold_ `table` _to produce_ `result` _by applying_ `op` _to_ `table` -> `any`  
+
 --:# **Lowest level turtle and mock turtle support used by several libraries including lib/motion**  
 
 --:: core.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`  

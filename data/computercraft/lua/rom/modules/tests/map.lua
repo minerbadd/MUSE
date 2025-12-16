@@ -1,7 +1,7 @@
 --:? muse/docs/tests/07map.txt <- **Run Regression Test for Muse** -> muse/docs/tests/07map.md  
 -- **Tests for lib/map** interfaces
 
-dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using `preface` in execution path
+dofile(arg[0]:match('.*[/\\]').."/_preface.lua");  -- set test environment using `preface` in execution path
 
 local core, move, place = require("core").core, require("motion").move, require("places").place
 local map, turtle = require("map").map, require("turtle").turtle

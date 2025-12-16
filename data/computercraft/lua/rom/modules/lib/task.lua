@@ -180,5 +180,5 @@ local function put(...)
   return {task = task}
 --[[
 ```
-Look at <a href="../tests/06testtask.html" target = "_blank"> `06testtask` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module. Then return to <a href="../../MiningMUSE.html#Chapter4"> MiningMUSE</a> to continue the exploration.
+Look at <a href="../tests/task.html" target = "_blank"> `tests/task` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module. Then return to <a href="../../MiningMUSE.html#Chapter4"> MiningMUSE</a> to continue the exploration.
 --]]

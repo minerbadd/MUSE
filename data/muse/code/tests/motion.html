@@ -1,11 +1,18 @@
---[[
-**Tests for `move` and step` interfaces of lib/motion**
-```Lua
---]]
---:? muse/docs/tests/02motion.txt <- **Run Regression Test for Muse** -> muse/docs/tests/02motion.md  
+<!DOCTYPE html>
+ <html>
+<head>
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.css" rel="stylesheet" />
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/downmark.css" rel="stylesheet" />
+</head>
+<body>
+<script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-dofile(arg[0]:match('.*[/\\]').."/preface.lua") -- set test environment 
-local testName = arg[0]:match('%w*%.%w*$') -- the last words in the execution path
+<b>Tests for <code>move</code> and step` interfaces of lib/motion</b>
+<pre><code class="language-lua">
+--:? muse/docs/tests/motion.txt <- <b>Run Regression Test for Muse</b> -> muse/docs/tests/motion.md  
+
+dofile(arg[0]:match('.*[/\\]').."/_preface.lua") -- set test environment 
+local testName = arg[0]:match('%w<i>%.%w</i>$') -- the last words in the execution path
 
 local core = require("core").core 
 local motion = require("motion") 
@@ -70,3 +77,7 @@ end
 checking(28, "stepped to", core.ats())
 
 testMotion.close("Test "..testName.." complete") 
+
+  </body> 
+</html>
+
