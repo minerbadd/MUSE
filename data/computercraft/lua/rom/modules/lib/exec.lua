@@ -1,7 +1,7 @@
 --[[
 ## Exec: Command Computer Operations CLL: ComputerCraft Position and Chunk Activation
 ```md
---:! {exec: []: (:)} <- **Command Computer Command Line Library** -> muse/docs/lib/exec.md
+--:! {exec: (:)[]} <- **Command Computer Command Line Library** -> muse/docs/lib/exec.md
 --:| exec: _CLL to align MUSE location with Minecraft coordinates and activate a range as a Minecraft chunk._ -> exec
 ```
 The `exec` library provides CLL support for a couple of commands that make it easier to setup and operate a MUSE environment. They count on a command computer enabled for use outside Minecraft's creative mode.
@@ -65,7 +65,7 @@ exec.hints["activate"] = { ["?range"] = {} }
 --:# Dispatch for `exec` commands: `locate`, `activate`
 local ops = { locate = locate, activate = activate, }
 
-function exec.op(commandLine) --:: exec.op(commandLine: :[command: ":", ...]) -> _CLI for Command Computer commands_ -> `":" &:`
+function exec.op(commandLine) --:: exec.op(commandLine: :[command: ":", ...]: ) -> _CLI for Command Computer commands_ -> `":" &:`
   local ok, report = core.pass(pcall(ops[commandLine[1]], table.unpack(commandLine, 2)))
   if ok then return report else return "exec: " .. core.string(report) end -- report failure for error
 end

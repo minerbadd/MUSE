@@ -1,4 +1,4 @@
---:! {field: []: (:)} <- **Field Functions Library: Produce and Execute Field Plans** -> muse/docs/lib/field.md      
+--:! [field: [":"](:)] <- **Field Functions Library: Produce and Execute Field Plans** -> muse/docs/lib/field.md      
 --:| field: _Fields are rectangular solids defined by a range (a `situation` pair with `fields` keyed properties)._ -> field, _field    
 --:+ _Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations._  
 
@@ -31,7 +31,7 @@
 --:> craft: _Minecraft item `detail.name` without `minecraft:` prefix_ -> `":"`  
 
 --:: field.extents(:bounds:, :strides:, faced: ":"?) -> _Plots placed_ -> `field.count, field.count , eP, eP, striding, ^:, ^:`    
---:+ Returns `nplots:[fieldOp #:}, slots:[fieldOp]: #:}, strides: eP, run: eP, striding, turn: ^:, back: ^:`    
+--:+ Returns `nplots: #:, slots: #:, strides: eP, run: eP, striding: xyz, turn: ^:, back: ^:`    
 --:+ _Extents for `stride` (shorter) and `run` (longer) virtual axes for each `opName` in the `strides` entries unless `faced`._  
 
 --:> field.count: _dictionary keyed by 'opName` for number of elements in field for that operation_ -> `[fieldOp]: #:`  
@@ -49,7 +49,7 @@
 
 --:: field.paths(bounds: xyz[]) -> _Called by plan prototype file to generate plans for plot._ -> `paths, yDelta: #:, xzEdge: facing`  
 
---:> paths: __Flying ox traverse of three dimensional rectangular solid_ -> `{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}`    
+--:> paths: __Flying ox traverse of three dimensional rectangular solid_ -> `[start: ":"[], odd: ":"[], even: ":"[], last: ":"[]]`    
 --:+ _Returns paths, vertical traverse (`yDelta: #:`), and orientation of longest horizontal edge for bounded block._  
 
 --:# **Cut, fill, till, and traverse points defining rectangular volumes** using `field.plan` to optimize traversal.  

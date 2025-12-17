@@ -9,7 +9,7 @@
 
 <h2> Core: A Collection of Generally Useful Functions for MUSE</h2>
 <pre><code class="language-markdown">
---:! {core: []: (:)} <- <b>Core Functions Library</b> -> muse/docs/lib/core.md
+--:! {core: (:)[]} <- <b>Core Functions Library</b> -> muse/docs/lib/core.md
 --:| core: <i>Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support.</i> -> core
 </code></pre>
 <pre><code class="language-lua">
@@ -328,7 +328,7 @@ function core.vectorPairs(start, addend, number, partial) -- each table element 
   --:+ <i>Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result.</i>
   --:+ <i>The number n is the number of bounds in result where each bound is offset by addend from the prior bounds.</i>
   --:+ <i>Optionally the partial bounds are included as the first bounds in the result.</i>
-  --:> bounds: <i>Vector pair defining a rectangular solid</i> -> :<code>[xyz, xyz]</code>
+  --:> bounds: <i>Vector pair defining a rectangular solid</i> -> <code>:[xyz, xyz]</code>
   --:> xyz: <i>Minecraft coordinates: +x: east, +y: up, +z: south</i> -> :[x: #:, y: #:, z: #:]
   partial = partial and { partial } or {}; partial[#partial + 1] = start
   return inVectors(start, { addend, addend }, number, partial, #partial + 1) -- #addends = 2 for pairs

@@ -1,4 +1,4 @@
---:! {port: []: (:)} <- **Transport Operations Command Line Library** -> muse/docs/lib/port.md      
+--:! [port: [":"]: (:)] <- **Transport Operations Command Line Library** -> muse/docs/lib/port.md      
 --:| port: _CLL for `book` and `port` commands assessing and clearing player inventory for specified teleport._ -> port  
 
 --:# Partially consumed inventory items add to the energy `bank` used to decrease a future porting cost in a session.  

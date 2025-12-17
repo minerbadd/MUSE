@@ -1,4 +1,4 @@
---:! {gps: []: (:)} <- **GPS Deployment Command Line Library** -> muse/docs/lib/gps.md     
+--:! [gps: [":"](:)] <- **GPS Deployment Command Line Library** -> muse/docs/lib/gps.md     
 --:| gps: _Assemble, launch, and startup GPS computers._ -> gps, _gps  
 
 --:- equip direction -> _Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing)._  
@@ -11,4 +11,4 @@
 
 --:- launch place yD? -> _Deploy GPS launch yD or maximum y above place, report GPS at place._  
 
---:: gps.op(commands: {command: ":"[] }) -> _Command Line Interface._ -> `report: ":"` &:  
+--:: gps.op(commands: ":"[]) -> _Command Line Interface._ -> `report: ":"` &:  

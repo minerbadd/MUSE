@@ -19,7 +19,7 @@ return {
   ["op"] = {
   ["returns"] = " `report: \":\"` &: <-\
 ",
-  ["args"] = "commands: {command: \":\"[] }",
+  ["args"] = "commands: \":\"[]",
   ["type"] = "function",
   ["name"] = "gps.op",
   ["description"] = "\
@@ -260,7 +260,7 @@ Instantiate string as named place, include in named places.",
   ["op"] = {
   ["returns"] = " `report: \":\" &:` <-\
 ",
-  ["args"] = "commands: \":\"[]}",
+  ["args"] = "commands: \":\"[]",
   ["type"] = "function",
   ["name"] = "map.op",
   ["description"] = "\
@@ -784,7 +784,7 @@ CLL operates plan to manage mines: shaft, bore, move to posts (between and withi
   ["op"] = {
   ["returns"] = " `\":\" &:` <-\
 ",
-  ["args"] = "commandLine: :[command: \":\", ...]",
+  ["args"] = "commandLine: :[command: \":\", ...]: ",
   ["type"] = "function",
   ["name"] = "exec.op",
   ["description"] = "\
@@ -1056,9 +1056,9 @@ Libraries to move turtles and move turtles by steps allowing operations at each 
 }
 ,
   ["__remote.prepareCall:_"] = {
-  ["line"] = "--:: `_remote.prepareCall(server: \":\", command: \":\", arguments: any[]})` -> _Serialize server request._ -> `serverID: #:, request: \":\" &: &!`",
+  ["line"] = "--:: `_remote.prepareCall(server: \":\", command: \":\", arguments: any[])` -> _Serialize server request._ -> `serverID: #:, request: \":\" &: &!`",
   ["out"] = " `serverID: #:, request: \":\" &: &!`",
-  ["sign"] = "`_remote.prepareCall(server: \":\", command: \":\", arguments: any[]})`  ",
+  ["sign"] = "`_remote.prepareCall(server: \":\", command: \":\", arguments: any[])`  ",
   ["kind"] = "face",
   ["text"] = "Serialize server request.",
 }
@@ -1435,9 +1435,9 @@ Default current situation.",
 }
 ,
   ["_gps.op:_"] = {
-  ["line"] = "  --:: gps.op(commands: {command: \":\"[] }) -> _Command Line Interface._ -> `report: \":\"` &:",
+  ["line"] = "  --:: gps.op(commands: \":\"[]) -> _Command Line Interface._ -> `report: \":\"` &:",
   ["out"] = " `report: \":\"` &:",
-  ["sign"] = "gps.op(commands: {command: \":\"[] })  ",
+  ["sign"] = "gps.op(commands: \":\"[])  ",
   ["kind"] = "face",
   ["text"] = "Command Line Interface.",
 }
@@ -1842,11 +1842,11 @@ CLL for `book` and `port` commands assessing and clearing player inventory for s
 }
 ,
   ["_check.open:_"] = {
-  ["line"] = "  --:: check.open(theTestSetTablePath:\":\", theTestSetName:\":\", theTestName:\":\") -> _Return object(closure)._ -> `:[part:(:), close:(:)]`",
-  ["out"] = " `:[part:(:), close:(:)]`",
+  ["line"] = "  --:: check.open(theTestSetTablePath:\":\", theTestSetName:\":\", theTestName:\":\") -> _Return object(closure)_ -> `:[part:(:), close:(:)]:`",
+  ["out"] = " `:[part:(:), close:(:)]:`",
   ["sign"] = "check.open(theTestSetTablePath:\":\", theTestSetName:\":\", theTestName:\":\")  ",
   ["kind"] = "face",
-  ["text"] = "Return object(closure).",
+  ["text"] = "Return object(closure)",
 }
 ,
   ["_fueling_"] = {
@@ -2069,9 +2069,9 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["_exec.op:_"] = {
-  ["line"] = "function exec.op(commandLine) --:: exec.op(commandLine: :[command: \":\", ...]) -> _CLI for Command Computer commands_ -> `\":\" &:`",
+  ["line"] = "function exec.op(commandLine) --:: exec.op(commandLine: :[command: \":\", ...]: ) -> _CLI for Command Computer commands_ -> `\":\" &:`",
   ["kind"] = "face",
-  ["sign"] = "exec.op(commandLine: :[command: \":\", ...])  ",
+  ["sign"] = "exec.op(commandLine: :[command: \":\", ...]: )  ",
   ["out"] = " `\":\" &:`",
   ["text"] = "CLI for Command Computer commands",
 }
@@ -2249,7 +2249,7 @@ Use plan.quarry to cut.",
   ["type"] = "function",
   ["name"] = "field.extents",
   ["description"] = "\
-Plots placed Returns `nplots:[fieldOp #:}, slots:[fieldOp]: #:}, strides: eP, run: eP, striding, turn: ^:, back: ^: Extents for `stride` (shorter) and `run` (longer) virtual axes for each `opName` in the `strides` entries unless `faced`.",
+Plots placed Returns `nplots: #:, slots: #:, strides: eP, run: eP, striding: xyz, turn: ^:, back: ^: Extents for `stride` (shorter) and `run` (longer) virtual axes for each `opName` in the `strides` entries unless `faced`.",
 }
 ,
   [":_field.runs"] = {
@@ -2314,7 +2314,7 @@ Put fencing using `layer` plan.",
 ,
   [":paths"] = {
   ["type"] = "value",
-  ["returns"] = " `{start: \":\"[], odd: \":\"[], even: \":\"[], last: \":\"[]}`",
+  ["returns"] = " `[start: \":\"[], odd: \":\"[], even: \":\"[], last: \":\"[]]`",
   ["name"] = "paths",
   ["description"] = "\
 Flying ox traverse of three dimensional rectangular solid",
@@ -2727,7 +2727,7 @@ Iterator (default 1 step)",
   ["childs"] = {
   [":_task.puts"] = {
   ["type"] = "value",
-  ["returns"] = " :[direction: \":\", distance: #:, puttings: \":\"[] ]`",
+  ["returns"] = " [direction: \":\", distance: #:, puttings: \":\"[] ]`",
   ["name"] = "_task.puts",
   ["description"] = "\
 Common arguments",
@@ -2772,7 +2772,7 @@ Dispatch targets for_ `net` _library._ -> task, _task",
   ["childs"] = {
   [":grid.guide"] = {
   ["type"] = "value",
-  ["returns"] = " `:[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]`",
+  ["returns"] = " `[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]`",
   ["name"] = "grid.guide",
   ["description"] = "\
 Instructions for cut",
@@ -2906,13 +2906,13 @@ Return ordered test names for regression.",
 }
 ,
   ["open"] = {
-  ["returns"] = " `:[part:(:), close:(:)]` <-\
+  ["returns"] = " `:[part:(:), close:(:)]:` <-\
 ",
   ["args"] = "theTestSetTablePath:\":\", theTestSetName:\":\", theTestName:\":\"",
   ["type"] = "function",
   ["name"] = "check.open",
   ["description"] = "\
-Return object(closure).",
+Return object(closure)",
 }
 ,
 }
@@ -3080,9 +3080,9 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["_map.op:_"] = {
-  ["line"] = "  --:: map.op(commands: \":\"[]}) -> _Command Line Interface_ -> `report: \":\" &:`",
+  ["line"] = "  --:: map.op(commands: \":\"[]) -> _Command Line Interface_ -> `report: \":\" &:`",
   ["out"] = " `report: \":\" &:`",
-  ["sign"] = "map.op(commands: \":\"[]})  ",
+  ["sign"] = "map.op(commands: \":\"[])  ",
   ["kind"] = "face",
   ["text"] = "Command Line Interface",
 }
@@ -3320,7 +3320,7 @@ for execution as specified by_ `plan.path` _markers",
 ,
   [":markElement"] = {
   ["type"] = "value",
-  ["returns"] = " `:[op: \"mark\", :marking:]`",
+  ["returns"] = " `[op: \"mark\", :marking:]`",
   ["name"] = "markElement",
   ["description"] = "\
 Current situation in named places",
@@ -3331,7 +3331,7 @@ Current situation in named places",
   ["returns"] = " :`[prefix: \":\", base: \":\", label: \":\"]`",
   ["name"] = "marking",
   ["description"] = "\
-tuple table of marker parts",
+literals table of marker parts",
 }
 ,
   [":plan"] = {
@@ -3396,7 +3396,7 @@ Used by `worker.execute` to run plan",
 ,
   [":stepElement"] = {
   ["type"] = "value",
-  ["returns"] = " :`[op: \"step\", :stepping:, direction: \":\", distance: #:]`",
+  ["returns"] = " `[op: \"step\", :stepping:, direction: \":\", distance: #:]`",
   ["name"] = "stepElement",
   ["description"] = "\
 Iterate steps function in direction for distance",
@@ -3412,7 +3412,7 @@ table of space separated character sequence strings describing path",
 ,
   [":putElement"] = {
   ["type"] = "value",
-  ["returns"] = " `:[op: \"put\", direction: \":\", fixture: \":\"]",
+  ["returns"] = " `[op: \"put\", direction: \":\", fixture: \":\"]`",
   ["name"] = "putElement",
   ["description"] = "\
 Put fixture in specified direction",
@@ -3508,7 +3508,7 @@ Iterator over table beginning at index.",
 ,
   [":bounds"] = {
   ["type"] = "value",
-  ["returns"] = " :`[xyz, xyz]`",
+  ["returns"] = " `:[xyz, xyz]`",
   ["name"] = "bounds",
   ["description"] = "\
 Vector pair defining a rectangular solid",
@@ -4200,7 +4200,7 @@ Apply callback to deserialized client result.",
   ["prepareCall"] = {
   ["returns"] = " `serverID: #:, request: \":\" &: &!` <-\
 ",
-  ["args"] = "server: \":\", command: \":\", arguments: any[]}",
+  ["args"] = "server: \":\", command: \":\", arguments: any[]",
   ["type"] = "function",
   ["name"] = "_remote.prepareCall",
   ["description"] = "\

@@ -2,14 +2,14 @@
 
 local  task, _task = {}, {}
 
--- _task.puts:  :[direction: ":", distance: #:, puttings: ":"[] ]`
+-- _task.puts:  [direction: ":", distance: #:, puttings: ":"[] ]`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias _task.puts [string, number, string[]] # Common arguments
+---@alias _task.puts  [direction: string,  distance: number,  puttings: string[] # Common arguments
 
 
 -- Execute tasks for low level turtle operations:
 -- task.op(commands: :[ op: ":", arguments: ":"[] ] ):  `":" &:` <-
----@type fun(commands: [string, string[]]):  string 
+---@type fun(commands: :[ op: string,  arguments: string[]):  string 
 function task.op() end
 
 -- Tasks

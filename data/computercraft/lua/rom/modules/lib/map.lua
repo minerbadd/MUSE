@@ -1,7 +1,7 @@
 --[[
-## Persistence, Errors, and CLL for `place`: `lib/map.lua` 
+## Persistence, Errors, and CLL for `place`: `lib/map` 
 ```md
---:! {map: [] (:)} } <- **Map Command Line Library** -> muse/docs/lib/map.md  
+--:! [map: [":"] (:) ] <- **Map Command Line Library** -> muse/docs/lib/map.md  
 --:| map: _Orientation and position reporting, broadcast and persistence of places_ -> map
 ``` 
 The `map` library continues the development of `place`, introduced by <a href="places.html" target="_blank"> `lib/places`</a>.
@@ -26,7 +26,6 @@ much the same, easing testing by quickly passing control to a library to do the 
 --]]
 local map = {}; map.hints = {} ---@module "signs.map" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
@@ -521,7 +520,7 @@ As we'll see in a future chapter, the CLI can be operated remotely. Catching all
 ```Lua
 --]]
 function map.op(commands) 
-  --:: map.op(commands: ":"[]}) -> _Command Line Interface_ -> `report: ":" &:`
+  --:: map.op(commands: ":"[]) -> _Command Line Interface_ -> `report: ":" &:`
   local ok, report = core.pass(pcall(ops[commands[1]], table.unpack(commands, 2))) --the actual `command` and its parameters 
   if ok then return report else return "map: "..core.string(report).." for "..(core.getComputerLabel() or "unknown")
   end -- report failure for error

@@ -1,14 +1,13 @@
 --[[
-## Book and Port Booking From Place (Spanning Area) To Place Offering Inventory
+## Book and Port Booking lib/port From Place (Spanning Area) To Place Offering Inventory
 ```md
---:! {port: []: (:)} <- **Transport Operations Command Line Library** -> muse/docs/lib/port.md  
+--:! [port: [":"]: (:)] <- **Transport Operations Command Line Library** -> muse/docs/lib/port.md  
 --:| port: _CLL for `book` and `port` commands assessing and clearing player inventory for specified teleport._ -> port
 ```
 ```Lua
 --]]
 local port = {}; port.hints = {} ---@module "signs.port" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local places = require("places"); local place = places.place ---@module "signs.places"
 local maps = require("map"); local map = maps.map ---@module "signs.map"

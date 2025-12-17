@@ -1,4 +1,4 @@
---:! {map: [] (:)} } <- **Map Command Line Library** -> muse/docs/lib/map.md      
+--:! [map: [":"] (:) ] <- **Map Command Line Library** -> muse/docs/lib/map.md      
 --:| map: _Orientation and position reporting, broadcast and persistence of places_ -> map  
 
 --:# **File and Broadcast Operations for points, trails, and ranges (including features)**  
@@ -85,4 +85,4 @@
 
 --:# **Command Line Interface**   
 
---:: map.op(commands: ":"[]}) -> _Command Line Interface_ -> `report: ":" &:`  
+--:: map.op(commands: ":"[]) -> _Command Line Interface_ -> `report: ":" &:`  

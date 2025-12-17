@@ -1,4 +1,4 @@
---:! {core: []: (:)} <- **Core Functions Library** -> muse/docs/lib/core.md    
+--:! {core: (:)[]} <- **Core Functions Library** -> muse/docs/lib/core.md    
 --:| core: _Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support._ -> core  
 
 --:# **Managing state: clone table, generate closure for session (non-persistent) state, cache loads**  
@@ -66,7 +66,7 @@
 --:+ _The number n is the number of bounds in result where each bound is offset by addend from the prior bounds._    
 --:+ _Optionally the partial bounds are included as the first bounds in the result._  
 
---:> bounds: _Vector pair defining a rectangular solid_ -> :`[xyz, xyz]`  
+--:> bounds: _Vector pair defining a rectangular solid_ -> `:[xyz, xyz]`  
 
 --:> xyz: _Minecraft coordinates: +x: east, +y: up, +z: south_ -> :[x: #:, y: #:, z: #:]  
 

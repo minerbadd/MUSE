@@ -1,7 +1,7 @@
 --[[
 ## Task Commands for Turtles: lib/task
 ```md
---:! {task: []: (:) } <- **Command Line Library for Tasks: Low Level Turtle Operations** -> muse/docs/lib/task.md  
+--:! [task: [":"]: (:) ] <- **Command Line Library for Tasks: Low Level Turtle Operations** -> muse/docs/lib/task.md  
 --:| task: _Dispatch targets for_ `net` _library._ -> task, _task
 ```
 The `task` library uses the `direction` table abstractions built by `lib/turtle` to provide the new and improved turtle. It supports a few tasks, like `dig`, done while in motion. Those use the `step` closures of motion last seen in `lib/motion`. For motions along trails, it folds and xyz change into a scalar direction for the change. Finally, it uses the same implementation pattern for CLI support as other CLLs. 
@@ -122,7 +122,7 @@ end
 
 function _task.doTask(arguments, op, clear, fill, targets) 
   --:: `_task.doTask(arguments: _task.puts, op: (:), clear: ^:, fill: ":"?, targets: ":"[]?)`-> _Tasks_ -> ":" &!`
-  --:> `_task.puts: _Common arguments_ -> :[direction: ":", distance: #:, puttings: ":"[] ]`
+  --:> `_task.puts: _Common arguments_ -> [direction: ":", distance: #:, puttings: ":"[] ]`
   local direction, distance = table.unpack(arguments); local puttings = {table.unpack(arguments, 3)} -- puttings: ":"[]
   if direction == "along" then return doAlong(distance, puttings, op, clear, fill, targets) end -- `distance` alias `trail`
   direction, distance = core.optionals(direction, distance) -- 

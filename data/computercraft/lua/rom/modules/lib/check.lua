@@ -1,7 +1,7 @@
 --[[
-#Check: Doing the Tests, Performing Regression Testing
+#Doing the Tests, Performing Regression Testing by lib/check
 ```md
---:! {check: []: (:)} <- Regression Check Functions Library -> muse/docs/lib/check.md
+--:! [check: [":"]: (:)] <- Regression Check Functions Library -> muse/docs/lib/check.md
 --:| check: Setup context, save and match expected results for parts of tests, run regression for those tests -> check
 ```Lua
 --]]
@@ -50,7 +50,7 @@ end
 
 -- poor man's object.... encapsulates but no inheritance (didn't see the need to go there)
 function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create check object with context variables
-  --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> _Return object(closure)._ -> `:[part:(:), close:(:)]`
+  --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> _Return object(closure)_ -> `:[part:(:), close:(:)]:`
   local testPartResults, testSetTable, newTestSetTable = open(theTestSetTablePath, theTestSetName, theTestName) 
   local this = { -- context (instance) variables, each check object is independent in itself
     testPartResults = testPartResults, testSetTable = testSetTable, newTestSetTable = newTestSetTable,

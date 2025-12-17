@@ -20,11 +20,11 @@ local  motion, move, step = {}, {}, {}
 
 
 -- recovery:  `{call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"}`
----@alias recovery {call: string,  failure: string,  cause: string,  remaining: number,  xyzf: xyzf,  direction: direction,  operation: string} # For some errors
+---@alias recovery  {call: ":", failure: ":", cause: ":", remaining: number, :xyzf:, :direction:, operation: ":"} # For some errors
 
 
 -- situation:  `{position:position, facing:facing, fuel: situation.fuel, level: situation.level}`
----@alias situation {position:position,  facing:facing,  fuel: situation.fuel,  level: situation.level} # Dead reckoning
+---@alias situation  {position:position, facing:facing, fuel: situation.fuel, level: situation.level} # Dead reckoning
 
 
 -- situation.fuel:  `#:`
@@ -33,7 +33,7 @@ local  motion, move, step = {}, {}, {}
 
 
 -- position:  `{x: #:, y: #:, z: #:}`
----@alias position {x: number,  y: number,  z: number} # Computercraft co-ordinates (+x east, +y up, +z south)
+---@alias position  {x: number, y: number, z: number} # Computercraft co-ordinates (+x east, +y up, +z south)
 
 
 -- Count 0: just turn, 1: default

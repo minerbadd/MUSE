@@ -1,7 +1,7 @@
 --[[
-## Plan Execution: lib/worker.lua from lib/planner
+## Plan Execution: lib/worker from lib/planner
 ```md
---:! {worker:[]: (:)} <- **Functions Library to Execute Plans** -> muse/docs/lib/worker.md  
+--:! [worker: [":"]: (:)] <- **Functions Library to Execute Plans** -> muse/docs/lib/worker.md  
 --:| worker: _Run what's been created by_ `planner` _while attempting to deal with a turtle's situational difficulties._ -> worker
 ```
 ```Lua

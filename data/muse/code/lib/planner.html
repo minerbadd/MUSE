@@ -7,9 +7,9 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> The Plan "Language" : lib/planner.lua for lib/worker.lua</h2>
+<h2> The Plan "Language" : lib/planner for lib/worker</h2>
 <pre><code class="language-markdown">
---:! {planner: []: (:)} <- <b>Functions Library to Build a Plan</b> -> muse/docs/lib/planner.md
+--:! [planner: [":"]: (:)] <- <b>Functions Library to Build a Plan</b> -> muse/docs/lib/planner.md
 --:| planner: <i>Given a</i> <code>plan</code>, <i>create a table of operations to be performed by</i> <code>worker.execute</code>. -> planner, plan, moves, steps
 </code></pre>
 The <code>lib/planner</code> introduction outlines the parts of a <code>plan</code> represented by a Lua file.
@@ -18,7 +18,6 @@ A MUSE <code>plan</code> includes at least one <code>path</code> which may have 
 <pre><code class="language-lua">
 local planner = {} ---@module "signs.planner" -- for functions exported from library
 
-package.path = _G.Muse.package
 local motion = require("motion"); local step = motion.step ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 
@@ -29,7 +28,7 @@ local turtles = require("turtle"); local turtle = turtles.turtle ---@module "sig
 --:> plan.fixtures: <i>for placement as specified by path elements beginning with a digit</i> -> <code>":"[]</code>
 --:> plan.mark: <i>for execution as specified by</i> <code>plan.path</code> <i>markers</i> -> <code>(:plan:, :marking:): markerName: ":", label: ":", report: ":"</code>
 
---:> marking: <i>tuple table of marker parts</i> -> :<code>[prefix: ":", base: ":", label: ":"]</code>
+--:> marking: <i>literals table of marker parts</i> -> :<code>[prefix: ":", base: ":", label: ":"]</code>
 --:> markings: <i>dictionary of markings keyed by a label</i> -> <code>[label: ":"]: marking</code>
 
 --:# <b>Plan elements beginning with a letter indicate stepped movement in one of six directions: u, d, n, e, s, or w.</b>
@@ -56,9 +55,9 @@ local directions = {u = "up", d = "down", n = "north", e = "east", w = "west", s
 function planner.make(plan) 
 --:: planner.make(plan:plan) -> <i>Create path operations table for plan.</i> -> <code>pathElements, fuelOK: ^:, pathDistance: #:</code>
 --:> pathElements: <i>Used by <code>worker.execute</code> to run plan</i> -> <code>(stepElement|putElement|markElement)[]</code>
---:> stepElement: <i>Iterate steps function in direction for distance</i> -> :<code>[op: "step", :stepping:, direction: ":", distance: #:]</code>
---:> putElement: <i>Put fixture in specified direction</i> -> `:[op: "put", direction: ":", fixture: ":"]
---:> markElement: <i>Current situation in named places</i> -> <code>:[op: "mark", :marking:]</code>
+--:> stepElement: <i>Iterate steps function in direction for distance</i> -> <code>[op: "step", :stepping:, direction: ":", distance: #:]</code>
+--:> putElement: <i>Put fixture in specified direction</i> -> <code>[op: "put", direction: ":", fixture: ":"]</code>
+--:> markElement: <i>Current situation in named places</i> -> <code>[op: "mark", :marking:]</code>
 
   local pathElements, pathDistance = {}, 0 -- initial state
   for _, stringPart in ipairs(plan.path) do -- deal with all path strings together

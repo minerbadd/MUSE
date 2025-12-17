@@ -7,9 +7,9 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> Network Remote Command Interface for RPC: lib/net.lua</h2>
+<h2> Network Remote Command Interface for RPC: lib/net</h2>
 <pre><code class="language-markdown">
---:! {net: [] (:)} <- <b>Net Remote Command Library</b> -> muse/docs/lib/net.md  
+--:! [net: [":"]: (:) ] <- <b>Net Remote Command Library</b> -> muse/docs/lib/net.md  
 --:| net: <i>Command Line Library providing turtle operations used by remote library (effectively the UI for Muse).</i> -> net
 --:# <i>Remote commands for turtles need prefixing by <code>farmer</code>, <code>miner</code>, <code>logger</code>,<code>porter</code>,  or <code>rover</code> roles.</i>
 </code></pre>
@@ -32,7 +32,6 @@ hints[path.."porter.lua"] = as;
 <a id="dispatch"></a> 
 The <code>net</code> table dispatches commands for each <code>remote.call</code> into server libraries. The <code>exec</code> and <code>port</code> libraries are used by the command computer. The <code>core</code> library is for debug.
 <pre><code class="language-lua">
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core  ---@module "signs/core"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local gpss = require("gps"); local gps = gpss.gps ---@module "signs.gps"

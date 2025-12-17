@@ -7,16 +7,15 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> Framework for Field Operations: lib/field.lua</h2>
+<h2> Framework for Field Operations: lib/field</h2>
 <pre><code class="language-markdown">
---:! {field: []: (:)} <- <b>Field Functions Library: Produce and Execute Field Plans</b> -> muse/docs/lib/field.md  
+--:! [field: [":"](:)] <- <b>Field Functions Library: Produce and Execute Field Plans</b> -> muse/docs/lib/field.md  
 --:| field: <i>Fields are rectangular solids defined by a range (a <code>situation</code> pair with <code>fields</code> keyed properties).</i> -> field, _field
 --:+ <i>Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations.</i>
 </code></pre>
 <pre><code class="language-lua">
 local field, _field = {}, {}; field.hints = {} ---@module "signs.field" -- exports, internals for analysis, hints 
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion");local move = moves.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
@@ -146,7 +145,7 @@ As we've said, one reason fields are sliced into <code>plots</code> of a given s
 <pre><code class="language-lua">
 function field.extents(bounds, strides, faced) 
 --:: field.extents(:bounds:, :strides:, faced: ":"?) -> <i>Plots placed</i> -> <code>field.count, field.count , eP, eP, striding, ^:, ^:</code>
---:+ Returns <code>nplots:[fieldOp #:}, slots:[fieldOp]: #:}, strides: eP, run: eP, striding, turn: ^:, back: ^:</code>
+--:+ Returns <code>nplots: #:, slots: #:, strides: eP, run: eP, striding: xyz, turn: ^:, back: ^:</code>
 --:+ <i>Extents for <code>stride</code> (shorter) and <code>run</code> (longer) virtual axes for each <code>opName</code> in the <code>strides</code> entries unless <code>faced</code>.</i>
 --:> field.count: <i>dictionary keyed by 'opName<code> for number of elements in field for that operation</i> -> </code>[fieldOp]: #:`
 --:> strides: <i>dictionary keyed by <code>opName</code> for the distance along the stride axis for a striding</i> -> <code>[fieldOp]: #:</code>
@@ -218,7 +217,7 @@ end
 
 function field.paths(bounds) -- <code>startPath</code>, <code>evenLevelPath</code>, <code>oddLevelPath</code>, <code>evenLevelPath</code>, <code>oddLevelPath</code>, ..., <code>lastLevelPath</code>
   --:: field.paths(bounds: xyz[]) -> <i>Called by plan prototype file to generate plans for plot.</i> -> <code>paths, yDelta: #:, xzEdge: facing</code>
-  --:> paths: _Flying ox traverse of three dimensional rectangular solid_ -> <code>{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}</code>
+  --:> paths: _Flying ox traverse of three dimensional rectangular solid_ -> <code>[start: ":"[], odd: ":"[], even: ":"[], last: ":"[]]</code>
   --:+ <i>Returns paths, vertical traverse (<code>yDelta: #:</code>), and orientation of longest horizontal edge for bounded block.</i>
   local runs, yDelta, xzDelta, xzEdge = _field.runElements(bounds); 
   -- <code>runs.evenLevel.evenFirst</code> and <code>runs.evenLevel.oddFirst</code> for first entry edge cases 

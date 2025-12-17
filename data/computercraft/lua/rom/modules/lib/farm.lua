@@ -1,14 +1,13 @@
 --[[ 
-## Turtle Work Functions and Documentation for Preparing, Planting, Harvesting Fields: lib/farm.lua
+## Turtle Work Functions and Documentation for Preparing, Planting, Harvesting Fields: lib/farm
 ```md
---:! {farm: []: (:)} <- **Turtle Work Functions Support Library** -> muse/docs/lib/farm.md  
+--:! [farm: [":"](:)] <- **Turtle Work Functions Support Library** -> muse/docs/lib/farm.md  
 --:| farm: _Planting through blockages and in several directions. Putting item and replacing blocks._-> farm
 --:> farmOpName: _Specifies operation on field_ -> `"quarry"|"layer"|"cover"|"finish"|"fence"|"harvest"|"path"|"test"`
 ```Lua
 --]]
 local farm = {}; farm.hints = {} ---@module "signs.farm" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 

@@ -1,7 +1,7 @@
 --[[
-## Remote Procedure Calls, RPCs: lib/remote.lua, Client Side `come` and `tail`
+## Remote Procedure Calls, RPCs: lib/remote, Client Side `come` and `tail`
 ```md
---:! {remote: []: (:) } <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md  
+--:! [remote: [":"]: (:) ] <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md  
 --:| remote: _Client and server side support for RPCs and client (player) side support for_ `come` _and_ `tail`. -> remote, _remote
 --:+ **Test functions are provided for out-of-game, no network operation.**
 
@@ -15,7 +15,6 @@ We'll get to more about the dancing in a bit but first, the expected library int
 --]]
 local remote, _remote = {}, {} ---@module "signs.remote" -- exports, internal for analysis
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
@@ -113,7 +112,7 @@ The MUSE DDS facilities called on above <a href="dds.html" target="_blank"> are 
 --]]
 -- _Send serialized string from `remote.call` to network and wait for result from server_
 function _remote.prepareCall(server, command, arguments) -- test as `remote.testCall`
---:: `_remote.prepareCall(server: ":", command: ":", arguments: any[]})` -> _Serialize server request._ -> `serverID: #:, request: ":" &: &!`
+--:: `_remote.prepareCall(server: ":", command: ":", arguments: any[])` -> _Serialize server request._ -> `serverID: #:, request: ":" &: &!`
   local serialOK, request = core.pass(pcall(core.serialize, {command, arguments})) -- TODO: use JSON compatible serialization
   if not serialOK then error("remote.call: Can't serialize "..command.." for".." "..request) end
   local serverID = dds.roleID(server); if not serverID then error("remote.call: unknown target "..server) end

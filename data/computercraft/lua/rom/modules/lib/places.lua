@@ -1,7 +1,7 @@
 --[[
 ## Serialization, Feature Lists, and Using Iterators: `lib/places` to Name Positions
 ```md
---:! {place: []: (:), moves: []: (:), steps: []: (:) } <- **Places Functions Libraries** -> muse/docs/lib/places.md  
+--:! [place: [":"]: (:), moves: [":"]: (:), steps: [":"]: (:) ] <- **Places Functions Libraries** -> muse/docs/lib/places.md  
 --:| places: _Naming places at MUSE coordinates, moving there, stepping there for operations._ -> places, place, moves, steps
 --:+ place: **Name places (points, trails, ranges); serialize and load serializations for disk and network operations.**  
 --:+ moves: **Move turtles to named places or along named trails.** 
@@ -18,7 +18,6 @@ All that said, here's the introduction and utilities for the module.
 --]]
 local place, moves, steps  = {}, {}, {} ---@module "signs.places"
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion") ---@module "signs.motion"
 local move, step = motion.move, motion.step

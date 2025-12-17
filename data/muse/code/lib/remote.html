@@ -7,9 +7,9 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> Remote Procedure Calls, RPCs: lib/remote.lua, Client Side <code>come</code> and <code>tail</code></h2>
+<h2> Remote Procedure Calls, RPCs: lib/remote, Client Side <code>come</code> and <code>tail</code></h2>
 <pre><code class="language-markdown">
---:! {remote: []: (:) } <- <b>Functions Library for Remote Procedure Calls</b> -> muse/docs/lib/remote.md  
+--:! [remote: [":"]: (:) ] <- <b>Functions Library for Remote Procedure Calls</b> -> muse/docs/lib/remote.md  
 --:| remote: <i>Client and server side support for RPCs and client (player) side support for</i> <code>come</code> <i>and</i> <code>tail</code>. -> remote, _remote
 --:+ <b>Test functions are provided for out-of-game, no network operation.</b>
 
@@ -22,7 +22,6 @@ We'll get to more about the dancing in a bit but first, the expected library int
 <pre><code class="language-lua">
 local remote, _remote = {}, {} ---@module "signs.remote" -- exports, internal for analysis
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
@@ -112,7 +111,7 @@ The MUSE DDS facilities called on above <a href="dds.html" target="_blank"> are 
 <pre><code class="language-lua">
 -- <i>Send serialized string from <code>remote.call</code> to network and wait for result from server</i>
 function _remote.prepareCall(server, command, arguments) -- test as <code>remote.testCall</code>
---:: <code>_remote.prepareCall(server: ":", command: ":", arguments: any[]})</code> -> <i>Serialize server request.</i> -> <code>serverID: #:, request: ":" &: &!</code>
+--:: <code>_remote.prepareCall(server: ":", command: ":", arguments: any[])</code> -> <i>Serialize server request.</i> -> <code>serverID: #:, request: ":" &: &!</code>
   local serialOK, request = core.pass(pcall(core.serialize, {command, arguments})) -- TODO: use JSON compatible serialization
   if not serialOK then error("remote.call: Can't serialize "..command.." for".." "..request) end
   local serverID = dds.roleID(server); if not serverID then error("remote.call: unknown target "..server) end

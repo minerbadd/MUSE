@@ -43,7 +43,7 @@ function _remote.testCome() end
 function _remote.clientResult() end
 
 -- Serialize server request.
--- _remote.prepareCall(server: ":", command: ":", arguments: any[]}):  `serverID: #:, request: ":" &: &!` <-
+-- _remote.prepareCall(server: ":", command: ":", arguments: any[]):  `serverID: #:, request: ":" &: &!` <-
 ---@type fun(server: string,  command: string,  arguments: any[]):  serverID: number,  request: string 
 function _remote.prepareCall() end
 return { remote =  remote, _remote = _remote}

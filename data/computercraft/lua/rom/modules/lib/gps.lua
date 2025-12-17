@@ -1,7 +1,7 @@
 --[[
-## Global Positioning System Launch: lib/gps.lua
+## Global Positioning System Launch: lib/gps
 ```md
---:! {gps: []: (:)} <- **GPS Deployment Command Line Library** -> muse/docs/lib/gps.md 
+--:! [gps: [":"](:)] <- **GPS Deployment Command Line Library** -> muse/docs/lib/gps.md 
 --:| gps: _Assemble, launch, and startup GPS computers._ -> gps, _gps
 ```
 The module introduction here is much like that for other MUSE modules but note the special handling for out-of-game testing.
@@ -147,7 +147,7 @@ end gps.hints["launch "] = {["?location "] = {["??yDelta"] = {}}}
 local ops = {launch = _gps.launch, equip = _gps.equip, actuate = _gps.actuate, check = check} 
 
 function gps.op(commands) 
-  --:: gps.op(commands: {command: ":"[] }) -> _Command Line Interface._ -> `report: ":"` &:
+  --:: gps.op(commands: ":"[]) -> _Command Line Interface._ -> `report: ":"` &:
   local ok, report = core.pass(pcall(ops[commands[1]], commands))
   if ok then return report else return "gps: "..report end -- report failure for error
 end 

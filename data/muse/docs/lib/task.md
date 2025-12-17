@@ -1,4 +1,4 @@
---:! {task: []: (:) } <- **Command Line Library for Tasks: Low Level Turtle Operations** -> muse/docs/lib/task.md      
+--:! [task: [":"]: (:) ] <- **Command Line Library for Tasks: Low Level Turtle Operations** -> muse/docs/lib/task.md      
 --:| task: _Dispatch targets for_ `net` _library._ -> task, _task  
 
 --:< **Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward_**  

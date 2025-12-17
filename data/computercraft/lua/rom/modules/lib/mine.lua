@@ -1,7 +1,7 @@
 --[[
-## Mine Operations for Shafts and Tunnels: `lib/mine.lua` 
+## Mine Operations for Shafts and Tunnels: `lib/mine` 
 ```md
---:! {mine: []: (:)} <- **Mine Command Line Library** -> muse/docs/lib/mine.md  
+--:! [mine: [":"]: (:)] <- **Mine Command Line Library** -> muse/docs/lib/mine.md  
 --:| mine: _CLL operates plan to manage mines: shaft, bore, move to posts (between and within levels), and get ores._ -> mine, _mine
 ```
 <a id="introduction"></a> 
@@ -9,7 +9,6 @@
 --]]
 local mine, _mine = {}, {}; mine.hints = {} ---@module "signs.mine" -- exports, internal for analysis
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local places = require("places"); local place, moves = places.place, places.moves

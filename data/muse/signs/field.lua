@@ -2,14 +2,14 @@
 
 local  field, _field = {}, {}
 
--- Plots placed Returns `nplots:[fieldOp #:}, slots:[fieldOp]: #:}, strides: eP, run: eP, striding, turn: ^:, back: ^: Extents for `stride` (shorter) and `run` (longer) virtual axes for each `opName` in the `strides` entries unless `faced`.
+-- Plots placed Returns `nplots: #:, slots: #:, strides: eP, run: eP, striding: xyz, turn: ^:, back: ^: Extents for `stride` (shorter) and `run` (longer) virtual axes for each `opName` in the `strides` entries unless `faced`.
 -- field.extents(:bounds:, :strides:, faced: ":"?):  `field.count, field.count , eP, eP, striding, ^:, ^:` <-
 ---@type fun(bounds: bounds,  strides: strides,  faced: string?):  field.count,  field.count ,  eP,  eP,  striding,  boolean,  boolean 
 function field.extents() end
 
 -- _field.runs:  `{oddlevel: _field.plans, evenlevel: _field.plans}`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias _field.runs {oddlevel: _field.plans,  evenlevel: _field.plans} # Plans for runs at even and odd numbered levels.
+---@alias _field.runs  {oddlevel: _field.plans, evenlevel: _field.plans} # Plans for runs at even and odd numbered levels.
 
 
 -- striding:  `[fieldOp]: xyz`
@@ -22,12 +22,12 @@ function field.extents() end
 
 
 -- fieldCommands:  :`[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`
----@alias fieldCommands [string, string, number?, number?] # For CLI
+---@alias fieldCommands  : [string, string, number?, number?] # For CLI
 
 
 -- _field.plans:  `{start: plan, odd: plan, even: plan, last: plan}`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias _field.plans {start: plan,  odd: plan,  even: plan,  last: plan} # At each level, start, even numbered, odd numbered, last run.
+---@alias _field.plans  {start: plan, odd: plan, even: plan, last: plan} # At each level, start, even numbered, odd numbered, last run.
 
 
 -- Fill, Till, Replace.
@@ -40,8 +40,8 @@ function field.fill() end
 ---@type fun(bounds: xyz[]):  paths,  yDelta: number,  xzEdge: facing 
 function field.paths() end
 
--- paths:  `{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}`
----@alias paths {start: string[],  odd: string[],  even: string[],  last: string[]} # Flying ox traverse of three dimensional rectangular solid
+-- paths:  `[start: ":"[], odd: ":"[], even: ":"[], last: ":"[]]`
+---@alias paths  [start: string[],  odd: string[],  even: string[],  last: string[] # Flying ox traverse of three dimensional rectangular solid
 
 
 -- Plots Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`).
@@ -54,7 +54,7 @@ function field.plot() end
 
 
 -- eP:  `:[xyz, xyz]`
----@alias eP [xyz, xyz] # pair of coordinates for extents
+---@alias eP  : [xyz, xyz] # pair of coordinates for extents
 
 
 -- strides:  `[fieldOp]: #:`
@@ -63,7 +63,7 @@ function field.plot() end
 
 -- field.plotSpan: _ :`[_:, _:, first: #:?, last: #:??]`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias field.plotSpan [any, any, number?, number?] # {}` spans all plots; if only first, default plots after first
+---@alias field.plotSpan _ : [any, any, number?, number?] # {}` spans all plots; if only first, default plots after first
 
 
 -- Quarry out blocks from one place to the other.
@@ -81,7 +81,7 @@ function field.make() end
 
 
 -- fieldParameters:  :`[bounds, fieldParameters.fills?, fieldParameters.removeables??]`
----@alias fieldParameters [bounds, fieldParameters.fills?, fieldParameters.removeables?] # bounds` (and materials to fill and replace)
+---@alias fieldParameters  : [bounds, fieldParameters.fills?, fieldParameters.removeables?] # bounds` (and materials to fill and replace)
 
 
 -- Till the seed from one place to the other.

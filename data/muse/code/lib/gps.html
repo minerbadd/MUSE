@@ -7,9 +7,9 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> Global Positioning System Launch: lib/gps.lua</h2>
+<h2> Global Positioning System Launch: lib/gps</h2>
 <pre><code class="language-markdown">
---:! {gps: []: (:)} <- <b>GPS Deployment Command Line Library</b> -> muse/docs/lib/gps.md 
+--:! [gps: [":"](:)] <- <b>GPS Deployment Command Line Library</b> -> muse/docs/lib/gps.md 
 --:| gps: <i>Assemble, launch, and startup GPS computers.</i> -> gps, _gps
 </code></pre>
 The module introduction here is much like that for other MUSE modules but note the special handling for out-of-game testing.
@@ -152,7 +152,7 @@ end gps.hints["launch "] = {["?location "] = {["??yDelta"] = {}}}
 local ops = {launch = <i>gps.launch, equip = </i>gps.equip, actuate = _gps.actuate, check = check} 
 
 function gps.op(commands) 
-  --:: gps.op(commands: {command: ":"[] }) -> <i>Command Line Interface.</i> -> <code>report: ":"</code> &:
+  --:: gps.op(commands: ":"[]) -> <i>Command Line Interface.</i> -> <code>report: ":"</code> &:
   local ok, report = core.pass(pcall(ops[commands[1]], commands))
   if ok then return report else return "gps: "..report end -- report failure for error
 end 

@@ -1,4 +1,4 @@
---:! {turtle: []: (:) } <- **Turtle Operations Overlay Library** -> muse/docs/lib/turtle.md      
+--:! [turtle: [":"]: (:) ] <- **Turtle Operations Overlay Library** -> muse/docs/lib/turtle.md      
 --:| turtle: _Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down._ -> turtle    
 --:+ _Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking._    
 

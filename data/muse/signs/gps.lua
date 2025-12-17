@@ -3,8 +3,8 @@
 local  gps, _gps = {}, {}
 
 -- Command Line Interface.
--- gps.op(commands: {command: ":"[] }):  `report: ":"` &: <-
----@type fun(commands: {command: string[]}):  report: string 
+-- gps.op(commands: ":"[]):  `report: ":"` &: <-
+---@type fun(commands: string[]):  report: string 
 function gps.op() end
 
 -- Assemble parts.

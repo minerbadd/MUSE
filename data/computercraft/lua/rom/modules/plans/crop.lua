@@ -11,7 +11,7 @@ package.path = _G.Muse.package
 local fields = require("field"); local field = fields.field ---@module "signs.field"
 local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
 
-local bounds, index = table.unpack(...) -- crops `fieldsOpParameters` bounds:[from: xyz, to: xyz]; index is plot number
+local bounds, index = table.unpack(...) -- crops `fieldsOpParameters` bounds::[from: xyz, to: xyz]:; index is plot number
 local paths, yDelta =  field.paths(bounds) 
 
 local plots = {"", "minecraft:wheat_seeds", "minecraft:potato", "minecraft:carrot", "minecraft:beetroot_seeds",

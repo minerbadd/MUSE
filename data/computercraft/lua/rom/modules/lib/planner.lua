@@ -1,7 +1,7 @@
 --[[
-## The Plan "Language" : lib/planner.lua for lib/worker.lua
+## The Plan "Language" : lib/planner for lib/worker
 ```md
---:! {planner: []: (:)} <- **Functions Library to Build a Plan** -> muse/docs/lib/planner.md
+--:! [planner: [":"]: (:)] <- **Functions Library to Build a Plan** -> muse/docs/lib/planner.md
 --:| planner: _Given a_ `plan`, _create a table of operations to be performed by_ `worker.execute`. -> planner, plan, moves, steps
 ```
 The `lib/planner` introduction outlines the parts of a `plan` represented by a Lua file.
@@ -11,7 +11,6 @@ A MUSE `plan` includes at least one `path` which may have `step` elements (speci
 --]]
 local planner = {} ---@module "signs.planner" -- for functions exported from library
 
-package.path = _G.Muse.package
 local motion = require("motion"); local step = motion.step ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 
@@ -22,7 +21,7 @@ local turtles = require("turtle"); local turtle = turtles.turtle ---@module "sig
 --:> plan.fixtures: _for placement as specified by path elements beginning with a digit_ -> `":"[]`
 --:> plan.mark: _for execution as specified by_ `plan.path` _markers_ -> `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`
 
---:> marking: _tuple table of marker parts_ -> :`[prefix: ":", base: ":", label: ":"]`
+--:> marking: _literals table of marker parts_ -> :`[prefix: ":", base: ":", label: ":"]`
 --:> markings: _dictionary of markings keyed by a label_ -> `[label: ":"]: marking`
 
 --:# **Plan elements beginning with a letter indicate stepped movement in one of six directions: u, d, n, e, s, or w.**
@@ -51,9 +50,9 @@ local directions = {u = "up", d = "down", n = "north", e = "east", w = "west", s
 function planner.make(plan) 
 --:: planner.make(plan:plan) -> _Create path operations table for plan._ -> `pathElements, fuelOK: ^:, pathDistance: #:`
 --:> pathElements: _Used by `worker.execute` to run plan_ -> `(stepElement|putElement|markElement)[]`
---:> stepElement: _Iterate steps function in direction for distance_ -> :`[op: "step", :stepping:, direction: ":", distance: #:]`
---:> putElement: _Put fixture in specified direction_ -> `:[op: "put", direction: ":", fixture: ":"]
---:> markElement: _Current situation in named places_ -> `:[op: "mark", :marking:]`
+--:> stepElement: _Iterate steps function in direction for distance_ -> `[op: "step", :stepping:, direction: ":", distance: #:]`
+--:> putElement: _Put fixture in specified direction_ -> `[op: "put", direction: ":", fixture: ":"]`
+--:> markElement: _Current situation in named places_ -> `[op: "mark", :marking:]`
 
   local pathElements, pathDistance = {}, 0 -- initial state
   for _, stringPart in ipairs(plan.path) do -- deal with all path strings together

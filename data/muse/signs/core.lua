@@ -27,8 +27,8 @@ function core.findItems() end
 ---@type fun(table: table,  index: number):  function,  table,  number 
 function core.inext() end
 
--- bounds:  :`[xyz, xyz]`
----@alias bounds [xyz, xyz] # Vector pair defining a rectangular solid
+-- bounds:  `:[xyz, xyz]`
+---@alias bounds  : [xyz, xyz] # Vector pair defining a rectangular solid
 
 
 -- detail.name:  `":"`
@@ -77,7 +77,7 @@ function core.state() end
 function core.sleep() end
 
 -- xyzf:  `{x: #:, y: #:, z: #:, facing: ":"}`
----@alias xyzf {x: number,  y: number,  z: number,  facing: string} # Position and facing as table
+---@alias xyzf  {x: number, y: number, z: number, facing: ":"} # Position and facing as table
 
 
 -- Out of game returns id; id ignored in game.
@@ -96,7 +96,7 @@ function core.getComputerLabel() end
 function core.report() end
 
 -- xyz:  :[x: #:, y: #:, z: #:]
----@alias xyz [number, number, number] # Minecraft coordinates: +x: east, +y: up, +z: south
+---@alias xyz  : [number, number, number] # Minecraft coordinates: +x: east, +y: up, +z: south
 
 
 -- Set threshold level [and local log file] for status reports
@@ -111,11 +111,11 @@ function core.vectorPairs() end
 
 -- core.log:  `{level: closing, file: closing, handle: closing}`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias core.log {level: closing,  file: closing,  handle: closing} # Closure variable
+---@alias core.log  {level: closing, file: closing, handle: closing} # Closure variable
 
 
 -- xyzMap:  `xyz[] | [core.faces]: xyz`
----@alias xyzMap  xyz[] # Table of vectors either an array or dictionary
+---@alias xyzMap  xyz[]|{[core.faces]: xyz} # Table of vectors either an array or dictionary
 
 
 -- Next integer down if below half fraction
@@ -153,7 +153,7 @@ function core.completer() end
 
 
 -- detail:  `{name: detail.name, count: detail.count, damage: detail.damage}`
----@alias detail {name: detail.name,  count: detail.count,  damage: detail.damage} # Defined by Computercraft
+---@alias detail  {name: detail.name, count: detail.count, damage: detail.damage} # Defined by Computercraft
 
 
 -- Create `result` _by applying_ `op` _function to elements of_ `table

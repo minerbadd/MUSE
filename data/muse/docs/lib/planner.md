@@ -1,4 +1,4 @@
---:! {planner: []: (:)} <- **Functions Library to Build a Plan** -> muse/docs/lib/planner.md    
+--:! [planner: [":"]: (:)] <- **Functions Library to Build a Plan** -> muse/docs/lib/planner.md    
 --:| planner: _Given a_ `plan`, _create a table of operations to be performed by_ `worker.execute`. -> planner, plan, moves, steps  
 
 --:> plan: _How to do work_ -> `{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}`  
@@ -13,7 +13,7 @@
 
 --:> plan.mark: _for execution as specified by_ `plan.path` _markers_ -> `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`  
 
---:> marking: _tuple table of marker parts_ -> :`[prefix: ":", base: ":", label: ":"]`  
+--:> marking: _literals table of marker parts_ -> :`[prefix: ":", base: ":", label: ":"]`  
 
 --:> markings: _dictionary of markings keyed by a label_ -> `[label: ":"]: marking`  
 
@@ -31,11 +31,11 @@
 
 --:> pathElements: _Used by `worker.execute` to run plan_ -> `(stepElement|putElement|markElement)[]`  
 
---:> stepElement: _Iterate steps function in direction for distance_ -> :`[op: "step", :stepping:, direction: ":", distance: #:]`  
+--:> stepElement: _Iterate steps function in direction for distance_ -> `[op: "step", :stepping:, direction: ":", distance: #:]`  
 
---:> putElement: _Put fixture in specified direction_ -> `:[op: "put", direction: ":", fixture: ":"]  
+--:> putElement: _Put fixture in specified direction_ -> `[op: "put", direction: ":", fixture: ":"]`  
 
---:> markElement: _Current situation in named places_ -> `:[op: "mark", :marking:]`  
+--:> markElement: _Current situation in named places_ -> `[op: "mark", :marking:]`  
 
 --:# **Marker parsing utility function**  
 

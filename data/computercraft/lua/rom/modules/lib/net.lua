@@ -1,7 +1,7 @@
 --[[
-## Network Remote Command Interface for RPC: lib/net.lua
+## Network Remote Command Interface for RPC: lib/net
 ```md
---:! {net: [] (:)} <- **Net Remote Command Library** -> muse/docs/lib/net.md  
+--:! [net: [":"]: (:) ] <- **Net Remote Command Library** -> muse/docs/lib/net.md  
 --:| net: _Command Line Library providing turtle operations used by remote library (effectively the UI for Muse)._ -> net
 --:# _Remote commands for turtles need prefixing by `farmer`, `miner`, `logger`,`porter`,  or `rover` roles._
 ```
@@ -29,7 +29,6 @@ hints[path.."porter.lua"] = as;
 The `net` table dispatches commands for each `remote.call` into server libraries. The `exec` and `port` libraries are used by the command computer. The `core` library is for debug.
 ```Lua
 --]]
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core  ---@module "signs/core"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local gpss = require("gps"); local gps = gpss.gps ---@module "signs.gps"

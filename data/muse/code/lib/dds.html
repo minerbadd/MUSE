@@ -7,9 +7,9 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> MUSE Distributed Discovery Service: lib/dds.lua</h2>
+<h2> MUSE Distributed Discovery Service: lib/dds</h2>
 <pre><code class="language-markdown">
---:! {dds: []: (:)} <- <b>In-game (only) MUSE Discovery Service Library</b> -> muse/docs/lib/dds.md  
+--:! [dds: [":"]: (:)] <- <b>In-game (only) MUSE Discovery Service Library</b> -> muse/docs/lib/dds.md  
 --:| dds: <i>Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet protocol.</i> -> dds
 </code></pre>
 This module provides a library handling the mapping of numbers (ComputerCraft computer IDs) to names (ComputerCraft computer labels standing in for MUSE roles) with <code>dds.role</code> and back again with <code>dds.roleID</code>. These are filled in in-game by a call to <code>lib/dds.hosts</code> during session startup by running <a href="../.start.html#dds" target="_blank"> <code>.start.lua</code> </a>. 
@@ -23,7 +23,6 @@ The so-called DDS facilities only work in-game. The ComputerCraft network interf
 
 local dds = {} ---@module "signs.dds" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local places = require("places"); local place = places.place ---@module "signs.places"
 

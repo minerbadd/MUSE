@@ -7,9 +7,9 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2> Persistence, Errors, and CLL for <code>place</code>: <code>lib/map.lua</code> </h2>
+<h2> Persistence, Errors, and CLL for <code>place</code>: <code>lib/map</code> </h2>
 <pre><code class="language-markdown">
---:! {map: [] (:)} } <- <b>Map Command Line Library</b> -> muse/docs/lib/map.md  
+--:! [map: [":"] (:) ] <- <b>Map Command Line Library</b> -> muse/docs/lib/map.md  
 --:| map: <i>Orientation and position reporting, broadcast and persistence of places</i> -> map
 </code></pre>
 The <code>map</code> library continues the development of <code>place</code>, introduced by <a href="places.html" target="_blank"> <code>lib/places</code></a>.
@@ -33,7 +33,6 @@ much the same, easing testing by quickly passing control to a library to do the 
 <pre><code class="language-lua">
 local map = {}; map.hints = {} ---@module "signs.map" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
@@ -486,7 +485,7 @@ local ops = { --:# <b>Command Line Interface</b>
 As we'll see in a future chapter, the CLI can be operated remotely. Catching all the errors thrown (recursively) by callers (of callers of callers....) allows continued operation at the remote computer after an error. 
 <pre><code class="language-lua">
 function map.op(commands) 
-  --:: map.op(commands: ":"[]}) -> <i>Command Line Interface</i> -> <code>report: ":" &:</code>
+  --:: map.op(commands: ":"[]) -> <i>Command Line Interface</i> -> <code>report: ":" &:</code>
   local ok, report = core.pass(pcall(ops[commands[1]], table.unpack(commands, 2))) --the actual <code>command</code> and its parameters 
   if ok then return report else return "map: "..core.string(report).." for "..(core.getComputerLabel() or "unknown")
   end -- report failure for error

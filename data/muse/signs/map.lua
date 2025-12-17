@@ -38,7 +38,7 @@ function map.point() end
 function map.put() end
 
 -- Command Line Interface
--- map.op(commands: ":"[]}):  `report: ":" &:` <-
+-- map.op(commands: ":"[]):  `report: ":" &:` <-
 ---@type fun(commands: string[]):  report: string 
 function map.op() end
 
@@ -53,7 +53,7 @@ function map.place() end
 function map.testFacing() end
 
 -- borders:  {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
----@alias borders {east: number,  west: number,  north: number,  south: number,  top: number,  bottom: number} # Range boundarires
+---@alias borders  {east: number, west: number, north: number, south: number, top: number, bottom: number} # Range boundarires
 
 
 -- Set string feature value, send MU.

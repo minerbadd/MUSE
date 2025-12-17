@@ -7,7 +7,7 @@ local  places, place, moves, steps = {}, {}, {}, {}
 
 
 -- place:  `{name: ":", label: ":", :situations:, :features:}`
----@alias place {name: string,  label: string,  situations: situations,  features: features} # A point, trail, or range
+---@alias place  {name: string, label: string, :situations:, :features:} # A point, trail, or range
 
 
 -- cardinals:  (dx: #:, dz: #:): cardinal: ":"
@@ -71,7 +71,7 @@ function place.add() end
 
 -- Sorted
 -- place.nearby(:xyzf:?, :cardinals:):  `:[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:] <-
----@type fun(xyzf: xyzf?,  cardinals: cardinals): [number, string, string, string, xyzf]
+---@type fun(xyzf: xyzf?,  cardinals: cardinals):  : [number, string, string, string, xyzf]
 function place.nearby() end
 
 -- Sets situation position, can start tracking for trail.

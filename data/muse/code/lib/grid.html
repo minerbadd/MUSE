@@ -7,16 +7,15 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h2>Work Functions for Navigation and Mining Grid Plans: lib/grid.lua</h2>
+<h2>Work Functions for Navigation and Mining Grid Plans: lib/grid</h2>
 <pre><code class="language-markdown">
---:! {grid: []: (:)} <- <b>Grid Mining Functions Library</b> -> muse/docs/lib/grid.md  
+--:! [grid: [":"]: (:)] <- <b>Grid Mining Functions Library</b> -> muse/docs/lib/grid.md  
 --:| grid: <i>Work functions boring, navigating, and mining ore in a grid of tunnels.</i> -> grid
 </code></pre>
 The <code>grid</code> library provides the <i>how</i> extending mining plans run by the <code>lib/mine</code> CLL. It provides the means for <code>worker.execute</code> to navigate, bore, and mine a grid of tunnels at some level in a mine. There are three bored access tunnels: an <code>inner</code> one to the shaft and two <code>outer</code> ones at the edges of the bored area. Ores are mined in tunnels perpendicular to these.
 <pre><code class="language-lua">
 local grid = {} ---@module "signs.grid" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
@@ -123,7 +122,7 @@ end
 
 --:# <b>Definitions for finding and extracting ores</b>
 --:> grid.cut: <i>Directions to dig in vein</i> -> <code>"up"|"down"|"north"|"south"</code>
---:> grid.guide: <i>Instructions for cut</i> -> <code>:[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]</code>
+--:> grid.guide: <i>Instructions for cut</i> -> <code>[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]</code>
 -- + <i><code>look</code>: direction to look for ore; <code>dig</code>: first digs in cut; <code>lookMore</code>: try direction for more ore; <code>digMore</code>: more digs.</i>
 
 local function mineCut(plan, direction, cut, ores) 

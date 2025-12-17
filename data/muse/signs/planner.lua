@@ -12,16 +12,16 @@ local  planner, plan, moves, steps = {}, {}, {}, {}
 ---@type fun(markerName: string):  shaft: string?,  level: string?,  tag: string?) 
 function planner.mark() end
 
--- markElement:  `:[op: "mark", :marking:]`
----@alias markElement ["mark", marking] # Current situation in named places
+-- markElement:  `[op: "mark", :marking:]`
+---@alias markElement  [op: "mark",  marking: marking] # Current situation in named places
 
 
--- putElement:  `:[op: "put", direction: ":", fixture: ":"]
----@alias putElement ["put", string, string] # Put fixture in specified direction
+-- putElement:  `[op: "put", direction: ":", fixture: ":"]`
+---@alias putElement  [op: "put",  direction: string,  fixture: string] # Put fixture in specified direction
 
 
 -- plan:  `{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}`
----@alias plan {name: plan.name,  path: plan.path,  work: plan.work,  fixtures: plan.fixtures,  mark: plan.mark} # How to do work
+---@alias plan  {name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark} # How to do work
 
 
 -- plan.work:  `(:plan:, direction: ":"): ":"?`
@@ -49,11 +49,11 @@ function planner.load() end
 
 
 -- pathElements:  `(stepElement|putElement|markElement)[]`
----@alias pathElements ( stepElement|putElement|markElement)[] # Used by `worker.execute` to run plan
+---@alias pathElements  (stepElement|putElement|markElement)[] # Used by `worker.execute` to run plan
 
 
--- stepElement:  :`[op: "step", :stepping:, direction: ":", distance: #:]`
----@alias stepElement ["step", stepping, string, number] # Iterate steps function in direction for distance
+-- stepElement:  `[op: "step", :stepping:, direction: ":", distance: #:]`
+---@alias stepElement  [op: "step",  stepping: stepping,  direction: string,  distance: number] # Iterate steps function in direction for distance
 
 
 -- plan.path:  `":"[]`
@@ -62,7 +62,7 @@ function planner.load() end
 
 
 -- marking:  :`[prefix: ":", base: ":", label: ":"]`
----@alias marking [string, string, string] # tuple table of marker parts
+---@alias marking  : [string, string, string] # literals table of marker parts
 
 
 -- plan.mark:  `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`

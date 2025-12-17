@@ -1,4 +1,4 @@
---:! {roam: []: (:)} <- **Command Line Library for Turtle Movement** -> muse/docs/lib/roam.md      
+--:! [roam: [":"]: (:)] <- **Command Line Library for Turtle Movement** -> muse/docs/lib/roam.md      
 --:| roam: _Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go` _commands, motion_ `to` _or_ `trace`. -> roam  
 
 --:: roam.come(:xyz:) -> _Server side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come. -> `":" &:`  

@@ -9,7 +9,7 @@
 
 <h2> Serialization, Feature Lists, and Using Iterators: <code>lib/places</code> to Name Positions</h2>
 <pre><code class="language-markdown">
---:! {place: []: (:), moves: []: (:), steps: []: (:) } <- <b>Places Functions Libraries</b> -> muse/docs/lib/places.md  
+--:! [place: [":"]: (:), moves: [":"]: (:), steps: [":"]: (:) ] <- <b>Places Functions Libraries</b> -> muse/docs/lib/places.md  
 --:| places: <i>Naming places at MUSE coordinates, moving there, stepping there for operations.</i> -> places, place, moves, steps
 --:+ place: <b>Name places (points, trails, ranges); serialize and load serializations for disk and network operations.</b>  
 --:+ moves: <b>Move turtles to named places or along named trails.</b> 
@@ -25,7 +25,6 @@ All that said, here's the introduction and utilities for the module.
 <pre><code class="language-lua">
 local place, moves, steps  = {}, {}, {} ---@module "signs.places"
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion") ---@module "signs.motion"
 local move, step = motion.move, motion.step

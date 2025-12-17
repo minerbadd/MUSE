@@ -6,7 +6,7 @@
 <body>
 <pre>
 
---:! {field: []: (:)} <- <b>Field Functions Library: Produce and Execute Field Plans</b> -> muse/docs/lib/field.md      
+--:! [field: [":"](:)] <- <b>Field Functions Library: Produce and Execute Field Plans</b> -> muse/docs/lib/field.md      
 --:| field: <i>Fields are rectangular solids defined by a range (a <code>situation</code> pair with <code>fields</code> keyed properties).</i> -> field, _field    
 --:+ <i>Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations.</i>  
 
@@ -39,7 +39,7 @@
 --:> craft: <i>Minecraft item <code>detail.name</code> without <code>minecraft:</code> prefix</i> -> <code>":"</code>  
 
 --:: field.extents(:bounds:, :strides:, faced: ":"?) -> <i>Plots placed</i> -> <code>field.count, field.count , eP, eP, striding, ^:, ^:</code>    
---:+ Returns <code>nplots:[fieldOp #:}, slots:[fieldOp]: #:}, strides: eP, run: eP, striding, turn: ^:, back: ^:</code>    
+--:+ Returns <code>nplots: #:, slots: #:, strides: eP, run: eP, striding: xyz, turn: ^:, back: ^:</code>    
 --:+ <i>Extents for <code>stride</code> (shorter) and <code>run</code> (longer) virtual axes for each <code>opName</code> in the <code>strides</code> entries unless <code>faced</code>.</i>  
 
 --:> field.count: <i>dictionary keyed by 'opName<code> for number of elements in field for that operation</i> -> </code>[fieldOp]: #:`  
@@ -57,7 +57,7 @@
 
 --:: field.paths(bounds: xyz[]) -> <i>Called by plan prototype file to generate plans for plot.</i> -> <code>paths, yDelta: #:, xzEdge: facing</code>  
 
---:> paths: _Flying ox traverse of three dimensional rectangular solid_ -> <code>{start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}</code>    
+--:> paths: _Flying ox traverse of three dimensional rectangular solid_ -> <code>[start: ":"[], odd: ":"[], even: ":"[], last: ":"[]]</code>    
 --:+ <i>Returns paths, vertical traverse (<code>yDelta: #:</code>), and orientation of longest horizontal edge for bounded block.</i>  
 
 --:# <b>Cut, fill, till, and traverse points defining rectangular volumes</b> using <code>field.plan</code> to optimize traversal.  

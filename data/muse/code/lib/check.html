@@ -7,9 +7,9 @@
 <body>
 <script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
-<h3>Check: Doing the Tests, Performing Regression Testing</h3>
+<h3>Doing the Tests, Performing Regression Testing by lib/check</h3>
 <pre><code class="language-markdown">
---:! {check: []: (:)} <- Regression Check Functions Library -> muse/docs/lib/check.md
+--:! [check: [":"]: (:)] <- Regression Check Functions Library -> muse/docs/lib/check.md
 --:| check: Setup context, save and match expected results for parts of tests, run regression for those tests -> check
 </code></pre>
 <pre><code class="language-lua">
@@ -56,7 +56,7 @@ end
 
 -- poor man's object.... encapsulates but no inheritance (didn't see the need to go there)
 function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create check object with context variables
-  --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> <i>Return object(closure).</i> -> <code>:[part:(:), close:(:)]</code>
+  --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> <i>Return object(closure)</i> -> <code>:[part:(:), close:(:)]:</code>
   local testPartResults, testSetTable, newTestSetTable = open(theTestSetTablePath, theTestSetName, theTestName) 
   local this = { -- context (instance) variables, each check object is independent in itself
     testPartResults = testPartResults, testSetTable = testSetTable, newTestSetTable = newTestSetTable,

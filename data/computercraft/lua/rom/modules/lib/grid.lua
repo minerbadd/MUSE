@@ -1,7 +1,7 @@
 --[[
-##Work Functions for Navigation and Mining Grid Plans: lib/grid.lua
+##Work Functions for Navigation and Mining Grid Plans: lib/grid
 ```md
---:! {grid: []: (:)} <- **Grid Mining Functions Library** -> muse/docs/lib/grid.md  
+--:! [grid: [":"]: (:)] <- **Grid Mining Functions Library** -> muse/docs/lib/grid.md  
 --:| grid: _Work functions boring, navigating, and mining ore in a grid of tunnels._ -> grid
 ```
 The `grid` library provides the _how_ extending mining plans run by the `lib/mine` CLL. It provides the means for `worker.execute` to navigate, bore, and mine a grid of tunnels at some level in a mine. There are three bored access tunnels: an `inner` one to the shaft and two `outer` ones at the edges of the bored area. Ores are mined in tunnels perpendicular to these.
@@ -9,7 +9,6 @@ The `grid` library provides the _how_ extending mining plans run by the `lib/min
 --]]
 local grid = {} ---@module "signs.grid" -- for functions exported from library
 
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
@@ -120,7 +119,7 @@ end
 
 --:# **Definitions for finding and extracting ores**
 --:> grid.cut: _Directions to dig in vein_ -> `"up"|"down"|"north"|"south"`
---:> grid.guide: _Instructions for cut_ -> `:[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]`
+--:> grid.guide: _Instructions for cut_ -> `[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]`
 -- + _`look`: direction to look for ore; `dig`: first digs in cut; `lookMore`: try direction for more ore; `digMore`: more digs._
 
 local function mineCut(plan, direction, cut, ores) 
