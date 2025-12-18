@@ -14,7 +14,6 @@ As advertised, rather than go beyond the limits of what is reasonably expressed 
 The function produced by loading this file returns tables as defined below:
 ```Lua
 --]]
-package.path = _G.Muse.package
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 local mines = require("mine"); local mine = mines.mine ---@module "signs.mine"
 local grids = require("grid"); local grid = grids.grid ---@module "signs.grid"

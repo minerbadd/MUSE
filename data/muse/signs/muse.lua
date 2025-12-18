@@ -2420,7 +2420,7 @@ Run plan, default offset {0,0,0}. Loads and executes the prototype plan (which c
 ,
   [":eP"] = {
   ["type"] = "value",
-  ["returns"] = " `:[xyz, xyz]`",
+  ["returns"] = " `bounds`",
   ["name"] = "eP",
   ["description"] = "\
 pair of coordinates for extents",

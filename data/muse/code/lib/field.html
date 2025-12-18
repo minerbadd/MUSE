@@ -150,7 +150,7 @@ function field.extents(bounds, strides, faced)
 --:> field.count: <i>dictionary keyed by 'opName<code> for number of elements in field for that operation</i> -> </code>[fieldOp]: #:`
 --:> strides: <i>dictionary keyed by <code>opName</code> for the distance along the stride axis for a striding</i> -> <code>[fieldOp]: #:</code>
 --:> striding: _dictionary keyed by <code>opName</code> of vectors incrementing game coordinate positions for <code>turn</code>_ -> <code>[fieldOp]: xyz</code>
---:> eP: <i>pair of coordinates for extents</i>  -> <code>:[xyz, xyz]</code>
+--:> eP: <i>pair of coordinates for extents</i>  -> <code>bounds</code>
 --:> fieldOp: <i>Operation name in the set for a particular kind of field</i> -> ":"
 
   local west, east, north, south, top, bottom = bounds.west, bounds.east, bounds.north, bounds.south, bounds.top, bounds.bottom 

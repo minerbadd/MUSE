@@ -18,8 +18,6 @@ local place, moves = places.place, places.moves
 
 ---@module "signs.mine" -- import the interface
 
---:> crossplan: _Bore and mine, minimal movement_ -> `{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }`
-
 --[[
 ```
 <a id="navigation"></a> 
@@ -136,8 +134,9 @@ local function mineCut(plan, direction, cut, ores)
 end
 
 function grid.ores(plan, direction, guide, ores)
-  --:: grid.ores(:plan:, :direction:, guide: grid.guide, :ores:) -> _Extract ores._ -> `"done" &!`
+  --:: grid.ores(plan: crossplan, :direction:, guide: grid.guide, :ores:) -> _Extract ores._ -> `"done" &!`
   --:+ _Given the guide for a vein, mine ores in each of the guide's cuts for that vein._
+  --:> crossplan: _Bore and mine, minimal movement_ -> `{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }`
   for _, cut in ipairs(guide) do mineCut(plan, direction, cut, ores) end 
   return "done"
 end

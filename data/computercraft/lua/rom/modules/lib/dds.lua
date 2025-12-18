@@ -29,8 +29,8 @@ _G.Muse.IDs = _G.Muse.IDs or -- for out-game
 (_G.rednet and {} or {player = 0, porter = 1, rover = 5, miner = 6, logger = 7, farmer = 8}) 
 
 _G.Muse.roles = _G.Muse.roles or -- for out-game
-(_G.rednet and {} or {[0] = "player", [1] = "porter", [2] = "rover", [3] = "miner", [4] = "logger", [5] = "farmer"})
---:> roles: _Dictionary of Computercraft labels for MUSE roles keyed by Computercraft (string) IDs_ -> `[ID]: ":"`
+(_G.rednet and {} or {[0] = "player", [1] = "porter", [5] = "rover", [6] = "miner", [7] = "logger", [8] = "farmer"})
+--:> roles: _ Sparse array of Computercraft labels for MUSE roles indexed by Computercraft IDs_ -> `role[]`
 --:> role: _ComputerCraft label as MUSE role_ -> `":"`
 
 local IDs, roles, landed = _G.Muse.IDs, _G.Muse.roles, _G.Muse.landed

@@ -53,8 +53,8 @@ function field.plot() end
 ---@alias craft  string # Minecraft item `detail.name` without `minecraft:` prefix
 
 
--- eP:  `:[xyz, xyz]`
----@alias eP  : [xyz, xyz] # pair of coordinates for extents
+-- eP:  `bounds`
+---@alias eP  bounds # pair of coordinates for extents
 
 
 -- strides:  `[fieldOp]: #:`

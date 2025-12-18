@@ -21,7 +21,7 @@ local turtles = require("turtle"); local turtle = turtles.turtle ---@module "sig
 --:> plan.fixtures: _for placement as specified by path elements beginning with a digit_ -> `":"[]`
 --:> plan.mark: _for execution as specified by_ `plan.path` _markers_ -> `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`
 
---:> marking: _literals table of marker parts_ -> :`[prefix: ":", base: ":", label: ":"]`
+--:> marking: _literals table of marker parts_ -> `[prefix: ":", base: ":", label: ":"]`
 --:> markings: _dictionary of markings keyed by a label_ -> `[label: ":"]: marking`
 
 --:# **Plan elements beginning with a letter indicate stepped movement in one of six directions: u, d, n, e, s, or w.**

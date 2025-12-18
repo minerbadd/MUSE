@@ -37,7 +37,7 @@ end
 --:# **Execution train runs from `field.make` to `field.plot` to `field.plan` to execute the plan**
 function field.make(commands, faced) -- loads and runs `fields/` file which calls `field.plot`
   --:: field.make(commands: fieldCommands, faced: ^:) -> _Load field files; return their `field.plot` calls_ -> `report: ":" &:`
-  --:> fieldCommands: _For CLI_ -> :`[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`
+  --:> fieldCommands: _For CLI_ -> `[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`
   --:+ _The second entry, `ranger` in `fieldCommands` is a string which may simply be a name for a `range`, (a kind of `place`)._
   --:+ _If so, the range name gets the range's features dictionary and the field file name to load (keyed as `features.fields`)._
   --:+ _It could also be a string specifying the name of a farm and a farm field name in that farm (separated by a colon)._
@@ -65,7 +65,7 @@ end
 function field.plot(commands, fieldsOp, fieldOpName, plots, offset) -- `field.make` -> field -> `field.plot`
 --:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> _Plots_ -> `report: ":" &: &!`
 --:+ _Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`)._
---:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ :`[_:, _:, first: #:?, last: #:??]`
+--:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ `[_:, _:, first: #:?, last: #:??]`
   local first, last = table.unpack(commands, 3); local hx, hy, hz = table.unpack(place.xyzf())
   if not (hx and hy and hz) then error("field.plot: No home") end
   core.status(4, "field", "plot start", hx, hy, hz, fieldOpName, first, last, plots, offset) 
@@ -89,7 +89,7 @@ The `field.plan` function moves the turtle to the computed start position for th
 function field.plan(planName, fielding, offset) -- `fieldsOp` calls `field.plan` for each plot 
 --:: field.plan(planName: ":", fielding: fieldParameters, offset: xyz?) -> _Run plan, default offset {0,0,0}._ -> `report: ":" &: &!`
 --:+ _Loads and executes the prototype plan (which calls `field.paths`) for each (odd, even, or last) level of a plot._
---:> fieldParameters: _`bounds` (and materials to fill and replace)_ -> :`[bounds, fieldParameters.fills?, fieldParameters.removeables??]`
+--:> fieldParameters: _`bounds` (and materials to fill and replace)_ -> `[bounds, fieldParameters.fills?, fieldParameters.removeables??]`
 --:> fieldParameters.fills: _Group or list of craft items for fill material_ -> `group|craft[]`
 --:> fieldParameters.removeables: _Material replaced by fill_ -> `group|craft[]`
 --:> craft: _Minecraft item `detail.name` without `minecraft:` prefix_ -> `":"`
@@ -153,7 +153,7 @@ function field.extents(bounds, strides, faced)
 --:> field.count: _dictionary keyed by 'opName` for number of elements in field for that operation_ -> `[fieldOp]: #:`
 --:> strides: _dictionary keyed by `opName` for the distance along the stride axis for a striding_ -> `[fieldOp]: #:`
 --:> striding: _dictionary keyed by `opName` of vectors incrementing game coordinate positions for `turn`_ -> `[fieldOp]: xyz`
---:> eP: _pair of coordinates for extents_  -> `:[xyz, xyz]`
+--:> eP: _pair of coordinates for extents_  -> `bounds`
 --:> fieldOp: _Operation name in the set for a particular kind of field_ -> ":"
 
   local west, east, north, south, top, bottom = bounds.west, bounds.east, bounds.north, bounds.south, bounds.top, bounds.bottom 
@@ -178,7 +178,7 @@ The `field.paths` function might be thought of as a utility for a _plan prototyp
 --:+ _Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions._
 
 function _field.runElements(bounds) -- run elements, y delta, edge length, and edge direction for `plotPath`
-  --:: `_field.runElements(bounds: :[xyzStart: xyz, xyzFinish: xyz])` -> _Fly ox._ -> `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`
+  --:: `_field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz])` -> _Fly ox._ -> `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`
   --:> `_field.runs`: _Plans for runs at even and odd numbered levels._ -> `{oddlevel: _field.plans, evenlevel: _field.plans}`
   --:> `_field.plans`: _At each level, start, even numbered, odd numbered, last run._ -> `{start: plan, odd: plan, even: plan, last: plan}`
   local xyzstart, xyzFinish = table.unpack(bounds); 
@@ -222,7 +222,7 @@ end
 
 function field.paths(bounds) -- `startPath`, `evenLevelPath`, `oddLevelPath`, `evenLevelPath`, `oddLevelPath`, ..., `lastLevelPath`
   --:: field.paths(bounds: xyz[]) -> _Called by plan prototype file to generate plans for plot._ -> `paths, yDelta: #:, xzEdge: facing`
-  --:> paths: __Flying ox traverse of three dimensional rectangular solid_ -> `[start: ":"[], odd: ":"[], even: ":"[], last: ":"[]]`
+  --:> paths: __Flying ox traverse of three dimensional rectangular solid_ -> {start: ":"[], odd: ":"[], even: ":"[], last: ":"[]}`
   --:+ _Returns paths, vertical traverse (`yDelta: #:`), and orientation of longest horizontal edge for bounded block._
   local runs, yDelta, xzDelta, xzEdge = _field.runElements(bounds); 
   -- `runs.evenLevel.evenFirst` and `runs.evenLevel.oddFirst` for first entry edge cases 
@@ -277,8 +277,8 @@ function _field.makeBounds(nearPlace, farPlace)
 end
 
 function _field.cut(places)
-  --:: `_field.cut(places: :[nearPlace: ":", farPlace: ":"])` -> _Use plan.quarry to cut._ -> `report: ":" &:`
-  local nearPlace, farPlace = table.unpack(places) -- {"nearPlace", "farPlace"}
+  --:: `_field.cut(places: [nearPlace: ":", farPlace: ":"])` -> _Use plan.quarry to cut._ -> `report: ":" &:`
+  local nearPlace, farPlace = table.unpack(places) -- ["nearPlace", "farPlace"]
   local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
   local start, finish = nearY >= farY and near or far, nearY >= farY and far or near
   local ok, report = core.pass(pcall(field.plan, "quarry", { {start, finish} }, {0, 1, 0}))
@@ -286,7 +286,7 @@ function _field.cut(places)
 end; 
 
 function field.cut(places) return protect(_field.cut, places) end
---:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`
+--:: field.cut(places: [nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`
 --:- cut point point -> _Quarry out blocks bound by named points (defining a rectangular solid)._
 field.hints["cut"] = {["?point "] = {["?point"] = {}}}
 
@@ -299,7 +299,7 @@ function _field.put(thePlan, start, finish, filling, target)
 end 
 
 function _field.fillTill(thePlan, parameters) 
-  --:: `_field.fillTill(thePlan: ":", parameters: :[nearPlace: ":", farPlace: ":", filling: ":", target: ":"?])` -> _To `put``._ -> `":"`
+  --:: `_field.fillTill(thePlan: ":", parameters: [nearPlace: ":", farPlace: ":", filling: ":", target: ":"?])` -> _To `put``._ -> `":"`
   local nearPlace, farPlace, filling, target = table.unpack(parameters);
   local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
   local start, finish = nearY <= farY and near or far, nearY <= farY and far or near
@@ -307,13 +307,13 @@ function _field.fillTill(thePlan, parameters)
 end
 
 function field.fill(parameters) return protect(_field.fillTill, "layer", parameters) end
---:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`
+--:: field.fill(parameters: [nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`
 --:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:` 
 --:- fill point point filling ?target -> _Layer fill bounds by points; optionally swaps out only target blocks._
 field.hints["fill"] = {["?point "] = {["?point "] = {["?filling "] = {["??target"] = {}}}}}
 
 function field.till(parameters) return protect(_field.fillTill, "till", parameters) end
---:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`
+--:: field.till(parameters: [nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`
 --:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `"minecraft:"`
 --:- till point point seed -> _Till the seed bounds by named points (defining a rectangular solid)._
 field.hints["till"] = {["?point "] = {["?point "] = {["?seed" ] = {}}}} 
@@ -334,7 +334,7 @@ local function fence(parameters)
 end; field.hints["fence"] = {["?range "] = {["??fencing"] = {}}}
 
 function field.fence(parameters) return protect(fence, parameters) end
---:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`
+--:: field.fence(parameters: [ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`
 --:- fence range [item] -> _Put item or available wooden fence from one point to another in range._
 
 return {field = field}

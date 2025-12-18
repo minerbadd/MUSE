@@ -310,7 +310,7 @@ local function addBase(template, xBase, yBase, zBase, top)
 end
 
 function map.locations(template, base, label, top)
---:: map.locations(template: :[name: ":", offset: xyz], base: ":", label: ":", top: #:) -> _Add points offset from base._ -> `nil`
+--:: map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:) -> _Add points offset from base._ -> `nil`
 --:+ _Add labelled points using template names and offsets from named base point or top for y-axis._
   local basePlace = assert(place.xyzf(base), "map: locations unknown base")
   local xBase, yBase, zBase = table.unpack(basePlace) 

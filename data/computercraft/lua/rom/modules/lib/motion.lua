@@ -69,7 +69,7 @@ A turtle's `situation` includes its position (as a keyed table of numbers) for i
 ```lua
 --]]
 --:# **State variables for turtle motion:** (maintained across programs within session, not persistent beyond that).
---:> situation: _Dead reckoning_ -> `{position:position, facing:facing, fuel: situation.fuel, level: situation.level}`
+--:> situation: _Dead reckoning_ -> `{:position:, :facing:, fuel: situation.fuel, level: situation.level}`
 --:> situation.fuel: _Simulated fuel level checked against reported fuel to validate dead reckoning_ -> `#:`
 --:> situation.level: _For tracking_ -> `"same"|"rise"|"fall"`
 
@@ -285,7 +285,7 @@ The (cardinal) direction abstraction for `face` turns is built on the `turnRight
 If turning the turtle encounters trouble, the functions we've been exploring return something other than `"done"`. In this case MUSE raises an error supplying a `recovery` table that might be used to recover from the error, perhaps by resolving the turtle's `"blocked"` condition.
 ```Lua
 --]]
---:> recovery: _For some errors_ -> `{call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"}`
+--:> recovery: _For some errors_ -> `[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
 
 local ops -- forward references to what actually moves the turtle: `moveCount` or `stepCount`
 

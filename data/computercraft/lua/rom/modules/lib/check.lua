@@ -50,7 +50,7 @@ end
 
 -- poor man's object.... encapsulates but no inheritance (didn't see the need to go there)
 function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create check object with context variables
-  --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> _Return object(closure)_ -> `:[part:(:), close:(:)]:`
+  --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> _Return object(closure)_ -> `{part:(:), close:(:)}`
   local testPartResults, testSetTable, newTestSetTable = open(theTestSetTablePath, theTestSetName, theTestName) 
   local this = { -- context (instance) variables, each check object is independent in itself
     testPartResults = testPartResults, testSetTable = testSetTable, newTestSetTable = newTestSetTable,
@@ -74,7 +74,7 @@ function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create 
 end -- check object created by `check.open`
 
 function check.tests(testOrder, testSetTablePath, testSetName) 
-  --:: check.tests(testOrder:[], testSetTablePath:":", testSetName:":") -> _Return ordered test names for regression._ -> `":"[]`
+  --:: check.tests(testOrder: ":"[], testSetTablePath:":", testSetName:":") -> _Return ordered test names for regression._ -> `":"[]`
   local tests = {}; for _, testName in ipairs(testOrder) do -- testSetTable: [testName: ":"]: expecteds: ":"[]
     local testSetTable = getTestSetTable(testSetTablePath, testSetName) -- expected results for tests in set
     if testSetTable[testName] then tests[#tests + 1] = testName end

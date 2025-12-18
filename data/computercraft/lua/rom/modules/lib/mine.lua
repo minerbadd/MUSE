@@ -293,7 +293,7 @@ end
 local dispatch = {s = _mine.shaftOp, b = boreOp, p = postOp, o = oresOp, }
 
 function mine.op(arguments) -- 
---:: mine.op(arguments: :[op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]) -> _Dig._ -> `^:, ":", #: &:`
+--:: mine.op(arguments: [op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]) -> _Dig._ -> `^:, ":", #: &:`
 --:+ _Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans._
   local op, placeName, borePlansFileOrLevels, shaftPlansFile = table.unpack(arguments)
   local shaftPlans = getShaftPlans(place.qualify(placeName), shaftPlansFile); 

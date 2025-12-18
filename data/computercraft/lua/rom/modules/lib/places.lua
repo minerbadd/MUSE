@@ -25,7 +25,7 @@ local move, step = motion.move, motion.step
 _G.Muse.places = _G.Muse.places or {}; place.places = _G.Muse.places -- **held as global across programs, but not persistent**
 
 --:# **Type definitions that will be serialized for network tansport and disk storage**
---:> place: _A point, trail, or range_ -> `{name: ":", label: ":", :situations:, :features:}`
+--:> place: _A point, trail, or range_ -> `[name: ":", label: ":", :situations:, :features:]`
 --:> features: _Dictionary of string key, any value pairs_ -> `[key: ":"]: any`
 
 --:# **Utilities for places (points, trails, and ranges)**

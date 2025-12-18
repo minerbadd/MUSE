@@ -40,7 +40,7 @@
 
 --:> striding: _dictionary keyed by `opName` of vectors incrementing game coordinate positions for `turn`_ -> `[fieldOp]: xyz`  
 
---:> eP: _pair of coordinates for extents_  -> `:[xyz, xyz]`  
+--:> eP: _pair of coordinates for extents_  -> `bounds`  
 
 --:> fieldOp: _Operation name in the set for a particular kind of field_ -> ":"  
 
