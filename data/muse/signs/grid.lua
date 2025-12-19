@@ -17,7 +17,7 @@ local  grid = {}
 
 
 -- Extract ores. Given the guide for a vein, mine ores in each of the guide's cuts for that vein.
--- grid.ores(:plan:, :direction:, guide: grid.guide, :ores:):  `"done" &!` <-
----@type fun(plan: plan,  direction: direction,  guide: grid.guide,  ores: ores):  "done" 
+-- grid.ores(plan: crossplan, :direction:, guide: grid.guide, :ores:):  `"done" &!` <-
+---@type fun(plan: crossplan,  direction: direction,  guide: grid.guide,  ores: ores):  "done" 
 function grid.ores() end
 return { grid =  grid}

@@ -9,7 +9,7 @@
 
 --:# **State variables for turtle motion:** (maintained across programs within session, not persistent beyond that).  
 
---:> situation: _Dead reckoning_ -> `{position:position, facing:facing, fuel: situation.fuel, level: situation.level}`  
+--:> situation: _Dead reckoning_ -> `{:position:, :facing:, fuel: situation.fuel, level: situation.level}`  
 
 --:> situation.fuel: _Simulated fuel level checked against reported fuel to validate dead reckoning_ -> `#:`  
 
@@ -42,7 +42,7 @@
 --:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> _Returns GPS results if available._ -> `x: #:, y: #:, z: #:, facing: ":", ^: ok`    
 --:+ _If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation._  
 
---:> recovery: _For some errors_ -> `{call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"}`  
+--:> recovery: _For some errors_ -> `[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`  
 
 --:# **Forward! Up! Down! move, step ... again (raising errors, providing for recovery)**  
 

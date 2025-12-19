@@ -21,7 +21,7 @@ function planner.mark() end
 
 
 -- plan:  `{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}`
----@alias plan  {name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark} # How to do work
+---@alias plan {plan.name, plan.path, plan.work, plan.fixtures, plan.mark} # How to do work
 
 
 -- plan.work:  `(:plan:, direction: ":"): ":"?`
@@ -61,8 +61,8 @@ function planner.load() end
 ---@alias plan.path  string[] # table of space separated character sequence strings describing path
 
 
--- marking:  :`[prefix: ":", base: ":", label: ":"]`
----@alias marking  : [string, string, string] # literals table of marker parts
+-- marking:  `[prefix: ":", base: ":", label: ":"]`
+---@alias marking  [prefix: string,  base: string,  label: string] # literals table of marker parts
 
 
 -- plan.mark:  `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`

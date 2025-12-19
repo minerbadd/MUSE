@@ -6,7 +6,7 @@ local  turtle = {}
 ---@alias group  "fuel" | "ore"| "fill" | "dirt" | "stone" | "fence" | "test" # Materials
 
 
--- turtle.drops:  `[:direction:]: (count: #:?): ^:, ":"?`
+-- turtle.drops:  `[direction]: (count: #:?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.drops fun(count: number?):  boolean,  string? # Drop count [or all] items in selected slot to inventory.
 
@@ -16,7 +16,7 @@ local  turtle = {}
 ---@type fun(name: string):  string[]
 function turtle.category() end
 
--- turtle.attacks:  `[:direction:]: (): ^:, ":"?`
+-- turtle.attacks:  `[direction]: (): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.attacks fun():  boolean,  string? # Attack in direction and return attack success.
 
@@ -25,7 +25,7 @@ function turtle.category() end
 ---@alias minecraft  string # For Language Server
 
 
--- turtle.compares:  `[:direction:]: (): same: ^:`
+-- turtle.compares:  `[direction]: (): same: ^:`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.compares fun():  same: boolean # Check block in direction has the same ID as selected slot
 
@@ -35,7 +35,7 @@ function turtle.category() end
 ---@type fun(direction: string,  limit: number?):  "done",  nil|"undug" 
 function turtle.unblock() end
 
--- turtle.sucks:  `[:direction:]: (count: #:?): ^:, ":"?`
+-- turtle.sucks:  `[direction]: (count: #:?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.sucks fun(count: number?):  boolean,  string? # Move count [or all] from direction to inventory.
 
@@ -50,7 +50,7 @@ function turtle.item() end
 ---@type fun(orientation: string,  name: string,  diggings: string[]):  "done" 
 function turtle.digAround() end
 
--- turtle.detects:  `[:direction:]: (): ^:`
+-- turtle.detects:  `[direction]: (): ^:`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.detects fun():  boolean # Check block in direction is solid: not air, mob, liquid or floater.
 
@@ -68,7 +68,7 @@ function turtle.find() end
 ---@alias ore  "minecraft:coal_ore"|"minecraft:iron_ore"|"minecraft:lapis_ore"|"minecraft:gold_ore"|"minecraft:diamond_ore"|"minecraft:redstone_ore"|"minecraft:emerald_ore"|"minecraft:nether_quartz_ore"|"minecraft:prismarine"|minecraft:obsidian" # Minecraft
 
 
--- turtle.digs:  `[:direction:]: (side: ":"?): ^:, ":"?`
+-- turtle.digs:  `[direction]: (side: ":"?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.digs fun(side: string?):  boolean,  string? # Try to dig block in direction and call_ suck().
 
@@ -83,7 +83,7 @@ function turtle.digTo() end
 ---@type fun(slot: number):  selected: boolean 
 function turtle.select() end
 
--- turtle.puts:  `[:direction:]: (text: ":"?): ^:, ":"?`
+-- turtle.puts:  `[direction]: (text: ":"?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.puts fun(text: string?):  boolean,  string? # Attempt placing block of the selected slot in direction.
 
@@ -96,7 +96,7 @@ function turtle.select() end
 ---@alias direction  "north"|"east"|"south"|"west"|"up"|"down" # Four compass points and verticals
 
 
--- turtle.inspects:  `[:direction:]: (): `^:`, `detail?`
+-- turtle.inspects:  `[direction]: (): `^:`, `detail?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.inspects fun():  boolean,  detail? # If true, get detail block information in direction.
 

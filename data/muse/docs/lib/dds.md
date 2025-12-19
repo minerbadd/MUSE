@@ -5,7 +5,7 @@
 
 --:> ID: _ComputerCraft computer ID_ -> `#:`  
 
---:> roles: _Dictionary of Computercraft labels for MUSE roles keyed by Computercraft (string) IDs_ -> `[ID]: ":"`  
+--:> roles: _ Sparse array of Computercraft labels for MUSE roles indexed by Computercraft IDs_ -> `role[]`  
 
 --:> role: _ComputerCraft label as MUSE role_ -> `":"`  
 

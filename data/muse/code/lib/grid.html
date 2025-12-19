@@ -25,8 +25,6 @@ local place, moves = places.place, places.moves
 
 ---@module "signs.mine" -- import the interface
 
---:> crossplan: <i>Bore and mine, minimal movement</i> -> <code>{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }</code>
-
 </code></pre>
 <a id="navigation"></a> 
 A mining turtle uses <code>grid.post</code> to navigate to the <code>post</code> at a given level and wait there for commands from the player. The function adheres to the <code>mine.post</code> interface. Navigating the grid of tunnels is done using markers for named <code>places</code>. The general idea for navigating is to go directly to the shaft between levels or to a <code>target</code> (a named <code>place</code>) if is either is <code>reachable</code>, that is if the y coordinate and either the x or the z coordinate is within one block of the current turtle <code>position</code>. If this is the case, the turtle has arrived. If that's not possible, go instead to an <code>inner</code> tunnel if that's <code>reachable</code> or to an <code>outer</code> tunnel if that's not. Then try again (and again) until the turtle can get to a shaft or the <code>target</code>. Prefer tunnels <code>closer</code> to the <code>target</code>. Here are some utility functions used for navigation: 
@@ -138,8 +136,9 @@ local function mineCut(plan, direction, cut, ores)
 end
 
 function grid.ores(plan, direction, guide, ores)
-  --:: grid.ores(:plan:, :direction:, guide: grid.guide, :ores:) -> <i>Extract ores.</i> -> <code>"done" &!</code>
+  --:: grid.ores(plan: crossplan, :direction:, guide: grid.guide, :ores:) -> <i>Extract ores.</i> -> <code>"done" &!</code>
   --:+ <i>Given the guide for a vein, mine ores in each of the guide's cuts for that vein.</i>
+  --:> crossplan: <i>Bore and mine, minimal movement</i> -> <code>{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }</code>
   for _, cut in ipairs(guide) do mineCut(plan, direction, cut, ores) end 
   return "done"
 end

@@ -5,7 +5,7 @@
 --:| turtle: _Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down._ -> turtle
 --:+ _Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking._  
 ```
-The MUSE `turtle` module introduction is much like any other. One thing is notable, like the `situation` state variable in `lib/motion`, there's a <a href="../CodeMark/Annotations.html" target="_blank"> CodeMark </a> `VALUE` mark, describing `direction` as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by `lib/mock`) are accessed in the `mock` table.
+The MUSE `turtle` module introduction is much like any other. One thing is notable, like the `situation` state variable in `lib/motion`, there's a <a href="https://minerbadd.github.io/CodeMark/Annotations.html" target="_blank"> CodeMark </a> `VALUE` mark, describing `direction` as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by `lib/mock`) are accessed in the `mock` table.
 ```Lua
 --]]
 local turtle = {} ---@module "signs.turtle" -- for functions exported from library

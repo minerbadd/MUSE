@@ -7,8 +7,8 @@ local  dds = {}
 ---@type fun(role: string):  ID: number  
 function dds.roleID() end
 
--- roles:  `[ID]: ":"`
----@alias roles {[ID]: string} # Dictionary of Computercraft labels for MUSE roles keyed by Computercraft (string) IDs
+-- roles:  `role[]`
+---@alias roles  role[] # Sparse array of Computercraft labels for MUSE roles indexed by Computercraft IDs
 
 
 -- IDs:  `[role]: ID`

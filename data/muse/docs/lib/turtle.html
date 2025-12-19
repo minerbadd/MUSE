@@ -16,26 +16,26 @@
 
 --:# <b>Operation dictionaries keyed by direction, values are generally functions of no arguments calling which return a boolean.</b>  
 
---:> turtle.attacks: <i>Attack in direction and return attack success.</i> -> <code>[:direction:]: (): ^:, ":"?</code>  
+--:> turtle.attacks: <i>Attack in direction and return attack success.</i> -> <code>[direction]: (): ^:, ":"?</code>  
 
---:> turtle.compares: <i>Check block in direction has the same ID as selected slot</i> -> <code>[:direction:]: (): same: ^:</code>  
+--:> turtle.compares: <i>Check block in direction has the same ID as selected slot</i> -> <code>[direction]: (): same: ^:</code>  
 
---:> turtle.detects: <i>Check block in direction is solid: not air, mob, liquid or floater.</i> -> <code>[:direction:]: (): ^:</code>  
+--:> turtle.detects: <i>Check block in direction is solid: not air, mob, liquid or floater.</i> -> <code>[direction]: (): ^:</code>  
 
---:> turtle.digs: <i>Try to dig block in direction and call</i> suck(). -> <code>[:direction:]: (side: ":"?): ^:, ":"?</code>    
+--:> turtle.digs: <i>Try to dig block in direction and call</i> suck(). -> <code>[direction]: (side: ":"?): ^:, ":"?</code>    
 --:+ <i>Sucked items go to inventory. If a hoe is used to attempt to "dig" a dirt block, it will be tilled instead.</i>    
 --:+ <i>Tilling is also possible if the space in front of the turtle is empty but dirt exists below that point.</i>  
 
---:> turtle.drops: <i>Drop count [or all] items in selected slot to inventory.</i> -> <code>[:direction:]: (count: #:?): ^:, ":"?</code>    
+--:> turtle.drops: <i>Drop count [or all] items in selected slot to inventory.</i> -> <code>[direction]: (count: #:?): ^:, ":"?</code>    
 --:+ <i>Returned function drops and returns</i> <code>false</code> <i>if there's inventory on the side specified by direction which is full.</i>  
 
---:> turtle.inspects: <i>If true, get detail block information in direction.</i> -> <code>[:direction:]: (): </code>^:<code>, </code>detail?`  
+--:> turtle.inspects: <i>If true, get detail block information in direction.</i> -> <code>[direction]: (): </code>^:<code>, </code>detail?`  
 
---:> turtle.puts:  <i>Attempt placing block of the selected slot in direction.</i> -> <code>[:direction:]: (text: ":"?): ^:, ":"?</code>    
+--:> turtle.puts:  <i>Attempt placing block of the selected slot in direction.</i> -> <code>[direction]: (text: ":"?): ^:, ":"?</code>    
 --:+ <i>Collects water or lava if the currently selected slot is an empty bucket. Text is used for placed sign.</i>     
 --:+ <i>Value of <code>turtle.puts[:direction:]</code> is a function of one optional argument calling which returns a boolean.</i>  
 
---:> turtle.sucks: <i>Move count [or all] from direction to inventory.</i> -> <code>[:direction:]: (count: #:?): ^:, ":"?</code>    
+--:> turtle.sucks: <i>Move count [or all] from direction to inventory.</i> -> <code>[direction]: (count: #:?): ^:, ":"?</code>    
 --:+ <i>Move from ground or first non empty slot of adjacent inventory enabled block to selected or next turtle slot.</i>    
 --:+ <i>Value of <code>turtle.sucks[:direction:]</code> is function of one optional argument calling which returns a boolean.</i>  
 

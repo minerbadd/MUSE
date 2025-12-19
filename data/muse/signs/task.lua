@@ -8,8 +8,8 @@ local  task, _task = {}, {}
 
 
 -- Execute tasks for low level turtle operations:
--- task.op(commands: :[ op: ":", arguments: ":"[] ] ):  `":" &:` <-
----@type fun(commands: :[ op: string,  arguments: string[]):  string 
+-- task.op(commands: [ op: ":", arguments: ":"[] ] ):  `":" &:` <-
+---@type fun(commands: [ op: string,  arguments: string[]):  string 
 function task.op() end
 
 -- Tasks

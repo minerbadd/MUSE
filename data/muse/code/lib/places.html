@@ -32,7 +32,7 @@ local move, step = motion.move, motion.step
 _G.Muse.places = _G.Muse.places or {}; place.places = _G.Muse.places -- <b>held as global across programs, but not persistent</b>
 
 --:# <b>Type definitions that will be serialized for network tansport and disk storage</b>
---:> place: <i>A point, trail, or range</i> -> <code>{name: ":", label: ":", :situations:, :features:}</code>
+--:> place: <i>A point, trail, or range</i> -> <code>[name: ":", label: ":", :situations:, :features:]</code>
 --:> features: <i>Dictionary of string key, any value pairs</i> -> <code>[key: ":"]: any</code>
 
 --:# <b>Utilities for places (points, trails, and ranges)</b>
@@ -160,7 +160,7 @@ The <code>place.nearby</code> function demonstrates some potentially useful tech
 </ul></br>
 <pre><code class="language-lua">
 function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing cardinals argument
---:: place.nearby(:xyzf:?, :cardinals:) -> <i>Sorted</i> -> `:[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]
+--:: place.nearby(:xyzf:?, :cardinals:) -> <i>Sorted</i> -> `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]
 --:> cardinals: <i>Function to get one of the eight cardinal points of the compass</i> -> (dx: #:, dz: #:): cardinal: ":"
 --:+ <i>Nearest places to specified xyzf coordinates or current position (as default).</i> 
 --:+ <i>Returned table is sorted by distances and includes the name, label, and xyzf position of each place.</i>

@@ -9,10 +9,9 @@
 
 <h2> Command To Check`If Anything Is Working (Local)</h2>
 <pre><code class="language-markdown">
----:? rom/help/echo.txt <- <b>Echo Command Line Interface</b> -> muse/docs/programs/echo.md  
+--:? rom/help/echo.txt <- <b>Echo Command Line Interface</b> -> muse/docs/programs/echo.md  
 </code></pre>
 <pre><code class="language-lua">
-package.path = _G.Muse.package
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 print(core.echo(...)) --:= echo:
 

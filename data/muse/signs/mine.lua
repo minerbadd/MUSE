@@ -18,7 +18,7 @@ local  mine, _mine = {}, {}
 
 
 -- shafts:  `{shafts.name: ":", shafts.down: downs, shafts.back: levels, shafts.lower: levels, shafts.higher: levels}`
----@alias shafts  {shafts.name: string, shafts.down: downs, shafts.back: levels, shafts.lower: levels, shafts.higher: levels} # Dig
+---@alias shafts {shafts.string, shafts.downs, shafts.levels, shafts.levels, shafts.levels} # Dig
 
 
 -- shafts.higher:  `levels`
@@ -27,8 +27,8 @@ local  mine, _mine = {}, {}
 
 
 -- Dig. Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans.
--- mine.op(arguments: :[op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]):  `^:, ":", #: &:` <-
----@type fun(arguments: :[op: string,  placeName: string,  borePlansFileOrLevels: string|number,  shaftPlansFile: string]):  boolean,  string,  number 
+-- mine.op(arguments: [op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]):  `^:, ":", #: &:` <-
+---@type fun(arguments: [op: string,  placeName: string,  borePlansFileOrLevels: string|number,  shaftPlansFile: string]):  boolean,  string,  number 
 function mine.op() end
 
 -- bores.fix:  `plan`
@@ -42,7 +42,7 @@ function mine.op() end
 
 
 -- levels:  `{levels.even: plan, levels.odd: plan}`
----@alias levels  {levels.even: plan, levels.odd: plan} # Traverse (and fill shelves for  player safety in back plan) shaft
+---@alias levels {levels.plan, levels.plan} # Traverse (and fill shelves for  player safety in back plan) shaft
 
 
 -- bores.name:  `":"`
@@ -71,11 +71,11 @@ function mine.op() end
 
 
 -- bores:  `{bores.name: ":", bores.post: mine.post, bores.even: plan, bores.odd: plan, bores.fix: plan }`
----@alias bores  {bores.name: string, bores.post: mine.post, bores.even: plan, bores.odd: plan, bores.fix: plan } # Horizontals
+---@alias bores {bores.string, bores.mine.post, bores.plan, bores.plan, bores.plan} # Horizontals
 
 
 -- downs:  `{downs.even: plan, downs.odd: plan, downs.last: plan }`
----@alias downs  {downs.even: plan, downs.odd: plan, downs.last: plan } # Mark, dig, ladder, and fill one level (for landing platforms)
+---@alias downs {downs.plan, downs.plan, downs.plan} # Mark, dig, ladder, and fill one level (for landing platforms)
 
 
 -- shafts.name:  `":"`

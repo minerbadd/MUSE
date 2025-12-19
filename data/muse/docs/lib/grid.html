@@ -9,8 +9,6 @@
 --:! [grid: [":"]: (:)] <- <b>Grid Mining Functions Library</b> -> muse/docs/lib/grid.md      
 --:| grid: <i>Work functions boring, navigating, and mining ore in a grid of tunnels.</i> -> grid  
 
---:> crossplan: <i>Bore and mine, minimal movement</i> -> <code>{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }</code>  
-
 --:# <b>Navigation for grids:  use placed markers to find posts for turtles.</b>    
 --:= mine.post:: grid.post  
 
@@ -22,8 +20,10 @@
 
 --:> grid.guide: <i>Instructions for cut</i> -> <code>[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]</code>  
 
---:: grid.ores(:plan:, :direction:, guide: grid.guide, :ores:) -> <i>Extract ores.</i> -> <code>"done" &!</code>    
+--:: grid.ores(plan: crossplan, :direction:, guide: grid.guide, :ores:) -> <i>Extract ores.</i> -> <code>"done" &!</code>    
 --:+ <i>Given the guide for a vein, mine ores in each of the guide's cuts for that vein.</i>  
+
+--:> crossplan: <i>Bore and mine, minimal movement</i> -> <code>{:bores:, ores: {name: ":", fixtures: ":"[], path: ":"[], work: plan.work} }</code>  
 
     </pre>
   </body> 

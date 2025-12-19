@@ -48,7 +48,7 @@
 
 --:: map.point(name: ":", label: ":", :xyzf:) -> _Create, send point update._ -> `nil & !`  
 
---:: map.locations(template: :[name: ":", offset: xyz], base: ":", label: ":", top: #:) -> _Add points offset from base._ -> `nil`    
+--:: map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:) -> _Add points offset from base._ -> `nil`    
 --:+ _Add labelled points using template names and offsets from named base point or top for y-axis._  
 
 --:- trail name label -> _Include named point at head and (current situation) tail of a new trail, update map._     

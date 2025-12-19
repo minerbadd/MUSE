@@ -9,9 +9,9 @@
 --:! [check: [":"]: (:)] <- Regression Check Functions Library -> muse/docs/lib/check.md    
 --:| check: Setup context, save and match expected results for parts of tests, run regression for those tests -> check  
 
---:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> <i>Return object(closure)</i> -> <code>:[part:(:), close:(:)]:</code>  
+--:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> <i>Return object(closure)</i> -> <code>{part:(:), close:(:)}</code>  
 
---:: check.tests(testOrder:[], testSetTablePath:":", testSetName:":") -> <i>Return ordered test names for regression.</i> -> <code>":"[]</code>  
+--:: check.tests(testOrder: ":"[], testSetTablePath:":", testSetName:":") -> <i>Return ordered test names for regression.</i> -> <code>":"[]</code>  
 
     </pre>
   </body> 

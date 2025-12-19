@@ -27,8 +27,8 @@ function core.findItems() end
 ---@type fun(table: table,  index: number):  function,  table,  number 
 function core.inext() end
 
--- bounds:  `:[xyz, xyz]`
----@alias bounds  : [xyz, xyz] # Vector pair defining a rectangular solid
+-- bounds:  `[xyz, xyz]`
+---@alias bounds  [xyz,  xyz] # Vector pair defining a rectangular solid
 
 
 -- detail.name:  `":"`
@@ -76,8 +76,8 @@ function core.state() end
 ---@type fun(number?):  nil 
 function core.sleep() end
 
--- xyzf:  `{x: #:, y: #:, z: #:, facing: ":"}`
----@alias xyzf  {x: number, y: number, z: number, facing: ":"} # Position and facing as table
+-- xyzf:  `[x: #:, y: #:, z: #:, facing: ":"]`
+---@alias xyzf  [x: number,  y: number,  z: number,  facing: string] # Position and facing as table
 
 
 -- Out of game returns id; id ignored in game.
@@ -95,13 +95,13 @@ function core.getComputerLabel() end
 ---@type fun(level: number,  ...: any):  nil 
 function core.report() end
 
--- xyz:  :[x: #:, y: #:, z: #:]
----@alias xyz  : [number, number, number] # Minecraft coordinates: +x: east, +y: up, +z: south
+-- xyz:  [x: #:, y: #:, z: #:]
+---@alias xyz  [x: number,  y: number,  z: number] # Minecraft coordinates: +x: east, +y: up, +z: south
 
 
 -- Set threshold level [and local log file] for status reports
--- core.logging(arguments: :[level: #:, filename: ":"]):  `nil` <-
----@type fun(arguments: [number, string]):  nil 
+-- core.logging(arguments: {level: #:, filename: ":"}):  `nil` <-
+---@type fun(arguments: {number, string}):  nil 
 function core.logging() end
 
 -- Make plots. Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result. The number n is the number of bounds in result where each bound is offset by addend from the prior bounds. Optionally the partial bounds are included as the first bounds in the result.
@@ -111,7 +111,7 @@ function core.vectorPairs() end
 
 -- core.log:  `{level: closing, file: closing, handle: closing}`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias core.log  {level: closing, file: closing, handle: closing} # Closure variable
+---@alias core.log {closing, closing, closing} # Closure variable
 
 
 -- xyzMap:  `xyz[] | [core.faces]: xyz`
@@ -153,7 +153,7 @@ function core.completer() end
 
 
 -- detail:  `{name: detail.name, count: detail.count, damage: detail.damage}`
----@alias detail  {name: detail.name, count: detail.count, damage: detail.damage} # Defined by Computercraft
+---@alias detail {detail.name, detail.count, detail.damage} # Defined by Computercraft
 
 
 -- Create `result` _by applying_ `op` _function to elements of_ `table

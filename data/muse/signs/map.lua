@@ -8,8 +8,8 @@ local  map = {}
 function map.erase() end
 
 -- Add points offset from base. Add labelled points using template names and offsets from named base point or top for y-axis.
--- map.locations(template: :[name: ":", offset: xyz], base: ":", label: ":", top: #:):  `nil` <-
----@type fun(template: [string, xyz],  base: string,  label: string,  top: number):  nil 
+-- map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:):  `nil` <-
+---@type fun(template: {string, xyz},  base: string,  label: string,  top: number):  nil 
 function map.locations() end
 
 -- Delete old, write new locally. Default current.
@@ -53,7 +53,7 @@ function map.place() end
 function map.testFacing() end
 
 -- borders:  {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
----@alias borders  {east: number, west: number, north: number, south: number, top: number, bottom: number} # Range boundarires
+---@alias borders {number, number, number, number, number, number} # Range boundarires
 
 
 -- Set string feature value, send MU.
