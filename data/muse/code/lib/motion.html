@@ -1,11 +1,11 @@
 <!DOCTYPE html>
  <html>
 <head>
-<link href="https://github.com/minerbadd/CodeMark/blob/main/assets/prism.css" rel="stylesheet" />
-<link href="https://github.com/minerbadd/CodeMark/blob/main/assets/downmark.css" rel="stylesheet" />
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.css" rel="stylesheet" />
+<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/downmark.css" rel="stylesheet" />
 </head>
 <body>
-<script src="https://github.com/minerbadd/CodeMark/blob/main/assets/prism.js"></script>
+<script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
 
 <h2> Functions, State, and History: <code>lib/motion</code> for Turtle Motion</h2>
 <p>
@@ -43,6 +43,7 @@ Finally, the <code>@module</code> <a href="https://www.geeksforgeeks.org/softwar
 Here's what all that looks like for these libraries:
 <pre><code class="language-lua">
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
+---@diagnostic disable-next-line: undefined-field
 local turtles = require("mock"); local turtle = _G.turtle or turtles.turtle ---@module "signs.mock"
 </code></pre>
 The <code>_G.turtle</code> variable is a ComputerCraft global used to determine whether execution is in the game or in a test environment we'll discuss in just a bit: it is bound to <code>nil</code> unless running in the game environment.
@@ -191,6 +192,7 @@ function move.where(tx, ty, tz, tf) -- where's the turtle?
 --:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ^: ok</code>
 --:+ <i>If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.</i>
   local px, py, pz, pf = table.unpack(move.at()); local gx, gy, gz = core.where() -- gx is nil if GPS fails or no GPS
+---@diagnostic disable-next-line: undefined-field
   return gx or tx or px, gy or ty or py, gz or tz or pz, tf or pf, (gx or not _G.gps) -- ok if no GPS (out-game)
 end
 </code></pre>
