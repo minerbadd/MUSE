@@ -1,11 +1,11 @@
 <!DOCTYPE html>
  <html>
 <head>
-<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.css" rel="stylesheet" />
-<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/downmark.css" rel="stylesheet" />
+<link href="https://github.com/minerbadd/CodeMark/blob/main/assets/prism.css" rel="stylesheet" />
+<link href="https://github.com/minerbadd/CodeMark/blob/main/assets/downmark.css" rel="stylesheet" />
 </head>
 <body>
-<script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
+<script src="https://github.com/minerbadd/CodeMark/blob/main/assets/prism.js"></script>
 
 <h2> Functions, State, and History: <code>lib/motion</code> for Turtle Motion</h2>
 <p>
@@ -19,7 +19,7 @@ We'll use this module to illustrate how functions, a fundamental part of Lua, ar
 <p>
 <h3>Introduction and Exports: the overview</h3>
 To help readers and maintainers understand a module, it's useful to organize it by leading it off with an introductory section. We can look at the introduction of this module to get an overall understanding of what it does, its <a href="https://en.wikipedia.org/wiki/Global_variable" target="_blank">
-<i>global</i></a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The <code>motion</code> module includes two libraries, <code>move</code>, and <code>step</code> as noted in the CodeMark <a href="https://en.wikipedia.org/wiki/API" target="_blank"> application programming interface</a> (API) <a href = "../CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following this filemark, the <code>LIB</code> <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. The exported interfaces of each library along with annotated type declarations not particular to either library are collected together in the API file for the entire project. The latter are saved in a <a href="https://en.wikibooks.org/wiki/A-level<i>Computing/AQA/Paper</i>1/Fundamentals<i>of</i>data<i>structures/Dictionaries" target="_blank"> dictionary</a> with the module name. The ZeroBrane Studio <a href="https://en.wikipedia.org/wiki/Integrated</i>development_environment" target="_blank">
+<i>global</i></a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The <code>motion</code> module includes two libraries, <code>move</code>, and <code>step</code> as noted in the CodeMark <a href="https://en.wikipedia.org/wiki/API" target="_blank"> application programming interface</a> (API) <a href = "https://minerbadd.github.io/CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following this filemark, the <code>LIB</code> <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. The exported interfaces of each library along with annotated type declarations not particular to either library are collected together in the API file for the entire project. The latter are saved in a <a href="https://en.wikibooks.org/wiki/A-level<i>Computing/AQA/Paper</i>1/Fundamentals<i>of</i>data<i>structures/Dictionaries" target="_blank"> dictionary</a> with the module name. The ZeroBrane Studio <a href="https://en.wikipedia.org/wiki/Integrated</i>development_environment" target="_blank">
 <i>IDE</i></a>, an integrated development environment, can make use of this file for code completion and other API documentation when it it most needed: when you're coding a call to an API. None of this is executable code; it's just documentation.
 <pre><code class="language-lua">
 --:! [move: [":"]: (:), step: [":"]: (:) ] <- <b>Move and Step Function Libraries</b> -> muse/docs/lib/motion.md  

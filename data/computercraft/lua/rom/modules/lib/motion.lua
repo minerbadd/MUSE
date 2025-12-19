@@ -40,6 +40,7 @@ Here's what all that looks like for these libraries:
 ```Lua
 --]]
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
+---@diagnostic disable-next-line: undefined-field
 local turtles = require("mock"); local turtle = _G.turtle or turtles.turtle ---@module "signs.mock"
 --[[
 ```  
@@ -200,6 +201,7 @@ function move.where(tx, ty, tz, tf) -- where's the turtle?
 --:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> _Returns GPS results if available._ -> `x: #:, y: #:, z: #:, facing: ":", ^: ok`
 --:+ _If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation._
   local px, py, pz, pf = table.unpack(move.at()); local gx, gy, gz = core.where() -- gx is nil if GPS fails or no GPS
+---@diagnostic disable-next-line: undefined-field
   return gx or tx or px, gy or ty or py, gz or tz or pz, tf or pf, (gx or not _G.gps) -- ok if no GPS (out-game)
 end
 --[[

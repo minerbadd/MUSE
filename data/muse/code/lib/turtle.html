@@ -1,11 +1,11 @@
 <!DOCTYPE html>
  <html>
 <head>
-<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.css" rel="stylesheet" />
-<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/downmark.css" rel="stylesheet" />
+<link href="https://github.com/minerbadd/CodeMark/blob/main/assets/prism.css" rel="stylesheet" />
+<link href="https://github.com/minerbadd/CodeMark/blob/main/assets/downmark.css" rel="stylesheet" />
 </head>
 <body>
-<script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
+<script src="https://github.com/minerbadd/CodeMark/blob/main/assets/prism.js"></script>
 
 <h2> Consistency for Turtle Operations: <code>lib/turtle</code> for Turtle Abstractions</h2>
 <pre><code class="language-markdown">
@@ -13,7 +13,7 @@
 --:| turtle: <i>Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down.</i> -> turtle
 --:+ <i>Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking.</i>  
 </code></pre>
-The MUSE <code>turtle</code> module introduction is much like any other. One thing is notable, like the <code>situation</code> state variable in <code>lib/motion</code>, there's a <a href="../CodeMark/Annotations.html" target="_blank"> CodeMark </a> <code>VALUE</code> mark, describing <code>direction</code> as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by <code>lib/mock</code>) are accessed in the <code>mock</code> table.
+The MUSE <code>turtle</code> module introduction is much like any other. One thing is notable, like the <code>situation</code> state variable in <code>lib/motion</code>, there's a <a href="https://minerbadd.github.io/CodeMark/Annotations.html" target="_blank"> CodeMark </a> <code>VALUE</code> mark, describing <code>direction</code> as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by <code>lib/mock</code>) are accessed in the <code>mock</code> table.
 <pre><code class="language-lua">
 local turtle = {} ---@module "signs.turtle" -- for functions exported from library
 
