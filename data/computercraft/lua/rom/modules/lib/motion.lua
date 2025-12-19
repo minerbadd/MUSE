@@ -54,7 +54,7 @@ The `lib/motion` libraries are quite low level.  A number of other libraries are
 
 The `_G.turtle` table includes references to the ComputerCraft turtle API functions in-game. However, it turns out to be very helpful to do development in an IDE, outside the ComputerCraft game. To do so we need mock ups of the most critical `turtle` functions. These are in the `lib/mock` library file. The `turtle` table provides references to functions from ComputerCraft when running in the game environment. It provides references to corresponding mock turtle functions when running in the IDE (for testing and debugging).
 
-MUSE also has global variables. As you'll see, we aim to be obsessively careful about changing global values. Additionally, all the MUSE globals are collected as above in a single global table, `_G.Muse`, to avoid litter. The table is initialized <a href="../.start.html" target="_blank"> at startup</a> to the empty table if it doesn't yet exist.
+MUSE also has global variables. As you'll see, we aim to be obsessively careful about how global values get changed. Additionally, all the MUSE globals are collected as above in a single global table, `_G.Muse`, to avoid litter. The table is initialized <a href="../.start.html" target="_blank"> at startup</a> to the empty table if it doesn't yet exist.
 
 The library checks to see that fuel is consumed for all turtle movements that are supposed to have consumed fuel. <a href="https://en.wikipedia.org/wiki/Dead_reckoning" target="_blank">
 _Dead reckoning_</a> 
