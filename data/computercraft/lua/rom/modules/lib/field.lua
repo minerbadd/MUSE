@@ -37,7 +37,7 @@ end
 --:# **Execution train runs from `field.make` to `field.plot` to `field.plan` to execute the plan**
 function field.make(commands, faced) -- loads and runs `fields/` file which calls `field.plot`
   --:: field.make(commands: fieldCommands, faced: ^:) -> _Load field files; return their `field.plot` calls_ -> `report: ":" &:`
-  --:> fieldCommands: _For CLI_ -> `[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`
+  --:> fieldCommands: _For CLI_ -> `:[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`
   --:+ _The second entry, `ranger` in `fieldCommands` is a string which may simply be a name for a `range`, (a kind of `place`)._
   --:+ _If so, the range name gets the range's features dictionary and the field file name to load (keyed as `features.fields`)._
   --:+ _It could also be a string specifying the name of a farm and a farm field name in that farm (separated by a colon)._
@@ -65,7 +65,7 @@ end
 function field.plot(commands, fieldsOp, fieldOpName, plots, offset) -- `field.make` -> field -> `field.plot`
 --:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> _Plots_ -> `report: ":" &: &!`
 --:+ _Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`)._
---:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ `[_:, _:, first: #:?, last: #:??]`
+--:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ `:[_:, _:, first: #:?, last: #:??]`
   local first, last = table.unpack(commands, 3); local hx, hy, hz = table.unpack(place.xyzf())
   if not (hx and hy and hz) then error("field.plot: No home") end
   core.status(4, "field", "plot start", hx, hy, hz, fieldOpName, first, last, plots, offset) 
@@ -89,7 +89,7 @@ The `field.plan` function moves the turtle to the computed start position for th
 function field.plan(planName, fielding, offset) -- `fieldsOp` calls `field.plan` for each plot 
 --:: field.plan(planName: ":", fielding: fieldParameters, offset: xyz?) -> _Run plan, default offset {0,0,0}._ -> `report: ":" &: &!`
 --:+ _Loads and executes the prototype plan (which calls `field.paths`) for each (odd, even, or last) level of a plot._
---:> fieldParameters: _`bounds` (and materials to fill and replace)_ -> `[bounds, fieldParameters.fills?, fieldParameters.removeables??]`
+--:> fieldParameters: _`bounds` (and materials to fill and replace)_ -> `:[bounds, fieldParameters.fills?, fieldParameters.removeables??]`
 --:> fieldParameters.fills: _Group or list of craft items for fill material_ -> `group|craft[]`
 --:> fieldParameters.removeables: _Material replaced by fill_ -> `group|craft[]`
 --:> craft: _Minecraft item `detail.name` without `minecraft:` prefix_ -> `":"`

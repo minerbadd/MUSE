@@ -9,19 +9,20 @@ local  planner, plan, moves, steps = {}, {}, {}, {}
 
 -- Parse marker name into parts.
 -- planner.mark(markerName: ":"):  `shaft: ":"?, level: ":"?, tag: ":"?)` <-
+
 ---@type fun(markerName: string):  shaft: string?,  level: string?,  tag: string?) 
 function planner.mark() end
 
 -- markElement:  `[op: "mark", :marking:]`
----@alias markElement  [op: "mark",  marking: marking] # Current situation in named places
+---@alias markElement  [op: "mark", marking: marking] # Current situation in named places
 
 
--- putElement:  `[op: "put", direction: ":", fixture: ":"]`
----@alias putElement  [op: "put",  direction: string,  fixture: string] # Put fixture in specified direction
+-- putElement:  `:[op: "put", direction: ":", fixture: ":"]`
+---@alias putElement  : [ "put",  string,  string] # Put fixture in specified direction
 
 
 -- plan:  `{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}`
----@alias plan {plan.name, plan.path, plan.work, plan.fixtures, plan.mark} # How to do work
+---@alias plan {name: plan.name,  path: plan.path,  work: plan.work,  fixtures: plan.fixtures,  mark: plan.mark} # How to do work
 
 
 -- plan.work:  `(:plan:, direction: ":"): ":"?`
@@ -36,24 +37,26 @@ function planner.mark() end
 
 -- Create path operations table for plan.
 -- planner.make(plan:plan):  `pathElements, fuelOK: ^:, pathDistance: #:` <-
+
 ---@type fun(plan:plan):  pathElements,  fuelOK: boolean,  pathDistance: number 
 function planner.make() end
 
 -- Instantiates what is returned from a plan file.
 -- planner.load(planFileName: ":"):  `plan &!`  <-
+
 ---@type fun(planFileName: string):  plan 
 function planner.load() end
 
 -- markings:  `[label: ":"]: marking`
----@alias markings {[ string]: marking} # dictionary of markings keyed by a label
+---@alias markings { [ string]: marking } # dictionary of markings keyed by a label
 
 
 -- pathElements:  `(stepElement|putElement|markElement)[]`
 ---@alias pathElements  (stepElement|putElement|markElement)[] # Used by `worker.execute` to run plan
 
 
--- stepElement:  `[op: "step", :stepping:, direction: ":", distance: #:]`
----@alias stepElement  [op: "step",  stepping: stepping,  direction: string,  distance: number] # Iterate steps function in direction for distance
+-- stepElement:  `:[op: "step", :stepping:, direction: ":", distance: #:]`
+---@alias stepElement  : [ "step",  stepping,  string,  number] # Iterate steps function in direction for distance
 
 
 -- plan.path:  `":"[]`
@@ -61,8 +64,8 @@ function planner.load() end
 ---@alias plan.path  string[] # table of space separated character sequence strings describing path
 
 
--- marking:  `[prefix: ":", base: ":", label: ":"]`
----@alias marking  [prefix: string,  base: string,  label: string] # literals table of marker parts
+-- marking:  `:[prefix: ":", base: ":", label: ":"]`
+---@alias marking  : [ string,  string,  string] # literals table of marker parts
 
 
 -- plan.mark:  `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`

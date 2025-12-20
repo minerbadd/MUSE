@@ -6,7 +6,7 @@
 
 --:: field.make(commands: fieldCommands, faced: ^:) -> _Load field files; return their `field.plot` calls_ -> `report: ":" &:`  
 
---:> fieldCommands: _For CLI_ -> `[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`    
+--:> fieldCommands: _For CLI_ -> `:[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`    
 --:+ _The second entry, `ranger` in `fieldCommands` is a string which may simply be a name for a `range`, (a kind of `place`)._    
 --:+ _If so, the range name gets the range's features dictionary and the field file name to load (keyed as `features.fields`)._    
 --:+ _It could also be a string specifying the name of a farm and a farm field name in that farm (separated by a colon)._    
@@ -17,12 +17,12 @@
 --:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> _Plots_ -> `report: ":" &: &!`    
 --:+ _Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`)._  
 
---:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ `[_:, _:, first: #:?, last: #:??]`  
+--:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ `:[_:, _:, first: #:?, last: #:??]`  
 
 --:: field.plan(planName: ":", fielding: fieldParameters, offset: xyz?) -> _Run plan, default offset {0,0,0}._ -> `report: ":" &: &!`    
 --:+ _Loads and executes the prototype plan (which calls `field.paths`) for each (odd, even, or last) level of a plot._  
 
---:> fieldParameters: _`bounds` (and materials to fill and replace)_ -> `[bounds, fieldParameters.fills?, fieldParameters.removeables??]`  
+--:> fieldParameters: _`bounds` (and materials to fill and replace)_ -> `:[bounds, fieldParameters.fills?, fieldParameters.removeables??]`  
 
 --:> fieldParameters.fills: _Group or list of craft items for fill material_ -> `group|craft[]`  
 

@@ -65,7 +65,7 @@ exec.hints["activate"] = { ["?range"] = {} }
 --:# Dispatch for `exec` commands: `locate`, `activate`
 local ops = { locate = locate, activate = activate, }
 
-function exec.op(commandLine) --:: exec.op(commandLine: [command: ":", ...] ) -> _CLI for Command Computer commands_ -> `":" &:`
+function exec.op(commandLine) --:: exec.op(commandLine: :[command: ":", ...] ) -> _CLI for Command Computer commands_ -> `":" &:`
   local ok, report = core.pass(pcall(ops[commandLine[1]], table.unpack(commandLine, 2)))
   if ok then return report else return "exec: " .. core.string(report) end -- report failure for error
 end

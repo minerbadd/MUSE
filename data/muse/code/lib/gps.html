@@ -79,7 +79,7 @@ end
 function _gps.actuate(commands)
   --:# <i>Testing interface, useful before committing to deployment.</i>
   --:- actuate direction -> <i>Move around to boot direction named GPS host and retrieve floppy (for testing).</i> 
-  --:: `_gps.actuate(commands: [command: ":", direction: facing]) -> <i>Move to boot a GPS host and retrieve floppy.</i> -> ":"
+  --:: `_gps.actuate(commands: :[command: ":", direction: facing]) -> <i>Move to boot a GPS host and retrieve floppy.</i> -> ":"
   local _, direction = table.unpack(commands); makeBoot(direction);  -- prepares boot files
   move.left(1)-- turn left and then forward to left and in plane in front of drive
   move.up(1) -- up to left of computer still facing away from computer in plane in front of drive
@@ -131,7 +131,7 @@ end
 local order = {"north", "south", "east", "west"} -- for efficient movement
 
 function _gps.launch(commands) -- use <code>locate</code> to give a <code>place</code> a <code>location</code>
-  --:: `_gps.launch(commands: [command: ":", location: ":", yD: #:?]) -> <i>Check before journey then launch.</i> -> ":"
+  --:: `_gps.launch(commands: :[command: ":", location: ":", yD: #:?]) -> <i>Check before journey then launch.</i> -> ":"
   --:# <i>launch deployment needs 4 advanced computers, 4 disk drives, 4 ender modems, a floppy, and fuel.</i>
   --:- launch place yD? -> <i>Deploy GPS launch yD or maximum y above place, report GPS at place.</i>
   local _, location, yD = table.unpack(commands);  check() -- first, have everything?

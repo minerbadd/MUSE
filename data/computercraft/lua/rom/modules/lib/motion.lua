@@ -287,7 +287,7 @@ The (cardinal) direction abstraction for `face` turns is built on the `turnRight
 If turning the turtle encounters trouble, the functions we've been exploring return something other than `"done"`. In this case MUSE raises an error supplying a `recovery` table that might be used to recover from the error, perhaps by resolving the turtle's `"blocked"` condition.
 ```Lua
 --]]
---:> recovery: _For some errors_ -> `[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
+--:> recovery: _For some errors_ -> `:[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
 
 local ops -- forward references to what actually moves the turtle: `moveCount` or `stepCount`
 

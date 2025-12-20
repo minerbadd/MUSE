@@ -120,7 +120,7 @@ end
 
 --:# <b>Definitions for finding and extracting ores</b>
 --:> grid.cut: <i>Directions to dig in vein</i> -> <code>"up"|"down"|"north"|"south"</code>
---:> grid.guide: <i>Instructions for cut</i> -> <code>[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]</code>
+--:> grid.guide: <i>Instructions for cut</i> -> <code>:[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]</code>
 -- + <i><code>look</code>: direction to look for ore; <code>dig</code>: first digs in cut; <code>lookMore</code>: try direction for more ore; <code>digMore</code>: more digs.</i>
 
 local function mineCut(plan, direction, cut, ores) 

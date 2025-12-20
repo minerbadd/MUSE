@@ -636,7 +636,7 @@ Navigate shaft and bores to go to marker.",
   ["op"] = {
   ["returns"] = " `^:, \":\", #: &:` <-\
 ",
-  ["args"] = "arguments: [op: \":\", placeName: \":\", borePlansFileOrLevels: \":\"|#:, shaftPlansFile: \":\"]",
+  ["args"] = "arguments: :[op: \":\", placeName: \":\", borePlansFileOrLevels: \":\"|#:, shaftPlansFile: \":\"]",
   ["type"] = "function",
   ["name"] = "mine.op",
   ["description"] = "\
@@ -784,7 +784,7 @@ CLL operates plan to manage mines: shaft, bore, move to posts (between and withi
   ["op"] = {
   ["returns"] = " `\":\" &:` <-\
 ",
-  ["args"] = "commandLine: [command: \":\", ...] ",
+  ["args"] = "commandLine: :[command: \":\", ...] ",
   ["type"] = "function",
   ["name"] = "exec.op",
   ["description"] = "\
@@ -1015,7 +1015,7 @@ For movement in four NESW cardinal directions",
 ,
   [":recovery"] = {
   ["type"] = "value",
-  ["returns"] = " `[call: \":\", failure: \":\", cause: \":\", remaining: #:, :xyzf:, :direction:, operation: \":\"]`",
+  ["returns"] = " `:[call: \":\", failure: \":\", cause: \":\", remaining: #:, :xyzf:, :direction:, operation: \":\"]`",
   ["name"] = "recovery",
   ["description"] = "\
 For some errors",
@@ -1080,7 +1080,7 @@ Assemble parts.",
   ["actuate"] = {
   ["returns"] = " \":\" <-\
 ",
-  ["args"] = "commands: [command: \":\", direction: facing]",
+  ["args"] = "commands: :[command: \":\", direction: facing]",
   ["type"] = "function",
   ["name"] = "_gps.actuate",
   ["description"] = "\
@@ -1090,7 +1090,7 @@ Move to boot a GPS host and retrieve floppy.",
   ["launch"] = {
   ["returns"] = " \":\" <-\
 ",
-  ["args"] = "commands: [command: \":\", location: \":\", yD: #:?]",
+  ["args"] = "commands: :[command: \":\", location: \":\", yD: #:?]",
   ["type"] = "function",
   ["name"] = "_gps.launch",
   ["description"] = "\
@@ -2069,9 +2069,9 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["_exec.op:_"] = {
-  ["line"] = "function exec.op(commandLine) --:: exec.op(commandLine: [command: \":\", ...] ) -> _CLI for Command Computer commands_ -> `\":\" &:`",
+  ["line"] = "function exec.op(commandLine) --:: exec.op(commandLine: :[command: \":\", ...] ) -> _CLI for Command Computer commands_ -> `\":\" &:`",
   ["kind"] = "face",
-  ["sign"] = "exec.op(commandLine: [command: \":\", ...] )  ",
+  ["sign"] = "exec.op(commandLine: :[command: \":\", ...] )  ",
   ["out"] = " `\":\" &:`",
   ["text"] = "CLI for Command Computer commands",
 }
@@ -2278,7 +2278,7 @@ Group or list of craft items for fill material",
 ,
   [":fieldCommands"] = {
   ["type"] = "value",
-  ["returns"] = " `[fieldOpName: \":\", ranger: \":\",  firstPlot: #:?, lastPlot: #:??]`",
+  ["returns"] = " `:[fieldOpName: \":\", ranger: \":\",  firstPlot: #:?, lastPlot: #:??]`",
   ["name"] = "fieldCommands",
   ["description"] = "\
 For CLI",
@@ -2354,7 +2354,7 @@ dictionary keyed by `opName` for the distance along the stride axis for a stridi
 ,
   [":field.plotSpan"] = {
   ["type"] = "value",
-  ["returns"] = "_ `[_:, _:, first: #:?, last: #:??]`",
+  ["returns"] = "_ `:[_:, _:, first: #:?, last: #:??]`",
   ["name"] = "field.plotSpan",
   ["description"] = "\
 {}` spans all plots; if only first, default plots after first",
@@ -2392,7 +2392,7 @@ Plots Called by field files. Calls `fieldsOp` from field file (which calls `fiel
 ,
   [":fieldParameters"] = {
   ["type"] = "value",
-  ["returns"] = " `[bounds, fieldParameters.fills?, fieldParameters.removeables??]`",
+  ["returns"] = " `:[bounds, fieldParameters.fills?, fieldParameters.removeables??]`",
   ["name"] = "fieldParameters",
   ["description"] = "\
 bounds` (and materials to fill and replace)",
@@ -2516,9 +2516,9 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
 }
 ,
   ["_task.op:_"] = {
-  ["line"] = "    --:: task.op (commands: [ op: \":\", arguments: \":\"[] ] ) -> _Execute tasks for low level turtle operations:_ -> `\":\" &:`",
+  ["line"] = "    --:: task.op (commands: :[ op: \":\", arguments: \":\"[] ] ) -> _Execute tasks for low level turtle operations:_ -> `\":\" &:`",
   ["out"] = " `\":\" &:`",
-  ["sign"] = "task.op (commands: [ op: \":\", arguments: \":\"[] ] )  ",
+  ["sign"] = "task.op (commands: :[ op: \":\", arguments: \":\"[] ] )  ",
   ["kind"] = "face",
   ["text"] = "Execute tasks for low level turtle operations:",
 }
@@ -2727,7 +2727,7 @@ Iterator (default 1 step)",
   ["childs"] = {
   [":_task.puts"] = {
   ["type"] = "value",
-  ["returns"] = " [direction: \":\", distance: #:, puttings: \":\"[] ]`",
+  ["returns"] = " `:[direction: \":\", distance: #:, puttings: \":\"[] ]`",
   ["name"] = "_task.puts",
   ["description"] = "\
 Common arguments",
@@ -2736,7 +2736,7 @@ Common arguments",
   ["op"] = {
   ["returns"] = " `\":\" &:` <-\
 ",
-  ["args"] = "commands: [ op: \":\", arguments: \":\"[] ] ",
+  ["args"] = "commands: :[ op: \":\", arguments: \":\"[] ] ",
   ["type"] = "function",
   ["name"] = "task.op",
   ["description"] = "\
@@ -2772,7 +2772,7 @@ Dispatch targets for_ `net` _library._ -> task, _task",
   ["childs"] = {
   [":grid.guide"] = {
   ["type"] = "value",
-  ["returns"] = " `[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]`",
+  ["returns"] = " `:[ look: grid.cut, dig: grid.cut[], lookMore: grid.cut, digMore: grid.cut[] ]`",
   ["name"] = "grid.guide",
   ["description"] = "\
 Instructions for cut",
@@ -2850,9 +2850,9 @@ Libraries to provide a limited simulation of turtle and command computer in-game
 }
 ,
   ["__gps.actuate:_"] = {
-  ["line"] = "  --:: `_gps.actuate(commands: [command: \":\", direction: facing]) -> _Move to boot a GPS host and retrieve floppy._ -> \":\"",
+  ["line"] = "  --:: `_gps.actuate(commands: :[command: \":\", direction: facing]) -> _Move to boot a GPS host and retrieve floppy._ -> \":\"",
   ["out"] = " \":\"",
-  ["sign"] = "`_gps.actuate(commands: [command: \":\", direction: facing])  ",
+  ["sign"] = "`_gps.actuate(commands: :[command: \":\", direction: facing])  ",
   ["kind"] = "face",
   ["text"] = "Move to boot a GPS host and retrieve floppy.",
 }
@@ -2926,10 +2926,10 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["_place.nearby:_"] = {
-  ["line"] = "--:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]",
+  ["line"] = "--:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `:[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]",
   ["kind"] = "face",
   ["sign"] = "place.nearby(:xyzf:?, :cardinals:)  ",
-  ["out"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]",
+  ["out"] = " `:[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]",
   ["text"] = "Sorted",
 }
 ,
@@ -2986,9 +2986,9 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["__gps.launch:_"] = {
-  ["line"] = "  --:: `_gps.launch(commands: [command: \":\", location: \":\", yD: #:?]) -> _Check before journey then launch._ -> \":\"",
+  ["line"] = "  --:: `_gps.launch(commands: :[command: \":\", location: \":\", yD: #:?]) -> _Check before journey then launch._ -> \":\"",
   ["out"] = " \":\"",
-  ["sign"] = "`_gps.launch(commands: [command: \":\", location: \":\", yD: #:?])  ",
+  ["sign"] = "`_gps.launch(commands: :[command: \":\", location: \":\", yD: #:?])  ",
   ["kind"] = "face",
   ["text"] = "Check before journey then launch.",
 }
@@ -3065,9 +3065,9 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["_mine.op:_"] = {
-  ["line"] = "--:: mine.op(arguments: [op: \":\", placeName: \":\", borePlansFileOrLevels: \":\"|#:, shaftPlansFile: \":\"]) -> _Dig._ -> `^:, \":\", #: &:`",
+  ["line"] = "--:: mine.op(arguments: :[op: \":\", placeName: \":\", borePlansFileOrLevels: \":\"|#:, shaftPlansFile: \":\"]) -> _Dig._ -> `^:, \":\", #: &:`",
   ["kind"] = "face",
-  ["sign"] = "mine.op(arguments: [op: \":\", placeName: \":\", borePlansFileOrLevels: \":\"|#:, shaftPlansFile: \":\"])  ",
+  ["sign"] = "mine.op(arguments: :[op: \":\", placeName: \":\", borePlansFileOrLevels: \":\"|#:, shaftPlansFile: \":\"])  ",
   ["out"] = " `^:, \":\", #: &:`",
   ["text"] = "Dig.",
 }
@@ -3328,7 +3328,7 @@ Current situation in named places",
 ,
   [":marking"] = {
   ["type"] = "value",
-  ["returns"] = " `[prefix: \":\", base: \":\", label: \":\"]`",
+  ["returns"] = " `:[prefix: \":\", base: \":\", label: \":\"]`",
   ["name"] = "marking",
   ["description"] = "\
 literals table of marker parts",
@@ -3396,7 +3396,7 @@ Used by `worker.execute` to run plan",
 ,
   [":stepElement"] = {
   ["type"] = "value",
-  ["returns"] = " `[op: \"step\", :stepping:, direction: \":\", distance: #:]`",
+  ["returns"] = " `:[op: \"step\", :stepping:, direction: \":\", distance: #:]`",
   ["name"] = "stepElement",
   ["description"] = "\
 Iterate steps function in direction for distance",
@@ -3412,7 +3412,7 @@ table of space separated character sequence strings describing path",
 ,
   [":putElement"] = {
   ["type"] = "value",
-  ["returns"] = " `[op: \"put\", direction: \":\", fixture: \":\"]`",
+  ["returns"] = " `:[op: \"put\", direction: \":\", fixture: \":\"]`",
   ["name"] = "putElement",
   ["description"] = "\
 Put fixture in specified direction",
@@ -3508,7 +3508,7 @@ Iterator over table beginning at index.",
 ,
   [":bounds"] = {
   ["type"] = "value",
-  ["returns"] = " `[xyz, xyz]`",
+  ["returns"] = " `:[xyz, xyz]`",
   ["name"] = "bounds",
   ["description"] = "\
 Vector pair defining a rectangular solid",
@@ -3604,7 +3604,7 @@ Mocks sleep as null operation out of game.",
 ,
   [":xyzf"] = {
   ["type"] = "value",
-  ["returns"] = " `[x: #:, y: #:, z: #:, facing: \":\"]`",
+  ["returns"] = " `:[x: #:, y: #:, z: #:, facing: \":\"]`",
   ["name"] = "xyzf",
   ["description"] = "\
 Position and facing as table",
@@ -3640,7 +3640,7 @@ If level less than `status` threshold, report `rest` as string.",
 ,
   [":xyz"] = {
   ["type"] = "value",
-  ["returns"] = " [x: #:, y: #:, z: #:]",
+  ["returns"] = " `:[x: #:, y: #:, z: #:]`",
   ["name"] = "xyz",
   ["description"] = "\
 Minecraft coordinates: +x: east, +y: up, +z: south",
@@ -4338,7 +4338,7 @@ Returns trail",
 }
 ,
   ["nearby"] = {
-  ["returns"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:] <-\
+  ["returns"] = " `:[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:] <-\
 ",
   ["args"] = ":xyzf:?, :cardinals:",
   ["type"] = "function",

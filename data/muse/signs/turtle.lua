@@ -13,6 +13,7 @@ local  turtle = {}
 
 -- Names in category or fencings matching `name` or_ `{"minecraft:"..name}`.
 -- turtle.category(name: ":"):  `":"[]`  <-
+
 ---@type fun(name: string):  string[]
 function turtle.category() end
 
@@ -32,6 +33,7 @@ function turtle.category() end
 
 -- Retrys (default `_G.Muse.attempts`) dig to limit or bedrock. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
 -- turtle.unblock(direction: ":", limit: #:?):  `"done", nil|"undug" &!`  <-
+
 ---@type fun(direction: string,  limit: number?):  "done",  nil|"undug" 
 function turtle.unblock() end
 
@@ -42,11 +44,13 @@ function turtle.unblock() end
 
 -- Detail of specified or currently selected slot.
 -- turtle.item(slot: #:?):  `nil | detail` <-
+
 ---@type fun(slot: number?):  nil | detail 
 function turtle.item() end
 
 -- Unblocking dig. Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.
 -- turtle.digAround(orientation: ":", name: ":", diggings: ":"[]):  `"done" &: &!` <-
+
 ---@type fun(orientation: string,  name: string,  diggings: string[]):  "done" 
 function turtle.digAround() end
 
@@ -57,6 +61,7 @@ function turtle.digAround() end
 
 -- Selects found slot.
 -- turtle.find(targets: ":"[]):  `detail?` <-
+
 ---@type fun(targets: string[]):  detail? 
 function turtle.find() end
 
@@ -75,11 +80,13 @@ function turtle.find() end
 
 -- Unblocking move. Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty". Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason. Normally return just what a successful move would: "done", 0 remaining, current position.
 -- turtle.digTo(:xyzf:, limit: #:?):  `code: ":", remaining: #:, xyzf: ":" &: &!`  <-
+
 ---@type fun(xyzf: xyzf,  limit: number?):  code: string,  remaining: number,  xyzf: string 
 function turtle.digTo() end
 
 -- Attempts to select the specified slot.
 -- turtle.select(slot: #:):  `selected: ^:` <-
+
 ---@type fun(slot: number):  selected: boolean 
 function turtle.select() end
 
@@ -103,16 +110,19 @@ function turtle.select() end
 
 -- Total energy actually available in turtle slots plus turtle fuel level.
 -- turtle.fuel():  `fuelTotal: #:` <-
+
 ---@type fun():  fuelTotal: number 
 function turtle.fuel() end
 
 -- Tries to match each target against_ `detail.name`.
 -- turtle.check(targets: ":"[], :detail:):  ``matched: ^:` <-
+
 ---@type fun(targets: string[],  detail: detail):  matched: boolean 
 function turtle.check() end
 
 -- Returns currrent turtle inventory as turtle detail table_.
 -- turtle.inventory():  `detail[]` <-
+
 ---@type fun():  detail[]
 function turtle.inventory() end
 return { turtle =  turtle}

@@ -270,7 +270,7 @@ The (cardinal) direction abstraction for <code>face</code> turns is built on the
 <p>
 If turning the turtle encounters trouble, the functions we've been exploring return something other than <code>"done"</code>. In this case MUSE raises an error supplying a <code>recovery</code> table that might be used to recover from the error, perhaps by resolving the turtle's <code>"blocked"</code> condition.
 <pre><code class="language-lua">
---:> recovery: <i>For some errors</i> -> <code>[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]</code>
+--:> recovery: <i>For some errors</i> -> <code>:[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]</code>
 
 local ops -- forward references to what actually moves the turtle: <code>moveCount</code> or <code>stepCount</code>
 

@@ -122,7 +122,7 @@ function core.string(...) --:: core.string(...: any) -> <i>Makes string from any
 end
 
 function core.xyzf(xyzf) --:: core.xyzf(:xyzf:) -> <i>Returns specially formatted string for <code>xyzf</code>.</i> -> <code>":"</code>
-  --:> xyzf: <i>Position and facing as table</i> -> <code>[x: #:, y: #:, z: #:, facing: ":"]</code>
+  --:> xyzf: <i>Position and facing as table</i> -> <code>:[x: #:, y: #:, z: #:, facing: ":"]</code>
   assert(xyzf and type(xyzf == "table"), "core: Need xyzf as table for string")
   local x, y, z, f = table.unpack(xyzf); f = f or ""
   return "{" .. core.round(x) .. ", " .. core.round(y) .. ", " .. core.round(z) .. "} " .. f
@@ -328,8 +328,8 @@ function core.vectorPairs(start, addend, number, partial) -- each table element 
   --:+ <i>Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result.</i>
   --:+ <i>The number n is the number of bounds in result where each bound is offset by addend from the prior bounds.</i>
   --:+ <i>Optionally the partial bounds are included as the first bounds in the result.</i>
-  --:> bounds: <i>Vector pair defining a rectangular solid</i> -> <code>[xyz, xyz]</code>
-  --:> xyz: <i>Minecraft coordinates: +x: east, +y: up, +z: south</i> -> [x: #:, y: #:, z: #:]
+  --:> bounds: <i>Vector pair defining a rectangular solid</i> -> <code>:[xyz, xyz]</code>
+  --:> xyz: <i>Minecraft coordinates: +x: east, +y: up, +z: south</i> -> <code>:[x: #:, y: #:, z: #:]</code>
   partial = partial and { partial } or {}; partial[#partial + 1] = start
   return inVectors(start, { addend, addend }, number, partial, #partial + 1) -- #addends = 2 for pairs
 end

@@ -31,7 +31,7 @@
 
 --:: core.xyzf(:xyzf:) -> <i>Returns specially formatted string for <code>xyzf</code>.</i> -> <code>":"</code>  
 
---:> xyzf: <i>Position and facing as table</i> -> <code>[x: #:, y: #:, z: #:, facing: ":"]</code>  
+--:> xyzf: <i>Position and facing as table</i> -> <code>:[x: #:, y: #:, z: #:, facing: ":"]</code>  
 
 --:# <b>Handling errors and reporting operations</b>  
 
@@ -74,9 +74,9 @@
 --:+ <i>The number n is the number of bounds in result where each bound is offset by addend from the prior bounds.</i>    
 --:+ <i>Optionally the partial bounds are included as the first bounds in the result.</i>  
 
---:> bounds: <i>Vector pair defining a rectangular solid</i> -> <code>[xyz, xyz]</code>  
+--:> bounds: <i>Vector pair defining a rectangular solid</i> -> <code>:[xyz, xyz]</code>  
 
---:> xyz: <i>Minecraft coordinates: +x: east, +y: up, +z: south</i> -> [x: #:, y: #:, z: #:]  
+--:> xyz: <i>Minecraft coordinates: +x: east, +y: up, +z: south</i> -> <code>:[x: #:, y: #:, z: #:]</code>  
 
 --:: core.orient(vectors: xyzMap, face: ":"?, rotate: ":"??) -> <i>Three dimensional rotation</i> -> <code>xyzMap</code>    
 --:+ <i>Turn from up north to face, default for no face is to rotate -90 degrees.</i>  

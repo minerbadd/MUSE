@@ -80,5 +80,5 @@
 
 --:- ores marker borePlans?  -> _Excavate ores from side tunnel near marker, return up 1 from marker._  
 
---:: mine.op(arguments: [op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]) -> _Dig._ -> `^:, ":", #: &:`    
+--:: mine.op(arguments: :[op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]) -> _Dig._ -> `^:, ":", #: &:`    
 --:+ _Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans._  
