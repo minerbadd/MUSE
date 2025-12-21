@@ -39,7 +39,7 @@ end
 <h3>Affairs of State</h3>
 Another way to manage state is to "close over" a variable. The <code>core.state</code> function creates a function to set and return a  variable whose scope is local (within the compass of the returned function) and whose extent is indefinite (useable throughout a session as long as there is a reference to the returned function preventing its collection as garbage.) The variable may be set to any non <code>nil</code> value including <code>false</code>. As an access optimization, if a table (external to the closure) is specified, the table entry is also set to any non <code>nil</code> value.
 <pre><code class="language-lua">
---:> closing: <i>Returns value or sets it and optional table entry to non <code>nil</code> <code>value</code>.</i>  -> ():<code>(value: any): value: any</code>
+--:> closing: <i>Returns value or sets it and optional table entry to non <code>nil</code> <code>value</code>.</i>  -> <code>(value: any): value: any</code>
 
 function core.state(table, key)
   --:: core.state(table: {:}?, key: ":"?) -> <i>Returns closure over closure variable</i> -> <code>closing</code>
@@ -122,7 +122,7 @@ function core.string(...) --:: core.string(...: any) -> <i>Makes string from any
 end
 
 function core.xyzf(xyzf) --:: core.xyzf(:xyzf:) -> <i>Returns specially formatted string for <code>xyzf</code>.</i> -> <code>":"</code>
-  --:> xyzf: <i>Position and facing as table</i> -> <code>:[x: #:, y: #:, z: #:, facing: ":"]</code>
+  --:> xyzf: <i>Position and facing as table</i> -> <code>[x: #:, y: #:, z: #:, facing: ":"]</code>
   assert(xyzf and type(xyzf == "table"), "core: Need xyzf as table for string")
   local x, y, z, f = table.unpack(xyzf); f = f or ""
   return "{" .. core.round(x) .. ", " .. core.round(y) .. ", " .. core.round(z) .. "} " .. f
@@ -328,8 +328,8 @@ function core.vectorPairs(start, addend, number, partial) -- each table element 
   --:+ <i>Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result.</i>
   --:+ <i>The number n is the number of bounds in result where each bound is offset by addend from the prior bounds.</i>
   --:+ <i>Optionally the partial bounds are included as the first bounds in the result.</i>
-  --:> bounds: <i>Vector pair defining a rectangular solid</i> -> <code>:[xyz, xyz]</code>
-  --:> xyz: <i>Minecraft coordinates: +x: east, +y: up, +z: south</i> -> <code>:[x: #:, y: #:, z: #:]</code>
+  --:> bounds: <i>Vector pair defining a rectangular solid</i> -> <code>[xyz, xyz]</code>
+  --:> xyz: <i>Minecraft coordinates: +x: east, +y: up, +z: south</i> -> <code>[x: #:, y: #:, z: #:]</code>
   partial = partial and { partial } or {}; partial[#partial + 1] = start
   return inVectors(start, { addend, addend }, number, partial, #partial + 1) -- #addends = 2 for pairs
 end

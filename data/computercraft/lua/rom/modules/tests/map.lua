@@ -59,7 +59,7 @@ test(8, map.put("trail20", "trueKey"));
 test(8.1, map.put("trail20", "textKey", "theText"))
 test(8.2, map.put("trail20", "tableKey", {1, 2, 3}))
 
---:: map.get(name: ":", key: ":") -> _Get feature value for key if named place._ -> `::value | false`
+-- map.get(name: ":", key: ":") -> _Get feature value for key if named place._ -> `::value | false`
 test(9, map.get("trail20", "trueKey")); test(9.1, map.get("trail20", "textKey")); 
 test(9.2, map.get("trail20", "tableKey"))
 

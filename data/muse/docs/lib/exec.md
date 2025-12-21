@@ -11,4 +11,4 @@
 
 --:# Dispatch for `exec` commands: `locate`, `activate`  
 
---:: exec.op(commandLine: :[command: ":", ...] ) -> _CLI for Command Computer commands_ -> `":" &:`  
+--:: exec.op(commandLine: [command: ":", ...] ) -> _CLI for Command Computer commands_ -> `":" &:`  

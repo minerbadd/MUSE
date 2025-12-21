@@ -14,7 +14,7 @@
 
 --:: field.make(commands: fieldCommands, faced: ^:) -> <i>Load field files; return their <code>field.plot</code> calls</i> -> <code>report: ":" &:</code>  
 
---:> fieldCommands: <i>For CLI</i> -> <code>:[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]</code>    
+--:> fieldCommands: <i>For CLI</i> -> <code>[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]</code>    
 --:+ <i>The second entry, <code>ranger</code> in <code>fieldCommands</code> is a string which may simply be a name for a <code>range</code>, (a kind of <code>place</code>).</i>    
 --:+ <i>If so, the range name gets the range's features dictionary and the field file name to load (keyed as <code>features.fields</code>).</i>    
 --:+ <i>It could also be a string specifying the name of a farm and a farm field name in that farm (separated by a colon).</i>    
@@ -25,12 +25,12 @@
 --:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> <i>Plots</i> -> <code>report: ":" &: &!</code>    
 --:+ <i>Called by field files. Calls <code>fieldsOp</code> from field file (which calls <code>field.plan</code>).</i>  
 
---:> field.plotSpan: <i><code>{}</code> spans all plots; if only first, default plots after first -></i> <code>:[:_, :_, first: #:?, last: #:??]</code>  
+--:> field.plotSpan: <i><code>{}</code> spans all plots; if only first, default plots after first -></i> <code>[:_, :_, first: #:?, last: #:??]</code>  
 
 --:: field.plan(planName: ":", fielding: fieldParameters, offset: xyz?) -> <i>Run plan, default offset {0,0,0}.</i> -> <code>report: ":" &: &!</code>    
 --:+ <i>Loads and executes the prototype plan (which calls <code>field.paths</code>) for each (odd, even, or last) level of a plot.</i>  
 
---:> fieldParameters: <i><code>bounds</code> (and materials to fill and replace)</i> -> <code>:[bounds, fieldParameters.fills?, fieldParameters.removeables??]</code>  
+--:> fieldParameters: <i><code>bounds</code> (and materials to fill and replace)</i> -> <code>[bounds, fieldParameters.fills?, fieldParameters.removeables??]</code>  
 
 --:> fieldParameters.fills: <i>Group or list of craft items for fill material</i> -> <code>group|craft[]</code>  
 
@@ -62,23 +62,23 @@
 
 --:# <b>Cut, fill, till, and traverse points defining rectangular volumes</b> using <code>field.plan</code> to optimize traversal.  
 
---:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> <i>Quarry out blocks from one place to the other.</i> -> <code>":" &:</code>  
+--:: field.cut(places: [nearPlace: ":", farPlace: ":"]) -> <i>Quarry out blocks from one place to the other.</i> -> <code>":" &:</code>  
 
 --:- cut point point -> <i>Quarry out blocks bound by named points (defining a rectangular solid).</i>  
 
---:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> <i>Fill, Till, Replace.</i> -> <code>":" &:</code>  
+--:: field.fill(parameters: [nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> <i>Fill, Till, Replace.</i> -> <code>":" &:</code>  
 
 --:< <i>Filling and target may be one of the turtle categories or a Minecraft detail name without prefix</i> <code>minecraft:</code>   
 
 --:- fill point point filling ?target -> <i>Layer fill bounds by points; optionally swaps out only target blocks.</i>  
 
---:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> <i>Till the seed from one place to the other.</i> -> <code>":" &:</code>  
+--:: field.till(parameters: [nearPlace: ":", farPlace: ":", seed: ":"]) -> <i>Till the seed from one place to the other.</i> -> <code>":" &:</code>  
 
 --:< <i>Seed may be one of the turtle categories or a Minecraft detail name without the prefix</i> <code>"minecraft:"</code>  
 
 --:- till point point seed -> <i>Till the seed bounds by named points (defining a rectangular solid).</i>  
 
---:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> <i>Put fencing using <code>layer</code> plan.</i> -> <code>":"</code>  
+--:: field.fence(parameters: [ranger: ":", fencing: ":"?]) -> <i>Put fencing using <code>layer</code> plan.</i> -> <code>":"</code>  
 
 --:- fence range [item] -> <i>Put item or available wooden fence from one point to another in range.</i>  
 

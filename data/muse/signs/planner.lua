@@ -17,8 +17,8 @@ function planner.mark() end
 ---@alias markElement [ "mark",  marking] # Current situation in named places
 
 
--- putElement:  `:[op: "put", direction: ":", fixture: ":"]`
----@alias putElement  : [ "put",  string,  string] # Put fixture in specified direction
+-- putElement:  `[op: "put", direction: ":", fixture: ":"]`
+---@alias putElement [ "put",  string,  string] # Put fixture in specified direction
 
 
 -- plan:  `{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}`
@@ -27,7 +27,7 @@ function planner.mark() end
 
 -- plan.work:  `(:plan:, direction: ":"): ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias plan.work ( plan: plan,  direction: string: string?) # for execution at every_ `step` _iteration in plan movement direction
+---@alias plan.work fun(plan: plan,  direction: string):  string? # for execution at every_ `step` _iteration in plan movement direction
 
 
 -- plan.name:  `":"`
@@ -52,11 +52,11 @@ function planner.load() end
 
 
 -- pathElements:  `(stepElement|putElement|markElement)[]`
----@alias pathElements  (stepElement|putElement|markElement)[] # Used by `worker.execute` to run plan
+---@alias pathElements (stepElement|putElement|markElement) # Used by `worker.execute` to run plan
 
 
--- stepElement:  `:[op: "step", :stepping:, direction: ":", distance: #:]`
----@alias stepElement  : [ "step",  stepping,  string,  number] # Iterate steps function in direction for distance
+-- stepElement:  `[op: "step", :stepping:, direction: ":", distance: #:]`
+---@alias stepElement [ "step",  stepping,  string,  number] # Iterate steps function in direction for distance
 
 
 -- plan.path:  `":"[]`
@@ -64,12 +64,12 @@ function planner.load() end
 ---@alias plan.path  string[] # table of space separated character sequence strings describing path
 
 
--- marking:  `:[prefix: ":", base: ":", label: ":"]`
----@alias marking  : [ string,  string,  string] # literals table of marker parts
+-- marking:  `[prefix: ":", base: ":", label: ":"]`
+---@alias marking [ string,  string,  string] # literals table of marker parts
 
 
 -- plan.mark:  `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias plan.mark ( plan: plan,  :marking:: markerName: string),  label: string,  report: string # for execution as specified by_ `plan.path` _markers
+---@alias plan.mark fun(plan: plan,  marking: marking):  markerName: string,  label: string,  report: string # for execution as specified by_ `plan.path` _markers
 
 return { planner =  planner, plan = plan, moves = moves, steps = steps}

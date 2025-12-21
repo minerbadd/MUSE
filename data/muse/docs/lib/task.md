@@ -25,4 +25,4 @@
 --:- change target filling direction distance putting... -> _Move distance in direction replacing target with filling._    
 --:+ _Change along trails by specifying `direction` as `along` and trailname as `distance`. Can change `here`._  
 
---:: task.op (commands: :[ op: ":", arguments: ":"[] ] ) -> _Execute tasks for low level turtle operations:_ -> `":" &:`  
+--:: task.op (commands: [ op: ":", arguments: ":"[] ] ) -> _Execute tasks for low level turtle operations:_ -> `":" &:`  

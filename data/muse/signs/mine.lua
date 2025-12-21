@@ -27,9 +27,9 @@ local  mine, _mine = {}, {}
 
 
 -- Dig. Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans.
--- mine.op(arguments: :[op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]):  `^:, ":", #: &:` <-
+-- mine.op(arguments: [op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]):  `^:, ":", #: &:` <-
 
----@type fun(arguments: :[op: string,  placeName: string,  borePlansFileOrLevels: string|number,  shaftPlansFile: string]):  boolean,  string,  number 
+---@type fun(arguments: [ string,  string,  string|number,  string]):  boolean,  string,  number 
 function mine.op() end
 
 -- bores.fix:  `plan`
@@ -91,7 +91,7 @@ function mine.op() end
 
 -- mine.post:  (markerName: ":", :bores:):  `marking[]`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias mine.post  (markerName: string,  bores: bores):  marking[] # Navigate shaft and bores to go to marker.
+---@alias mine.post fun(markerName: string,  bores: bores):   marking[] # Navigate shaft and bores to go to marker.
 
 
 -- bores.even:  `plan`

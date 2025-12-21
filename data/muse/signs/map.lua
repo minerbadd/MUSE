@@ -90,9 +90,9 @@ function map.gets() end
 ---@type fun(serial: string):  nil 
 function map.update() end
 
--- Get feature value for key if named place.
--- map.get(name: ":", key: ":"):  `::value | false` <-
+-- Get named place local feature value for key.
+-- map.get(name: ":", key: ":"):  `value: any? &!` <-
 
----@type fun(name: string,  key: string):  : value | false 
+---@type fun(name: string,  key: string):  value: any? 
 function map.get() end
 return { map =  map}

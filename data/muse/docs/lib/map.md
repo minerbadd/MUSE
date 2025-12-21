@@ -25,7 +25,7 @@
 
 --:: map.erase(name: ":") -> _Remove named place, overwrite local map file_ -> `remaining: #:`  
 
---:: map.get(name: ":", key: ":") -> _Get named place local feature value for key._ -> `value: any?` &!  
+--:: map.get(name: ":", key: ":") -> _Get named place local feature value for key._ -> `value: any? &!`  
 
 --:: map.gets(name: ":", key: ":") -> _Less generic retrieval interface: gets string feature value._ -> `":"?`  
 

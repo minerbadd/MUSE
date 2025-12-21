@@ -167,7 +167,7 @@ Places include a <a href="places.html#name" target="_blank"> dictionary of name-
 This is a technique to allow other libraries to add attributes to places without needing to make changes to the implementation of `lib/places`. This sort of thing helps maintenance as the code base evolves to deal with new requirements. That's especially important for a network of computers each having their own version of persistent data structures. That said, names of features (feature keys) are unrestricted. There's no explicit protection against unintended clashes. Rope provided. Invent some naming protocol and use with care. 
 ```Lua
 --]]
-function map.get(name, key) --:: map.get(name: ":", key: ":") -> _Get named place local feature value for key._ -> `value: any?` &!
+function map.get(name, key) --:: map.get(name: ":", key: ":") -> _Get named place local feature value for key._ -> `value: any? &!`
   local index, namedPlace = place.match(name); if not index then return nil end
   assert(namedPlace, "map.get: can't get features for unknown place "..name) 
   local _, _, _, features = table.unpack(namedPlace); assert(features, "map.get: no features for "..name)

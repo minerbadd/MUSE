@@ -28,7 +28,7 @@ local turtles = require("turtle"); local turtle = turtles.turtle ---@module "sig
 --:> plan.fixtures: <i>for placement as specified by path elements beginning with a digit</i> -> <code>":"[]</code>
 --:> plan.mark: <i>for execution as specified by</i> <code>plan.path</code> <i>markers</i> -> <code>(:plan:, :marking:): markerName: ":", label: ":", report: ":"</code>
 
---:> marking: <i>literals table of marker parts</i> -> <code>:[prefix: ":", base: ":", label: ":"]</code>
+--:> marking: <i>literals table of marker parts</i> -> <code>[prefix: ":", base: ":", label: ":"]</code>
 --:> markings: <i>dictionary of markings keyed by a label</i> -> <code>[label: ":"]: marking</code>
 
 --:# <b>Plan elements beginning with a letter indicate stepped movement in one of six directions: u, d, n, e, s, or w.</b>
@@ -55,8 +55,8 @@ local directions = {u = "up", d = "down", n = "north", e = "east", w = "west", s
 function planner.make(plan) 
 --:: planner.make(plan:plan) -> <i>Create path operations table for plan.</i> -> <code>pathElements, fuelOK: ^:, pathDistance: #:</code>
 --:> pathElements: <i>Used by <code>worker.execute</code> to run plan</i> -> <code>(stepElement|putElement|markElement)[]</code>
---:> stepElement: <i>Iterate steps function in direction for distance</i> -> <code>:[op: "step", :stepping:, direction: ":", distance: #:]</code>
---:> putElement: <i>Put fixture in specified direction</i> -> <code>:[op: "put", direction: ":", fixture: ":"]</code>
+--:> stepElement: <i>Iterate steps function in direction for distance</i> -> <code>[op: "step", :stepping:, direction: ":", distance: #:]</code>
+--:> putElement: <i>Put fixture in specified direction</i> -> <code>[op: "put", direction: ":", fixture: ":"]</code>
 --:> markElement: <i>Current situation in named places</i> -> <code>[op: "mark", :marking:]</code>
 
   local pathElements, pathDistance = {}, 0 -- initial state

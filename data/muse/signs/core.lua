@@ -32,8 +32,8 @@ function core.findItems() end
 ---@type fun(table: table,  index: number):  function,  table,  number 
 function core.inext() end
 
--- bounds:  `:[xyz, xyz]`
----@alias bounds  : [xyz,   xyz] # Vector pair defining a rectangular solid
+-- bounds:  `[xyz, xyz]`
+---@alias bounds [xyz,   xyz] # Vector pair defining a rectangular solid
 
 
 -- detail.name:  `":"`
@@ -89,8 +89,8 @@ function core.state() end
 ---@type fun(number?):  nil 
 function core.sleep() end
 
--- xyzf:  `:[x: #:, y: #:, z: #:, facing: ":"]`
----@alias xyzf  : [ number,  number,  number,  string] # Position and facing as table
+-- xyzf:  `[x: #:, y: #:, z: #:, facing: ":"]`
+---@alias xyzf [ number,  number,  number,  string] # Position and facing as table
 
 
 -- Out of game returns id; id ignored in game.
@@ -111,8 +111,8 @@ function core.getComputerLabel() end
 ---@type fun(level: number,  ...: any):  nil 
 function core.report() end
 
--- xyz:  `:[x: #:, y: #:, z: #:]`
----@alias xyz  : [ number,  number,  number] # Minecraft coordinates: +x: east, +y: up, +z: south
+-- xyz:  `[x: #:, y: #:, z: #:]`
+---@alias xyz [ number,  number,  number] # Minecraft coordinates: +x: east, +y: up, +z: south
 
 
 -- Set threshold level [and local log file] for status reports
@@ -133,7 +133,7 @@ function core.vectorPairs() end
 
 
 -- xyzMap:  `xyz[] | [core.faces]: xyz`
----@alias xyzMap  xyz[]|{ [core.faces]: xyz } # Table of vectors either an array or dictionary
+---@alias xyzMap { []: xyz } # Table of vectors either an array or dictionary
 
 
 -- Next integer down if below half fraction
@@ -147,8 +147,8 @@ function core.round() end
 ---@alias detail.damage  number # Distinguishing value
 
 
--- closing:  ():`(value: any): value: any`
----@alias closing ( :value: any: value: any) # Returns value or sets it and optional table entry to non `nil` `value`.
+-- closing:  `(value: any): value: any`
+---@alias closing fun(value: any):  value: any # Returns value or sets it and optional table entry to non `nil` `value`.
 
 
 -- Deep copy source table or return source if not table.

@@ -8,7 +8,7 @@ local  turtle = {}
 
 -- turtle.drops:  `[direction]: (count: #:?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.drops { [direction]:( count: number?: ^:) },  string? # Drop count [or all] items in selected slot to inventory.
+---@alias turtle.drops fun(count: number?):  boolean,  string? # Drop count [or all] items in selected slot to inventory.
 
 
 -- Names in category or fencings matching `name` or_ `{"minecraft:"..name}`.
@@ -19,7 +19,7 @@ function turtle.category() end
 
 -- turtle.attacks:  `[direction]: (): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.attacks { [direction]:( : boolean) },  string? # Attack in direction and return attack success.
+---@alias turtle.attacks fun():  boolean,  string? # Attack in direction and return attack success.
 
 
 -- minecraft:  ":"
@@ -28,7 +28,7 @@ function turtle.category() end
 
 -- turtle.compares:  `[direction]: (): same: ^:`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.compares { [direction]:( : same: boolean) } # Check block in direction has the same ID as selected slot
+---@alias turtle.compares fun():  same: boolean # Check block in direction has the same ID as selected slot
 
 
 -- Retrys (default `_G.Muse.attempts`) dig to limit or bedrock. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
@@ -39,7 +39,7 @@ function turtle.unblock() end
 
 -- turtle.sucks:  `[direction]: (count: #:?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.sucks { [direction]:( count: number?: ^:) },  string? # Move count [or all] from direction to inventory.
+---@alias turtle.sucks fun(count: number?):  boolean,  string? # Move count [or all] from direction to inventory.
 
 
 -- Detail of specified or currently selected slot.
@@ -56,7 +56,7 @@ function turtle.digAround() end
 
 -- turtle.detects:  `[direction]: (): ^:`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.detects { [direction]:( : boolean) } # Check block in direction is solid: not air, mob, liquid or floater.
+---@alias turtle.detects fun():  boolean # Check block in direction is solid: not air, mob, liquid or floater.
 
 
 -- Selects found slot.
@@ -75,7 +75,7 @@ function turtle.find() end
 
 -- turtle.digs:  `[direction]: (side: ":"?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.digs { [direction]:( side: string?: ^:) },  string? # Try to dig block in direction and call_ suck().
+---@alias turtle.digs fun(side: string?):  boolean,  string? # Try to dig block in direction and call_ suck().
 
 
 -- Unblocking move. Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty". Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason. Normally return just what a successful move would: "done", 0 remaining, current position.
@@ -92,7 +92,7 @@ function turtle.select() end
 
 -- turtle.puts:  `[direction]: (text: ":"?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.puts { [direction]:( text: string?: ^:) },  string? # Attempt placing block of the selected slot in direction.
+---@alias turtle.puts fun(text: string?):  boolean,  string? # Attempt placing block of the selected slot in direction.
 
 
 -- ores:  `ore[]`
@@ -105,7 +105,7 @@ function turtle.select() end
 
 -- turtle.inspects:  `[direction]: (): `^:`, `detail?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.inspects { [direction]:( : boolean) },  detail? # If true, get detail block information in direction.
+---@alias turtle.inspects fun():  boolean,  detail? # If true, get detail block information in direction.
 
 
 -- Total energy actually available in turtle slots plus turtle fuel level.

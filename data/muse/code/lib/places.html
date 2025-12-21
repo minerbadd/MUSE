@@ -160,7 +160,7 @@ The <code>place.nearby</code> function demonstrates some potentially useful tech
 </ul></br>
 <pre><code class="language-lua">
 function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing cardinals argument
---:: place.nearby(:xyzf:?, :cardinals:) -> <i>Sorted</i> -> `:[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]
+--:: place.nearby(:xyzf:?, :cardinals:) -> <i>Sorted</i> -> `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]
 --:> cardinals: <i>Function to get one of the eight cardinal points of the compass</i> -> (dx: #:, dz: #:): cardinal: ":"
 --:+ <i>Nearest places to specified xyzf coordinates or current position (as default).</i> 
 --:+ <i>Returned table is sorted by distances and includes the name, label, and xyzf position of each place.</i>

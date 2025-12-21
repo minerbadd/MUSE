@@ -122,7 +122,7 @@ end
 
 function _task.doTask(arguments, op, clear, fill, targets) 
   --:: `_task.doTask(arguments: _task.puts, op: (:), clear: ^:, fill: ":"?, targets: ":"[]?)`-> _Tasks_ -> ":" &!`
-  --:> `_task.puts: _Common arguments_ -> `:[direction: ":", distance: #:, puttings: ":"[] ]`
+  --:> `_task.puts: _Common arguments_ -> `[direction: ":", distance: #:, puttings: ":"[] ]`
   local direction, distance = table.unpack(arguments); local puttings = {table.unpack(arguments, 3)} -- puttings: ":"[]
   if direction == "along" then return doAlong(distance, puttings, op, clear, fill, targets) end -- `distance` alias `trail`
   direction, distance = core.optionals(direction, distance) -- 
@@ -172,7 +172,7 @@ local function put(...)
   }
 
   function task.op(commands) 
-    --:: task.op (commands: :[ op: ":", arguments: ":"[] ] ) -> _Execute tasks for low level turtle operations:_ -> `":" &:`
+    --:: task.op (commands: [ op: ":", arguments: ":"[] ] ) -> _Execute tasks for low level turtle operations:_ -> `":" &:`
     local ok, report = core.pass(pcall(ops[commands[1]], table.unpack(commands, 2)))
     if ok then return report else return "task: "..core.string(report) end -- report failure for error
   end 
