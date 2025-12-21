@@ -5,7 +5,7 @@
 
 --:: core.clone(source: {:}|any) -> _Deep copy source table or return source if not table._ -> `{:}|any`  
 
---:> closing: _Returns value or sets it and optional table entry to non `nil` `value`._  -> `(value: any): value: any`  
+--:> closing: _Returns value or sets it and optional table entry to non `nil` `value`._  -> ():`(value: any): value: any`  
 
 --:: core.state(table: {:}?, key: ":"?) -> _Returns closure over closure variable_ -> `closing`  
 

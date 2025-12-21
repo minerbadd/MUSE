@@ -1070,7 +1070,7 @@ Libraries to move turtles and move turtles by steps allowing operations at each 
   ["equip"] = {
   ["returns"] = " \":\" <-\
 ",
-  ["args"] = "direction: facing]",
+  ["args"] = "direction: facing",
   ["type"] = "function",
   ["name"] = "_gps.equip",
   ["description"] = "\
@@ -1124,9 +1124,9 @@ Check before journey then launch.",
 }
 ,
   ["__gps.equip:_"] = {
-  ["line"] = "  --:: `_gps.equip(direction: facing])` -> _Assemble parts._ -> \":\"",
+  ["line"] = "  --:: `_gps.equip(direction: facing)` -> _Assemble parts._ -> \":\"",
   ["out"] = " \":\"",
-  ["sign"] = "`_gps.equip(direction: facing])`  ",
+  ["sign"] = "`_gps.equip(direction: facing)`  ",
   ["kind"] = "face",
   ["text"] = "Assemble parts.",
 }
@@ -3622,7 +3622,7 @@ Out of game returns id; id ignored in game.",
 ,
   [":closing"] = {
   ["type"] = "value",
-  ["returns"] = " `(value: any): value: any`",
+  ["returns"] = " ():`(value: any): value: any`",
   ["name"] = "closing",
   ["description"] = "\
 Returns value or sets it and optional table entry to non `nil` `value`.",

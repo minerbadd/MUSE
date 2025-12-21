@@ -1,11 +1,11 @@
 <!DOCTYPE html>
  <html>
 <head>
-<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.css" rel="stylesheet" />
-<link href="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/downmark.css" rel="stylesheet" />
+<link href="https://minerbadd.github.io/CodeMark/assets/prism.css" rel="stylesheet" />
+<link href="https://minerbadd.github.io/CodeMark/assets/downmark.css" rel="stylesheet" />
 </head>
 <body>
-<script src="C:\Users\bruce\Desktop\LuaProjects\CodeMark\assets/prism.js"></script>
+<script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
 
 <h2> Core: A Collection of Generally Useful Functions for MUSE</h2>
 <pre><code class="language-markdown">
@@ -39,7 +39,7 @@ end
 <h3>Affairs of State</h3>
 Another way to manage state is to "close over" a variable. The <code>core.state</code> function creates a function to set and return a  variable whose scope is local (within the compass of the returned function) and whose extent is indefinite (useable throughout a session as long as there is a reference to the returned function preventing its collection as garbage.) The variable may be set to any non <code>nil</code> value including <code>false</code>. As an access optimization, if a table (external to the closure) is specified, the table entry is also set to any non <code>nil</code> value.
 <pre><code class="language-lua">
---:> closing: <i>Returns value or sets it and optional table entry to non <code>nil</code> <code>value</code>.</i>  -> <code>(value: any): value: any</code>
+--:> closing: <i>Returns value or sets it and optional table entry to non <code>nil</code> <code>value</code>.</i>  -> ():<code>(value: any): value: any</code>
 
 function core.state(table, key)
   --:: core.state(table: {:}?, key: ":"?) -> <i>Returns closure over closure variable</i> -> <code>closing</code>

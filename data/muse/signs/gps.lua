@@ -9,9 +9,9 @@ local  gps, _gps = {}, {}
 function gps.op() end
 
 -- Assemble parts.
--- _gps.equip(direction: facing]):  ":" <-
+-- _gps.equip(direction: facing):  ":" <-
 
----@type fun(direction: facing]):  string 
+---@type fun(direction: facing):  string 
 function _gps.equip() end
 
 -- Move to boot a GPS host and retrieve floppy.

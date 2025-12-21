@@ -23,7 +23,7 @@ function field.extents() end
 
 
 -- fieldCommands:  `:[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`
----@alias fieldCommands   [ string,  string,  number?,  number?] # For CLI
+---@alias fieldCommands  : [ string,  string,  number?,  number?] # For CLI
 
 
 -- _field.plans:  `{start: plan, odd: plan, even: plan, last: plan}`

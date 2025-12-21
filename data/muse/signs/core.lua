@@ -147,8 +147,8 @@ function core.round() end
 ---@alias detail.damage  number # Distinguishing value
 
 
--- closing:  `(value: any): value: any`
----@alias closing ( value: any: value: any) # Returns value or sets it and optional table entry to non `nil` `value`.
+-- closing:  ():`(value: any): value: any`
+---@alias closing ( :value: any: value: any) # Returns value or sets it and optional table entry to non `nil` `value`.
 
 
 -- Deep copy source table or return source if not table.
