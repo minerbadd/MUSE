@@ -399,9 +399,9 @@ Orientation and position reporting, broadcast and persistence of places_ -> map"
 }
 ,
   ["__field.runElements:_"] = {
-  ["line"] = "  --:: `_field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz])` -> _Fly ox._ -> `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`",
+  ["line"] = "  --:: `_field.runElements(bounds: :[xyzStart: xyz, xyzFinish: xyz])` -> _Fly ox._ -> `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`",
   ["kind"] = "face",
-  ["sign"] = "`_field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz])`  ",
+  ["sign"] = "`_field.runElements(bounds: :[xyzStart: xyz, xyzFinish: xyz])`  ",
   ["out"] = " `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`",
   ["text"] = "Fly ox.",
 }
@@ -1146,9 +1146,9 @@ Check before journey then launch.",
 }
 ,
   ["_field.cut:_"] = {
-  ["line"] = "--:: field.cut(places: [nearPlace: \":\", farPlace: \":\"]) -> _Quarry out blocks from one place to the other._ -> `\":\" &:`",
+  ["line"] = "--:: field.cut(places: :[nearPlace: \":\", farPlace: \":\"]) -> _Quarry out blocks from one place to the other._ -> `\":\" &:`",
   ["kind"] = "face",
-  ["sign"] = "field.cut(places: [nearPlace: \":\", farPlace: \":\"])  ",
+  ["sign"] = "field.cut(places: :[nearPlace: \":\", farPlace: \":\"])  ",
   ["out"] = " `\":\" &:`",
   ["text"] = "Quarry out blocks from one place to the other.",
 }
@@ -2085,9 +2085,9 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["__field.fillTill:_"] = {
-  ["line"] = "  --:: `_field.fillTill(thePlan: \":\", parameters: [nearPlace: \":\", farPlace: \":\", filling: \":\", target: \":\"?])` -> _To `put``._ -> `\":\"`",
+  ["line"] = "  --:: `_field.fillTill(thePlan: \":\", parameters: :[nearPlace: \":\", farPlace: \":\", filling: \":\", target: \":\"?])` -> _To `put``._ -> `\":\"`",
   ["kind"] = "face",
-  ["sign"] = "`_field.fillTill(thePlan: \":\", parameters: [nearPlace: \":\", farPlace: \":\", filling: \":\", target: \":\"?])`  ",
+  ["sign"] = "`_field.fillTill(thePlan: \":\", parameters: :[nearPlace: \":\", farPlace: \":\", filling: \":\", target: \":\"?])`  ",
   ["out"] = " `\":\"`",
   ["text"] = "To `put``.",
 }
@@ -2133,9 +2133,9 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["_field.fence:_"] = {
-  ["line"] = "--:: field.fence(parameters: [ranger: \":\", fencing: \":\"?]) -> _Put fencing using `layer` plan._ -> `\":\"`",
+  ["line"] = "--:: field.fence(parameters: :[ranger: \":\", fencing: \":\"?]) -> _Put fencing using `layer` plan._ -> `\":\"`",
   ["kind"] = "face",
-  ["sign"] = "field.fence(parameters: [ranger: \":\", fencing: \":\"?])  ",
+  ["sign"] = "field.fence(parameters: :[ranger: \":\", fencing: \":\"?])  ",
   ["out"] = " `\":\"`",
   ["text"] = "Put fencing using `layer` plan.",
 }
@@ -2171,7 +2171,7 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
   ["fillTill"] = {
   ["returns"] = " `\":\"` <-\
 ",
-  ["args"] = "thePlan: \":\", parameters: [nearPlace: \":\", farPlace: \":\", filling: \":\", target: \":\"?]",
+  ["args"] = "thePlan: \":\", parameters: :[nearPlace: \":\", farPlace: \":\", filling: \":\", target: \":\"?]",
   ["type"] = "function",
   ["name"] = "_field.fillTill",
   ["description"] = "\
@@ -2201,7 +2201,7 @@ Use`layer` or `till` plan.",
   ["runElements"] = {
   ["returns"] = " `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing` <-\
 ",
-  ["args"] = "bounds: [xyzStart: xyz, xyzFinish: xyz]",
+  ["args"] = "bounds: :[xyzStart: xyz, xyzFinish: xyz]",
   ["type"] = "function",
   ["name"] = "_field.runElements",
   ["description"] = "\
@@ -2221,7 +2221,7 @@ Get coordinate pair for named places.",
   ["cut"] = {
   ["returns"] = " `report: \":\" &:` <-\
 ",
-  ["args"] = "places: [nearPlace: \":\", farPlace: \":\"]",
+  ["args"] = "places: :[nearPlace: \":\", farPlace: \":\"]",
   ["type"] = "function",
   ["name"] = "_field.cut",
   ["description"] = "\
@@ -2295,7 +2295,7 @@ At each level, start, even numbered, odd numbered, last run.",
   ["fill"] = {
   ["returns"] = " `\":\" &:` <-\
 ",
-  ["args"] = "parameters: [nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?]",
+  ["args"] = "parameters: :[nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?]",
   ["type"] = "function",
   ["name"] = "field.fill",
   ["description"] = "\
@@ -2305,7 +2305,7 @@ Fill, Till, Replace.",
   ["fence"] = {
   ["returns"] = " `\":\"` <-\
 ",
-  ["args"] = "parameters: [ranger: \":\", fencing: \":\"?]",
+  ["args"] = "parameters: :[ranger: \":\", fencing: \":\"?]",
   ["type"] = "function",
   ["name"] = "field.fence",
   ["description"] = "\
@@ -2363,7 +2363,7 @@ dictionary keyed by `opName` for the distance along the stride axis for a stridi
   ["cut"] = {
   ["returns"] = " `\":\" &:` <-\
 ",
-  ["args"] = "places: [nearPlace: \":\", farPlace: \":\"]",
+  ["args"] = "places: :[nearPlace: \":\", farPlace: \":\"]",
   ["type"] = "function",
   ["name"] = "field.cut",
   ["description"] = "\
@@ -2401,7 +2401,7 @@ bounds` (and materials to fill and replace)",
   ["till"] = {
   ["returns"] = " `\":\" &:` <-\
 ",
-  ["args"] = "parameters: [nearPlace: \":\", farPlace: \":\", seed: \":\"]",
+  ["args"] = "parameters: :[nearPlace: \":\", farPlace: \":\", seed: \":\"]",
   ["type"] = "function",
   ["name"] = "field.till",
   ["description"] = "\
@@ -3041,9 +3041,9 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["_field.fill:_"] = {
-  ["line"] = "--:: field.fill(parameters: [nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?]) -> _Fill, Till, Replace._ -> `\":\" &:`",
+  ["line"] = "--:: field.fill(parameters: :[nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?]) -> _Fill, Till, Replace._ -> `\":\" &:`",
   ["kind"] = "face",
-  ["sign"] = "field.fill(parameters: [nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?])  ",
+  ["sign"] = "field.fill(parameters: :[nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?])  ",
   ["out"] = " `\":\" &:`",
   ["text"] = "Fill, Till, Replace.",
 }
@@ -4461,9 +4461,9 @@ Removes named place from array of places. Return new length of places table and 
 }
 ,
   ["_field.till:_"] = {
-  ["line"] = "--:: field.till(parameters: [nearPlace: \":\", farPlace: \":\", seed: \":\"]) -> _Till the seed from one place to the other._ -> `\":\" &:`",
+  ["line"] = "--:: field.till(parameters: :[nearPlace: \":\", farPlace: \":\", seed: \":\"]) -> _Till the seed from one place to the other._ -> `\":\" &:`",
   ["kind"] = "face",
-  ["sign"] = "field.till(parameters: [nearPlace: \":\", farPlace: \":\", seed: \":\"])  ",
+  ["sign"] = "field.till(parameters: :[nearPlace: \":\", farPlace: \":\", seed: \":\"])  ",
   ["out"] = " `\":\" &:`",
   ["text"] = "Till the seed from one place to the other.",
 }
@@ -4650,9 +4650,9 @@ Removes named place from array of places. Return new length of places table and 
 }
 ,
   ["__field.cut:_"] = {
-  ["line"] = "  --:: `_field.cut(places: [nearPlace: \":\", farPlace: \":\"])` -> _Use plan.quarry to cut._ -> `report: \":\" &:`",
+  ["line"] = "  --:: `_field.cut(places: :[nearPlace: \":\", farPlace: \":\"])` -> _Use plan.quarry to cut._ -> `report: \":\" &:`",
   ["kind"] = "face",
-  ["sign"] = "`_field.cut(places: [nearPlace: \":\", farPlace: \":\"])`  ",
+  ["sign"] = "`_field.cut(places: :[nearPlace: \":\", farPlace: \":\"])`  ",
   ["out"] = " `report: \":\" &:`",
   ["text"] = "Use plan.quarry to cut.",
 }

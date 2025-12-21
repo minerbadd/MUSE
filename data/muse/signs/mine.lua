@@ -91,7 +91,7 @@ function mine.op() end
 
 -- mine.post:  (markerName: ":", :bores:):  `marking[]`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias mine.post fun(markerName: string,  bores: bores):   marking[] # Navigate shaft and bores to go to marker.
+---@alias mine.post  (markerName: string,  bores: bores):  marking[] # Navigate shaft and bores to go to marker.
 
 
 -- bores.even:  `plan`

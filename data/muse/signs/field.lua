@@ -23,7 +23,7 @@ function field.extents() end
 
 
 -- fieldCommands:  `:[fieldOpName: ":", ranger: ":",  firstPlot: #:?, lastPlot: #:??]`
----@alias fieldCommands  : [ string,  string,  number?,  number?] # For CLI
+---@alias fieldCommands   [ string,  string,  number?,  number?] # For CLI
 
 
 -- _field.plans:  `{start: plan, odd: plan, even: plan, last: plan}`
@@ -32,9 +32,9 @@ function field.extents() end
 
 
 -- Fill, Till, Replace.
--- field.fill(parameters: [nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]):  `":" &:` <-
+-- field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]):  `":" &:` <-
 
----@type fun(parameters: [nearPlace: string, farPlace: string, fill: string, target: string?]):  string 
+---@type fun(parameters: [ string,  string,  string,  string?]):  string 
 function field.fill() end
 
 -- Called by plan prototype file to generate plans for plot.
@@ -71,9 +71,9 @@ function field.plot() end
 
 
 -- Quarry out blocks from one place to the other.
--- field.cut(places: [nearPlace: ":", farPlace: ":"]):  `":" &:` <-
+-- field.cut(places: :[nearPlace: ":", farPlace: ":"]):  `":" &:` <-
 
----@type fun(places: [nearPlace: string, farPlace: string]):  string 
+---@type fun(places: [ string,  string]):  string 
 function field.cut() end
 
 -- Load field files; return their `field.plot` calls
@@ -91,9 +91,9 @@ function field.make() end
 
 
 -- Till the seed from one place to the other.
--- field.till(parameters: [nearPlace: ":", farPlace: ":", seed: ":"]):  `":" &:` <-
+-- field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]):  `":" &:` <-
 
----@type fun(parameters: [nearPlace: string, farPlace: string, seed: string]):  string 
+---@type fun(parameters: [ string,  string,  string]):  string 
 function field.till() end
 
 -- Run plan, default offset {0,0,0}. Loads and executes the prototype plan (which calls `field.paths`) for each (odd, even, or last) level of a plot.
@@ -113,15 +113,15 @@ function field.plan() end
 
 
 -- Put fencing using `layer` plan.
--- field.fence(parameters: [ranger: ":", fencing: ":"?]):  `":"` <-
+-- field.fence(parameters: :[ranger: ":", fencing: ":"?]):  `":"` <-
 
----@type fun(parameters: [ranger: string, fencing: string?]):  string 
+---@type fun(parameters: [ string,  string?]):  string 
 function field.fence() end
 
 -- To `put``.
--- _field.fillTill(thePlan: ":", parameters: [nearPlace: ":", farPlace: ":", filling: ":", target: ":"?]):  `":"` <-
+-- _field.fillTill(thePlan: ":", parameters: :[nearPlace: ":", farPlace: ":", filling: ":", target: ":"?]):  `":"` <-
 
----@type fun(thePlan: string,  parameters: [nearPlace: string, farPlace: string, filling: string, target: string?]):  string 
+---@type fun(thePlan: string,  parameters: [ string,  string,  string,  string?]):  string 
 function _field.fillTill() end
 
 -- Run plans for the levels.
@@ -137,9 +137,9 @@ function _field.execute() end
 function _field.makeBounds() end
 
 -- Fly ox.
--- _field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz]):  `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing` <-
+-- _field.runElements(bounds: :[xyzStart: xyz, xyzFinish: xyz]):  `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing` <-
 
----@type fun(bounds: [xyzStart: xyz, xyzFinish: xyz]):  runs:_field.runs,  yDelta: number,  xzDelta: number,  xzEdge: facing 
+---@type fun(bounds: [ xyz,  xyz]):  runs:_field.runs,  yDelta: number,  xzDelta: number,  xzEdge: facing 
 function _field.runElements() end
 
 -- Use`layer` or `till` plan.
@@ -149,8 +149,8 @@ function _field.runElements() end
 function _field.put() end
 
 -- Use plan.quarry to cut.
--- _field.cut(places: [nearPlace: ":", farPlace: ":"]):  `report: ":" &:` <-
+-- _field.cut(places: :[nearPlace: ":", farPlace: ":"]):  `report: ":" &:` <-
 
----@type fun(places: [nearPlace: string, farPlace: string]):  report: string 
+---@type fun(places: [ string,  string]):  report: string 
 function _field.cut() end
 return { field =  field, _field = _field}

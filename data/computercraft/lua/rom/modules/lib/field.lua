@@ -178,7 +178,7 @@ The `field.paths` function might be thought of as a utility for a _plan prototyp
 --:+ _Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions._
 
 function _field.runElements(bounds) -- run elements, y delta, edge length, and edge direction for `plotPath`
-  --:: `_field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz])` -> _Fly ox._ -> `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`
+  --:: `_field.runElements(bounds: :[xyzStart: xyz, xyzFinish: xyz])` -> _Fly ox._ -> `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`
   --:> `_field.runs`: _Plans for runs at even and odd numbered levels._ -> `{oddlevel: _field.plans, evenlevel: _field.plans}`
   --:> `_field.plans`: _At each level, start, even numbered, odd numbered, last run._ -> `{start: plan, odd: plan, even: plan, last: plan}`
   local xyzstart, xyzFinish = table.unpack(bounds); 
@@ -277,7 +277,7 @@ function _field.makeBounds(nearPlace, farPlace)
 end
 
 function _field.cut(places)
-  --:: `_field.cut(places: [nearPlace: ":", farPlace: ":"])` -> _Use plan.quarry to cut._ -> `report: ":" &:`
+  --:: `_field.cut(places: :[nearPlace: ":", farPlace: ":"])` -> _Use plan.quarry to cut._ -> `report: ":" &:`
   local nearPlace, farPlace = table.unpack(places) -- ["nearPlace", "farPlace"]
   local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
   local start, finish = nearY >= farY and near or far, nearY >= farY and far or near
@@ -286,7 +286,7 @@ function _field.cut(places)
 end; 
 
 function field.cut(places) return protect(_field.cut, places) end
---:: field.cut(places: [nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`
+--:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`
 --:- cut point point -> _Quarry out blocks bound by named points (defining a rectangular solid)._
 field.hints["cut"] = {["?point "] = {["?point"] = {}}}
 
@@ -299,7 +299,7 @@ function _field.put(thePlan, start, finish, filling, target)
 end 
 
 function _field.fillTill(thePlan, parameters) 
-  --:: `_field.fillTill(thePlan: ":", parameters: [nearPlace: ":", farPlace: ":", filling: ":", target: ":"?])` -> _To `put``._ -> `":"`
+  --:: `_field.fillTill(thePlan: ":", parameters: :[nearPlace: ":", farPlace: ":", filling: ":", target: ":"?])` -> _To `put``._ -> `":"`
   local nearPlace, farPlace, filling, target = table.unpack(parameters);
   local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
   local start, finish = nearY <= farY and near or far, nearY <= farY and far or near
@@ -307,13 +307,13 @@ function _field.fillTill(thePlan, parameters)
 end
 
 function field.fill(parameters) return protect(_field.fillTill, "layer", parameters) end
---:: field.fill(parameters: [nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`
+--:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`
 --:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:` 
 --:- fill point point filling ?target -> _Layer fill bounds by points; optionally swaps out only target blocks._
 field.hints["fill"] = {["?point "] = {["?point "] = {["?filling "] = {["??target"] = {}}}}}
 
 function field.till(parameters) return protect(_field.fillTill, "till", parameters) end
---:: field.till(parameters: [nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`
+--:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`
 --:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `"minecraft:"`
 --:- till point point seed -> _Till the seed bounds by named points (defining a rectangular solid)._
 field.hints["till"] = {["?point "] = {["?point "] = {["?seed" ] = {}}}} 
@@ -334,7 +334,7 @@ local function fence(parameters)
 end; field.hints["fence"] = {["?range "] = {["??fencing"] = {}}}
 
 function field.fence(parameters) return protect(fence, parameters) end
---:: field.fence(parameters: [ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`
+--:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`
 --:- fence range [item] -> _Put item or available wooden fence from one point to another in range._
 
 return {field = field}

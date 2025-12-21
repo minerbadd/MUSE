@@ -173,7 +173,7 @@ The <code>field.paths</code> function might be thought of as a utility for a <i>
 --:+ <i>Ox plow paths minimize travel to plow a field. Flying oxen (aka turtles) do that in three dimensions.</i>
 
 function _field.runElements(bounds) -- run elements, y delta, edge length, and edge direction for <code>plotPath</code>
-  --:: <code>_field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz])</code> -> <i>Fly ox.</i> -> <code>runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing</code>
+  --:: <code>_field.runElements(bounds: :[xyzStart: xyz, xyzFinish: xyz])</code> -> <i>Fly ox.</i> -> <code>runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing</code>
   --:> <code>_field.runs</code>: <i>Plans for runs at even and odd numbered levels.</i> -> <code>{oddlevel: <i>field.plans, evenlevel: </i>field.plans}</code>
   --:> <code>_field.plans</code>: <i>At each level, start, even numbered, odd numbered, last run.</i> -> <code>{start: plan, odd: plan, even: plan, last: plan}</code>
   local xyzstart, xyzFinish = table.unpack(bounds); 
@@ -270,7 +270,7 @@ function _field.makeBounds(nearPlace, farPlace)
 end
 
 function _field.cut(places)
-  --:: <code>_field.cut(places: [nearPlace: ":", farPlace: ":"])</code> -> <i>Use plan.quarry to cut.</i> -> <code>report: ":" &:</code>
+  --:: <code>_field.cut(places: :[nearPlace: ":", farPlace: ":"])</code> -> <i>Use plan.quarry to cut.</i> -> <code>report: ":" &:</code>
   local nearPlace, farPlace = table.unpack(places) -- ["nearPlace", "farPlace"]
   local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
   local start, finish = nearY >= farY and near or far, nearY >= farY and far or near
@@ -279,7 +279,7 @@ function _field.cut(places)
 end; 
 
 function field.cut(places) return protect(_field.cut, places) end
---:: field.cut(places: [nearPlace: ":", farPlace: ":"]) -> <i>Quarry out blocks from one place to the other.</i> -> <code>":" &:</code>
+--:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> <i>Quarry out blocks from one place to the other.</i> -> <code>":" &:</code>
 --:- cut point point -> <i>Quarry out blocks bound by named points (defining a rectangular solid).</i>
 field.hints["cut"] = {["?point "] = {["?point"] = {}}}
 
@@ -292,7 +292,7 @@ function _field.put(thePlan, start, finish, filling, target)
 end 
 
 function _field.fillTill(thePlan, parameters) 
-  --:: <code>_field.fillTill(thePlan: ":", parameters: [nearPlace: ":", farPlace: ":", filling: ":", target: ":"?])</code> -> <i>To <code>put</code><code>.</i> -> </code>":"`
+  --:: <code>_field.fillTill(thePlan: ":", parameters: :[nearPlace: ":", farPlace: ":", filling: ":", target: ":"?])</code> -> <i>To <code>put</code><code>.</i> -> </code>":"`
   local nearPlace, farPlace, filling, target = table.unpack(parameters);
   local near, far, nearY, farY = _field.makeBounds(nearPlace, farPlace)
   local start, finish = nearY <= farY and near or far, nearY <= farY and far or near
@@ -300,13 +300,13 @@ function _field.fillTill(thePlan, parameters)
 end
 
 function field.fill(parameters) return protect(_field.fillTill, "layer", parameters) end
---:: field.fill(parameters: [nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> <i>Fill, Till, Replace.</i> -> <code>":" &:</code>
+--:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> <i>Fill, Till, Replace.</i> -> <code>":" &:</code>
 --:< <i>Filling and target may be one of the turtle categories or a Minecraft detail name without prefix</i> <code>minecraft:</code> 
 --:- fill point point filling ?target -> <i>Layer fill bounds by points; optionally swaps out only target blocks.</i>
 field.hints["fill"] = {["?point "] = {["?point "] = {["?filling "] = {["??target"] = {}}}}}
 
 function field.till(parameters) return protect(_field.fillTill, "till", parameters) end
---:: field.till(parameters: [nearPlace: ":", farPlace: ":", seed: ":"]) -> <i>Till the seed from one place to the other.</i> -> <code>":" &:</code>
+--:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> <i>Till the seed from one place to the other.</i> -> <code>":" &:</code>
 --:< <i>Seed may be one of the turtle categories or a Minecraft detail name without the prefix</i> <code>"minecraft:"</code>
 --:- till point point seed -> <i>Till the seed bounds by named points (defining a rectangular solid).</i>
 field.hints["till"] = {["?point "] = {["?point "] = {["?seed" ] = {}}}} 
@@ -325,7 +325,7 @@ local function fence(parameters)
 end; field.hints["fence"] = {["?range "] = {["??fencing"] = {}}}
 
 function field.fence(parameters) return protect(fence, parameters) end
---:: field.fence(parameters: [ranger: ":", fencing: ":"?]) -> <i>Put fencing using <code>layer</code> plan.</i> -> <code>":"</code>
+--:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> <i>Put fencing using <code>layer</code> plan.</i> -> <code>":"</code>
 --:- fence range [item] -> <i>Put item or available wooden fence from one point to another in range.</i>
 
 return {field = field}

@@ -7,11 +7,11 @@ local  places, place, moves, steps = {}, {}, {}, {}
 
 
 -- place:  `[name: ":", label: ":", :situations:, :features:]`
----@alias place  [name: string, label: string, :situations:, :features:] # A point, trail, or range
+---@alias place [ string,  string,  situations,  features] # A point, trail, or range
 
 
 -- cardinals:  (dx: #:, dz: #:): cardinal: ":"
----@alias cardinals fun(dx: number,  dz: number):  cardinal: string # Function to get one of the eight cardinal points of the compass
+---@alias cardinals ( dx: number,  dz: number: cardinal: ":") # Function to get one of the eight cardinal points of the compass
 
 
 -- Makes two places. Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.
@@ -35,7 +35,7 @@ function place.xyzf() end
 --  If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position). If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.
 -- place.near(span: #:?, reference?: ":"|position):  (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"` <-
 
----@type fun(span: number?,  reference?: string|position): fun():  name: string,  label: string,  xyz,  distance: number,  situations,  serial: string 
+---@type fun(span: number?,  reference?: string|position): ( : name: string),  label: string,  xyz,  distance: number,  situations,  serial: string 
 function place.near() end
 
 -- Manhattan: abs(delta x) + abs(delta y) + abs(delta z).

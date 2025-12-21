@@ -37,7 +37,7 @@ os.reboot();
 ]]
 
 function _gps.equip(direction) -- assembles computer, modem, drive, and floppy
-  --:: `_gps.equip(direction: facing])` -> _Assemble parts._ -> ":"
+  --:: `_gps.equip(direction: facing)` -> _Assemble parts._ -> ":"
   --:- equip direction -> _Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing)._
   core.report(2, "Equipping host at ", move.ats(), direction)
   move.back(1) -- because positions are computer positions

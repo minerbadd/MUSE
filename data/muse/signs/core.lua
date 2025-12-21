@@ -148,7 +148,7 @@ function core.round() end
 
 
 -- closing:  `(value: any): value: any`
----@alias closing fun(value: any):  value: any # Returns value or sets it and optional table entry to non `nil` `value`.
+---@alias closing ( value: any: value: any) # Returns value or sets it and optional table entry to non `nil` `value`.
 
 
 -- Deep copy source table or return source if not table.

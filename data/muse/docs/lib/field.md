@@ -54,22 +54,22 @@
 
 --:# **Cut, fill, till, and traverse points defining rectangular volumes** using `field.plan` to optimize traversal.  
 
---:: field.cut(places: [nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`  
+--:: field.cut(places: :[nearPlace: ":", farPlace: ":"]) -> _Quarry out blocks from one place to the other._ -> `":" &:`  
 
 --:- cut point point -> _Quarry out blocks bound by named points (defining a rectangular solid)._  
 
---:: field.fill(parameters: [nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`  
+--:: field.fill(parameters: :[nearPlace: ":", farPlace: ":", fill: ":", target: ":"?]) -> _Fill, Till, Replace._ -> `":" &:`  
 
 --:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:`   
 
 --:- fill point point filling ?target -> _Layer fill bounds by points; optionally swaps out only target blocks._  
 
---:: field.till(parameters: [nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`  
+--:: field.till(parameters: :[nearPlace: ":", farPlace: ":", seed: ":"]) -> _Till the seed from one place to the other._ -> `":" &:`  
 
 --:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `"minecraft:"`  
 
 --:- till point point seed -> _Till the seed bounds by named points (defining a rectangular solid)._  
 
---:: field.fence(parameters: [ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`  
+--:: field.fence(parameters: :[ranger: ":", fencing: ":"?]) -> _Put fencing using `layer` plan._ -> `":"`  
 
 --:- fence range [item] -> _Put item or available wooden fence from one point to another in range._  

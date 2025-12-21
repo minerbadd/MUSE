@@ -14,7 +14,7 @@ local  planner, plan, moves, steps = {}, {}, {}, {}
 function planner.mark() end
 
 -- markElement:  `[op: "mark", :marking:]`
----@alias markElement  [op: "mark", marking: marking] # Current situation in named places
+---@alias markElement [ "mark",  marking] # Current situation in named places
 
 
 -- putElement:  `:[op: "put", direction: ":", fixture: ":"]`
@@ -27,7 +27,7 @@ function planner.mark() end
 
 -- plan.work:  `(:plan:, direction: ":"): ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias plan.work fun(plan: plan,  direction: string):  string? # for execution at every_ `step` _iteration in plan movement direction
+---@alias plan.work ( plan: plan,  direction: string: string?) # for execution at every_ `step` _iteration in plan movement direction
 
 
 -- plan.name:  `":"`
@@ -70,6 +70,6 @@ function planner.load() end
 
 -- plan.mark:  `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias plan.mark fun(plan: plan,  marking: marking):  markerName: string,  label: string,  report: string # for execution as specified by_ `plan.path` _markers
+---@alias plan.mark ( plan: plan,  :marking:: markerName: string),  label: string,  report: string # for execution as specified by_ `plan.path` _markers
 
 return { planner =  planner, plan = plan, moves = moves, steps = steps}

@@ -11,7 +11,7 @@ local  motion, move, step = {}, {}, {}
 
 
 -- stepping:  `(): "done", remaining: #:, xyzf, direction &!recovery`
----@alias stepping fun():  "done",  remaining: number,  xyzf,  direction  # Iterator (default 1 step)
+---@alias stepping ( : "done"),  remaining: number,  xyzf,  direction  # Iterator (default 1 step)
 
 
 -- situation.level:  `"same"|"rise"|"fall"`
@@ -165,7 +165,7 @@ function move.get() end
 -- Iterator (default 1 step)
 -- step.right(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.right() end
 
 -- Step to position from (current) sItuation. Iterate first in x direction to completion, then z, and finally y. Once complete, each iterator is exhausted. Finally turn to face if supplied. Returned iterator returns_ `nil` _when iterators for all directions are exhausted.
@@ -177,54 +177,54 @@ function step.to() end
 -- Iterator (default 1 step)
 -- step.south(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.south() end
 
 -- Iterator (default 1 step)
 -- step.east(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.east() end
 
 -- Iterator (default 1 step)
 -- step.down(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.down() end
 
 -- Iterator (default 1 step)
 -- step.steps(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.steps() end
 
 -- Iterator (default 1 step)
 -- step.left(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.left() end
 
 -- Iterator (default 1 step)
 -- step.back(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.back() end
 
 -- Iterator (default 1 step)
 -- step.forward(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.forward() end
 
 -- Iterator (default 1 step)
 -- step.north(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.north() end
 
 -- Iterator (default 1 step)
 -- step.up(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
----@type fun(count: number?): fun():  "done",  remaining: number,  xyzf,  direction 
+---@type fun(count: number?): ( : "done"),  remaining: number,  xyzf,  direction 
 function step.up() end
 return { motion =  motion, move = move, step = step}
