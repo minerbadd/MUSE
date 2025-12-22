@@ -503,7 +503,7 @@ The bindings for movement operations such as <code>move.west</code> and <code>mo
 The <code>stepTo</code> function uses iterators created by <code>stepCount</code> to create a composite iterator.
 <pre><code class="language-lua">
 function step.to(xyzf, situation) -- iterator closure returns nil only if all directions done
---:: step.to(:xyzf:, situation:situation?) -> <i>Step to position from (current) sItuation.</i> -> (<code>:): nil &!recovery</code>
+--:: step.to(:xyzf:, situation:situation?) -> <i>Step to position from (current) sItuation.</i> -> <code>(): nil &!recovery</code>
 --:+ <i>Iterate first in x direction to completion, then z, and finally y. Once complete, each iterator is exhausted.</i>
 --:+ <i>Finally turn to face if supplied. Returned iterator returns</i> <code>nil</code> <i>when iterators for all directions are exhausted.</i>
   if not xyzf then error("motion.step.to: attempt to step to nil (road unpaved)") end

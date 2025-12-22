@@ -2553,7 +2553,7 @@ Iterator (default 1 step)",
 }
 ,
   ["to"] = {
-  ["returns"] = " (`:): nil &!recovery` <-\
+  ["returns"] = " `(): nil &!recovery` <-\
 ",
   ["args"] = ":xyzf:, situation:situation?",
   ["type"] = "function",
@@ -2926,10 +2926,10 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["_place.nearby:_"] = {
-  ["line"] = "--:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]",
+  ["line"] = "--:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]`",
   ["kind"] = "face",
   ["sign"] = "place.nearby(:xyzf:?, :cardinals:)  ",
-  ["out"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]",
+  ["out"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]`",
   ["text"] = "Sorted",
 }
 ,
@@ -3017,10 +3017,10 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["_step.to:_"] = {
-  ["line"] = "--:: step.to(:xyzf:, situation:situation?) -> _Step to position from (current) sItuation._ -> (`:): nil &!recovery`",
+  ["line"] = "--:: step.to(:xyzf:, situation:situation?) -> _Step to position from (current) sItuation._ -> `(): nil &!recovery`",
   ["kind"] = "face",
   ["sign"] = "step.to(:xyzf:, situation:situation?)  ",
-  ["out"] = " (`:): nil &!recovery`",
+  ["out"] = " `(): nil &!recovery`",
   ["text"] = "Step to position from (current) sItuation.",
 }
 ,
@@ -4338,7 +4338,7 @@ Returns trail",
 }
 ,
   ["nearby"] = {
-  ["returns"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:] <-\
+  ["returns"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]` <-\
 ",
   ["args"] = ":xyzf:?, :cardinals:",
   ["type"] = "function",

@@ -111,7 +111,7 @@
 --:: move.to(xyzf: xyzf, first: ":"?) -> <i>Current situation to x, z, y, and optionally face.</i> -> <code>"done", #:, xyzf &!recovery</code>     
 --:+ <i>Optional argument</i> <code>first</code> <i>is "x", "y", or "z" to select first move in that direction to deal with blockages.</i>  
 
---:: step.to(:xyzf:, situation:situation?) -> <i>Step to position from (current) sItuation.</i> -> (<code>:): nil &!recovery</code>    
+--:: step.to(:xyzf:, situation:situation?) -> <i>Step to position from (current) sItuation.</i> -> <code>(): nil &!recovery</code>    
 --:+ <i>Iterate first in x direction to completion, then z, and finally y. Once complete, each iterator is exhausted.</i>    
 --:+ <i>Finally turn to face if supplied. Returned iterator returns</i> <code>nil</code> <i>when iterators for all directions are exhausted.</i>  
 

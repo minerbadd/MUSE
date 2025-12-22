@@ -534,7 +534,7 @@ The `stepTo` function uses iterators created by `stepCount` to create a composit
 ```Lua
 --]]
 function step.to(xyzf, situation) -- iterator closure returns nil only if all directions done
---:: step.to(:xyzf:, situation:situation?) -> _Step to position from (current) sItuation._ -> (`:): nil &!recovery`
+--:: step.to(:xyzf:, situation:situation?) -> _Step to position from (current) sItuation._ -> `(): nil &!recovery`
 --:+ _Iterate first in x direction to completion, then z, and finally y. Once complete, each iterator is exhausted._
 --:+ _Finally turn to face if supplied. Returned iterator returns_ `nil` _when iterators for all directions are exhausted._
   if not xyzf then error("motion.step.to: attempt to step to nil (road unpaved)") end

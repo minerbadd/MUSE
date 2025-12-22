@@ -169,9 +169,9 @@ function move.get() end
 function step.right() end
 
 -- Step to position from (current) sItuation. Iterate first in x direction to completion, then z, and finally y. Once complete, each iterator is exhausted. Finally turn to face if supplied. Returned iterator returns_ `nil` _when iterators for all directions are exhausted.
--- step.to(:xyzf:, situation:situation?):  (`:): nil &!recovery` <-
+-- step.to(:xyzf:, situation:situation?):  `(): nil &!recovery` <-
 
----@type fun(xyzf: xyzf,  situation:situation?):  function: nil 
+---@type fun(xyzf: xyzf,  situation:situation?): fun():  nil 
 function step.to() end
 
 -- Iterator (default 1 step)

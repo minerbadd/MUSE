@@ -11,6 +11,6 @@ function check.tests() end
 -- Return object(closure)
 -- check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":"):  `{part:(:), close:(:)}` <-
 
----@type fun(theTestSetTablePath:string,  theTestSetName:string,  theTestName:string):  {part:function,  close:function} 
+---@type fun(theTestSetTablePath:string,  theTestSetName:string,  theTestName:string): {part:function,  close:function}
 function check.open() end
 return { check =  check}

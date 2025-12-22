@@ -81,7 +81,7 @@ function place.qualify() end
 function place.add() end
 
 -- Sorted
--- place.nearby(:xyzf:?, :cardinals:):  `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:] <-
+-- place.nearby(:xyzf:?, :cardinals:):  `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]` <-
 
 ---@type fun(xyzf: xyzf?,  cardinals: cardinals): [ number,  string,  string,  string,  xyzf]
 function place.nearby() end

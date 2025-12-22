@@ -164,8 +164,8 @@ _anonymous function_</a> that specifies how the sort is to be done.</li>
 </ul></br>
 ```Lua
 --]]
-function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing cardinals argument
---:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]
+function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing cardinals argumen
+--:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]`
 --:> cardinals: _Function to get one of the eight cardinal points of the compass_ -> (dx: #:, dz: #:): cardinal: ":"
 --:+ _Nearest places to specified xyzf coordinates or current position (as default)._ 
 --:+ _Returned table is sorted by distances and includes the name, label, and xyzf position of each place._
