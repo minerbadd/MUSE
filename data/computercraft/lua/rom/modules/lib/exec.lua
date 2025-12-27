@@ -1,7 +1,7 @@
 --[[
 ## Exec: Command Computer Operations CLL: ComputerCraft Position and Chunk Activation
 ```md
---:! {exec: (:)[]} <- **Command Computer Command Line Library** -> muse/docs/lib/exec.md
+--:! {exec: [":"]: ():} <- **Command Computer Command Line Library** -> muse/docs/lib/exec.md
 --:| exec: _CLL to align MUSE location with Minecraft coordinates and activate a range as a Minecraft chunk._ -> exec
 ```
 The `exec` library provides CLL support for a couple of commands that make it easier to setup and operate a MUSE environment. They count on a command computer enabled for use outside Minecraft's creative mode.

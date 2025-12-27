@@ -1,7 +1,7 @@
 
 
 local tokens = {
-  ['":'] = "string", ["(:)"] = "function", ["{:}"] = "table", ["::"] = "any", ["_:"] = "any", 
+  ['":'] = "string", ["():"] = "function", ["{:}"] = "table", ["::"] = "any", ["_:"] = "any", 
   ["#:"] = "number", ["^:"] = "boolean", ["@:"] = "userdata", -- [""] = "", [""] = "", [""] = "", [""] = "", 
 }
 --[[

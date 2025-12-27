@@ -1,7 +1,7 @@
 --[[
 ## Global Positioning System Launch: lib/gps
 ```md
---:! [gps: [":"](:)] <- **GPS Deployment Command Line Library** -> muse/docs/lib/gps.md 
+--:! {gps: [":"]():} <- **GPS Deployment Command Line Library** -> muse/docs/lib/gps.md 
 --:| gps: _Assemble, launch, and startup GPS computers._ -> gps, _gps
 ```
 The module introduction here is much like that for other MUSE modules but note the special handling for out-of-game testing.

@@ -1,4 +1,4 @@
---:! [net: [":"]: (:) ] <- **Net Remote Command Library** -> muse/docs/lib/net.md      
+--:! {net: [":"]: ():} <- **Net Remote Command Library** -> muse/docs/lib/net.md      
 --:| net: _Command Line Library providing turtle operations used by remote library (effectively the UI for Muse)._ -> net  
 
 --:# _Remote commands for turtles need prefixing by `farmer`, `miner`, `logger`,`porter`,  or `rover` roles._  

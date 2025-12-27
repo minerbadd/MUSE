@@ -9,7 +9,7 @@
 
 <h2>Work Functions for Navigation and Mining Grid Plans: lib/grid</h2>
 <pre><code class="language-markdown">
---:! [grid: [":"]: (:)] <- <b>Grid Mining Functions Library</b> -> muse/docs/lib/grid.md  
+--:! {grid: [":"]: ():} <- <b>Grid Mining Functions Library</b> -> muse/docs/lib/grid.md  
 --:| grid: <i>Work functions boring, navigating, and mining ore in a grid of tunnels.</i> -> grid
 </code></pre>
 The <code>grid</code> library provides the <i>how</i> extending mining plans run by the <code>lib/mine</code> CLL. It provides the means for <code>worker.execute</code> to navigate, bore, and mine a grid of tunnels at some level in a mine. There are three bored access tunnels: an <code>inner</code> one to the shaft and two <code>outer</code> ones at the edges of the bored area. Ores are mined in tunnels perpendicular to these.

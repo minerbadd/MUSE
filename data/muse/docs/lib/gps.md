@@ -1,4 +1,4 @@
---:! [gps: [":"](:)] <- **GPS Deployment Command Line Library** -> muse/docs/lib/gps.md     
+--:! {gps: [":"]():} <- **GPS Deployment Command Line Library** -> muse/docs/lib/gps.md     
 --:| gps: _Assemble, launch, and startup GPS computers._ -> gps, _gps  
 
 --:- equip direction -> _Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing)._  

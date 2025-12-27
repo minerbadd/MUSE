@@ -1,4 +1,4 @@
---:! [field: [":"](:)] <- **Field Functions Library: Produce and Execute Field Plans** -> muse/docs/lib/field.md      
+--:! {field: [":"]():} <- **Field Functions Library: Produce and Execute Field Plans** -> muse/docs/lib/field.md      
 --:| field: _Fields are rectangular solids defined by a range (a `situation` pair with `fields` keyed properties)._ -> field, _field    
 --:+ _Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations._  
 
@@ -14,7 +14,7 @@
 --:+ _The `fields` entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name._    
 --:+ _With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified._  
 
---:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> _Plots_ -> `report: ":" &: &!`    
+--:: field.plot(commands: field.plotSpan, fieldsOp: ():, fieldOpName: ":", plots: #:, offset: xyz?) -> _Plots_ -> `report: ":" &: &!`    
 --:+ _Called by field files. Calls `fieldsOp` from field file (which calls `field.plan`)._  
 
 --:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ `[_:, _:, first: #:?, last: #:??]`  

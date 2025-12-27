@@ -9,7 +9,7 @@
 
 <h2> Core: A Collection of Generally Useful Functions for MUSE</h2>
 <pre><code class="language-markdown">
---:! {core: (:)[]} <- <b>Core Functions Library</b> -> muse/docs/lib/core.md
+--:! {core:[":"]: ():} <- <b>Core Functions Library</b> -> muse/docs/lib/core.md
 --:| core: <i>Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support.</i> -> core
 </code></pre>
 <pre><code class="language-lua">
@@ -281,7 +281,7 @@ local function complete(current, commands, completions)
   end; return results
 end
 
-function core.completer(completions) --:: core.completer(completions: {:}) -> <i>Register command completions for shell</i> -> <code>(:)</code>
+function core.completer(completions) --:: core.completer(completions: {:}) -> <i>Register command completions for shell</i> -> <code>():</code>
   return function(_, _, current, commands) return complete(current, commands, completions) end
 end
 
@@ -376,7 +376,7 @@ local function iter(a, i)
   i = i + 1; local v = a[i]; if v then return i, v end
 end
 
---:: core.inext(table: {:}, index: #:) -> <i>Iterator over table beginning at index.</i> -> <code>(:), {:}, #:</code>
+--:: core.inext(table: {:}, index: #:) -> <i>Iterator over table beginning at index.</i> -> <code>():, {:}, #:</code>
 function core.inext(table, index)
   index = index or 0; return iter, table, index
 end
@@ -396,20 +396,20 @@ local function permgen(array, n)
 end
 
 function core.permute(array) -- return iterator for (factorial) permutations
-  --:: core.permute(array: any[]) -> <i>Iterator for permutations of array</i> -> <code>(:)</code>
+  --:: core.permute(array: any[]) -> <i>Iterator for permutations of array</i> -> <code>():</code>
   return coroutine.wrap(function() permgen(array, #array) end)
 end
 
 function core.map(op, table) 
   --:# <a href="https://en.wikipedia.org/wiki/Map<i>(higher-order</i>function)" target="_blank">On Map</a>
-  --:: core.map(op: (:), table: {:}) -> <i>Create</i> <code>result</code> <i>by applying</i> <code>op</code> <i>function to elements of</i> <code>table</code> -> <code>{:}</code>
+  --:: core.map(op: ():, table: {:}) -> <i>Create</i> <code>result</code> <i>by applying</i> <code>op</code> <i>function to elements of</i> <code>table</code> -> <code>{:}</code>
   local result = {}; for index, element in pairs(table) do result[index] = op(element) end
   return result
 end
 
 function core.reduce(op, initial, table) 
   --:#<a href="https://dgr.github.io/clojurecrazy/2022/01/09/reduce-my-favorite-clojure-function.html" target="_blank">On Fold</a>
-  --:: core.reduce(op: (:), initial: any, table: {:}) -> <i>Fold</i> <code>table</code> <i>to produce</i> <code>result</code> <i>by applying</i> <code>op</code> <i>to</i> <code>table</code> -> <code>any</code>
+  --:: core.reduce(op: ():, initial: any, table: {:}) -> <i>Fold</i> <code>table</code> <i>to produce</i> <code>result</code> <i>by applying</i> <code>op</code> <i>to</i> <code>table</code> -> <code>any</code>
   local result = initial; for _, item in ipairs(table) do result = op(result, item) end
   return result
 end

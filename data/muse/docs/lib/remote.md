@@ -1,4 +1,4 @@
---:! [remote: [":"]: (:) ] <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md      
+--:! {remote: [":"]: ():} <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md      
 --:| remote: _Client and server side support for RPCs and client (player) side support for_ `come` _and_ `tail`. -> remote, _remote    
 --:+ **Test functions are provided for out-of-game, no network operation.**  
 
@@ -8,7 +8,7 @@
 
 --:# **Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)**  
 
---:: remote.call(server: ":", command: ":", arguments: any[], callback: (:)?) -> _RPC:_ -> `any &: &!`    
+--:: remote.call(server: ":", command: ":", arguments: any[], callback: ():?) -> _RPC:_ -> `any &: &!`    
 --:+ _Form serialized request table from command string and arguments. Get server ID from server name._    
 --:+ _Send request to server, wait for result, return call (default `remote.return`) callback function to result._  
 

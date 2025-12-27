@@ -6,7 +6,7 @@
 <body>
 <pre>
 
---:! [field: [":"](:)] <- <b>Field Functions Library: Produce and Execute Field Plans</b> -> muse/docs/lib/field.md      
+--:! {field: [":"]():} <- <b>Field Functions Library: Produce and Execute Field Plans</b> -> muse/docs/lib/field.md      
 --:| field: <i>Fields are rectangular solids defined by a range (a <code>situation</code> pair with <code>fields</code> keyed properties).</i> -> field, _field    
 --:+ <i>Fields are made up of plots, each plot at least small enough to deal with turtle inventory limitations.</i>  
 
@@ -22,7 +22,7 @@
 --:+ <i>The <code>fields</code> entry in that dictionary is itself a dictionary, keyed by the farm's field name to specify its range name.</i>    
 --:+ <i>With the proper range name in hand, either directly as above, or from the farm, the field file to load is specified.</i>  
 
---:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: ":", plots: #:, offset: xyz?) -> <i>Plots</i> -> <code>report: ":" &: &!</code>    
+--:: field.plot(commands: field.plotSpan, fieldsOp: ():, fieldOpName: ":", plots: #:, offset: xyz?) -> <i>Plots</i> -> <code>report: ":" &: &!</code>    
 --:+ <i>Called by field files. Calls <code>fieldsOp</code> from field file (which calls <code>field.plan</code>).</i>  
 
 --:> field.plotSpan: <i><code>{}</code> spans all plots; if only first, default plots after first -></i> <code>[:_, :_, first: #:?, last: #:??]</code>  

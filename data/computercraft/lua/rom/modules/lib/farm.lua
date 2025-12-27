@@ -1,7 +1,7 @@
 --[[ 
 ## Turtle Work Functions and Documentation for Preparing, Planting, Harvesting Fields: lib/farm
 ```md
---:! [farm: [":"](:)] <- **Turtle Work Functions Support Library** -> muse/docs/lib/farm.md  
+--:! {farm:[":"]: ():} <- **Turtle Work Functions Support Library** -> muse/docs/lib/farm.md  
 --:| farm: _Planting through blockages and in several directions. Putting item and replacing blocks._-> farm
 --:> farmOpName: _Specifies operation on field_ -> `"quarry"|"layer"|"cover"|"finish"|"fence"|"harvest"|"path"|"test"`
 ```Lua

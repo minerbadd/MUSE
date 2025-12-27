@@ -1,7 +1,7 @@
 --[[
 ## MUSE Distributed Discovery Service: lib/dds
 ```md
---:! [dds: [":"]: (:)] <- **In-game (only) MUSE Discovery Service Library** -> muse/docs/lib/dds.md  
+--:! {dds: [":"]: ():} <- **In-game (only) MUSE Discovery Service Library** -> muse/docs/lib/dds.md  
 --:| dds: _Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet protocol._ -> dds
 ```
 This module provides a library handling the mapping of numbers (ComputerCraft computer IDs) to names (ComputerCraft computer labels standing in for MUSE roles) with `dds.role` and back again with `dds.roleID`. These are filled in in-game by a call to `lib/dds.hosts` during session startup by running <a href="../.start.html#dds" target="_blank"> `.start.lua` </a>. 

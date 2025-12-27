@@ -1,4 +1,4 @@
---:! [move: [":"]: (:), step: [":"]: (:) ] <- **Move and Step Function Libraries** -> muse/docs/lib/motion.md      
+--:! {move: [":"]: ():, step: [":"]: ():} <- **Move and Step Function Libraries** -> muse/docs/lib/motion.md      
 --:| motion: _Libraries to move turtles and move turtles by steps allowing operations at each step._ -> motion, move, step    
 --:+ move: **Position setting, tracking, and reporting by dead reckoning checked by fuel consumption.**      
 --:+ step: **Iterators (closures) for moving block by block, potentially doing operations at each block.**  

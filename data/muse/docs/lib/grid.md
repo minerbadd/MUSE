@@ -1,4 +1,4 @@
---:! [grid: [":"]: (:)] <- **Grid Mining Functions Library** -> muse/docs/lib/grid.md      
+--:! {grid: [":"]: ():} <- **Grid Mining Functions Library** -> muse/docs/lib/grid.md      
 --:| grid: _Work functions boring, navigating, and mining ore in a grid of tunnels._ -> grid  
 
 --:# **Navigation for grids:  use placed markers to find posts for turtles.**    

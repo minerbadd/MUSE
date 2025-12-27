@@ -1,7 +1,7 @@
 --[[
 ## Mock Turtle and Command Computer Simulation for Out-of-Game Debug: `lib/mock` 
 ```md
---:! [ turtle: [":"]: (:), commands: [":"]: (:) ] <- **Mock Functions Library** (for out-of-game test) -> muse/docs//lib/mock.md 
+--:! {turtle: [":"]: ():, commands: [":"]: ():} <- **Mock Functions Library** (for out-of-game test) -> muse/docs//lib/mock.md 
 --:| mock: _Libraries to provide a limited simulation of turtle and command computer in-game operations._ -> mock
 --:+ turtle: _Generally just returns success but allows for simulated blocking, fuel consumption, refueling._  
 --:+ commands: _Mock returns from command computer and report success._

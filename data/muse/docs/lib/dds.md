@@ -1,4 +1,4 @@
---:! [dds: [":"]: (:)] <- **In-game (only) MUSE Discovery Service Library** -> muse/docs/lib/dds.md      
+--:! {dds: [":"]: ():} <- **In-game (only) MUSE Discovery Service Library** -> muse/docs/lib/dds.md      
 --:| dds: _Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet protocol._ -> dds  
 
 --:> IDs: _Dictionary of ComputerCraft computer IDs keyed by MUSE role_ -> `[role]: ID`  

@@ -1,7 +1,7 @@
 --[[
 ## Remote Procedure Calls, RPCs: lib/remote, Client Side `come` and `tail`
 ```md
---:! [remote: [":"]: (:) ] <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md  
+--:! {remote: [":"]: ():} <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md  
 --:| remote: _Client and server side support for RPCs and client (player) side support for_ `come` _and_ `tail`. -> remote, _remote
 --:+ **Test functions are provided for out-of-game, no network operation.**
 
@@ -87,7 +87,7 @@ Back on the client that called for the RPC, the `clientResult` and `clientReceiv
 --]]
 --:# **Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)**
 function _remote.clientResult(serverID, resultString, callback) -- test as `remote.testResult`
-  --:: `_remote.clientResult(serverID: #:, resultString: ":", callback: (:))` -> _Apply callback to deserialized client result._ -> `any`
+  --:: `_remote.clientResult(serverID: #:, resultString: ":", callback: ():)` -> _Apply callback to deserialized client result._ -> `any`
   core.status(3, "remote", "MR Client", resultString, "from", dds.role(serverID)) -- on player
   local resultFunction, resultError = load(resultString) -- unserialized for execution
   if resultFunction then local result = resultFunction(); return callback(result) end -- specified by caller of `remote.call` 
@@ -139,7 +139,7 @@ The `remote.returns` function is the default `callback` function handling the re
 ```Lua
 --]]
 function remote.call(server, command, arguments, callback) -- client command line: command, arguments
-  --:: remote.call(server: ":", command: ":", arguments: any[], callback: (:)?) -> _RPC:_ -> `any &: &!`
+  --:: remote.call(server: ":", command: ":", arguments: any[], callback: ():?) -> _RPC:_ -> `any &: &!`
   --:+ _Form serialized request table from command string and arguments. Get server ID from server name._
   --:+ _Send request to server, wait for result, return call (default `remote.return`) callback function to result._
   callback = callback or remote.returns -- a default (see below) if no `callback` argument

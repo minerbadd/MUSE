@@ -27,7 +27,7 @@ local function perm(array, n) -- adapted from https://www.lua.org/pil/9.3.html
 end
 
 local function permute(array) -- return iterator for (factorial) permutations
-  --:: core.permute(array: any[]) -> `(:)`
+  --:: core.permute(array: any[]) -> `():`
   return coroutine.wrap(function() perm(array, #array) end)
 end
 

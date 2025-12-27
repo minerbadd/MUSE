@@ -51,7 +51,7 @@ Assemble, launch, and startup GPS computers._ -> gps, _gps",
   ["doTask"] = {
   ["returns"] = " \":\" &!` <-\
 ",
-  ["args"] = "arguments: _task.puts, op: (:), clear: ^:, fill: \":\"?, targets: \":\"[]?",
+  ["args"] = "arguments: _task.puts, op: ():, clear: ^:, fill: \":\"?, targets: \":\"[]?",
   ["type"] = "function",
   ["name"] = "_task.doTask",
   ["description"] = "\
@@ -391,10 +391,10 @@ Orientation and position reporting, broadcast and persistence of places_ -> map"
 }
 ,
   ["_core.permute:_"] = {
-  ["line"] = "  --:: core.permute(array: any[]) -> _Iterator for permutations of array_ -> `(:)`",
+  ["line"] = "  --:: core.permute(array: any[]) -> _Iterator for permutations of array_ -> `():`",
   ["kind"] = "face",
   ["sign"] = "core.permute(array: any[])  ",
-  ["out"] = " `(:)`",
+  ["out"] = " `():`",
   ["text"] = "Iterator for permutations of array",
 }
 ,
@@ -749,10 +749,10 @@ CLL operates plan to manage mines: shaft, bore, move to posts (between and withi
 }
 ,
   ["_core.completer:_"] = {
-  ["line"] = "function core.completer(completions) --:: core.completer(completions: {:}) -> _Register command completions for shell_ -> `(:)`",
+  ["line"] = "function core.completer(completions) --:: core.completer(completions: {:}) -> _Register command completions for shell_ -> `():`",
   ["kind"] = "face",
   ["sign"] = "core.completer(completions: {:})  ",
-  ["out"] = " `(:)`",
+  ["out"] = " `():`",
   ["text"] = "Register command completions for shell",
 }
 ,
@@ -916,7 +916,7 @@ Repeatedly towards player position, default rate _G.Muse.rates.tail seconds",
   ["call"] = {
   ["returns"] = " `any &: &!` <-\
 ",
-  ["args"] = "server: \":\", command: \":\", arguments: any[], callback: (:)?",
+  ["args"] = "server: \":\", command: \":\", arguments: any[], callback: ():?",
   ["type"] = "function",
   ["name"] = "remote.call",
   ["description"] = "\
@@ -1780,9 +1780,9 @@ CLL for `book` and `port` commands assessing and clearing player inventory for s
 }
 ,
   ["__task.doTask:_"] = {
-  ["line"] = "  --:: `_task.doTask(arguments: _task.puts, op: (:), clear: ^:, fill: \":\"?, targets: \":\"[]?)`-> _Tasks_ -> \":\" &!`",
+  ["line"] = "  --:: `_task.doTask(arguments: _task.puts, op: ():, clear: ^:, fill: \":\"?, targets: \":\"[]?)`-> _Tasks_ -> \":\" &!`",
   ["out"] = " \":\" &!`",
-  ["sign"] = "`_task.doTask(arguments: _task.puts, op: (:), clear: ^:, fill: \":\"?, targets: \":\"[]?)` ",
+  ["sign"] = "`_task.doTask(arguments: _task.puts, op: ():, clear: ^:, fill: \":\"?, targets: \":\"[]?)` ",
   ["kind"] = "face",
   ["text"] = "Tasks",
 }
@@ -1842,8 +1842,8 @@ CLL for `book` and `port` commands assessing and clearing player inventory for s
 }
 ,
   ["_check.open:_"] = {
-  ["line"] = "  --:: check.open(theTestSetTablePath:\":\", theTestSetName:\":\", theTestName:\":\") -> _Return object(closure)_ -> `{part:(:), close:(:)}`",
-  ["out"] = " `{part:(:), close:(:)}`",
+  ["line"] = "  --:: check.open(theTestSetTablePath:\":\", theTestSetName:\":\", theTestName:\":\") -> _Return object(closure)_ -> `{part:():, close:():}`",
+  ["out"] = " `{part:():, close:():}`",
   ["sign"] = "check.open(theTestSetTablePath:\":\", theTestSetName:\":\", theTestName:\":\")  ",
   ["kind"] = "face",
   ["text"] = "Return object(closure)",
@@ -2077,9 +2077,9 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["_core.map:_"] = {
-  ["line"] = "  --:: core.map(op: (:), table: {:}) -> _Create_ `result` _by applying_ `op` _function to elements of_ `table` -> `{:}`",
+  ["line"] = "  --:: core.map(op: ():, table: {:}) -> _Create_ `result` _by applying_ `op` _function to elements of_ `table` -> `{:}`",
   ["kind"] = "face",
-  ["sign"] = "core.map(op: (:), table: {:})  ",
+  ["sign"] = "core.map(op: ():, table: {:})  ",
   ["out"] = " `{:}`",
   ["text"] = "Create `result` _by applying_ `op` _function to elements of_ `table",
 }
@@ -2383,7 +2383,7 @@ Load field files; return their `field.plot` calls",
   ["plot"] = {
   ["returns"] = " `report: \":\" &: &!` <-\
 ",
-  ["args"] = "commands: field.plotSpan, fieldsOp: (:), fieldOpName: \":\", plots: #:, offset: xyz?",
+  ["args"] = "commands: field.plotSpan, fieldsOp: ():, fieldOpName: \":\", plots: #:, offset: xyz?",
   ["type"] = "function",
   ["name"] = "field.plot",
   ["description"] = "\
@@ -2906,7 +2906,7 @@ Return ordered test names for regression.",
 }
 ,
   ["open"] = {
-  ["returns"] = " `{part:(:), close:(:)}` <-\
+  ["returns"] = " `{part:():, close:():}` <-\
 ",
   ["args"] = "theTestSetTablePath:\":\", theTestSetName:\":\", theTestName:\":\"",
   ["type"] = "function",
@@ -2934,9 +2934,9 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["_field.plot:_"] = {
-  ["line"] = "--:: field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: \":\", plots: #:, offset: xyz?) -> _Plots_ -> `report: \":\" &: &!`",
+  ["line"] = "--:: field.plot(commands: field.plotSpan, fieldsOp: ():, fieldOpName: \":\", plots: #:, offset: xyz?) -> _Plots_ -> `report: \":\" &: &!`",
   ["kind"] = "face",
-  ["sign"] = "field.plot(commands: field.plotSpan, fieldsOp: (:), fieldOpName: \":\", plots: #:, offset: xyz?)  ",
+  ["sign"] = "field.plot(commands: field.plotSpan, fieldsOp: ():, fieldOpName: \":\", plots: #:, offset: xyz?)  ",
   ["out"] = " `report: \":\" &: &!`",
   ["text"] = "Plots",
 }
@@ -3033,9 +3033,9 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["_core.reduce:_"] = {
-  ["line"] = "  --:: core.reduce(op: (:), initial: any, table: {:}) -> _Fold_ `table` _to produce_ `result` _by applying_ `op` _to_ `table` -> `any`",
+  ["line"] = "  --:: core.reduce(op: ():, initial: any, table: {:}) -> _Fold_ `table` _to produce_ `result` _by applying_ `op` _to_ `table` -> `any`",
   ["kind"] = "face",
-  ["sign"] = "core.reduce(op: (:), initial: any, table: {:})  ",
+  ["sign"] = "core.reduce(op: ():, initial: any, table: {:})  ",
   ["out"] = " `any`",
   ["text"] = "Fold `table` _to produce_ `result` _by applying_ `op` _to_ `table",
 }
@@ -3143,9 +3143,9 @@ Setup context, save and match expected results for parts of tests, run regressio
 }
 ,
   ["__remote.clientResult:_"] = {
-  ["line"] = "  --:: `_remote.clientResult(serverID: #:, resultString: \":\", callback: (:))` -> _Apply callback to deserialized client result._ -> `any`",
+  ["line"] = "  --:: `_remote.clientResult(serverID: #:, resultString: \":\", callback: ():)` -> _Apply callback to deserialized client result._ -> `any`",
   ["out"] = " `any`",
-  ["sign"] = "`_remote.clientResult(serverID: #:, resultString: \":\", callback: (:))`  ",
+  ["sign"] = "`_remote.clientResult(serverID: #:, resultString: \":\", callback: ():)`  ",
   ["kind"] = "face",
   ["text"] = "Apply callback to deserialized client result.",
 }
@@ -3497,7 +3497,7 @@ Selects found slot.",
 }
 ,
   ["inext"] = {
-  ["returns"] = " `(:), {:}, #:` <-\
+  ["returns"] = " `():, {:}, #:` <-\
 ",
   ["args"] = "table: {:}, index: #:",
   ["type"] = "function",
@@ -3565,7 +3565,7 @@ Three dimensional rotation Turn from up north to face, default for no face is to
   ["reduce"] = {
   ["returns"] = " `any` <-\
 ",
-  ["args"] = "op: (:), initial: any, table: {:}",
+  ["args"] = "op: ():, initial: any, table: {:}",
   ["type"] = "function",
   ["name"] = "core.reduce",
   ["description"] = "\
@@ -3731,7 +3731,7 @@ If level less than (elimination) threshold, then report rest as string. If playe
 }
 ,
   ["completer"] = {
-  ["returns"] = " `(:)` <-\
+  ["returns"] = " `():` <-\
 ",
   ["args"] = "completions: {:}",
   ["type"] = "function",
@@ -3781,7 +3781,7 @@ GPS location if available.",
   ["map"] = {
   ["returns"] = " `{:}` <-\
 ",
-  ["args"] = "op: (:), table: {:}",
+  ["args"] = "op: ():, table: {:}",
   ["type"] = "function",
   ["name"] = "core.map",
   ["description"] = "\
@@ -3797,7 +3797,7 @@ Key for composed function dictionary",
 }
 ,
   ["permute"] = {
-  ["returns"] = " `(:)` <-\
+  ["returns"] = " `():` <-\
 ",
   ["args"] = "array: any[]",
   ["type"] = "function",
@@ -4038,7 +4038,7 @@ Category",
 ,
   [":turtle.inspects"] = {
   ["type"] = "value",
-  ["returns"] = " `[direction]: (): `^:`, `detail?`",
+  ["returns"] = " `[direction]: (): `^:, detail?`",
   ["name"] = "turtle.inspects",
   ["description"] = "\
 If true, get detail block information in direction.",
@@ -4190,7 +4190,7 @@ On client: Prepare remote call to server turtle by getting player xyz position a
   ["clientResult"] = {
   ["returns"] = " `any` <-\
 ",
-  ["args"] = "serverID: #:, resultString: \":\", callback: (:)",
+  ["args"] = "serverID: #:, resultString: \":\", callback: ():",
   ["type"] = "function",
   ["name"] = "_remote.clientResult",
   ["description"] = "\
@@ -4604,10 +4604,10 @@ Removes named place from array of places. Return new length of places table and 
 }
 ,
   ["_core.inext:_"] = {
-  ["line"] = "--:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `(:), {:}, #:`",
+  ["line"] = "--:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `():, {:}, #:`",
   ["kind"] = "face",
   ["sign"] = "core.inext(table: {:}, index: #:)  ",
-  ["out"] = " `(:), {:}, #:`",
+  ["out"] = " `():, {:}, #:`",
   ["text"] = "Iterator over table beginning at index.",
 }
 ,
@@ -4666,9 +4666,9 @@ Removes named place from array of places. Return new length of places table and 
 }
 ,
   ["_remote.call:_"] = {
-  ["line"] = "  --:: remote.call(server: \":\", command: \":\", arguments: any[], callback: (:)?) -> _RPC:_ -> `any &: &!`",
+  ["line"] = "  --:: remote.call(server: \":\", command: \":\", arguments: any[], callback: ():?) -> _RPC:_ -> `any &: &!`",
   ["out"] = " `any &: &!`",
-  ["sign"] = "remote.call(server: \":\", command: \":\", arguments: any[], callback: (:)?)  ",
+  ["sign"] = "remote.call(server: \":\", command: \":\", arguments: any[], callback: ():?)  ",
   ["kind"] = "face",
   ["text"] = "RPC:",
 }

@@ -1,4 +1,4 @@
---:! {core: (:)[]} <- **Core Functions Library** -> muse/docs/lib/core.md    
+--:! {core:[":"]: ():} <- **Core Functions Library** -> muse/docs/lib/core.md    
 --:| core: _Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support._ -> core  
 
 --:# **Managing state: clone table, generate closure for session (non-persistent) state, cache loads**  
@@ -51,7 +51,7 @@
 
 --:# **User interface utilities**  
 
---:: core.completer(completions: {:}) -> _Register command completions for shell_ -> `(:)`  
+--:: core.completer(completions: {:}) -> _Register command completions for shell_ -> `():`  
 
 --:: core.echo(...: any) -> _For testing; just returns its arguments._ -> ...: `any`  
 
@@ -81,19 +81,19 @@
 
 --:# **Example iterator, restartable at index**  
 
---:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `(:), {:}, #:`  
+--:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `():, {:}, #:`  
 
 --:# **Iterator for coroutine partials of permutations**   
 
---:: core.permute(array: any[]) -> _Iterator for permutations of array_ -> `(:)`  
+--:: core.permute(array: any[]) -> _Iterator for permutations of array_ -> `():`  
 
 --:# <a href="https://en.wikipedia.org/wiki/Map_(higher-order_function)" target="_blank">On Map</a>  
 
---:: core.map(op: (:), table: {:}) -> _Create_ `result` _by applying_ `op` _function to elements of_ `table` -> `{:}`  
+--:: core.map(op: ():, table: {:}) -> _Create_ `result` _by applying_ `op` _function to elements of_ `table` -> `{:}`  
 
 --:#<a href="https://dgr.github.io/clojurecrazy/2022/01/09/reduce-my-favorite-clojure-function.html" target="_blank">On Fold</a>  
 
---:: core.reduce(op: (:), initial: any, table: {:}) -> _Fold_ `table` _to produce_ `result` _by applying_ `op` _to_ `table` -> `any`  
+--:: core.reduce(op: ():, initial: any, table: {:}) -> _Fold_ `table` _to produce_ `result` _by applying_ `op` _to_ `table` -> `any`  
 
 --:# **Lowest level turtle and mock turtle support used by several libraries including lib/motion**  
 

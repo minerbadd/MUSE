@@ -1,7 +1,7 @@
 --[[
 ## Consistency for Turtle Operations: `lib/turtle` for Turtle Abstractions
 ```md
---:! [turtle: [":"]: (:) ] <- **Turtle Operations Overlay Library** -> muse/docs/lib/turtle.md  
+--:! {turtle: [":"]: ():} <- **Turtle Operations Overlay Library** -> muse/docs/lib/turtle.md  
 --:| turtle: _Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down._ -> turtle
 --:+ _Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking._  
 ```
@@ -55,7 +55,7 @@ local operations = {
   --:> turtle.drops: _Drop count [or all] items in selected slot to inventory._ -> `[direction]: (count: #:?): ^:, ":"?`
   --:+ _Returned function drops and returns_ `false` _if there's inventory on the side specified by direction which is full._
   inspects = {up = mock.inspectUp, down = mock.inspectDown, front = mock.inspect}, --returns `false` for air
-  --:> turtle.inspects: _If true, get detail block information in direction._ -> `[direction]: (): `^:`, `detail?`
+  --:> turtle.inspects: _If true, get detail block information in direction._ -> `[direction]: (): `^:, detail?`
   puts = {up = mock.placeUp, down = mock.placeDown, front = mock.place},
   --:> turtle.puts:  _Attempt placing block of the selected slot in direction._ -> `[direction]: (text: ":"?): ^:, ":"?`
   --:+ _Collects water or lava if the currently selected slot is an empty bucket. Text is used for placed sign._ 

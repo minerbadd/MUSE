@@ -1,4 +1,4 @@
---:! {exec: (:)[]} <- **Command Computer Command Line Library** -> muse/docs/lib/exec.md    
+--:! {exec: [":"]: ():} <- **Command Computer Command Line Library** -> muse/docs/lib/exec.md    
 --:| exec: _CLL to align MUSE location with Minecraft coordinates and activate a range as a Minecraft chunk._ -> exec  
 
 --:# **Before GPS launch, set Muse dead reckoning coordinates for turtle sitting on `porter` to be its Minecraft coordinates**    

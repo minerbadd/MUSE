@@ -9,7 +9,7 @@
 
 <h2> Remote Procedure Calls, RPCs: lib/remote, Client Side <code>come</code> and <code>tail</code></h2>
 <pre><code class="language-markdown">
---:! [remote: [":"]: (:) ] <- <b>Functions Library for Remote Procedure Calls</b> -> muse/docs/lib/remote.md  
+--:! {remote: [":"]: ():} <- <b>Functions Library for Remote Procedure Calls</b> -> muse/docs/lib/remote.md  
 --:| remote: <i>Client and server side support for RPCs and client (player) side support for</i> <code>come</code> <i>and</i> <code>tail</code>. -> remote, _remote
 --:+ <b>Test functions are provided for out-of-game, no network operation.</b>
 
@@ -88,7 +88,7 @@ Back on the client that called for the RPC, the <code>clientResult</code> and <c
 <pre><code class="language-lua">
 --:# <b>Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)</b>
 function _remote.clientResult(serverID, resultString, callback) -- test as <code>remote.testResult</code>
-  --:: <code>_remote.clientResult(serverID: #:, resultString: ":", callback: (:))</code> -> <i>Apply callback to deserialized client result.</i> -> <code>any</code>
+  --:: <code>_remote.clientResult(serverID: #:, resultString: ":", callback: ():)</code> -> <i>Apply callback to deserialized client result.</i> -> <code>any</code>
   core.status(3, "remote", "MR Client", resultString, "from", dds.role(serverID)) -- on player
   local resultFunction, resultError = load(resultString) -- unserialized for execution
   if resultFunction then local result = resultFunction(); return callback(result) end -- specified by caller of <code>remote.call</code> 
@@ -136,7 +136,7 @@ end
 The <code>remote.returns</code> function is the default <code>callback</code> function handling the result back on the client. 
 <pre><code class="language-lua">
 function remote.call(server, command, arguments, callback) -- client command line: command, arguments
-  --:: remote.call(server: ":", command: ":", arguments: any[], callback: (:)?) -> <i>RPC:</i> -> <code>any &: &!</code>
+  --:: remote.call(server: ":", command: ":", arguments: any[], callback: ():?) -> <i>RPC:</i> -> <code>any &: &!</code>
   --:+ <i>Form serialized request table from command string and arguments. Get server ID from server name.</i>
   --:+ <i>Send request to server, wait for result, return call (default <code>remote.return</code>) callback function to result.</i>
   callback = callback or remote.returns -- a default (see below) if no <code>callback</code> argument

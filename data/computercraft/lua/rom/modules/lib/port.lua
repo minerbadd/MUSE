@@ -1,7 +1,7 @@
 --[[
 ## Book and Port Booking lib/port From Place (Spanning Area) To Place Offering Inventory
 ```md
---:! [port: [":"]: (:)] <- **Transport Operations Command Line Library** -> muse/docs/lib/port.md  
+--:! {port: [":"]: ():} <- **Transport Operations Command Line Library** -> muse/docs/lib/port.md  
 --:| port: _CLL for `book` and `port` commands assessing and clearing player inventory for specified teleport._ -> port
 ```
 ```Lua

@@ -1,7 +1,7 @@
 --[[
 ## The Plan "Language" : lib/planner for lib/worker
 ```md
---:! [planner: [":"]: (:)] <- **Functions Library to Build a Plan** -> muse/docs/lib/planner.md
+--:! {planner: [":"]: ():} <- **Functions Library to Build a Plan** -> muse/docs/lib/planner.md
 --:| planner: _Given a_ `plan`, _create a table of operations to be performed by_ `worker.execute`. -> planner, plan, moves, steps
 ```
 The `lib/planner` introduction outlines the parts of a `plan` represented by a Lua file.

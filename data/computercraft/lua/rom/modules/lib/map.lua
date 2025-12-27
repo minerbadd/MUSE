@@ -1,7 +1,7 @@
 --[[
 ## Persistence, Errors, and CLL for `place`: `lib/map` 
 ```md
---:! [map: [":"] (:) ] <- **Map Command Line Library** -> muse/docs/lib/map.md  
+--:! {map: [":"] (): } <- **Map Command Line Library** -> muse/docs/lib/map.md  
 --:| map: _Orientation and position reporting, broadcast and persistence of places_ -> map
 ``` 
 The `map` library continues the development of `place`, introduced by <a href="places.html" target="_blank"> `lib/places`</a>.

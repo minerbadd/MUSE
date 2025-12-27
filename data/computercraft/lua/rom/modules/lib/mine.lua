@@ -1,7 +1,7 @@
 --[[
 ## Mine Operations for Shafts and Tunnels: `lib/mine` 
 ```md
---:! [mine: [":"]: (:)] <- **Mine Command Line Library** -> muse/docs/lib/mine.md  
+--:! {mine: [":"]: ():} <- **Mine Command Line Library** -> muse/docs/lib/mine.md  
 --:| mine: _CLL operates plan to manage mines: shaft, bore, move to posts (between and within levels), and get ores._ -> mine, _mine
 ```
 <a id="introduction"></a> 
