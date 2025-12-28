@@ -11,7 +11,7 @@ _state_</a> of a turtle and handling the history of that state.
 
 #Introduction and Exports: the overview
 To help readers and maintainers understand a module, it's useful to organize it by leading it off with an introductory section. We can look at the introduction of this module to get an overall understanding of what it does, its <a href="https://en.wikipedia.org/wiki/Global_variable" target="_blank">
-_global_</a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The `motion` module includes two libraries, `move`, and `step` as noted in the CodeMark <a href="https://en.wikipedia.org/wiki/API" target="_blank"> application programming interface</a> (API) <a href = "https://minerbadd.github.io/CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following this filemark, the `LIB` <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. The exported interfaces of each library along with annotated type declarations not particular to either library are collected together in the API file for the entire project. The latter are saved in a <a href="https://en.wikibooks.org/wiki/A-level_Computing/AQA/Paper_1/Fundamentals_of_data_structures/Dictionaries" target="_blank"> dictionary</a> with the module name. The ZeroBrane Studio <a href="https://en.wikipedia.org/wiki/Integrated_development_environment" target="_blank">
+_global_</a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The `motion` module includes two libraries, `move`, and `step` as noted in the CodeMark <a href="https://en.wikipedia.org/wiki/API" target="_blank"> application programming interface</a> (API) <a href = "https://minerbadd.github.io/CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following this filemark, the `LIB` <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. The exported interfaces of each library along with annotated type declarations not particular to either library are collected together in the API repository file for the entire project. The latter are saved in a <a href="https://en.wikibooks.org/wiki/A-level_Computing/AQA/Paper_1/Fundamentals_of_data_structures/Dictionaries" target="_blank"> dictionary</a> with the module name. The ZeroBrane Studio <a href="https://en.wikipedia.org/wiki/Integrated_development_environment" target="_blank">
 _IDE_</a>, an integrated development environment, can make use of this file for code completion and other API documentation when it it most needed: when you're coding a call to an API. None of this is executable code; it's just documentation.
 ```Lua
 --]]
@@ -26,7 +26,7 @@ _IDE_</a>, an integrated development environment, can make use of this file for 
 --[[
 ```
 The first line of the introduction above sets the stage. It tells us that moving turtles is implemented using tables (as dictionaries) of `move` functions and of something we've called `step` functions (producing <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="_blank">
-_closures_ </a> which we'll talk about a bit further on). It exports these as libraries exporting functions whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">_Markdown_</a> documentation, `muse/docs/lib/motion.md`, is found in the `docs` sub-directory of the `muse` project directory (for when you might want to look at them later). Below are those tables of exported functions. We'll fill them in as we go.
+_closures_ </a> which we'll talk about a bit further on). It exports these as libraries exporting functions whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">_Markdown_</a> and HTML documentation, `muse/docs/lib/motion.md` and `muse/docs/lib/motion.html`, is found in the `docs` sub-directory of the `muse` project directory (for when you might want to look at them later). Below are those tables of exported functions. We'll fill them in as we go.
 ```Lua
 --]]
 local move, step = {}, {} ---@module "signs.motion"
@@ -61,7 +61,9 @@ _Dead reckoning_</a>
 keeps track of the whereabouts of the turtle depending on its supposed movement. It does this by updating the <a href="https://en.wikipedia.org/wiki/State_(computer_science)" target="_blank">
 _state_</a> representing turtle position and orientation, that is, the `xyz` co-ordinates and the direction the turtle is facing. Doing this for every instructed turtle movement, it assumes a valid starting position and orientation. It checks that each instructed movement actually occurred. If fuel was not consumed by a movement that was reported to have been done successfully, dead reckoning has failed: the turtle is presumed `"lost"`.  If movement was attempted but reportedly failed, the turtle is said to be `"blocked"`. If the turtle is out of fuel, and the attempt to refuel failed, the turtle is presumed `"empty"`.
 
-The `"lost"`, `"blocked"`, and `"empty"` conditions each raise an `error` reported to callers of `lib/motion` (and to their callers in turn).  The caller, for example `lib/roam` (discussed in another chapter), may attempt recovery operations depending on the error information or might just report the error.
+The `"lost"`, `"blocked"`, and `"empty"` conditions each raise an <a href="https://www.lua.org/pil/8.3.html" target=_blank>
+ `error` </a> reported to callers of `lib/motion` (and to their callers in turn).  The caller, for example `lib/roam` (discussed in another chapter), may attempt recovery operations depending on the error information or might just report the error.
+
 
 The dead reckoning turtle state, its `situation`, is collected in the `_G.Muse.situation` <a href="https://en.wikipedia.org/wiki/Associative_array" target="_blank">
 _dictionary_</a>, a table indexed (keyed) by named fields. If there isn't one of these when the `lib/motion` library is loaded, a default set is provided (generally, for testing out of game in the IDE). Cleanly managing this state is one of the implementation issues we'll need to address. 
@@ -93,7 +95,7 @@ return {move = move, step = step}
 ```
 No surprise here. As promised in the first lines of the file, this module exports a table providing two tables of functions. Each table for each exported library. One table is for `move` functions. These functions are fairly obvious in nature. The other, a mostly parallel set, is for `step` functions. These, as noted in the introduction, produce Lua <a href="https://www.lua.org/pil/7.1.html" target="_blank">_iterators_</a>. The `lib/motion` iterators step turtle movement through a count (default 1) of movements in a direction (or to a position) one step at a time.  Operations defined in the body of the `do` loop controlled by the iterator are executed at each step of the movement. This turns out to be useful later.
 
-The module's CodeMark <a href="../../docs/lib/motion.html" target="_blank"> documentation</a> tells you about each (exported) function in terms of its `parameters` `->` `operation` `->` `values` (returned). Some parameters are documented as optional: `?`. The <a href = "../CodeMark/Annotations.html#type" target = "_blank"> type</a> of parameters and return values are also documented: numbers as `#:`, strings as `":"`, tables as `{:}``, fand unctions as `():` The unspecified type is annotated as `any`. An ignored item is indicated by `_:`. Parameters and return values may be tagged with a label followed by a colon to provide information to the language server. Sometimes a parameter's name is the same as its definition as in the annotation for `move.get` below. We'll see these annotations when looking at a library's summary documentation.
+The module's CodeMark <a href="../../docs/lib/motion.html" target="_blank"> documentation</a> tells you about each (exported) function in terms of its `parameters` `->` `operation` `->` `values` (returned). Some parameters are documented as optional: `?`. The <a href = "../CodeMark/Annotations.html#type" target = "_blank"> type</a> of parameters and return values are also documented: numbers as `#:`, strings as `":"`, tables as `{:}`, and functions as `():`. The unspecified type is annotated as `any`. An ignored item is indicated by an underscore followed by a colon. Parameters and return values may be tagged with a label followed by a colon to provide information to the language server. Sometimes a parameter's name is the same as its type definition as in the annotation for `move.get` below. We'll see these annotations when looking at a library's summary documentation.
 
 #Foundation (Utility) Functions
 It helps to define utility functions used in the module toward the beginning of the file. They are referenced throughout. The ones for `lib/motion` are pretty simple. They define an interface to a turtle's `situation` state to provide better hygiene than working directly with the corresponding globals.
@@ -146,7 +148,7 @@ _inheritance_</a> system for what's done, for example, with a `situation`.</i></
 
 Implicitly there's another design decision in arranging to modify `situation` state rather than creating a new `situation` for each change (and relying on the garbage collector to dispose of the detritus) . A 
 <a href="https://en.wikipedia.org/wiki/Functional_programming" target="_blank">
-_purely functional style_</a> would require creating a new `situation` table for every change in turtle position or orientation. At the cost of that purity, the decision here is to only create a new situation, cloning one from the current `situation`, when we need the old situation in `situations`, a `situation` history. MUSE uses that history to optionally provide `tracking` as mentioned previously. The history records (and clones) position and orientation for tracking only when either orientation or the kind of vertical movement changes.
+_purely functional style_</a> would require creating a new `situation` table for every change in turtle position or orientation. At the cost of that purity, the decision here is to only create a new situation, cloning one from the current `situation`, when we need the old situation in `situations`, a `situation` history. MUSE uses that history to optionally provide `tracking` as mentioned previously. Operations on the history record (and clone) position and orientation for tracking only when either orientation or the kind of vertical movement changes.
 ```Lua
 --]]
 local function situation(setting) _G.Muse.situation = setting or _G.Muse.situation; return _G.Muse.situation end
@@ -169,7 +171,7 @@ function move.clones() return core.clone(_G.Muse.situations) end
 The history of `situations` represented by the global state `_G.Muse.situations` needs isolation just as `G.Muse.situation` does.
 
 There is a bigger issue here though. Making a copy of a table is an explicit operation. Binding a name to a Lua table (for example the `situations` table) just provides a name for the underlying table. It doesn't make a copy of the table; binding a table to a new name does only that. No new table is created. If some operation changes something in that table, any references to that table, new name or old, will reflect that change. In the code above, we make a new table to save <a href="https://en.wikipedia.org/wiki/Cloning_(programming)" target="_blank">
-(_clone_)</a> a `situation` just as it was when added to the `situations` table.
+(_clone_)</a> a `situation` just as it was when it was added to the `situations` table.
 
 (Cloning the `_G.Muse.situations` history in `move.clone` needs a more general approach to cloning than cloning a single situation as in `move.clone`. Follow the <a href="core.html#clone" target="_blank"> link</a> to the `lib/core` function, `core.clone`, to see how this is done.)
 
@@ -186,9 +188,9 @@ end
 ```
 <a id="ats"></a>
 #Where Oh Where
-The function `move.ats` returns a string representation of a turtle's position. It parallels `move.at` which returns a table of numbers for that position. There's a bit of complexity introduced in the implementation of `move.ats` since it's used out-of-game in the IDE as well as in-game. A Lua idiom for the <a href="http://lua-users.org/wiki/TernaryOperator" target="_blank"> _ternary operator_</a> is used to return a string representing the `situation.position` if `turtle` is `true` and the empty string, `""`, if it is not. In the in-game environment, `turtle` is `true` only for turtles so in-game other than for turtles just the empty string is returned. In the out-of-game test environment, `turtle` is mocked, so the mocked `situation` is returned. 
+The function `move.ats` returns a string representation of a turtle's position. It parallels `move.at` which returns a table of numbers for that position. There's a bit of complexity introduced in the implementation of `move.ats` since it's used out-of-game in the IDE as well as in-game. A Lua idiom for the <a href="http://lua-users.org/wiki/TernaryOperator" target="_blank"> _ternary operator_</a> is used to return a string representing the `situation.position` if `turtle` is `true` and the empty string, `""`, if it is not. In the in-game environment, `turtle` is `true` only for turtles so in-game other than for turtles just the empty string is returned. In the out-of-game test environment, `turtle` is mocked by <a href="mock.html">`lib/mock`</a>, so the mocked `situation` is returned. 
 
-Calls to the <a href="core.html#ats"> `core.ats` </a> function supports an instrumentation system defined in `lib/core` that we'll discuss later.
+Calls to the <a href="core.html#ats"> `core.ats` </a> function support an instrumentation system defined in `lib/core` that we'll discuss later.
 ```Lua
 --]]
 core.ats = move.ats -- protect from override
@@ -260,7 +262,7 @@ end
 ```
 <a id="way"></a>
 #Finding the Way
-Tables are an important part of Lua. MUSE uses a lot of them to better expose operation. The `advance`, `retreat`, `rise`, and `fall` movement tables use the direction a turtle is `facing` to indicate changes in `position` for each kind of movement. For example, `advance.north` shows a decrement, `{0, 0, -1}`, of the `z-axis` position. Further, MUSE encapsulates the parameters of motion in each of the four `way` tables using the movement tables. These supply the arguments for actual turtle `motion` (like `turtle.forward`), the kind of `movement` (like `"advance"`, the nature of any change in `level` (like `"same"`), and the `direction` of movement (for reporting and debugging convenience). In this way they effectively package up the variations in handling turtle movement so that all the variations can be dealt with by common routines to actually move the turtle beyond simple turning. Which we'll be coming to. Eventually.
+Tables are an important part of Lua. MUSE uses a lot of them to better expose operation. This, as it turns out from experience, makes it easier to maintainably evolve the code. An inevitability. The `advance`, `retreat`, `rise`, and `fall` movement tables use the direction a turtle is `facing` to indicate changes in `position` for each kind of movement. For example, `advance.north` shows a decrement, `{0, 0, -1}`, of the `z-axis` position. Further, MUSE encapsulates the parameters of motion in each of the four `way` tables using the movement tables. These supply the arguments for actual turtle `motion` (like `turtle.forward`), the kind of `movement` (like `"advance"`, the nature of any change in `level` (like `"same"`), and the `direction` of movement (for reporting and debugging convenience). In this way they effectively package up the variations in handling turtle movement so that all the variations can be dealt with by common routines to actually move the turtle beyond simple turning. Which we'll be coming to. Eventually.
 ```Lua
 --]]
 -- **The `movement` tables, the `way` tables and the parameters of (trackable) motion**
@@ -499,7 +501,13 @@ This populates most of the two tables of functions returned by loading this libr
 We might just want to move to a specified set of xyz coordinates. To deal with potential blockages, `move.to` includes an optional argument to specify in which coordinate to move first. In each of the three <a href="https://en.wikipedia.org/wiki/Anonymous_function" target="_blank">
 _anonymous functions_</a> of the `moving` table, the turtle movement function calls follow each other in line to emphasize sequence. 
 
-This prompts a sermon. How code is laid out on the page is an important way to communicate design. It's an issue of style to write code as poetry or prose. The choice here as prose leads to a concise representation allowing more code to be seen at once. This is often helpful in understanding a body of code. Whitespace is used to draw attention to what seem to be important points in execution. Repeated patterns on the page emphasize common operations. Oddly enough for prose, reading it generates a sort of rhythm. (If you're working in a team though, you may need to compromise layout to fit in with what others are doing.)
+This prompts a heartfelt rant: 
+
+&lt;soapbox&gt;
+
+How code is laid out on the page is an important way to communicate design. It's an issue of style to write code as poetry or prose. The choice here as prose leads to a concise representation allowing more code to be seen at once. This is often helpful in understanding a body of code. Whitespace is used to draw attention to what seem to be important points in execution. Repeated patterns on the page emphasize common operations. Oddly enough for prose, reading it generates a sort of rhythm. (If you're working in a team though, you may need to compromise layout to fit in with what others are doing.)
+
+&lt;/soapbox&gt;
 ```Lua
 --]]
 --:# **Move or Step to target xyzf position**
@@ -524,9 +532,9 @@ function move.to(xyzf, first) -- no navigation, y last unless `first` specified
 end
 --[[
 ```
-The form of the code is intended to convey relationships. No poetry here. The variables `dx`, `dy`, and `dz` are bound "in parallel" to values as indicated. The same goes for `xD`, `yD`, and `zD` to the corresponding movement operations 
+The form of the code is intended to convey relationships. No poetry here. The variables `dx`, `dy`, and `dz` for distance along an axis (as numbers) are bound "in parallel" to values as indicated. The same goes for `xD`, `yD`, and `zD` (as strings helpful in debug) to the corresponding `xOp`, `yOp`, and `zOp` movement operations (as functions).
 
-The bindings for movement operations such as `move.west` and `move.east` reference functions defined earlier in the file. As we've seen in Lua, functions are handled like any other entity in the language. Here they determine what action is to be repeated.  In debugging Lua code, it's often difficult to figure out references to functions. Since the function can be referenced by whatever variable or structure element it has most recently been bound to, there's no real "name" of the function. To ease debug, a little extra information, such as `xD`, `yD`, and `zD`  is provided. These strings indicate the direction of the movement.
+The bindings for movement operations such as `move.west` and `move.east` reference functions defined earlier in the file. As we've seen in Lua, functions are handled like any other entity in the language. Here they determine what action is to be repeated.  In debugging Lua code, it's often difficult to figure out references to functions. Since the function can be referenced by whatever variable or structure element it has most recently been bound to, there's no real "name" of the function. To ease debug, a little extra information, such as `xD`, `yD`, and `zD` is provided. These strings indicate the direction of the movement.
 
 #Stepping There: Iterators For Movement
 
@@ -548,7 +556,7 @@ function step.to(xyzf, situation) -- iterator closure returns nil only if all di
   local iterators, dxyz = {xOp(adx), zOp(adz), yOp(ady)}, adx + ady + adz; -- total distance 
 --[[
 ```
-We've led off with some error checking and then dealt with the two positions we're concerned with: where we are, and where we're going. The function takes an optional argument `situation`. If this is not provided, the function body uses the turtle's current situation and gets values for operations (like `step.west`), distances (like `dx`), and directions (like `xD`). And then it does something completely different: it gets iterators by calling functions which, eventually, call `stepCount`. Finally, it computes the total distance to be traversed and the `direction` to start that traversal. (The distance is a so-called "Manhattan distance" since turtles move only in a grid.)
+We've led off with some error checking and then dealt with the two positions we're concerned with: where we are, and where we're going. The function takes an optional argument `situation`. If this is not provided, the function body uses the turtle's current situation and gets values for operations (like `step.west`), distances (like `dx`), and direction strings for debug (like `xD`). And then it does something completely different: it gets a table of iterators by calling functions which, eventually, call `stepCount` (which returns a closure). Finally, it computes the total distance to be traversed and the `direction` to start that traversal. (The distance is a so-called "Manhattan distance" since turtles move only in a grid.)
 
 But wait, there's more.  So far, we've just setup the upvalues. The `step.to` function returns a function, the iterator that we can use to step the turtle from where it is to where it's going and do operations at each step of the way:
 ```Lua
@@ -585,7 +593,7 @@ The important issue, though, is testing.
 
 #One More Thing: Lest We Forget
 
-Testing. Developing the tests for a library is just part of developing that library. If done as the library is developed, the tests can be really help in keeping the development on course. The test is also a check on the utility and expressiveness of the library's interface. Done during library development, it's easier (costs less) to change. A test provides usage examples as a complement to interface documentation. Perhaps most importantly, when a library's code (inevitably) needs to be restructured for whatever reason (clarity, better fit into its context, whatever), the tests support the will to make the necessary changes. In the case of development for environments such as ComputerCraft with limited debugging support, it's a crucial aid (together with an IDE). Additionally, tests provide a sandbox where errors have limited, easily repaired, consequences.
+Testing. Developing the tests for a library is just part of developing that library. If done as the library is developed, the tests can be really helpful in keeping the development on course. The test is also a check on the utility and expressiveness of the library's interface. Done during library development, it's easier (costs less) to change. A test provides usage examples as a complement to interface documentation. Perhaps most importantly, when a library's code (inevitably) needs to be restructured for whatever reason (clarity, better fit into its context, new requirements, whatever), the tests support the will to make the necessary changes. In the case of development for environments such as ComputerCraft with limited debugging support, it's a crucial aid (together with an IDE). Additionally, tests provide a sandbox where errors have limited, easily repaired, consequences.
 
 Look at <a href="../tests/motion.html" target = "_blank"> `tests/motion` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module.
 

@@ -22,7 +22,7 @@ local command = _G.commands -- table or nil (if not a command computer)
 --:# _Set Configuration Variables: landed turtles, default site, tracking, delays, turtle `data` directory_
 _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
 _G.Muse.IDs, _G.Muse.roles, _G.Muse.defaultSite = {}, {}, "base" -- with `site` program
-_G.Muse.tracking = {limit = 500, enabled = nil}
+_G.Muse.tracking = {limit = 500, enabled = false}
 _G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
 _G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number)
 _G.Muse.attempts = 5 -- `lib/turtle` attempts to remove a blockage
