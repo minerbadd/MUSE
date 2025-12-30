@@ -1,1 +1,0 @@
---:? muse/docs/tests/02task.txt <- **Run Regression Test for Muse** -> muse/docs/tests/06task.md    

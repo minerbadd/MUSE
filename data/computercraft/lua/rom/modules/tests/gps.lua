@@ -1,4 +1,4 @@
---:? muse/docs/tests/11gps.txt <- **Run Regression Test for Muse** -> muse/docs/tests/11gps.md  
+--:? muse/docs/tests/gps.txt <- **Run Regression Test for Muse** -> muse/docs/tests/gps.md  
 -- **out-game test of lib/gps for gps launch**
 
 dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using `preface` in execution path

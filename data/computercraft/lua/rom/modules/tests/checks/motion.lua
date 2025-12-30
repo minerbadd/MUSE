@@ -1,0 +1,1 @@
+return {part1 = "expected result", part2 = "expected result", ...}

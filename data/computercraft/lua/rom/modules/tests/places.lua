@@ -1,4 +1,4 @@
---:? muse/docs/tests/03places.txt <- **Run Regression Test for Muse** -> muse/docs/tests/03places.md  
+--:? muse/docs/tests/places.txt <- **Run Regression Test for Muse** -> muse/docs/tests/places.md  
 -- **Tests for `place`, `moves`, and `steps` interfaces of lib/places** 
 
 dofile(arg[0]:match('.*[/\\]').."/)_preface.lua");  -- set test environment using `preface` in execution path

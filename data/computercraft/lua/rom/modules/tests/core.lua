@@ -1,4 +1,4 @@
---:? muse/docs/tests/01core.txt <- **Run Regression Test for Muse** -> muse/docs/tests/00core.md  
+--:? muse/docs/tests/core.txt <- **Run Regression Test for Muse** -> muse/docs/tests/core.md  
 
 -- **Tests for lib/core**.log
 

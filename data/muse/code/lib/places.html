@@ -26,12 +26,11 @@ All that said, here's the introduction and utilities for the module.
 local place, moves, steps  = {}, {}, {} ---@module "signs.places"
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
-local motion = require("motion") ---@module "signs.motion"
-local move, step = motion.move, motion.step
+local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
 
 _G.Muse.places = _G.Muse.places or {}; place.places = _G.Muse.places -- <b>held as global across programs, but not persistent</b>
 
---:# <b>Type definitions that will be serialized for network tansport and disk storage</b>
+--:# <b>Type definitions that will be serialized for network transport and disk storage</b>
 --:> place: <i>A point, trail, or range</i> -> <code>[name: ":", label: ":", :situations:, :features:]</code>
 --:> features: <i>Dictionary of string key, any value pairs</i> -> <code>[key: ":"]: any</code>
 

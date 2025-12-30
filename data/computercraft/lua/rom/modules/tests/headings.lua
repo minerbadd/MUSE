@@ -1,4 +1,4 @@
---:? muse/docs/tests/10headings.txt <- **Run Regression Test for Muse** -> muse/docs/tests/10headings.md  
+--:? muse/docs/tests/headings.txt <- **Run Regression Test for Muse** -> muse/docs/tests/headings.md  
 -- **Test heaadings -- head ["#rate"] "place" ["#lines"]; head "#rate" ["#lines"]; head ["#rate"]**
 
 dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using `preface` in execution path

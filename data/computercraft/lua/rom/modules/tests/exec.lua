@@ -1,4 +1,4 @@
---:? muse/docs/tests/08exec.txt <- **Run Regression Test for Muse** -> muse/docs/tests/08exec.md  
+--:? muse/docs/tests/exec.txt <- **Run Regression Test for Muse** -> muse/docs/tests/exec.md  
 -- **Tests for lib/exec interfaces**
 
 dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using `preface` in execution path

@@ -1,4 +1,4 @@
---:? muse/docs/tests/startup.txt <- **Run Regression Test for Muse** -> muse/docs/tests/startup.md  
+--:? muse/docs/tests/.startup.txt <- **Run Regression Test for Muse** -> muse/docs/tests/.startup.md  
 ---@diagnostic disable: undefined-field
 os.setComputerLabel('gpsW');
 fs.delete('startup.lua')

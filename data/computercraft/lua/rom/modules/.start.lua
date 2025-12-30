@@ -9,8 +9,8 @@
 --]]
 _G.Muse = _G.Muse or {}
 _G.Muse.path = "rom/modules/"; local path = _G.Muse.path -- shared across all worlds (most of Muse)
-_G.Muse.package = "/rom/modules/lib/?.lua"
-_G.Muse.charts = path.."charts/" -- modified by tests to keep game undisturbed by tests
+--_G.Muse.package = "/rom/modules/lib/?.lua"
+_G.Muse.charts = path.."charts/" -- for fields
 
 local peripheral, parallel = _G.peripheral, _G.parallel -- to supress static analysis lint warnings
 
@@ -24,10 +24,10 @@ _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtl
 _G.Muse.IDs, _G.Muse.roles, _G.Muse.defaultSite = {}, {}, "base" -- with `site` program
 _G.Muse.tracking = {limit = 500, enabled = false}
 _G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
-_G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number)
+_G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number in libraries)
 _G.Muse.attempts = 5 -- `lib/turtle` attempts to remove a blockage
 _G.Muse.rates = {}; _G.Muse.rate.headings = 5; _G.Muse.rates.tail = 0.5
-_G.Muse.permutations = {"y", "z", "x"} -- axes order in permutations
+_G.Muse.permutations = {"y", "z", "x"} -- controlling axes order in permutations
 -- {"y", "z", "x"} -> z x y, x z y, x y z, y x z, z y x, y z x
 -- {"x", "y", "z"} -> y z x, z y x, z x y, x z y, y x z, x y z
 
@@ -36,7 +36,7 @@ _G.Muse.data = "muse/"-- local to turtle/computer
 _G.Muse.map = _G.Muse.data.."map.map" -- name of map in _G.Muse.data
 _G.Muse.log = _G.Muse.data.."log.log"; 
 
-package.path = _G.Muse.package -- needed for each module
+--package.path = _G.Muse.package -- needed for each module
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local places = require("places"); local place = places.place ---@module "signs.places"

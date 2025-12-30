@@ -66,7 +66,7 @@ The `"lost"`, `"blocked"`, and `"empty"` conditions each raise an <a href="https
 
 
 The dead reckoning turtle state, its `situation`, is collected in the `_G.Muse.situation` <a href="https://en.wikipedia.org/wiki/Associative_array" target="_blank">
-_dictionary_</a>, a table indexed (keyed) by named fields. If there isn't one of these when the `lib/motion` library is loaded, a default set is provided (generally, for testing out of game in the IDE). Cleanly managing this state is one of the implementation issues we'll need to address. 
+_dictionary_</a>, a table accessed (keyed) by named fields. If there isn't one of these when the `lib/motion` library is loaded, a default set is provided (generally, for testing out of game in the IDE). Cleanly managing this state is one of the implementation issues we'll need to address. 
 
 A turtle's `situation` includes its position (as a keyed table of numbers) for its `x`, `y`, and `z` Minecraft coordinate values, its orientation (as a string) for the direction it's facing), its fuel (as a number), and an indication (as a string) of whether its level, the y-coordinate in ComputerCraft, is rising, falling, or staying the same . A `situation` table includes named fields, keys, for `position`, `facing`, `fuel`, and `level`. Here's how that's annotated with CodeMark type declarations. We'll use the definitions for `position` and `facing` throughout MUSE so we document those independently from their inclusion in a `situation`.
 ```lua
@@ -589,9 +589,9 @@ With that, our work with `lib/motion` is done, except, of course for using it...
 
 As for using it, one such use is by the `lib/places` library. It records positions for bearings to a spot and makes use of `lib/motion` to move and step turtles to such spots and to move turtles along a track of such spots. Follow the link to explore its <a href="places.html" target="_blank"> implementation</a>. Alternatively, you can get a sense of the API the library exports by looking at its <a href = "../../docs/lib/places.html" target = "_blank">summary</a>.
 
-The important issue, though, is testing.
+But what we really need to explore together is testing.
 
-#One More Thing: Lest We Forget
+#One More Thing
 
 Testing. Developing the tests for a library is just part of developing that library. If done as the library is developed, the tests can be really helpful in keeping the development on course. The test is also a check on the utility and expressiveness of the library's interface. Done during library development, it's easier (costs less) to change. A test provides usage examples as a complement to interface documentation. Perhaps most importantly, when a library's code (inevitably) needs to be restructured for whatever reason (clarity, better fit into its context, new requirements, whatever), the tests support the will to make the necessary changes. In the case of development for environments such as ComputerCraft with limited debugging support, it's a crucial aid (together with an IDE). Additionally, tests provide a sandbox where errors have limited, easily repaired, consequences.
 

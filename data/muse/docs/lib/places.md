@@ -4,7 +4,7 @@
 --:+ moves: **Move turtles to named places or along named trails.**     
 --:+ steps: **Iterator to move block by block to named places or along named trails.**  
 
---:# **Type definitions that will be serialized for network tansport and disk storage**  
+--:# **Type definitions that will be serialized for network transport and disk storage**  
 
 --:> place: _A point, trail, or range_ -> `[name: ":", label: ":", :situations:, :features:]`  
 

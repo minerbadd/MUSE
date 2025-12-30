@@ -1,0 +1,6 @@
+
+Test simple `move` motions
+
+Test compound operations
+
+Test simple `step` operations

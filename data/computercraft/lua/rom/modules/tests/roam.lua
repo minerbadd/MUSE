@@ -1,4 +1,4 @@
---:? muse/docs/tests/05roam.txt <- **Run Regression Test for Muse** -> muse/docs/tests/05roam.md  
+--:? muse/docs/tests/roam.txt <- **Run Regression Test for Muse** -> muse/docs/tests/roam.md  
 -- **Tests for `lib/roam` ....also needs to be run with `turtle.blocking(true)`**
 
 dofile(arg[0]:match('.*[/\\]').."/_preface.lua");  -- set test environment using `preface` in execution path

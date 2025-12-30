@@ -1,4 +1,4 @@
---:? muse/docs/tests/13field.txt <- **Run Regression Test for Muse** -> muse/docs/tests/13field.md  
+--:? muse/docs/tests/field.txt <- **Run Regression Test for Muse** -> muse/docs/tests/field.md  
 -- Test for field operations
 
 dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using `preface` in execution path

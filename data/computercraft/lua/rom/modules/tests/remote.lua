@@ -1,4 +1,4 @@
---:? muse/docs/tests/14remote.txt <- **Run Regression Test for Muse** -> muse/docs/tests/14remote.md  
+--:? muse/docs/tests/remote.txt <- **Run Regression Test for Muse** -> muse/docs/tests/remote.md  
 -- **Tests for `lib/remote` (out-of-game with `lib/remote` test interfaces)**
 
 dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using `preface` in execution path

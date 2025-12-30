@@ -1,4 +1,4 @@
---:? muse/docs/tests/04turtle.txt <- **Run Regression Test for Muse** -> muse/docs/tests/04turtle.md  
+--:? muse/docs/tests/turtle.txt <- **Run Regression Test for Muse** -> muse/docs/tests/turtle.md  
 -- **Tests for lib/turtle extensions to turtle operations**
 
 dofile(arg[0]:match('.*[/\\]').."/_preface.lua");  -- set test environment using `preface` in execution path
