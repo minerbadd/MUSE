@@ -13,7 +13,6 @@ local check = {}; ---@module "signs.check"
 
 local tests = arg[0]:match('.*[/\\]') -- path to executable calling this library
 local checks = tests.."checks/" -- assumes tests directory structure as `tests/checks`
-local regression = false -- only set when `require` actually loads `check`; set true by running `tests/.regression`
 
 --:# _Set Configuration Variables for tests: landed turtles, default site, tracking, delays, turtle `data` directory_
 _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
@@ -48,37 +47,41 @@ local function expected(testName)
 end
 
 -- poor man's object.... encapsulates but no inheritance (didn't see the need to go there)
-function check.open(testName, text) -- create check object with context variables
+function check.open(testName, text, regression) -- create check object with context variables
   --:: check.open(testName:":", text: ":") -> _Return object(closure)_ -> `{part:():, close:():}` 
   print(text); local priors = not regression and {} or assert(expected(testName), "No prior results for "..testName)
-  local this = {priors = priors, testName = testName} -- instance variables, each check object is independent in itself
+  local this = {priors = priors, testName = testName, regression = regression} -- instance variables
 
-  -- access functions for the `check` object
+  -- access functions for the `check` object, each check object is independent in itself
   local function part(partID, note, ...) -- at each part of the test
-    if not regression then print(note) end
+    if not this.regression then print(note) end
     local partName = tostring(partID); local result, prior = core.string(...), this.priors[partName]
-    if (regression and result ~= prior) then error(result.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
-    if not regression then this.priors[partName] = result; print(result); return end -- save for regression
+    if (this.regression and result ~= prior) then error(result.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
+    if not this.regression then this.priors[partName] = result; print(result); return end -- save for regression
   end
+
+  local function message(...) if not this.regression then print(...) end end
 
   local function close(text) -- at end of test
-    if regression then print(text); this = nil; return end
+    if this.regression then print(text); this = nil; return end
     local serialized, path = core.serialize(this.priors), checks..testName..".lua"
     local handle = assert(io.open(path, "w"), "Can't open "..path.." in check.lua")
-    handle:write(serialized); handle:close(); this = nil
+    handle:write(serialized); handle:close(); this = nil -- for gc
   end
 
-  return {part = part, close = close}
+  return {part = part, close = close, message = message}
 
 end -- check object created by `check.open`
 
-function check.message(text) if not regression then print(text) end end
-
 --:# Run each test in this test directory that has expected results 
-function check.all(testOrder) --:: check.all(testOrder: ":"[]) -> _Run ordered test names for regression._ -> `":"[]`
-  regression = true; for _, testName in ipairs(testOrder) do if expected(test) then dofile(tests..testName..".lua") end end
-  regression = false
--- TODO: maybe catch any thown errors and raise regression failed exception
+function check.regression(testOrder) --:: check.all(testOrder: ":"[]) -> _Run ordered test names for regression._ -> `":"[]`
+  local regression = true
+  for _, testName in ipairs(testOrder) do 
+    if expected(testName) then 
+      local test = assert(loadfile(tests..testName..".lua"), "Failed to load "..testName..".lua")
+      test(regression) -- TODO: maybe catch any thown errors and raise regression failed exception
+    end 
+  end 
 end 
 
 return {check = check}

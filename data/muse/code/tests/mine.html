@@ -15,7 +15,6 @@ dofile(arg[0]:match('.*[/\\]').."/preface.lua");  -- set test environment using 
 local core, place, map, mine = require("core").core, require("places").place, require("map").map, require("mine").mine
 <p>
 map.map (_G.Muse.path.."tests/maps/".."TM.map"); place.site("TM"); core.log.level(2)
---local siteFile = _G.Muse.path.."tests/".."site.txt"
 <p>
 map.write(map.map()); map.op {"test", "neathe", "testing", 100, 70, 200, "east"}; print(0, map.write(map.map()))
 <p>

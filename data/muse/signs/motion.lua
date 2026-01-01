@@ -2,29 +2,16 @@
 
 local  motion, move, step = {}, {}, {}
 
--- situations:  `situation[]`
----@alias situations  situation[] # Tracking history
-
-
 -- facing:  `"north"|"east"|"south"|"west"` 
 ---@alias facing  "north" | "east" | "south" | "west"  # For movement in four NESW cardinal directions
 
 
+-- position:  `{x: #:, y: #:, z: #:}`
+---@alias position { x: number,  y: number,  z: number} # Computercraft co-ordinates (+x east, +y up, +z south)
+
+
 -- stepping:  `(): "done", remaining: #:, xyzf, direction &!recovery`
 ---@alias stepping fun(): "done"  remaining: number  xyzf  direction  # Iterator (default 1 step)
-
-
--- situation.level:  `"same"|"rise"|"fall"`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias situation.level  "same" | "rise" | "fall" # For tracking
-
-
--- recovery:  `[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
----@alias recovery [  string,   string,   string,   number,   xyzf,   direction,   string] # For some errors
-
-
--- situation:  `{:position:, :facing:, fuel: situation.fuel, level: situation.level}`
----@alias situation { position: position,  facing: facing,  fuel: situation.fuel,  level: situation.level} # Dead reckoning
 
 
 -- situation.fuel:  `#:`
@@ -32,8 +19,21 @@ local  motion, move, step = {}, {}, {}
 ---@alias situation.fuel  number # Simulated fuel level checked against reported fuel to validate dead reckoning
 
 
--- position:  `{x: #:, y: #:, z: #:}`
----@alias position { x: number,  y: number,  z: number} # Computercraft co-ordinates (+x east, +y up, +z south)
+-- recovery:  `[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
+---@alias recovery [  string,   string,   string,   number,   xyzf,   direction,   string] # For some errors
+
+
+-- situation.level:  `"same"|"rise"|"fall"`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias situation.level  "same" | "rise" | "fall" # For tracking
+
+
+-- situation:  `{:position:, :facing:, fuel: situation.fuel, level: situation.level}`
+---@alias situation { position: position,  facing: facing,  fuel: situation.fuel,  level: situation.level} # Dead reckoning
+
+
+-- situations:  `situation[]`
+---@alias situations  situation[] # Tracking history
 
 
 -- Count 0: just turn, 1: default
@@ -42,11 +42,11 @@ local  motion, move, step = {}, {}, {}
 ---@type fun( count: number?):    "done"  remaining: number  xyzf  direction 
 function move.right() end
 
--- Current situation to x, z, y, and optionally face. Optional argument_ `first` _is "x", "y", or "z" to select first move in that direction to deal with blockages.
--- move.to(xyzf: xyzf, first: ":"?):  `"done", #:, xyzf &!recovery`  <-
+-- Returns GPS results if available. If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.
+-- move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?):  `x: #:, y: #:, z: #:, facing: ":", ^: ok` <-
 
----@type fun( xyzf: xyzf,  first: string?):   "done"  number  xyzf 
-function move.to() end
+---@type fun( tx: number?,  ty: number?,  tz: number?,  tf: string?):   x: number  y: number  z: number  facing: string  boolean ok 
+function move.where() end
 
 -- Set `_G.Muse.situations` to situations.
 -- move.situations(:situations:):  situations <-
@@ -126,23 +126,17 @@ function move.up() end
 ---@type fun( count: number?):    "done"  remaining: number  xyzf  direction 
 function move.west() end
 
--- Returns GPS results if available. If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.
--- move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?):  `x: #:, y: #:, z: #:, facing: ":", ^: ok` <-
+-- Current situation to x, z, y, and optionally face. Optional argument_ `first` _is "x", "y", or "z" to select first move in that direction to deal with blockages.
+-- move.to(xyzf: xyzf, first: ":"?):  `"done", #:, xyzf &!recovery`  <-
 
----@type fun( tx: number?,  ty: number?,  tz: number?,  tf: string?):   x: number  y: number  z: number  facing: string  boolean ok 
-function move.where() end
+---@type fun( xyzf: xyzf,  first: string?):   "done"  number  xyzf 
+function move.to() end
 
--- Count 0: just turn, 1: default
--- move.moves(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
+-- Clone current situation
+-- move.clone():  situation <-
 
----@type fun( count: number?):    "done"  remaining: number  xyzf  direction 
-function move.moves() end
-
--- Count 0: just turn, 1: default
--- move.south(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
-
----@type fun( count: number?):    "done"  remaining: number  xyzf  direction 
-function move.south() end
+---@type fun(): situation 
+function move.clone() end
 
 -- Set position, optionally rest of situation.
 -- move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???):  `nil` <-
@@ -150,11 +144,17 @@ function move.south() end
 ---@type fun( x: number,  y: number,  z: number,  f: facing?,  fuel: number?,  level: string?):   nil 
 function move.set() end
 
--- Clone current situation
--- move.clone():  situation <-
+-- Count 0: just turn, 1: default
+-- move.south(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
 
----@type fun(): situation 
-function move.clone() end
+---@type fun( count: number?):    "done"  remaining: number  xyzf  direction 
+function move.south() end
+
+-- Count 0: just turn, 1: default
+-- move.moves(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
+
+---@type fun( count: number?):    "done"  remaining: number  xyzf  direction 
+function move.moves() end
 
 -- Default current situation.
 -- move.get(:situation:?):  `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"` <-

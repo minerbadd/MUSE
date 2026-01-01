@@ -2,11 +2,11 @@
 
 local  map = {}
 
--- Remove named place, overwrite local map file
--- map.erase(name: ":"):  `remaining: #:` <-
+-- Get named place local feature value for key.
+-- map.get(name: ":", key: ":"):  `value: any? &!` <-
 
----@type fun( name: string):   remaining: number 
-function map.erase() end
+---@type fun( name: string,  key: string):   value: any? 
+function map.get() end
 
 -- Add points offset from base. Add labelled points using template names and offsets from named base point or top for y-axis.
 -- map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:):  `nil` <-
@@ -44,17 +44,17 @@ function map.point() end
 ---@type fun( name: string,  key: string,  value: any?):    key: string?  value: any | true | nil 
 function map.put() end
 
--- Command Line Interface
--- map.op(commands: ":"[]):  `report: ":" &:` <-
-
----@type fun( commands: string[]):   report: string 
-function map.op() end
-
 -- Instantiate string as named place, include in named places.
 -- map.place(placeString: ":"):  `serial: ":", index: #: &!` <-
 
 ---@type fun( placeString: string):   serial: string  index: number 
 function map.place() end
+
+-- Command Line Interface
+-- map.op(commands: ":"[]):  `report: ":" &:` <-
+
+---@type fun( commands: string[]):   report: string 
+function map.op() end
 
 -- Find orientation using position changes for non-zero movement.
 -- map.testFacing(dx: #:, dz: #:):  `facing: ":" & !` <-
@@ -62,9 +62,11 @@ function map.place() end
 ---@type fun( dx: number,  dz: number):   facing: string 
 function map.testFacing() end
 
--- borders:  {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
----@alias borders { east: number,  west: number,  north: number,  south: number,  top: number,  bottom: number} # Range boundarires
+-- Less generic retrieval interface: gets string feature value.
+-- map.gets(name: ":", key: ":"):  `":"?` <-
 
+---@type fun( name: string,  key: string):   string? 
+function map.gets() end
 
 -- Set string feature value, send MU.
 -- map.puts(name: ":", key: ":", value: ":"?):  `key: ":", value: ":"|true &!` <-
@@ -78,11 +80,9 @@ function map.puts() end
 ---@type fun( range: place):   borders  features  position  position 
 function map.borders() end
 
--- Less generic retrieval interface: gets string feature value.
--- map.gets(name: ":", key: ":"):  `":"?` <-
+-- borders:  {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
+---@alias borders { east: number,  west: number,  north: number,  south: number,  top: number,  bottom: number} # Range boundarires
 
----@type fun( name: string,  key: string):   string? 
-function map.gets() end
 
 -- Append received instantiated MU to local map file_.
 -- map.update(serial: ":"):  `nil &!` <-
@@ -90,9 +90,9 @@ function map.gets() end
 ---@type fun( serial: string):   nil 
 function map.update() end
 
--- Get named place local feature value for key.
--- map.get(name: ":", key: ":"):  `value: any? &!` <-
+-- Remove named place, overwrite local map file
+-- map.erase(name: ":"):  `remaining: #:` <-
 
----@type fun( name: string,  key: string):   value: any? 
-function map.get() end
+---@type fun( name: string):   remaining: number 
+function map.erase() end
 return { map =  map}

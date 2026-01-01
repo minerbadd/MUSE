@@ -15,9 +15,12 @@ local motion = require("motion"); local move, step = motion.move, motion.step --
 
 core.log.level(5) -- just a default, set lower to report less, higher to report more
 
+local regression = ... -- parameter from call by `check.regression` in `lib/check`
+
 local testName = arg[0]:match('(%w-)%.%w-$') -- the last word (without extension) in the execution path
 local text = "Beginning "..testName..".lua test at "..move.ats()
-local test = check.open(testName, text) -- the test object
+local test = check.open(testName, text, regression) -- the test object
+
 
 --:# **Test simple `move` motions**
 test.part(1, "east", move.east())
