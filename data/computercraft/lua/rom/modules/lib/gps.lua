@@ -16,8 +16,8 @@ local places = require("places"); local place = places.place ---@module "signs.p
 
 local peripheral = _G.peripheral
 
-local installs = peripheral and "disk/install.lua" or _G.Muse.path.."tests/.install.lua" --for out-game test
-local startup = peripheral and "disk/startup.lua" or _G.Muse.path.."tests/.startup.lua" --for out-game test
+local installs = peripheral and "disk/install.lua" or _G.Muse.path.."tests/data/.gpsInstall.lua" --for out-game test
+local startup = peripheral and "disk/startup.lua" or _G.Muse.path.."tests/data/.gpsStartup.lua" --for out-game test
 
 local computer, modem = "computercraft:computer_advanced", "computercraft:wireless_modem_advanced" -- ender
 local drive, floppy  = "computercraft:disk_drive", "computercraft:disk"

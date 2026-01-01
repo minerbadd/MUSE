@@ -8,14 +8,12 @@
 
 _G.Muse = _G.Muse or {}; _G.Muse.path = "rom/modules/"
 
-local core = require("core").core ---@module "signs.core"
+local lfs = require("lfs"); local core = require("core").core ---@module "signs.core"
 local check = {}; ---@module "signs.check"  
 
-local here = _G.Muse.path.."tests/" -- arg[0]:match('.*[/\\]') -- path to executable calling this library
-_G.Muse.data = here.."data/"  -- for test environment separate from game environment
-_G.Muse.checks = here.."checks/" -- assumes tests directory structure so: `tests/checks`
-_G.Muse.tests = "muse" -- regression suite (file in `tests/checks` holding names of tests with expected values)
-_G.Muse.regression = false -- set true by running `tests/.regression`
+local tests = arg[0]:match('.*[/\\]') -- path to executable calling this library
+local checks = tests.."checks/" -- assumes tests directory structure as `tests/checks`
+local regression = false -- only set when `require` actually loads `check`; set true by running `tests/.regression`
 
 --:# _Set Configuration Variables for tests: landed turtles, default site, tracking, delays, turtle `data` directory_
 _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
@@ -28,6 +26,7 @@ _G.Muse.rates = {}; _G.Muse.rates.headings = 5; _G.Muse.rates.tail = 0.5
 _G.Muse.permutations = {"y", "z", "x"} -- controlling axes order in permutations
 -- {"y", "z", "x"} -> z x y, x z y, x y z, y x z, z y x, y z x
 -- {"x", "y", "z"} -> y z x, z y x, z x y, x z y, y x z, x y z
+_G.Muse.data = tests.."data/"  -- for test environment separate from game environment
 --[[
 ```
 <a id="tests"></a>
@@ -35,72 +34,51 @@ There's not much here. Just a way with `check.open` to create a `check` object w
 
 _(The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> `poor man's objects`</a>. This link dumps you into a theory heavy digression. Go there when you're ready for that.)_
 
-For MUSE, all this is enabled by files in a specified `checks` directory. Here's how that's structured. One file there, the `testSetName` in the `testSetTablePath` directory instantiates (when loaded) as a table keyed by names of test files. The keyed values are names of results files. These are found at the `testPartsResultsPath` (in the `testSetTablePath` directory) for the given test. The results files instantiate when loaded as tables of result strings keyed by part identifiers (as strings) in the test.
+For MUSE, all this is enabled by files in a specified `checks` directory. The expected results from the previous run of a test are found in the file in that directory for the given test. The results files instantiate when loaded as tables of result strings keyed by part identifiers (as strings) in the test.
 ```Lua
 --]]
-local function save(theTable, path) -- utility
-  local serialized = core.serialize(theTable)
-  local handle = assert(io.open(path, "w"), "Can't open "..path.." in check.lua")
-  handle:write(serialized); handle:close()
-end
 
-local function getTestSetTable(testSetTablePath, testSetName) -- returns testSetTable: , newTestSetTable: boolean
-  -- `testSetTable`: `testName` keyed names of files with expected results for regressions in `testSetTablePath` directory
-  local openedTestSetTable, failure = loadfile(testSetTablePath..testSetName)
-  if openedTestSetTable then return openedTestSetTable(), false end -- testSetTable, newTestSetTable
-  if _G.Muse.regression and not openedTestSetTable then error("No test set results in "..testSetTablePath..", "..failure) end
-  if not _G.Muse.regression and not openedTestSetTable then return {}, true end -- testSetTable, newTestSetTable
-end
-
-local function getTestPartsResults(testSetTablePath, testSetTable, testName)
-  -- `testPartsResults`:expected values (as strings) for regression keyed by `partID` of test (as string)
-  local testPartsResultsPath = testSetTablePath..testSetTable[testName]
-  local openedTestPartResults, failure = loadfile(testPartsResultsPath)
-  if _G.Muse.regression and not openedTestPartResults then -- no expected results file for test!
-    error("No results for "..testName.." in "..testPartsResultsPath..", "..failure) 
-  end
-  return not openedTestPartResults and {} or openedTestPartResults() -- testPartResults
-end
-
-local function open(testSetTablePath, testSetName, testName, text) -- `testSetTablePath` is e.g. <checks directory path>
-  print(text); local testSetTable, newTestSetTable = getTestSetTable(testSetTablePath..testSetName)
-  -- `testSetTable` keys are test names for which regression is valid in test set, values are names of files with test results
-  return getTestPartsResults(testSetTablePath, testSetTable, testName), testSetTable, newTestSetTable -- testPartResults, ...
+local function expected(testName)
+  assert(lfs.chdir(tests), "No tests directory here: "..tests) -- make a checks directory if needed
+  assert((io.open(checks, "r") or lfs.mkdir("checks")), "Can't make tests/check/ in "..tests)
+  local resultsFileName = checks..testName..".lua"
+  local resultsFunction = io.open(resultsFileName, "r") and loadfile(resultsFileName)
+  local priors = resultsFunction and resultsFunction()
+  return priors
 end
 
 -- poor man's object.... encapsulates but no inheritance (didn't see the need to go there)
-function check.open(theTestSetTablePath, theTestSetName, theTestName) -- create check object with context variables
-  --:: check.open(theTestSetTablePath:":", theTestSetName:":", theTestName:":") -> _Return object(closure)_ -> `{part:():, close:():}`
-  local testPartResults, testSetTable, newTestSetTable = open(theTestSetTablePath, theTestSetName, theTestName) 
-  local this = { -- context (instance) variables, each check object is independent in itself
-    testPartResults = testPartResults, testSetTable = testSetTable, newTestSetTable = newTestSetTable,
-    testSetTablePath = theTestSetTablePath, testSetName = theTestSetName, testName = theTestName
-  } -- following are the access functions for the `check` object
+function check.open(testName, text) -- create check object with context variables
+  --:: check.open(testName:":", text: ":") -> _Return object(closure)_ -> `{part:():, close:():}` 
+  print(text); local priors = not regression and {} or assert(expected(testName), "No prior results for "..testName)
+  local this = {priors = priors, testName = testName} -- instance variables, each check object is independent in itself
 
-  local function part(testName, partID, note, ...) -- at each part of the test
-    local partName = tostring(partID); local result, expected = core.string(...), this.testPartResults[partName]
-    if (_G.Muse.regression and result ~= expected) then error(result.." ~= "..expected..", "..this.testName..":"..partName) end
-    if not _G.Muse.regression then this.testPartResults[partName] = result; print(result); return end -- save for regression
+  -- access functions for the `check` object
+  local function part(partID, note, ...) -- at each part of the test
+    if not regression then print(note) end
+    local partName = tostring(partID); local result, prior = core.string(...), this.priors[partName]
+    if (regression and result ~= prior) then error(result.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
+    if not regression then this.priors[partName] = result; print(result); return end -- save for regression
   end
 
   local function close(text) -- at end of test
-    if _G.Muse.regression then print(text); return end
-    if this.newTestSetTable then save(this.testSetTable, this.testSetTablePath..this.testSetName) end
-    save(this.testPartResults, this.testSetTablePath..this.testSetTable[this.testName])
-    this = nil -- free up now for GC
+    if regression then print(text); this = nil; return end
+    local serialized, path = core.serialize(this.priors), checks..testName..".lua"
+    local handle = assert(io.open(path, "w"), "Can't open "..path.." in check.lua")
+    handle:write(serialized); handle:close(); this = nil
   end
 
-  local function message(text) if not _G.Muse.regression then print(text) end end
+  return {part = part, close = close}
 
-  return {part = part, close = close, message = message}
 end -- check object created by `check.open`
 
-function check.tests(testOrder, testSetTablePath, testSetName) 
-  --:: check.tests(testOrder: ":"[], testSetTablePath:":", testSetName:":") -> _Return ordered test names for regression._ -> `":"[]`
-  local tests = {}; for _, testName in ipairs(testOrder) do -- testSetTable: [testName: ":"]: expecteds: ":"[]
-    local testSetTable = getTestSetTable(testSetTablePath, testSetName) -- expected results for tests in set
-    if testSetTable[testName] then tests[#tests + 1] = testName end
-  end; return tests
-end
+function check.message(text) if not regression then print(text) end end
+
+--:# Run each test in this test directory that has expected results 
+function check.all(testOrder) --:: check.all(testOrder: ":"[]) -> _Run ordered test names for regression._ -> `":"[]`
+  regression = true; for _, testName in ipairs(testOrder) do if expected(test) then dofile(tests..testName..".lua") end end
+  regression = false
+-- TODO: maybe catch any thown errors and raise regression failed exception
+end 
 
 return {check = check}
