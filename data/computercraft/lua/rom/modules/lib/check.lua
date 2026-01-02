@@ -11,8 +11,8 @@ _G.Muse = _G.Muse or {}; _G.Muse.path = "rom/modules/"
 local lfs = require("lfs"); local core = require("core").core ---@module "signs.core"
 local check = {}; ---@module "signs.check"  
 
-local tests = arg[0]:match('.*[/\\]') -- path to executable calling this library
-local checks = tests.."checks/" -- assumes tests directory structure as `tests/checks`
+local tests = arg[0]:match('.*[/\\]') --:# Get path to executable calling this library
+local checks = tests.."checks/" --:# Assumes tests directory structure as `tests/checks`
 
 --:# _Set Configuration Variables for tests: landed turtles, default site, tracking, delays, turtle `data` directory_
 _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
@@ -29,7 +29,7 @@ _G.Muse.data = tests.."data/"  -- for test environment separate from game enviro
 --[[
 ```
 <a id="tests"></a>
-There's not much here. Just a way with `check.open` to create a `check` object with the context needed to save results by the `part` operation for each part of a given test. Those _expected_ results are compared with actuals during a regression validation. There's a cleanup operation to `close` the opened `check` object. Finally, `check.tests` is provides the file names of tests in a specified order for which there are _expected_ values for regression testing.
+There's an example here, `check.open`, of what's called _a poor man's object_. The function creates what can be thought of as a `check` object with the context needed to save (and compare) results by the `part` "method" for each part of a given test. Those _expected_ results are compared with actuals during a regression validation. There's a cleanup operation to `close` the opened `check` object. 
 
 _(The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> `poor man's objects`</a>. This link dumps you into a theory heavy digression. Go there when you're ready for that.)_
 
@@ -37,24 +37,24 @@ For MUSE, all this is enabled by files in a specified `checks` directory. The ex
 ```Lua
 --]]
 
-local function expected(testName)
+local function expected(testName) --:# Find results (if any) from a previous test.
   assert(lfs.chdir(tests), "No tests directory here: "..tests) -- make a checks directory if needed
   assert((io.open(checks, "r") or lfs.mkdir("checks")), "Can't make tests/check/ in "..tests)
   local resultsFileName = checks..testName..".lua"
   local resultsFunction = io.open(resultsFileName, "r") and loadfile(resultsFileName)
   local priors = resultsFunction and resultsFunction()
-  return priors
+  return priors -- if any
 end
 
--- poor man's object.... encapsulates but no inheritance (didn't see the need to go there)
+--:# The poor man's object.... encapsulates but provides no inheritance facilities (didn't see the need to go there)
 function check.open(testName, text, regression) -- create check object with context variables
-  --:: check.open(testName:":", text: ":") -> _Return object(closure)_ -> `{part:():, close:():}` 
+  --:: check.open(testName:":", text: ":") -> _Return object(closure)_ -> `{part:():, message:(): , close:():}` 
   print(text); local priors = not regression and {} or assert(expected(testName), "No prior results for "..testName)
   local this = {priors = priors, testName = testName, regression = regression} -- instance variables
 
-  -- access functions for the `check` object, each check object is independent in itself
+  --:# Access functions for the `check` object, each check object is independent in itself
   local function part(partID, note, ...) -- at each part of the test
-    if not this.regression then print(note) end
+    if not this.regression then print(note) end -- verbose if not regression
     local partName = tostring(partID); local result, prior = core.string(...), this.priors[partName]
     if (this.regression and result ~= prior) then error(result.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
     if not this.regression then this.priors[partName] = result; print(result); return end -- save for regression
@@ -69,17 +69,17 @@ function check.open(testName, text, regression) -- create check object with cont
     handle:write(serialized); handle:close(); this = nil -- for gc
   end
 
-  return {part = part, close = close, message = message}
+  return {part = part, message = message, close = close}
 
 end -- check object created by `check.open`
 
 --:# Run each test in this test directory that has expected results 
-function check.regression(testOrder) --:: check.all(testOrder: ":"[]) -> _Run ordered test names for regression._ -> `":"[]`
-  local regression = true
-  for _, testName in ipairs(testOrder) do 
-    if expected(testName) then 
+function check.regression(testOrder) --:: check.regression(testOrder: ":"[]) -> _Run ordered test names for regression._ -> `":"[]`
+  local regression = true -- not the one in the `check` object
+  for _, testName in ipairs(testOrder) do --:# Order to run tests comes from `tests/.regression`.
+    if expected(testName) then -- TODO: maybe catch any thown errors and raise regression failed exception
       local test = assert(loadfile(tests..testName..".lua"), "Failed to load "..testName..".lua")
-      test(regression) -- TODO: maybe catch any thown errors and raise regression failed exception
+      test(regression) --:# Load test with `regression` parameter `true`. Apply `check.open` in test with this parameter.
     end 
   end 
 end 

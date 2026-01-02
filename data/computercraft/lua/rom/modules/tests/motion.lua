@@ -3,24 +3,22 @@
 
 So here we are, exploring our first MUSE test. It is meant to fit into the MUSE regression jig implemented by `lib/check`. It's neither a library nor a ComputerCraft program. It is an executable though. Just execute it as you would any Lua program. 
 
-The HELP file mark below specifies that there will be a help text file and a summary markdown document. The markdown document will be processed to produce an html file describing the test using the HEAD comments in the test.
+The HELP file mark above specifies that there will be a help text file and a summary markdown document. The markdown document will be processed to produce an html file describing the test using the HEAD comments in the test.
 
 ```Lua
 --]]
---:? muse/docs/tests/motion.txt <- **Test `lib/motion`** -> muse/docs/tests/motion.md  
-local check = require("check").check -- sets configuration globals for tests
+--:? muse/docs/tests/motion.txt <- **Test `lib/motion`** -> muse/docs/tests/motion.md 
+local check = require("check").check --:# Set configuration globals for tests by loading `lib/check`
 
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
 
-core.log.level(5) -- just a default, set lower to report less, higher to report more
+local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
+core.log.level(regression and 0 or 5) --:# Set log level default. Set lower to report less, higher to report more
 
-local regression = ... -- parameter from call by `check.regression` in `lib/check`
-
-local testName = arg[0]:match('(%w-)%.%w-$') -- the last word (without extension) in the execution path
+local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind `testName` as the last word (without extension) in the execution path
 local text = "Beginning "..testName..".lua test at "..move.ats()
-local test = check.open(testName, text, regression) -- the test object
-
+local test = check.open(testName, text, regression) --:# Create the test object for this test
 
 --:# **Test simple `move` motions**
 test.part(1, "east", move.east())
@@ -59,19 +57,18 @@ local north = 21; for code, remaining, ats in step.north(3) do north = north + 0
   test.part(north, "step.north(3)", code, remaining, ats)
 end
 
+--:# Test `step` iterator
 local more = step.forward(3)
-
 test.part(22, "steps 1 forward 3", more(), move.ats())
 test.part(23, "steps 2 forward 3", more(), move.ats())
 test.part(24, "steps 3 forward 3", more(), move.ats())
 test.part(25, "steps 4 forward 3", more(), move.ats()) 
 
-test.part(26, "step to 105 156 207 west")
-
+--:# Check "step.to 105 156 207 west")
 local stepping = 26
 for code, remaining, at, direction, all in step.to({105, 156, 207}) do stepping = stepping + 0.001
   check.message(stepping, code, remaining, core.string(at), direction, all)
-end  
-test.part(28, "stepped to", core.ats())
+end; test.part(28, "stepped to", core.ats())
 
+--:# Close test object, report completion if we got here without errors
 test.close("Test "..testName.." complete") 

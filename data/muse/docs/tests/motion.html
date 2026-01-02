@@ -6,13 +6,29 @@
 <body>
 <pre>
 
---:? muse/docs/tests/motion.txt <- <b>Test <code>lib/motion</code></b> -> muse/docs/tests/motion.md    
+--:? muse/docs/tests/motion.txt <- <b>Test <code>lib/motion</code></b> -> muse/docs/tests/motion.md   
+
+--:# Set configuration globals for tests by loading <code>lib/check</code>  
+
+--:# Bind <code>regression</code> parameter <code>true</code> from call by <code>check.regression</code> in <code>lib/check</code>; otherwise <code>nil</code>  
+
+--:# Set log level default. Set lower to report less, higher to report more  
+
+--:# Bind <code>testName</code> as the last word (without extension) in the execution path  
+
+--:# Create the test object for this test  
 
 --:# <b>Test simple <code>move</code> motions</b>  
 
 --:# <b>Test compound operations</b>  
 
 --:# <b>Test simple <code>step</code> operations</b>  
+
+--:# Test <code>step</code> iterator  
+
+--:# Check "step.to 105 156 207 west")  
+
+--:# Close test object, report completion if we got here without errors  
 
     </pre>
   </body> 

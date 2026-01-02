@@ -19,8 +19,8 @@ _G.Muse = _G.Muse or {}; _G.Muse.path = "rom/modules/"
 local lfs = require("lfs"); local core = require("core").core ---@module "signs.core"
 local check = {}; ---@module "signs.check"  
 
-local tests = arg[0]:match('.*[/\\]') -- path to executable calling this library
-local checks = tests.."checks/" -- assumes tests directory structure as <code>tests/checks</code>
+local tests = arg[0]:match('.*[/\\]') --:# Get path to executable calling this library
+local checks = tests.."checks/" --:# Assumes tests directory structure as <code>tests/checks</code>
 
 --:# <i>Set Configuration Variables for tests: landed turtles, default site, tracking, delays, turtle <code>data</code> directory</i>
 _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
@@ -36,31 +36,31 @@ _G.Muse.permutations = {"y", "z", "x"} -- controlling axes order in permutations
 _G.Muse.data = tests.."data/"  -- for test environment separate from game environment
 </code></pre>
 <a id="tests"></a>
-There's not much here. Just a way with <code>check.open</code> to create a <code>check</code> object with the context needed to save results by the <code>part</code> operation for each part of a given test. Those <i>expected</i> results are compared with actuals during a regression validation. There's a cleanup operation to <code>close</code> the opened <code>check</code> object. Finally, <code>check.tests</code> is provides the file names of tests in a specified order for which there are <i>expected</i> values for regression testing.
+There's an example here, <code>check.open</code>, of what's called <i>a poor man's object</i>. The function creates what can be thought of as a <code>check</code> object with the context needed to save (and compare) results by the <code>part</code> "method" for each part of a given test. Those <i>expected</i> results are compared with actuals during a regression validation. There's a cleanup operation to <code>close</code> the opened <code>check</code> object. 
 <p>
 <i>(The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> <code>poor man's objects</code></a>. This link dumps you into a theory heavy digression. Go there when you're ready for that.)</i>
 <p>
 For MUSE, all this is enabled by files in a specified <code>checks</code> directory. The expected results from the previous run of a test are found in the file in that directory for the given test. The results files instantiate when loaded as tables of result strings keyed by part identifiers (as strings) in the test.
 <pre><code class="language-lua">
 
-local function expected(testName)
+local function expected(testName) --:# Find results (if any) from a previous test.
   assert(lfs.chdir(tests), "No tests directory here: "..tests) -- make a checks directory if needed
   assert((io.open(checks, "r") or lfs.mkdir("checks")), "Can't make tests/check/ in "..tests)
   local resultsFileName = checks..testName..".lua"
   local resultsFunction = io.open(resultsFileName, "r") and loadfile(resultsFileName)
   local priors = resultsFunction and resultsFunction()
-  return priors
+  return priors -- if any
 end
 
--- poor man's object.... encapsulates but no inheritance (didn't see the need to go there)
+--:# The poor man's object.... encapsulates but provides no inheritance facilities (didn't see the need to go there)
 function check.open(testName, text, regression) -- create check object with context variables
-  --:: check.open(testName:":", text: ":") -> <i>Return object(closure)</i> -> <code>{part:():, close:():}</code> 
+  --:: check.open(testName:":", text: ":") -> <i>Return object(closure)</i> -> <code>{part:():, message:(): , close:():}</code> 
   print(text); local priors = not regression and {} or assert(expected(testName), "No prior results for "..testName)
   local this = {priors = priors, testName = testName, regression = regression} -- instance variables
 
-  -- access functions for the <code>check</code> object, each check object is independent in itself
+  --:# Access functions for the <code>check</code> object, each check object is independent in itself
   local function part(partID, note, ...) -- at each part of the test
-    if not this.regression then print(note) end
+    if not this.regression then print(note) end -- verbose if not regression
     local partName = tostring(partID); local result, prior = core.string(...), this.priors[partName]
     if (this.regression and result ~= prior) then error(result.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
     if not this.regression then this.priors[partName] = result; print(result); return end -- save for regression
@@ -75,17 +75,17 @@ function check.open(testName, text, regression) -- create check object with cont
     handle:write(serialized); handle:close(); this = nil -- for gc
   end
 
-  return {part = part, close = close, message = message}
+  return {part = part, message = message, close = close}
 
 end -- check object created by <code>check.open</code>
 
 --:# Run each test in this test directory that has expected results 
-function check.regression(testOrder) --:: check.all(testOrder: ":"[]) -> <i>Run ordered test names for regression.</i> -> <code>":"[]</code>
-  local regression = true
-  for _, testName in ipairs(testOrder) do 
-    if expected(testName) then 
+function check.regression(testOrder) --:: check.regression(testOrder: ":"[]) -> <i>Run ordered test names for regression.</i> -> <code>":"[]</code>
+  local regression = true -- not the one in the <code>check</code> object
+  for _, testName in ipairs(testOrder) do --:# Order to run tests comes from <code>tests/.regression</code>.
+    if expected(testName) then -- TODO: maybe catch any thown errors and raise regression failed exception
       local test = assert(loadfile(tests..testName..".lua"), "Failed to load "..testName..".lua")
-      test(regression) -- TODO: maybe catch any thown errors and raise regression failed exception
+      test(regression) --:# Load test with <code>regression</code> parameter <code>true</code>. Apply <code>check.open</code> in test with this parameter.
     end 
   end 
 end 

@@ -1,10 +1,10 @@
 return {
-  ["__remote.testCome:_"] = {
-  ["line"] = "  --:: `_remote.testCome(turtle: \":\", command: \":\")` -> _On client:_ -> `turtle: \":\", command: \":\", xyz, ^:`",
+  ["_planner.load:_"] = {
+  ["line"] = "  --:: planner.load(planFileName: \":\") -> _Instantiates what is returned from a plan file._ -> `plan &!` ",
   ["kind"] = "face",
-  ["sign"] = "`_remote.testCome(turtle: \":\", command: \":\")`  ",
-  ["out"] = " `turtle: \":\", command: \":\", xyz, ^:`",
-  ["text"] = "On client:",
+  ["sign"] = "planner.load(planFileName: \":\")  ",
+  ["out"] = " `plan &!` ",
+  ["text"] = "Instantiates what is returned from a plan file.",
 }
 ,
   ["_join_"] = {
@@ -70,11 +70,12 @@ Tasks",
   ["text"] = "Dig shaft",
 }
 ,
-  ["_port_"] = {
-  ["line"] = "--:- port booking -> _As laid out in booking, consume player inventory to teleport entities from one area to another._",
-  ["sign"] = "port booking  ",
-  ["text"] = "As laid out in booking, consume player inventory to teleport entities from one area to another.",
-  ["kind"] = "cli",
+  [" places"] = {
+  ["type"] = "lib",
+  ["name"] = " places",
+  ["childs"] = {
+}
+,
 }
 ,
   ["_core.clone:_"] = {
@@ -132,12 +133,11 @@ Tasks",
   ["kind"] = "cli",
 }
 ,
-  ["__remote.clientResult:_"] = {
-  ["line"] = "  --:: `_remote.clientResult(serverID: #:, resultString: \":\", callback: ():)` -> _Apply callback to deserialized client result._ -> `any`",
-  ["kind"] = "face",
-  ["sign"] = "`_remote.clientResult(serverID: #:, resultString: \":\", callback: ():)`  ",
-  ["out"] = " `any`",
-  ["text"] = "Apply callback to deserialized client result.",
+  ["_cover_"] = {
+  ["line"] = "--:- cover range firstPlot? lastPlot?? -> _Replace field material (for tree farm grid)._",
+  ["sign"] = "cover range firstPlot? lastPlot??  ",
+  ["kind"] = "cli",
+  ["text"] = "Replace field material (for tree farm grid).",
 }
 ,
   ["map"] = {
@@ -363,18 +363,18 @@ Orientation and position reporting, broadcast and persistence of places_ -> map"
   ["text"] = "Iterator for permutations of array",
 }
 ,
-  ["__field.runElements:_"] = {
-  ["line"] = "  --:: `_field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz])` -> _Fly ox._ -> `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`",
-  ["out"] = " `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`",
-  ["sign"] = "`_field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz])`  ",
+  ["_worker.execute:_"] = {
+  ["line"] = "--:: worker.execute(plan, pathOperations, fuelOK: ^:, pathDistance: #:) -> _Do plan._ ->  `\"done\", report: \":\" &: &!`",
   ["kind"] = "face",
-  ["text"] = "Fly ox.",
+  ["sign"] = "worker.execute(plan, pathOperations, fuelOK: ^:, pathDistance: #:)  ",
+  ["out"] = "  `\"done\", report: \":\" &: &!`",
+  ["text"] = "Do plan.",
 }
 ,
-  ["_move.down:_"] = {
-  ["line"] = "--:: move.down(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
+  ["_move.east:_"] = {
+  ["line"] = "--:: move.east(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
   ["kind"] = "face",
-  ["sign"] = "move.down(count: #:?)  ",
+  ["sign"] = "move.east(count: #:?)  ",
   ["out"] = "  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
   ["text"] = "Count 0: just turn, 1: default",
 }
@@ -418,12 +418,12 @@ Orientation and position reporting, broadcast and persistence of places_ -> map"
   ["kind"] = "cli",
 }
 ,
-  ["_moves.along:_"] = {
-  ["line"] = "--:: moves.along(name: \":\") -> _Move from first to second situation of place._ -> `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["sign"] = "moves.along(name: \":\")  ",
+  ["_move.situations:_"] = {
+  ["line"] = "--:: move.situations(:situations:) -> _Set `_G.Muse.situations` to situations._ -> situations",
+  ["out"] = " situations",
+  ["sign"] = "move.situations(:situations:)  ",
   ["kind"] = "face",
-  ["text"] = "Move from first to second situation of place.",
+  ["text"] = "Set `_G.Muse.situations` to situations.",
 }
 ,
   ["_field.extents:_"] = {
@@ -775,12 +775,12 @@ CLL to align MUSE location with Minecraft coordinates and activate a range as a 
   ["text"] = "Next integer down if below half fraction",
 }
 ,
-  ["_core.state:_"] = {
-  ["line"] = "  --:: core.state(table: {:}?, key: \":\"?) -> _Returns closure over closure variable_ -> `closing`",
-  ["out"] = " `closing`",
-  ["sign"] = "core.state(table: {:}?, key: \":\"?)  ",
+  ["_core.findItems:_"] = {
+  ["line"] = "  --:: core.findItems(targets: \":\"[]) -> _Selects found slot._ -> `detail?`",
+  ["out"] = " `detail?`",
+  ["sign"] = "core.findItems(targets: \":\"[])  ",
   ["kind"] = "face",
-  ["text"] = "Returns closure over closure variable",
+  ["text"] = "Selects found slot.",
 }
 ,
   ["_trail_"] = {
@@ -937,12 +937,11 @@ Client and server side support for RPCs and client (player) side support for_ `c
   ["text"] = "Navigate to post",
 }
 ,
-  ["_move.get:_"] = {
-  ["line"] = "  --:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: \":\", fuel: #:, level: \":\"`",
-  ["out"] = " `x: #:, y: #:, z: #:, facing: \":\", fuel: #:, level: \":\"`",
-  ["sign"] = "move.get(:situation:?)  ",
-  ["kind"] = "face",
-  ["text"] = "Default current situation.",
+  ["_quarry_"] = {
+  ["line"] = "--:- quarry range firstPlot? lastPlot?? -> _Dig out the field to level it._",
+  ["sign"] = "quarry range firstPlot? lastPlot??  ",
+  ["kind"] = "cli",
+  ["text"] = "Dig out the field to level it.",
 }
 ,
   ["motion"] = {
@@ -1021,12 +1020,12 @@ For movement in four NESW cardinal directions",
 Libraries to move turtles and move turtles by steps allowing operations at each step._ -> motion, move, step move: **Position setting, tracking, and reporting by dead reckoning checked by fuel consumption. step: **Iterators (closures) for moving block by block, potentially doing operations at each block.",
 }
 ,
-  ["_core.match:_"] = {
-  ["line"] = "  --:: core.match(tableA: any[], tableB: any[]) -> _Find first matching item in pair of item tables._ -> `nil` | `any`",
-  ["out"] = " `nil` | `any`",
-  ["sign"] = "core.match(tableA: any[], tableB: any[])  ",
+  ["__remote.prepareCall:_"] = {
+  ["line"] = "--:: `_remote.prepareCall(server: \":\", command: \":\", arguments: any[])` -> _Serialize server request._ -> `serverID: #:, request: \":\" &: &!`",
   ["kind"] = "face",
-  ["text"] = "Find first matching item in pair of item tables.",
+  ["sign"] = "`_remote.prepareCall(server: \":\", command: \":\", arguments: any[])`  ",
+  ["out"] = " `serverID: #:, request: \":\" &: &!`",
+  ["text"] = "Serialize server request.",
 }
 ,
   ["_gps"] = {
@@ -1119,12 +1118,12 @@ Check before journey then launch.",
   ["text"] = "Quarry out blocks from one place to the other.",
 }
 ,
-  ["_steps.to:_"] = {
-  ["line"] = "  --:: steps.to(target: \":\") -> _Step (iterator) to target place._ -> `(): code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["out"] = " `(): code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["sign"] = "steps.to(target: \":\")  ",
+  ["_remote.come:_"] = {
+  ["line"] = "  --:: remote.come(turtle: \":\") -> _Towards GPS player position._ -> `report: \":\"`",
   ["kind"] = "face",
-  ["text"] = "Step (iterator) to target place.",
+  ["sign"] = "remote.come(turtle: \":\")  ",
+  ["out"] = " `report: \":\"`",
+  ["text"] = "Towards GPS player position.",
 }
 ,
   ["_map.read:_"] = {
@@ -1432,12 +1431,12 @@ Default current situation.",
   ["text"] = "Command Line Interface for teleport book and trip:",
 }
 ,
-  ["_turtle.check:_"] = {
-  ["line"] = "  --:: turtle.check(targets: \":\"[], :detail:) -> _Tries to match each target against_ `detail.name`. -> ``matched: ^:`",
-  ["out"] = " ``matched: ^:`",
-  ["sign"] = "turtle.check(targets: \":\"[], :detail:)  ",
+  ["_move.clones:_"] = {
+  ["line"] = "--:: move.clones() -> _Deep copy `_G.Muse.situations`._ ->  situations",
+  ["out"] = "  situations",
+  ["sign"] = "move.clones()  ",
   ["kind"] = "face",
-  ["text"] = "Tries to match each target against_ `detail.name`.",
+  ["text"] = "Deep copy `_G.Muse.situations`.",
 }
 ,
   ["_items_"] = {
@@ -1659,11 +1658,11 @@ CLL for `book` and `port` commands assessing and clearing player inventory for s
   ["text"] = "Go to marker and bore",
 }
 ,
-  ["_move.moves:_"] = {
-  ["line"] = "--:: move.moves(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
-  ["out"] = "  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
-  ["sign"] = "move.moves(count: #:?)  ",
+  ["_move.west:_"] = {
+  ["line"] = "--:: move.west(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
   ["kind"] = "face",
+  ["sign"] = "move.west(count: #:?)  ",
+  ["out"] = "  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
   ["text"] = "Count 0: just turn, 1: default",
 }
 ,
@@ -1754,12 +1753,12 @@ CLL for `book` and `port` commands assessing and clearing player inventory for s
   ["text"] = "Tasks",
 }
 ,
-  ["_dds.hosts:_"] = {
-  ["line"] = "  --:: dds.hosts() -> _Populates players IDs and labels using a MQ rednet protocol._ -> `IDs, roles`",
+  ["_core.optionals:_"] = {
+  ["line"] = "  --:: core.optionals(string: \":\"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: \":\"?, number: #:?, ...: any`",
+  ["out"] = " `string: \":\"?, number: #:?, ...: any`",
+  ["sign"] = "core.optionals(string: \":\"?, number: #:?, ...: any)  ",
   ["kind"] = "face",
-  ["sign"] = "dds.hosts()  ",
-  ["out"] = " `IDs, roles`",
-  ["text"] = "Populates players IDs and labels using a MQ rednet protocol.",
+  ["text"] = "Optional number and/or string.",
 }
 ,
   ["_trace_"] = {
@@ -1809,10 +1808,10 @@ CLL for `book` and `port` commands assessing and clearing player inventory for s
 }
 ,
   ["_check.open:_"] = {
-  ["line"] = "  --:: check.open(testName:\":\", text: \":\") -> _Return object(closure)_ -> `{part:():, close:():}` ",
+  ["line"] = "  --:: check.open(testName:\":\", text: \":\") -> _Return object(closure)_ -> `{part:():, message:(): , close:():}` ",
   ["kind"] = "face",
   ["sign"] = "check.open(testName:\":\", text: \":\")  ",
-  ["out"] = " `{part:():, close:():}` ",
+  ["out"] = " `{part:():, message:(): , close:():}` ",
   ["text"] = "Return object(closure)",
 }
 ,
@@ -1909,12 +1908,11 @@ Go to marker and bore Use shaft plans and bore plans to navigate to marker, bore
   ["text"] = "Pass input but report string if not ok.",
 }
 ,
-  ["_place.name:_"] = {
-  ["line"] = "  --:: place.name(name: \":\", label: \":\", supplied: situation?, :features:??) -> _Make or update place._ -> `\":\", #:`",
-  ["out"] = " `\":\", #:`",
-  ["sign"] = "place.name(name: \":\", label: \":\", supplied: situation?, :features:??)  ",
-  ["kind"] = "face",
-  ["text"] = "Make or update place.",
+  ["_actuate_"] = {
+  ["line"] = "  --:- actuate direction -> _Move around to boot direction named GPS host and retrieve floppy (for testing)._ ",
+  ["sign"] = "actuate direction  ",
+  ["kind"] = "cli",
+  ["text"] = "Move around to boot direction named GPS host and retrieve floppy (for testing).",
 }
 ,
   ["_turtle.unblock:_"] = {
@@ -2033,6 +2031,14 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
   ["sign"] = "core.serialize(input: any)  ",
   ["kind"] = "face",
   ["text"] = "Executable string to instantiate input.",
+}
+,
+  ["_check.regression:_"] = {
+  ["line"] = "function check.regression(testOrder) --:: check.regression(testOrder: \":\"[]) -> _Run ordered test names for regression._ -> `\":\"[]`",
+  ["kind"] = "face",
+  ["sign"] = "check.regression(testOrder: \":\"[])  ",
+  ["out"] = " `\":\"[]`",
+  ["text"] = "Run ordered test names for regression.",
 }
 ,
   ["_map.write:_"] = {
@@ -2445,19 +2451,34 @@ Fields are rectangular solids defined by a range (a `situation` pair with `field
   ["text"] = "Parse marker name into parts.",
 }
 ,
-  [" net"] = {
-  ["type"] = "lib",
-  ["name"] = " net",
+  ["_turtle.category:_"] = {
+  ["line"] = "--:: turtle.category(name: \":\") -> _Names in category or fencings matching `name` or_ `{\"minecraft:\"..name}`. -> `\":\"[]` ",
+  ["out"] = " `\":\"[]` ",
+  ["sign"] = "turtle.category(name: \":\")  ",
+  ["kind"] = "face",
+  ["text"] = "Names in category or fencings matching `name` or_ `{\"minecraft:\"..name}`.",
+}
+,
+  ["worker"] = {
   ["childs"] = {
+  ["execute"] = {
+  ["returns"] = "  `\"done\", report: \":\" &: &!` <-\
+",
+  ["args"] = "plan, pathOperations, fuelOK: ^:, pathDistance: #:",
+  ["type"] = "function",
+  ["name"] = "worker.execute",
+  ["description"] = "\
+Do plan. Attempt recovery for_ `blocked` _or_ `lost` _conditions; raise error for_ `empty` _or_ `bedrock` _or if recovery fails.",
 }
 ,
 }
 ,
-  ["_look_"] = {
-  ["line"] = "--:- look direction -> Detect and inspect direction, return report.",
-  ["sign"] = "look direction  ",
-  ["text"] = "Detect and inspect direction, return report.",
-  ["kind"] = "cli",
+  ["returns"] = " worker",
+  ["kind"] = "module",
+  ["type"] = "lib",
+  ["name"] = "worker",
+  ["description"] = "\
+Run what's been created by_ `planner` _while attempting to deal with a turtle's situational difficulties._ -> worker",
 }
 ,
   ["_map.set:_"] = {
@@ -2707,12 +2728,162 @@ Execute tasks for low level turtle operations:",
 Dispatch targets for_ `net` _library._ -> task, _task",
 }
 ,
-  ["_place.distance:_"] = {
-  ["line"] = "--:: place.distance(a: xyzf, b: xyzf) -> _Manhattan: abs(delta x) + abs(delta y) + abs(delta z)._ -> `distance: #:`",
-  ["out"] = " `distance: #:`",
-  ["sign"] = "place.distance(a: xyzf, b: xyzf)  ",
-  ["kind"] = "face",
-  ["text"] = "Manhattan: abs(delta x) + abs(delta y) + abs(delta z).",
+  ["place"] = {
+  ["type"] = "lib",
+  ["name"] = "place",
+  ["childs"] = {
+  ["trail"] = {
+  ["returns"] = " `headSerial: \":\", tailSerial: \":\"` <-\
+",
+  ["args"] = "headName: \":\", tailName: \":\", label: \":\"",
+  ["type"] = "function",
+  ["name"] = "place.trail",
+  ["description"] = "\
+Makes two places. Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.",
+}
+,
+  ["reset"] = {
+  ["returns"] = " `nil` <-\
+",
+  ["args"] = "",
+  ["type"] = "function",
+  ["name"] = "place.reset",
+  ["description"] = "\
+Resets places to the empty table.",
+}
+,
+  ["xyzf"] = {
+  ["returns"] = " `xyzf?, index: #:?` <-\
+",
+  ["args"] = "name: \":\"?, number: #:?",
+  ["type"] = "function",
+  ["name"] = "place.xyzf",
+  ["description"] = "\
+Looks up name [defaults to current situation].",
+}
+,
+  ["near"] = {
+  ["returns"] = " (): `name: \":\", label: \":\", xyz, distance: #:, situations, serial: \":\"` <-\
+",
+  ["args"] = "span: #:?, reference?: \":\"|position",
+  ["type"] = "function",
+  ["name"] = "place.near",
+  ["description"] = "\
+ If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position). If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.",
+}
+,
+  ["fix"] = {
+  ["returns"] = " `xyzf`   <-\
+",
+  ["args"] = ":xyzf:, track: ^:?",
+  ["type"] = "function",
+  ["name"] = "place.fix",
+  ["description"] = "\
+Sets situation position, can start tracking for trail.",
+}
+,
+  ["distance"] = {
+  ["returns"] = " `distance: #:` <-\
+",
+  ["args"] = "a: xyzf, b: xyzf",
+  ["type"] = "function",
+  ["name"] = "place.distance",
+  ["description"] = "\
+Manhattan: abs(delta x) + abs(delta y) + abs(delta z).",
+}
+,
+  ["track"] = {
+  ["returns"] = " `name: \":\"?, label: \":\"?, situations`? <-\
+",
+  ["args"] = "name: \":\"",
+  ["type"] = "function",
+  ["name"] = "place.track",
+  ["description"] = "\
+Returns trail",
+}
+,
+  ["site"] = {
+  ["returns"] = " `\":\"` <-\
+",
+  ["args"] = "value: \":\"?",
+  ["type"] = "function",
+  ["name"] = "place.site",
+  ["description"] = "\
+Set or return local `site` (isolates global).",
+}
+,
+  ["match"] = {
+  ["returns"] = " `index: #:?, place?` <-\
+",
+  ["args"] = "name: \":\"",
+  ["type"] = "function",
+  ["name"] = "place.match",
+  ["description"] = "\
+Lookup place qualified by site, return_ `nil` _if not found.",
+}
+,
+  ["qualify"] = {
+  ["returns"] = " `sitedName: \":\"` <-\
+",
+  ["args"] = "name: \":\"",
+  ["type"] = "function",
+  ["name"] = "place.qualify",
+  ["description"] = "\
+Return already sited name, otherwise prepend site to name",
+}
+,
+  ["add"] = {
+  ["returns"] = " `serialized: \":\", index: #:` <-\
+",
+  ["args"] = "name: \":\", :situation:",
+  ["type"] = "function",
+  ["name"] = "place.add",
+  ["description"] = "\
+Add situation to situations of an existing place.",
+}
+,
+  ["nearby"] = {
+  ["returns"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]` <-\
+",
+  ["args"] = ":xyzf:?, :cardinals:",
+  ["type"] = "function",
+  ["name"] = "place.nearby",
+  ["description"] = "\
+Sorted",
+}
+,
+  ["count"] = {
+  ["returns"] = " `#:` <-\
+",
+  ["args"] = "",
+  ["type"] = "function",
+  ["name"] = "place.count",
+  ["description"] = "\
+Returns number of places.",
+}
+,
+  ["name"] = {
+  ["returns"] = " `\":\", #:` <-\
+",
+  ["args"] = "name: \":\", label: \":\", supplied: situation?, :features:??",
+  ["type"] = "function",
+  ["name"] = "place.name",
+  ["description"] = "\
+Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return index of situation in global places and the serialized situation including its features.",
+}
+,
+  ["erase"] = {
+  ["returns"] = " `#:, index: #:` <-\
+",
+  ["args"] = "name: \":\"",
+  ["type"] = "function",
+  ["name"] = "place.erase",
+  ["description"] = "\
+Removes named place from array of places. Return new length of places table and the (previous) index of the removed place.",
+}
+,
+}
+,
 }
 ,
   ["_cut_"] = {
@@ -2847,43 +3018,36 @@ Command Line Library providing turtle operations used by remote library (effecti
 ,
 }
 ,
-  ["_field.paths:_"] = {
-  ["line"] = "  --:: field.paths(bounds: xyz[]) -> _Called by plan prototype file to generate plans for plot._ -> `paths, yDelta: #:, xzEdge: facing`",
-  ["out"] = " `paths, yDelta: #:, xzEdge: facing`",
-  ["sign"] = "field.paths(bounds: xyz[])  ",
+  ["_core.inext:_"] = {
+  ["line"] = "--:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `():, {:}, #:`",
+  ["out"] = " `():, {:}, #:`",
+  ["sign"] = "core.inext(table: {:}, index: #:)  ",
   ["kind"] = "face",
-  ["text"] = "Called by plan prototype file to generate plans for plot.",
+  ["text"] = "Iterator over table beginning at index.",
 }
 ,
-  ["_core.setComputerLabel:_"] = {
-  ["line"] = "--:: core.setComputerLabel(label: \":\") -> _Sets (out-of game global) label_ -> `label: \":\"`",
-  ["out"] = " `label: \":\"`",
-  ["sign"] = "core.setComputerLabel(label: \":\")  ",
+  ["__remote.clientResult:_"] = {
+  ["line"] = "  --:: `_remote.clientResult(serverID: #:, resultString: \":\", callback: ():)` -> _Apply callback to deserialized client result._ -> `any`",
   ["kind"] = "face",
-  ["text"] = "Sets (out-of game global) label",
+  ["sign"] = "`_remote.clientResult(serverID: #:, resultString: \":\", callback: ():)`  ",
+  ["out"] = " `any`",
+  ["text"] = "Apply callback to deserialized client result.",
 }
 ,
-  ["_place.nearby:_"] = {
-  ["line"] = "--:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]`",
-  ["out"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]`",
-  ["sign"] = "place.nearby(:xyzf:?, :cardinals:)  ",
+  ["_place.distance:_"] = {
+  ["line"] = "--:: place.distance(a: xyzf, b: xyzf) -> _Manhattan: abs(delta x) + abs(delta y) + abs(delta z)._ -> `distance: #:`",
+  ["out"] = " `distance: #:`",
+  ["sign"] = "place.distance(a: xyzf, b: xyzf)  ",
   ["kind"] = "face",
-  ["text"] = "Sorted",
+  ["text"] = "Manhattan: abs(delta x) + abs(delta y) + abs(delta z).",
 }
 ,
-  ["_field.plot:_"] = {
-  ["line"] = "--:: field.plot(commands: field.plotSpan, fieldsOp: ():, fieldOpName: \":\", plots: #:, offset: xyz?) -> _Plots_ -> `report: \":\" &: &!`",
-  ["out"] = " `report: \":\" &: &!`",
-  ["sign"] = "field.plot(commands: field.plotSpan, fieldsOp: ():, fieldOpName: \":\", plots: #:, offset: xyz?)  ",
+  ["_exec.op:_"] = {
+  ["line"] = "function exec.op(commandLine) --:: exec.op(commandLine: [command: \":\", ...] ) -> _CLI for Command Computer commands_ -> `\":\" &:`",
+  ["out"] = " `\":\" &:`",
+  ["sign"] = "exec.op(commandLine: [command: \":\", ...] )  ",
   ["kind"] = "face",
-  ["text"] = "Plots",
-}
-,
-  ["_actuate_"] = {
-  ["line"] = "  --:- actuate direction -> _Move around to boot direction named GPS host and retrieve floppy (for testing)._ ",
-  ["sign"] = "actuate direction  ",
-  ["kind"] = "cli",
-  ["text"] = "Move around to boot direction named GPS host and retrieve floppy (for testing).",
+  ["text"] = "CLI for Command Computer commands",
 }
 ,
   ["_core.status:_"] = {
@@ -2894,34 +3058,19 @@ Command Line Library providing turtle operations used by remote library (effecti
   ["text"] = "If level less than (elimination) threshold, then report rest as string.",
 }
 ,
+  ["_shaft_"] = {
+  ["line"] = "  --:- shaft minehead levels shaftPlans -> _Dig down number of levels under named minehead place using specified plans._",
+  ["sign"] = "shaft minehead levels shaftPlans  ",
+  ["text"] = "Dig down number of levels under named minehead place using specified plans.",
+  ["kind"] = "cli",
+}
+,
   ["_remote.tail:_"] = {
   ["line"] = "  --:: remote.tail(turtle: \":\", __ : \"tail\", rates: \":\"?) -> _Repeatedly towards player position, default rate _G.Muse.rates.tail seconds -> `nil` ",
   ["kind"] = "face",
   ["sign"] = "remote.tail(turtle: \":\", __ : \"tail\", rates: \":\"?)  ",
   ["out"] = " `nil` ",
   ["text"] = "Repeatedly towards player position, default rate _G.Muse.rates.tail seconds",
-}
-,
-  ["worker"] = {
-  ["childs"] = {
-  ["execute"] = {
-  ["returns"] = "  `\"done\", report: \":\" &: &!` <-\
-",
-  ["args"] = "plan, pathOperations, fuelOK: ^:, pathDistance: #:",
-  ["type"] = "function",
-  ["name"] = "worker.execute",
-  ["description"] = "\
-Do plan. Attempt recovery for_ `blocked` _or_ `lost` _conditions; raise error for_ `empty` _or_ `bedrock` _or if recovery fails.",
-}
-,
-}
-,
-  ["returns"] = " worker",
-  ["kind"] = "module",
-  ["type"] = "lib",
-  ["name"] = "worker",
-  ["description"] = "\
-Run what's been created by_ `planner` _while attempting to deal with a turtle's situational difficulties._ -> worker",
 }
 ,
   ["_sync_"] = {
@@ -2931,43 +3080,77 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
   ["kind"] = "cli",
 }
 ,
-  ["_roam.tail:_"] = {
-  ["line"] = "--:: roam.tail(:xyz:) -> _Server side: move turtle (close to) player's GPS_ `xyz` (_from_ `remote.tail)` -> `\":\" &:`",
-  ["out"] = " `\":\" &:`",
-  ["sign"] = "roam.tail(:xyz:)  ",
-  ["kind"] = "face",
-  ["text"] = "Server side: move turtle (close to) player's GPS_ `xyz` (_from_ `remote.tail)",
-}
-,
-  ["_shaft_"] = {
-  ["line"] = "  --:- shaft minehead levels shaftPlans -> _Dig down number of levels under named minehead place using specified plans._",
-  ["sign"] = "shaft minehead levels shaftPlans  ",
-  ["text"] = "Dig down number of levels under named minehead place using specified plans.",
+  ["_look_"] = {
+  ["line"] = "--:- look direction -> Detect and inspect direction, return report.",
+  ["sign"] = "look direction  ",
+  ["text"] = "Detect and inspect direction, return report.",
   ["kind"] = "cli",
 }
 ,
-  [" places"] = {
-  ["type"] = "lib",
-  ["name"] = " places",
+  ["__field.cut:_"] = {
+  ["line"] = "  --:: `_field.cut(places: [nearPlace: \":\", farPlace: \":\"])` -> _Use plan.quarry to cut._ -> `report: \":\" &:`",
+  ["out"] = " `report: \":\" &:`",
+  ["sign"] = "`_field.cut(places: [nearPlace: \":\", farPlace: \":\"])`  ",
+  ["kind"] = "face",
+  ["text"] = "Use plan.quarry to cut.",
+}
+,
+  ["roam"] = {
   ["childs"] = {
+  ["op"] = {
+  ["returns"] = " `\":\" &:` <-\
+",
+  ["args"] = "arguments: \":\"[]",
+  ["type"] = "function",
+  ["name"] = "roam.op",
+  ["description"] = "\
+Move turtle:",
+}
+,
+  ["come"] = {
+  ["returns"] = " `\":\" &:` <-\
+",
+  ["args"] = ":xyz:",
+  ["type"] = "function",
+  ["name"] = "roam.come",
+  ["description"] = "\
+Server side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come.",
+}
+,
+  ["tail"] = {
+  ["returns"] = " `\":\" &:` <-\
+",
+  ["args"] = ":xyz:",
+  ["type"] = "function",
+  ["name"] = "roam.tail",
+  ["description"] = "\
+Server side: move turtle (close to) player's GPS_ `xyz` (_from_ `remote.tail)",
 }
 ,
 }
 ,
-  ["_grid.ores:_"] = {
-  ["line"] = "  --:: grid.ores(plan: crossplan, :direction:, guide: grid.guide, :ores:) -> _Extract ores._ -> `\"done\" &!`",
-  ["out"] = " `\"done\" &!`",
-  ["sign"] = "grid.ores(plan: crossplan, :direction:, guide: grid.guide, :ores:)  ",
+  ["returns"] = " roam",
+  ["kind"] = "module",
+  ["type"] = "lib",
+  ["name"] = "roam",
+  ["description"] = "\
+Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go` _commands, motion_ `to` _or_ `trace`. -> roam",
+}
+,
+  ["_core.record:_"] = {
+  ["line"] = "  --:: core.record(message: \":\") -> _Appends (status) message to log file on player._ -> `nil & !`",
+  ["out"] = " `nil & !`",
+  ["sign"] = "core.record(message: \":\")  ",
   ["kind"] = "face",
-  ["text"] = "Extract ores.",
+  ["text"] = "Appends (status) message to log file on player.",
 }
 ,
-  ["_step.to:_"] = {
-  ["line"] = "--:: step.to(:xyzf:, situation:situation?) -> _Step to position from (current) sItuation._ -> `(): nil &!recovery`",
-  ["out"] = " `(): nil &!recovery`",
-  ["sign"] = "step.to(:xyzf:, situation:situation?)  ",
+  ["_field.plot:_"] = {
+  ["line"] = "--:: field.plot(commands: field.plotSpan, fieldsOp: ():, fieldOpName: \":\", plots: #:, offset: xyz?) -> _Plots_ -> `report: \":\" &: &!`",
+  ["out"] = " `report: \":\" &: &!`",
+  ["sign"] = "field.plot(commands: field.plotSpan, fieldsOp: ():, fieldOpName: \":\", plots: #:, offset: xyz?)  ",
   ["kind"] = "face",
-  ["text"] = "Step to position from (current) sItuation.",
+  ["text"] = "Plots",
 }
 ,
   ["_near_"] = {
@@ -2985,12 +3168,12 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
   ["text"] = "Fold `table` _to produce_ `result` _by applying_ `op` _to_ `table",
 }
 ,
-  ["_map.borders:_"] = {
-  ["line"] = "  --:: map.borders(range: place) -> _Get range elements_ -> `borders, features, position, position &!`",
+  ["_step.to:_"] = {
+  ["line"] = "--:: step.to(:xyzf:, situation:situation?) -> _Step to position from (current) sItuation._ -> `(): nil &!recovery`",
+  ["out"] = " `(): nil &!recovery`",
+  ["sign"] = "step.to(:xyzf:, situation:situation?)  ",
   ["kind"] = "face",
-  ["sign"] = "map.borders(range: place)  ",
-  ["out"] = " `borders, features, position, position &!`",
-  ["text"] = "Get range elements",
+  ["text"] = "Step to position from (current) sItuation.",
 }
 ,
   ["_place.erase:_"] = {
@@ -3032,27 +3215,27 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
   ["text"] = "Command Line Interface",
 }
 ,
-  ["_cover_"] = {
-  ["line"] = "--:- cover range firstPlot? lastPlot?? -> _Replace field material (for tree farm grid)._",
-  ["sign"] = "cover range firstPlot? lastPlot??  ",
+  ["_field.make:_"] = {
+  ["line"] = "  --:: field.make(commands: fieldCommands, faced: ^:) -> _Load field files; return their `field.plot` calls_ -> `report: \":\" &:`",
+  ["out"] = " `report: \":\" &:`",
+  ["sign"] = "field.make(commands: fieldCommands, faced: ^:)  ",
+  ["kind"] = "face",
+  ["text"] = "Load field files; return their `field.plot` calls",
+}
+,
+  [" planner"] = {
+  ["type"] = "lib",
+  ["name"] = " planner",
+  ["childs"] = {
+}
+,
+}
+,
+  ["_porter_"] = {
+  ["line"] = "--:- porter command argument... -> _See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface._",
+  ["sign"] = "porter command argument...  ",
+  ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
   ["kind"] = "cli",
-  ["text"] = "Replace field material (for tree farm grid).",
-}
-,
-  ["_worker.execute:_"] = {
-  ["line"] = "--:: worker.execute(plan, pathOperations, fuelOK: ^:, pathDistance: #:) -> _Do plan._ ->  `\"done\", report: \":\" &: &!`",
-  ["kind"] = "face",
-  ["sign"] = "worker.execute(plan, pathOperations, fuelOK: ^:, pathDistance: #:)  ",
-  ["out"] = "  `\"done\", report: \":\" &: &!`",
-  ["text"] = "Do plan.",
-}
-,
-  ["_map.get:_"] = {
-  ["line"] = "function map.get(name, key) --:: map.get(name: \":\", key: \":\") -> _Get named place local feature value for key._ -> `value: any? &!`",
-  ["kind"] = "face",
-  ["sign"] = "map.get(name: \":\", key: \":\")  ",
-  ["out"] = " `value: any? &!`",
-  ["text"] = "Get named place local feature value for key.",
 }
 ,
   ["_place.add:_"] = {
@@ -3063,34 +3246,36 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
   ["text"] = "Add situation to situations of an existing place.",
 }
 ,
-  ["__mine.ores:_"] = {
-  ["line"] = "  --:: `_mine.ores(markerName: \":\", thisLevel: #:, borePlans: bores)` -> _Excavate ores_ -> \"done\", `\":\", #: &: &!`",
-  ["out"] = " \"done\", `\":\", #: &: &!`",
-  ["sign"] = "`_mine.ores(markerName: \":\", thisLevel: #:, borePlans: bores)`  ",
+  ["__remote.testCome:_"] = {
+  ["line"] = "  --:: `_remote.testCome(turtle: \":\", command: \":\")` -> _On client:_ -> `turtle: \":\", command: \":\", xyz, ^:`",
   ["kind"] = "face",
-  ["text"] = "Excavate ores",
+  ["sign"] = "`_remote.testCome(turtle: \":\", command: \":\")`  ",
+  ["out"] = " `turtle: \":\", command: \":\", xyz, ^:`",
+  ["text"] = "On client:",
 }
 ,
-  ["_book_"] = {
-  ["line"] = "--:- book name label from to [span [item ...] ] -> _Spanned range with (default) items as properties; return cost less bank._",
-  ["sign"] = "book name label from to [span [item ...] ]  ",
-  ["text"] = "Spanned range with (default) items as properties; return cost less bank.",
-  ["kind"] = "cli",
-}
-,
-  ["__gps.launch:_"] = {
-  ["line"] = "  --:: `_gps.launch(commands: [command: \":\", location: \":\", yD: #:?]) -> _Check before journey then launch._ -> \":\"",
+  ["_move.get:_"] = {
+  ["line"] = "  --:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: \":\", fuel: #:, level: \":\"`",
+  ["out"] = " `x: #:, y: #:, z: #:, facing: \":\", fuel: #:, level: \":\"`",
+  ["sign"] = "move.get(:situation:?)  ",
   ["kind"] = "face",
-  ["sign"] = "`_gps.launch(commands: [command: \":\", location: \":\", yD: #:?])  ",
-  ["out"] = " \":\"",
-  ["text"] = "Check before journey then launch.",
+  ["text"] = "Default current situation.",
 }
 ,
-  ["_to_"] = {
-  ["line"] = "  --:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._ ",
-  ["sign"] = "to place | x y z face? ",
-  ["text"] = "To named place or position and face. Retry permutation for different first direction.",
-  ["kind"] = "cli",
+  ["_map.borders:_"] = {
+  ["line"] = "  --:: map.borders(range: place) -> _Get range elements_ -> `borders, features, position, position &!`",
+  ["kind"] = "face",
+  ["sign"] = "map.borders(range: place)  ",
+  ["out"] = " `borders, features, position, position &!`",
+  ["text"] = "Get range elements",
+}
+,
+  ["_core.vectorPairs:_"] = {
+  ["line"] = "  --:: core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?) -> _Make plots._ -> `bounds[]`",
+  ["out"] = " `bounds[]`",
+  ["sign"] = "core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?)  ",
+  ["kind"] = "face",
+  ["text"] = "Make plots.",
 }
 ,
   ["_step.south:_"] = {
@@ -3125,18 +3310,18 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
 ,
 }
 ,
-  ["_core.vectorPairs:_"] = {
-  ["line"] = "  --:: core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?) -> _Make plots._ -> `bounds[]`",
-  ["out"] = " `bounds[]`",
-  ["sign"] = "core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?)  ",
+  ["__mine.ores:_"] = {
+  ["line"] = "  --:: `_mine.ores(markerName: \":\", thisLevel: #:, borePlans: bores)` -> _Excavate ores_ -> \"done\", `\":\", #: &: &!`",
+  ["out"] = " \"done\", `\":\", #: &: &!`",
+  ["sign"] = "`_mine.ores(markerName: \":\", thisLevel: #:, borePlans: bores)`  ",
   ["kind"] = "face",
-  ["text"] = "Make plots.",
+  ["text"] = "Excavate ores",
 }
 ,
-  ["_porter_"] = {
-  ["line"] = "--:- porter command argument... -> _See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface._",
-  ["sign"] = "porter command argument...  ",
-  ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
+  ["_to_"] = {
+  ["line"] = "  --:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._ ",
+  ["sign"] = "to place | x y z face? ",
+  ["text"] = "To named place or position and face. Retry permutation for different first direction.",
   ["kind"] = "cli",
 }
 ,
@@ -3148,43 +3333,44 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
 ,
 }
 ,
-  ["_field.fill:_"] = {
-  ["line"] = "--:: field.fill(parameters: [nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?]) -> _Fill, Till, Replace._ -> `\":\" &:`",
-  ["out"] = " `\":\" &:`",
-  ["sign"] = "field.fill(parameters: [nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?])  ",
+  ["_map.get:_"] = {
+  ["line"] = "function map.get(name, key) --:: map.get(name: \":\", key: \":\") -> _Get named place local feature value for key._ -> `value: any? &!`",
   ["kind"] = "face",
-  ["text"] = "Fill, Till, Replace.",
+  ["sign"] = "map.get(name: \":\", key: \":\")  ",
+  ["out"] = " `value: any? &!`",
+  ["text"] = "Get named place local feature value for key.",
 }
 ,
-  ["_remote.come:_"] = {
-  ["line"] = "  --:: remote.come(turtle: \":\") -> _Towards GPS player position._ -> `report: \":\"`",
+  ["_field.paths:_"] = {
+  ["line"] = "  --:: field.paths(bounds: xyz[]) -> _Called by plan prototype file to generate plans for plot._ -> `paths, yDelta: #:, xzEdge: facing`",
+  ["out"] = " `paths, yDelta: #:, xzEdge: facing`",
+  ["sign"] = "field.paths(bounds: xyz[])  ",
   ["kind"] = "face",
-  ["sign"] = "remote.come(turtle: \":\")  ",
-  ["out"] = " `report: \":\"`",
-  ["text"] = "Towards GPS player position.",
+  ["text"] = "Called by plan prototype file to generate plans for plot.",
 }
 ,
-  ["_field.make:_"] = {
-  ["line"] = "  --:: field.make(commands: fieldCommands, faced: ^:) -> _Load field files; return their `field.plot` calls_ -> `report: \":\" &:`",
-  ["out"] = " `report: \":\" &:`",
-  ["sign"] = "field.make(commands: fieldCommands, faced: ^:)  ",
+  ["_steps.to:_"] = {
+  ["line"] = "  --:: steps.to(target: \":\") -> _Step (iterator) to target place._ -> `(): code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["out"] = " `(): code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["sign"] = "steps.to(target: \":\")  ",
   ["kind"] = "face",
-  ["text"] = "Load field files; return their `field.plot` calls",
+  ["text"] = "Step (iterator) to target place.",
 }
 ,
-  ["_equip_"] = {
-  ["line"] = "  --:- equip direction -> _Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing)._",
-  ["sign"] = "equip direction  ",
-  ["kind"] = "cli",
-  ["text"] = "Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing).",
+  ["_core.state:_"] = {
+  ["line"] = "  --:: core.state(table: {:}?, key: \":\"?) -> _Returns closure over closure variable_ -> `closing`",
+  ["out"] = " `closing`",
+  ["sign"] = "core.state(table: {:}?, key: \":\"?)  ",
+  ["kind"] = "face",
+  ["text"] = "Returns closure over closure variable",
 }
 ,
-  [" planner"] = {
-  ["type"] = "lib",
-  ["name"] = " planner",
-  ["childs"] = {
-}
-,
+  ["_move.moves:_"] = {
+  ["line"] = "--:: move.moves(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
+  ["out"] = "  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
+  ["sign"] = "move.moves(count: #:?)  ",
+  ["kind"] = "face",
+  ["text"] = "Count 0: just turn, 1: default",
 }
 ,
   ["_turtle.select:_"] = {
@@ -3195,20 +3381,19 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
   ["text"] = "Attempts to select the specified slot.",
 }
 ,
-  ["__field.makeBounds:_"] = {
-  ["line"] = "  --:: `_field.makeBounds(nearPlace: \":\", farPlace: \":\")` -> _Get coordinate pair for named places._ -> `xyz, xyz, #:, #:`",
-  ["out"] = " `xyz, xyz, #:, #:`",
-  ["sign"] = "`_field.makeBounds(nearPlace: \":\", farPlace: \":\")`  ",
+  ["_core.where:_"] = {
+  ["line"] = "function core.where() --:: core.where() -> _GPS location if available._ -> `x: #:?, y: #:?, z: #:?`",
+  ["out"] = " `x: #:?, y: #:?, z: #:?`",
+  ["sign"] = "core.where()  ",
   ["kind"] = "face",
-  ["text"] = "Get coordinate pair for named places.",
+  ["text"] = "GPS location if available.",
 }
 ,
-  ["_moves.to:_"] = {
-  ["line"] = "--:: moves.to(target: \":\", first: \":\") -> _Move to target, first along direction._ -> `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["sign"] = "moves.to(target: \":\", first: \":\")  ",
-  ["kind"] = "face",
-  ["text"] = "Move to target, first along direction.",
+  ["_miner_"] = {
+  ["line"] = "--:- miner command argument... -> _See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface._",
+  ["sign"] = "miner command argument...  ",
+  ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
+  ["kind"] = "cli",
 }
 ,
   ["_map.update:_"] = {
@@ -3226,173 +3411,41 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
   ["kind"] = "cli",
 }
 ,
-  ["_exec.op:_"] = {
-  ["line"] = "function exec.op(commandLine) --:: exec.op(commandLine: [command: \":\", ...] ) -> _CLI for Command Computer commands_ -> `\":\" &:`",
+  ["__field.makeBounds:_"] = {
+  ["line"] = "  --:: `_field.makeBounds(nearPlace: \":\", farPlace: \":\")` -> _Get coordinate pair for named places._ -> `xyz, xyz, #:, #:`",
+  ["out"] = " `xyz, xyz, #:, #:`",
+  ["sign"] = "`_field.makeBounds(nearPlace: \":\", farPlace: \":\")`  ",
+  ["kind"] = "face",
+  ["text"] = "Get coordinate pair for named places.",
+}
+,
+  ["_roam.tail:_"] = {
+  ["line"] = "--:: roam.tail(:xyz:) -> _Server side: move turtle (close to) player's GPS_ `xyz` (_from_ `remote.tail)` -> `\":\" &:`",
   ["out"] = " `\":\" &:`",
-  ["sign"] = "exec.op(commandLine: [command: \":\", ...] )  ",
+  ["sign"] = "roam.tail(:xyz:)  ",
   ["kind"] = "face",
-  ["text"] = "CLI for Command Computer commands",
+  ["text"] = "Server side: move turtle (close to) player's GPS_ `xyz` (_from_ `remote.tail)",
 }
 ,
-  ["_headings_"] = {
-  ["line"] = "  --:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds)._",
-  ["sign"] = "headings rate? place? count??  ",
+  ["_Places_"] = {
+  ["line"] = "--:< **Places - Points, Locations, Trails, and Ranges of Maps**",
+  ["sign"] = "**Places - Points, Locations, Trails, and Ranges of Maps** ",
+  ["kind"] = "word",
+  ["text"] = "Places - Points, Locations, Trails, and Ranges of Maps",
+}
+,
+  ["_dig_"] = {
+  ["line"] = "--:- dig direction distance hoeings...? -> Direction and distance to (possibly blocked) move, hoeings directions to hoe.",
+  ["sign"] = "dig direction distance hoeings...?  ",
+  ["text"] = "Direction and distance to (possibly blocked) move, hoeings directions to hoe.",
   ["kind"] = "cli",
-  ["text"] = "Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds).",
 }
 ,
-  ["_turtle.category:_"] = {
-  ["line"] = "--:: turtle.category(name: \":\") -> _Names in category or fencings matching `name` or_ `{\"minecraft:\"..name}`. -> `\":\"[]` ",
-  ["out"] = " `\":\"[]` ",
-  ["sign"] = "turtle.category(name: \":\")  ",
-  ["kind"] = "face",
-  ["text"] = "Names in category or fencings matching `name` or_ `{\"minecraft:\"..name}`.",
-}
-,
-  ["planner"] = {
-  ["childs"] = {
-  [":plan.fixtures"] = {
-  ["type"] = "value",
-  ["returns"] = " `\":\"[]`",
-  ["name"] = "plan.fixtures",
-  ["description"] = "\
-for placement as specified by path elements beginning with a digit",
-}
-,
-  ["mark"] = {
-  ["returns"] = " `shaft: \":\"?, level: \":\"?, tag: \":\"?)` <-\
-",
-  ["args"] = "markerName: \":\"",
-  ["type"] = "function",
-  ["name"] = "planner.mark",
-  ["description"] = "\
-Parse marker name into parts.",
-}
-,
-  [":markElement"] = {
-  ["type"] = "value",
-  ["returns"] = " `[op: \"mark\", :marking:]`",
-  ["name"] = "markElement",
-  ["description"] = "\
-Current situation in named places",
-}
-,
-  [":putElement"] = {
-  ["type"] = "value",
-  ["returns"] = " `[op: \"put\", direction: \":\", fixture: \":\"]`",
-  ["name"] = "putElement",
-  ["description"] = "\
-Put fixture in specified direction",
-}
-,
-  [":plan"] = {
-  ["type"] = "value",
-  ["returns"] = " `{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}`",
-  ["name"] = "plan",
-  ["description"] = "\
-How to do work",
-}
-,
-  [":plan.work"] = {
-  ["type"] = "value",
-  ["returns"] = " `(:plan:, direction: \":\"): \":\"?`",
-  ["name"] = "plan.work",
-  ["description"] = "\
-for execution at every_ `step` _iteration in plan movement direction",
-}
-,
-  [":plan.name"] = {
-  ["type"] = "value",
-  ["returns"] = " `\":\"`",
-  ["name"] = "plan.name",
-  ["description"] = "\
-for status and error reporting",
-}
-,
-  ["make"] = {
-  ["returns"] = " `pathElements, fuelOK: ^:, pathDistance: #:` <-\
-",
-  ["args"] = "plan:plan",
-  ["type"] = "function",
-  ["name"] = "planner.make",
-  ["description"] = "\
-Create path operations table for plan.",
-}
-,
-  ["load"] = {
-  ["returns"] = " `plan &!`  <-\
-",
-  ["args"] = "planFileName: \":\"",
-  ["type"] = "function",
-  ["name"] = "planner.load",
-  ["description"] = "\
-Instantiates what is returned from a plan file.",
-}
-,
-  [":markings"] = {
-  ["type"] = "value",
-  ["returns"] = " `[label: \":\"]: marking`",
-  ["name"] = "markings",
-  ["description"] = "\
-dictionary of markings keyed by a label",
-}
-,
-  [":pathElements"] = {
-  ["type"] = "value",
-  ["returns"] = " `(stepElement|putElement|markElement)[]`",
-  ["name"] = "pathElements",
-  ["description"] = "\
-Used by `worker.execute` to run plan",
-}
-,
-  [":stepElement"] = {
-  ["type"] = "value",
-  ["returns"] = " `[op: \"step\", :stepping:, direction: \":\", distance: #:]`",
-  ["name"] = "stepElement",
-  ["description"] = "\
-Iterate steps function in direction for distance",
-}
-,
-  [":plan.path"] = {
-  ["type"] = "value",
-  ["returns"] = " `\":\"[]`",
-  ["name"] = "plan.path",
-  ["description"] = "\
-table of space separated character sequence strings describing path",
-}
-,
-  [":marking"] = {
-  ["type"] = "value",
-  ["returns"] = " `[prefix: \":\", base: \":\", label: \":\"]`",
-  ["name"] = "marking",
-  ["description"] = "\
-literals table of marker parts",
-}
-,
-  [":plan.mark"] = {
-  ["type"] = "value",
-  ["returns"] = " `(:plan:, :marking:): markerName: \":\", label: \":\", report: \":\"`",
-  ["name"] = "plan.mark",
-  ["description"] = "\
-for execution as specified by_ `plan.path` _markers",
-}
-,
-}
-,
-  ["returns"] = " planner, plan, moves, steps",
-  ["kind"] = "module",
-  ["type"] = "lib",
-  ["name"] = "planner",
-  ["description"] = "\
-Given a_ `plan`, _create a table of operations to be performed by_ `worker.execute`. -> planner, plan, moves, steps",
-}
-,
-  [" exec"] = {
-  ["type"] = "lib",
-  ["name"] = " exec",
-  ["childs"] = {
-}
-,
+  ["_port_"] = {
+  ["line"] = "--:- port booking -> _As laid out in booking, consume player inventory to teleport entities from one area to another._",
+  ["sign"] = "port booking  ",
+  ["text"] = "As laid out in booking, consume player inventory to teleport entities from one area to another.",
+  ["kind"] = "cli",
 }
 ,
   ["core"] = {
@@ -3785,46 +3838,12 @@ For testing; just returns its arguments.",
 Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support._ -> core",
 }
 ,
-  ["roam"] = {
-  ["childs"] = {
-  ["op"] = {
-  ["returns"] = " `\":\" &:` <-\
-",
-  ["args"] = "arguments: \":\"[]",
-  ["type"] = "function",
-  ["name"] = "roam.op",
-  ["description"] = "\
-Move turtle:",
-}
-,
-  ["come"] = {
-  ["returns"] = " `\":\" &:` <-\
-",
-  ["args"] = ":xyz:",
-  ["type"] = "function",
-  ["name"] = "roam.come",
-  ["description"] = "\
-Server side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come.",
-}
-,
-  ["tail"] = {
-  ["returns"] = " `\":\" &:` <-\
-",
-  ["args"] = ":xyz:",
-  ["type"] = "function",
-  ["name"] = "roam.tail",
-  ["description"] = "\
-Server side: move turtle (close to) player's GPS_ `xyz` (_from_ `remote.tail)",
-}
-,
-}
-,
-  ["returns"] = " roam",
-  ["kind"] = "module",
+  [" exec"] = {
   ["type"] = "lib",
-  ["name"] = "roam",
-  ["description"] = "\
-Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go` _commands, motion_ `to` _or_ `trace`. -> roam",
+  ["name"] = " exec",
+  ["childs"] = {
+}
+,
 }
 ,
   ["_move.to:_"] = {
@@ -3835,12 +3854,166 @@ Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go`
   ["text"] = "Current situation to x, z, y, and optionally face.",
 }
 ,
-  ["_move.track:_"] = {
-  ["line"] = "--:: move.track(enable: ^:) -> _Set tracking condition_ -> `enable: ^:`",
-  ["out"] = " `enable: ^:`",
-  ["sign"] = "move.track(enable: ^:)  ",
+  ["planner"] = {
+  ["childs"] = {
+  [":plan.fixtures"] = {
+  ["type"] = "value",
+  ["returns"] = " `\":\"[]`",
+  ["name"] = "plan.fixtures",
+  ["description"] = "\
+for placement as specified by path elements beginning with a digit",
+}
+,
+  ["mark"] = {
+  ["returns"] = " `shaft: \":\"?, level: \":\"?, tag: \":\"?)` <-\
+",
+  ["args"] = "markerName: \":\"",
+  ["type"] = "function",
+  ["name"] = "planner.mark",
+  ["description"] = "\
+Parse marker name into parts.",
+}
+,
+  [":markElement"] = {
+  ["type"] = "value",
+  ["returns"] = " `[op: \"mark\", :marking:]`",
+  ["name"] = "markElement",
+  ["description"] = "\
+Current situation in named places",
+}
+,
+  [":putElement"] = {
+  ["type"] = "value",
+  ["returns"] = " `[op: \"put\", direction: \":\", fixture: \":\"]`",
+  ["name"] = "putElement",
+  ["description"] = "\
+Put fixture in specified direction",
+}
+,
+  [":plan"] = {
+  ["type"] = "value",
+  ["returns"] = " `{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}`",
+  ["name"] = "plan",
+  ["description"] = "\
+How to do work",
+}
+,
+  [":plan.work"] = {
+  ["type"] = "value",
+  ["returns"] = " `(:plan:, direction: \":\"): \":\"?`",
+  ["name"] = "plan.work",
+  ["description"] = "\
+for execution at every_ `step` _iteration in plan movement direction",
+}
+,
+  [":plan.name"] = {
+  ["type"] = "value",
+  ["returns"] = " `\":\"`",
+  ["name"] = "plan.name",
+  ["description"] = "\
+for status and error reporting",
+}
+,
+  ["make"] = {
+  ["returns"] = " `pathElements, fuelOK: ^:, pathDistance: #:` <-\
+",
+  ["args"] = "plan:plan",
+  ["type"] = "function",
+  ["name"] = "planner.make",
+  ["description"] = "\
+Create path operations table for plan.",
+}
+,
+  ["load"] = {
+  ["returns"] = " `plan &!`  <-\
+",
+  ["args"] = "planFileName: \":\"",
+  ["type"] = "function",
+  ["name"] = "planner.load",
+  ["description"] = "\
+Instantiates what is returned from a plan file.",
+}
+,
+  [":markings"] = {
+  ["type"] = "value",
+  ["returns"] = " `[label: \":\"]: marking`",
+  ["name"] = "markings",
+  ["description"] = "\
+dictionary of markings keyed by a label",
+}
+,
+  [":pathElements"] = {
+  ["type"] = "value",
+  ["returns"] = " `(stepElement|putElement|markElement)[]`",
+  ["name"] = "pathElements",
+  ["description"] = "\
+Used by `worker.execute` to run plan",
+}
+,
+  [":stepElement"] = {
+  ["type"] = "value",
+  ["returns"] = " `[op: \"step\", :stepping:, direction: \":\", distance: #:]`",
+  ["name"] = "stepElement",
+  ["description"] = "\
+Iterate steps function in direction for distance",
+}
+,
+  [":plan.path"] = {
+  ["type"] = "value",
+  ["returns"] = " `\":\"[]`",
+  ["name"] = "plan.path",
+  ["description"] = "\
+table of space separated character sequence strings describing path",
+}
+,
+  [":marking"] = {
+  ["type"] = "value",
+  ["returns"] = " `[prefix: \":\", base: \":\", label: \":\"]`",
+  ["name"] = "marking",
+  ["description"] = "\
+literals table of marker parts",
+}
+,
+  [":plan.mark"] = {
+  ["type"] = "value",
+  ["returns"] = " `(:plan:, :marking:): markerName: \":\", label: \":\", report: \":\"`",
+  ["name"] = "plan.mark",
+  ["description"] = "\
+for execution as specified by_ `plan.path` _markers",
+}
+,
+}
+,
+  ["returns"] = " planner, plan, moves, steps",
+  ["kind"] = "module",
+  ["type"] = "lib",
+  ["name"] = "planner",
+  ["description"] = "\
+Given a_ `plan`, _create a table of operations to be performed by_ `worker.execute`. -> planner, plan, moves, steps",
+}
+,
+  ["__field.runElements:_"] = {
+  ["line"] = "  --:: `_field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz])` -> _Fly ox._ -> `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`",
+  ["out"] = " `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing`",
+  ["sign"] = "`_field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz])`  ",
   ["kind"] = "face",
-  ["text"] = "Set tracking condition",
+  ["text"] = "Fly ox.",
+}
+,
+  [" task"] = {
+  ["type"] = "lib",
+  ["name"] = " task",
+  ["childs"] = {
+}
+,
+}
+,
+  ["_port.available:_"] = {
+  ["line"] = "  --:: port.available(set: [port.item]: #:) -> _For Testing: mock player inventory_ -> `[port.item]: #:`",
+  ["out"] = " `[port.item]: #:`",
+  ["sign"] = "port.available(set: [port.item]: #:)  ",
+  ["kind"] = "face",
+  ["text"] = "For Testing: mock player inventory",
 }
 ,
   ["turtle"] = {
@@ -4067,22 +4240,6 @@ Returns currrent turtle inventory as turtle detail table_.",
 Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down._ -> turtle Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking.",
 }
 ,
-  [" task"] = {
-  ["type"] = "lib",
-  ["name"] = " task",
-  ["childs"] = {
-}
-,
-}
-,
-  ["_port.available:_"] = {
-  ["line"] = "  --:: port.available(set: [port.item]: #:) -> _For Testing: mock player inventory_ -> `[port.item]: #:`",
-  ["out"] = " `[port.item]: #:`",
-  ["sign"] = "port.available(set: [port.item]: #:)  ",
-  ["kind"] = "face",
-  ["text"] = "For Testing: mock player inventory",
-}
-,
   ["__mine.atWork:_"] = {
   ["line"] = "  --:: `_mine.atWork(:plan:, head: \":\", level: #:, key: \":\", value: any)` -> _Make, fill in, execute at level._ -> `\":\", \":\" &: &!`",
   ["out"] = " `\":\", \":\" &: &!`",
@@ -4098,13 +4255,6 @@ Replaces game definitions, unifies operations to all directions: north, east, so
   ["text"] = "Test harvest path (safely).",
 }
 ,
-  ["_Seed_"] = {
-  ["line"] = "--:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `\"minecraft:\"`",
-  ["sign"] = "_Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `\"minecraft:\"` ",
-  ["text"] = "Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `\"minecraft:\"",
-  ["kind"] = "word",
-}
-,
   ["_map.puts:_"] = {
   ["line"] = "--:: map.puts(name: \":\", key: \":\", value: \":\"?) -> _Set string feature value, send MU._ -> `key: \":\", value: \":\"|true &!`",
   ["kind"] = "face",
@@ -4113,12 +4263,11 @@ Replaces game definitions, unifies operations to all directions: north, east, so
   ["text"] = "Set string feature value, send MU.",
 }
 ,
-  ["_move.west:_"] = {
-  ["line"] = "--:: move.west(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
-  ["kind"] = "face",
-  ["sign"] = "move.west(count: #:?)  ",
-  ["out"] = "  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
-  ["text"] = "Count 0: just turn, 1: default",
+  ["_Seed_"] = {
+  ["line"] = "--:< _Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `\"minecraft:\"`",
+  ["sign"] = "_Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `\"minecraft:\"` ",
+  ["text"] = "Seed may be one of the turtle categories or a Minecraft detail name without the prefix_ `\"minecraft:\"",
+  ["kind"] = "word",
 }
 ,
   [" remote"] = {
@@ -4129,12 +4278,12 @@ Replaces game definitions, unifies operations to all directions: north, east, so
 ,
 }
 ,
-  ["_core.optionals:_"] = {
-  ["line"] = "  --:: core.optionals(string: \":\"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: \":\"?, number: #:?, ...: any`",
-  ["out"] = " `string: \":\"?, number: #:?, ...: any`",
-  ["sign"] = "core.optionals(string: \":\"?, number: #:?, ...: any)  ",
+  ["_grid.ores:_"] = {
+  ["line"] = "  --:: grid.ores(plan: crossplan, :direction:, guide: grid.guide, :ores:) -> _Extract ores._ -> `\"done\" &!`",
+  ["out"] = " `\"done\" &!`",
+  ["sign"] = "grid.ores(plan: crossplan, :direction:, guide: grid.guide, :ores:)  ",
   ["kind"] = "face",
-  ["text"] = "Optional number and/or string.",
+  ["text"] = "Extract ores.",
 }
 ,
   ["_remote"] = {
@@ -4192,230 +4341,20 @@ Serialize server request.",
   ["kind"] = "cli",
 }
 ,
+  ["_dds.hosts:_"] = {
+  ["line"] = "  --:: dds.hosts() -> _Populates players IDs and labels using a MQ rednet protocol._ -> `IDs, roles`",
+  ["kind"] = "face",
+  ["sign"] = "dds.hosts()  ",
+  ["out"] = " `IDs, roles`",
+  ["text"] = "Populates players IDs and labels using a MQ rednet protocol.",
+}
+,
   ["_map.locations:_"] = {
   ["line"] = "--:: map.locations(template: {name: \":\", offset: xyz}, base: \":\", label: \":\", top: #:) -> _Add points offset from base._ -> `nil`",
   ["kind"] = "face",
   ["sign"] = "map.locations(template: {name: \":\", offset: xyz}, base: \":\", label: \":\", top: #:)  ",
   ["out"] = " `nil`",
   ["text"] = "Add points offset from base.",
-}
-,
-  ["_Directions_"] = {
-  ["line"] = "--:< **Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward_**",
-  ["sign"] = "**Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward_** ",
-  ["kind"] = "word",
-  ["text"] = "Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward",
-}
-,
-  [" grid"] = {
-  ["type"] = "lib",
-  ["name"] = " grid",
-  ["childs"] = {
-}
-,
-}
-,
-  ["_status_"] = {
-  ["line"] = "--:- status level [filename] -> _Set reporting hurdle and optionally save reporting in log file._",
-  ["sign"] = "status level [filename]  ",
-  ["kind"] = "cli",
-  ["text"] = "Set reporting hurdle and optionally save reporting in log file.",
-}
-,
-  ["_Filling_"] = {
-  ["line"] = "--:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:` ",
-  ["sign"] = "_Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:`  ",
-  ["text"] = "Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:",
-  ["kind"] = "word",
-}
-,
-  ["_check.all:_"] = {
-  ["line"] = "function check.regression(testOrder) --:: check.all(testOrder: \":\"[]) -> _Run ordered test names for regression._ -> `\":\"[]`",
-  ["kind"] = "face",
-  ["sign"] = "check.all(testOrder: \":\"[])  ",
-  ["out"] = " `\":\"[]`",
-  ["text"] = "Run ordered test names for regression.",
-}
-,
-  ["place"] = {
-  ["type"] = "lib",
-  ["name"] = "place",
-  ["childs"] = {
-  ["trail"] = {
-  ["returns"] = " `headSerial: \":\", tailSerial: \":\"` <-\
-",
-  ["args"] = "headName: \":\", tailName: \":\", label: \":\"",
-  ["type"] = "function",
-  ["name"] = "place.trail",
-  ["description"] = "\
-Makes two places. Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.",
-}
-,
-  ["reset"] = {
-  ["returns"] = " `nil` <-\
-",
-  ["args"] = "",
-  ["type"] = "function",
-  ["name"] = "place.reset",
-  ["description"] = "\
-Resets places to the empty table.",
-}
-,
-  ["xyzf"] = {
-  ["returns"] = " `xyzf?, index: #:?` <-\
-",
-  ["args"] = "name: \":\"?, number: #:?",
-  ["type"] = "function",
-  ["name"] = "place.xyzf",
-  ["description"] = "\
-Looks up name [defaults to current situation].",
-}
-,
-  ["near"] = {
-  ["returns"] = " (): `name: \":\", label: \":\", xyz, distance: #:, situations, serial: \":\"` <-\
-",
-  ["args"] = "span: #:?, reference?: \":\"|position",
-  ["type"] = "function",
-  ["name"] = "place.near",
-  ["description"] = "\
- If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position). If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.",
-}
-,
-  ["fix"] = {
-  ["returns"] = " `xyzf`   <-\
-",
-  ["args"] = ":xyzf:, track: ^:?",
-  ["type"] = "function",
-  ["name"] = "place.fix",
-  ["description"] = "\
-Sets situation position, can start tracking for trail.",
-}
-,
-  ["distance"] = {
-  ["returns"] = " `distance: #:` <-\
-",
-  ["args"] = "a: xyzf, b: xyzf",
-  ["type"] = "function",
-  ["name"] = "place.distance",
-  ["description"] = "\
-Manhattan: abs(delta x) + abs(delta y) + abs(delta z).",
-}
-,
-  ["track"] = {
-  ["returns"] = " `name: \":\"?, label: \":\"?, situations`? <-\
-",
-  ["args"] = "name: \":\"",
-  ["type"] = "function",
-  ["name"] = "place.track",
-  ["description"] = "\
-Returns trail",
-}
-,
-  ["site"] = {
-  ["returns"] = " `\":\"` <-\
-",
-  ["args"] = "value: \":\"?",
-  ["type"] = "function",
-  ["name"] = "place.site",
-  ["description"] = "\
-Set or return local `site` (isolates global).",
-}
-,
-  ["match"] = {
-  ["returns"] = " `index: #:?, place?` <-\
-",
-  ["args"] = "name: \":\"",
-  ["type"] = "function",
-  ["name"] = "place.match",
-  ["description"] = "\
-Lookup place qualified by site, return_ `nil` _if not found.",
-}
-,
-  ["qualify"] = {
-  ["returns"] = " `sitedName: \":\"` <-\
-",
-  ["args"] = "name: \":\"",
-  ["type"] = "function",
-  ["name"] = "place.qualify",
-  ["description"] = "\
-Return already sited name, otherwise prepend site to name",
-}
-,
-  ["add"] = {
-  ["returns"] = " `serialized: \":\", index: #:` <-\
-",
-  ["args"] = "name: \":\", :situation:",
-  ["type"] = "function",
-  ["name"] = "place.add",
-  ["description"] = "\
-Add situation to situations of an existing place.",
-}
-,
-  ["nearby"] = {
-  ["returns"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]` <-\
-",
-  ["args"] = ":xyzf:?, :cardinals:",
-  ["type"] = "function",
-  ["name"] = "place.nearby",
-  ["description"] = "\
-Sorted",
-}
-,
-  ["count"] = {
-  ["returns"] = " `#:` <-\
-",
-  ["args"] = "",
-  ["type"] = "function",
-  ["name"] = "place.count",
-  ["description"] = "\
-Returns number of places.",
-}
-,
-  ["name"] = {
-  ["returns"] = " `\":\", #:` <-\
-",
-  ["args"] = "name: \":\", label: \":\", supplied: situation?, :features:??",
-  ["type"] = "function",
-  ["name"] = "place.name",
-  ["description"] = "\
-Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return index of situation in global places and the serialized situation including its features.",
-}
-,
-  ["erase"] = {
-  ["returns"] = " `#:, index: #:` <-\
-",
-  ["args"] = "name: \":\"",
-  ["type"] = "function",
-  ["name"] = "place.erase",
-  ["description"] = "\
-Removes named place from array of places. Return new length of places table and the (previous) index of the removed place.",
-}
-,
-}
-,
-}
-,
-  ["_core.getComputerLabel:_"] = {
-  ["line"] = "--:: core.getComputerLabel(label: \":\"?) -> _Out of game returns label; label ignored in game._ -> `label: \":\"`",
-  ["out"] = " `label: \":\"`",
-  ["sign"] = "core.getComputerLabel(label: \":\"?)  ",
-  ["kind"] = "face",
-  ["text"] = "Out of game returns label; label ignored in game.",
-}
-,
-  ["_move.set:_"] = {
-  ["line"] = "  --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: \":\"???) -> _Set position, optionally rest of situation._ -> `nil`",
-  ["out"] = " `nil`",
-  ["sign"] = "move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: \":\"???)  ",
-  ["kind"] = "face",
-  ["text"] = "Set position, optionally rest of situation.",
-}
-,
-  ["_range_"] = {
-  ["line"] = "--:- range name label point point key value -> Define volume by named points, specify key and value of range property.",
-  ["sign"] = "range name label point point key value  ",
-  ["text"] = "Define volume by named points, specify key and value of range property.",
-  ["kind"] = "cli",
 }
 ,
   [" farm"] = {
@@ -4426,12 +4365,73 @@ Removes named place from array of places. Return new length of places table and 
 ,
 }
 ,
-  ["_move.left:_"] = {
-  ["line"] = "--:: move.left(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
+  ["_Directions_"] = {
+  ["line"] = "--:< **Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward_**",
+  ["sign"] = "**Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward_** ",
+  ["kind"] = "word",
+  ["text"] = "Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward",
+}
+,
+  ["_place.nearby:_"] = {
+  ["line"] = "--:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]`",
+  ["out"] = " `[distance: #:, name: \":\", label: \":\", cardinal: \":\", :xyzf:]`",
+  ["sign"] = "place.nearby(:xyzf:?, :cardinals:)  ",
   ["kind"] = "face",
-  ["sign"] = "move.left(count: #:?)  ",
-  ["out"] = "  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
-  ["text"] = "Count 0: just turn, 1: default",
+  ["text"] = "Sorted",
+}
+,
+  ["_range_"] = {
+  ["line"] = "--:- range name label point point key value -> Define volume by named points, specify key and value of range property.",
+  ["sign"] = "range name label point point key value  ",
+  ["text"] = "Define volume by named points, specify key and value of range property.",
+  ["kind"] = "cli",
+}
+,
+  ["_core.getComputerLabel:_"] = {
+  ["line"] = "--:: core.getComputerLabel(label: \":\"?) -> _Out of game returns label; label ignored in game._ -> `label: \":\"`",
+  ["out"] = " `label: \":\"`",
+  ["sign"] = "core.getComputerLabel(label: \":\"?)  ",
+  ["kind"] = "face",
+  ["text"] = "Out of game returns label; label ignored in game.",
+}
+,
+  ["_core.setComputerLabel:_"] = {
+  ["line"] = "--:: core.setComputerLabel(label: \":\") -> _Sets (out-of game global) label_ -> `label: \":\"`",
+  ["out"] = " `label: \":\"`",
+  ["sign"] = "core.setComputerLabel(label: \":\")  ",
+  ["kind"] = "face",
+  ["text"] = "Sets (out-of game global) label",
+}
+,
+  ["_move.set:_"] = {
+  ["line"] = "  --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: \":\"???) -> _Set position, optionally rest of situation._ -> `nil`",
+  ["out"] = " `nil`",
+  ["sign"] = "move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: \":\"???)  ",
+  ["kind"] = "face",
+  ["text"] = "Set position, optionally rest of situation.",
+}
+,
+  ["_Filling_"] = {
+  ["line"] = "--:< _Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:` ",
+  ["sign"] = "_Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:`  ",
+  ["text"] = "Filling and target may be one of the turtle categories or a Minecraft detail name without prefix_ `minecraft:",
+  ["kind"] = "word",
+}
+,
+  ["__gps.launch:_"] = {
+  ["line"] = "  --:: `_gps.launch(commands: [command: \":\", location: \":\", yD: #:?]) -> _Check before journey then launch._ -> \":\"",
+  ["kind"] = "face",
+  ["sign"] = "`_gps.launch(commands: [command: \":\", location: \":\", yD: #:?])  ",
+  ["out"] = " \":\"",
+  ["text"] = "Check before journey then launch.",
+}
+,
+  [" grid"] = {
+  ["type"] = "lib",
+  ["name"] = " grid",
+  ["childs"] = {
+}
+,
 }
 ,
   ["_field.till:_"] = {
@@ -4442,12 +4442,11 @@ Removes named place from array of places. Return new length of places table and 
   ["text"] = "Till the seed from one place to the other.",
 }
 ,
-  ["_move.clones:_"] = {
-  ["line"] = "--:: move.clones() -> _Deep copy `_G.Muse.situations`._ ->  situations",
-  ["out"] = "  situations",
-  ["sign"] = "move.clones()  ",
-  ["kind"] = "face",
-  ["text"] = "Deep copy `_G.Muse.situations`.",
+  ["_status_"] = {
+  ["line"] = "--:- status level [filename] -> _Set reporting hurdle and optionally save reporting in log file._",
+  ["sign"] = "status level [filename]  ",
+  ["kind"] = "cli",
+  ["text"] = "Set reporting hurdle and optionally save reporting in log file.",
 }
 ,
   ["_move.at:_"] = {
@@ -4458,43 +4457,43 @@ Removes named place from array of places. Return new length of places table and 
   ["text"] = "(Current) situation xyzf.",
 }
 ,
-  ["_planner.load:_"] = {
-  ["line"] = "  --:: planner.load(planFileName: \":\") -> _Instantiates what is returned from a plan file._ -> `plan &!` ",
+  ["_turtle.check:_"] = {
+  ["line"] = "  --:: turtle.check(targets: \":\"[], :detail:) -> _Tries to match each target against_ `detail.name`. -> ``matched: ^:`",
+  ["out"] = " ``matched: ^:`",
+  ["sign"] = "turtle.check(targets: \":\"[], :detail:)  ",
   ["kind"] = "face",
-  ["sign"] = "planner.load(planFileName: \":\")  ",
-  ["out"] = " `plan &!` ",
-  ["text"] = "Instantiates what is returned from a plan file.",
+  ["text"] = "Tries to match each target against_ `detail.name`.",
 }
 ,
-  ["__field.cut:_"] = {
-  ["line"] = "  --:: `_field.cut(places: [nearPlace: \":\", farPlace: \":\"])` -> _Use plan.quarry to cut._ -> `report: \":\" &:`",
-  ["out"] = " `report: \":\" &:`",
-  ["sign"] = "`_field.cut(places: [nearPlace: \":\", farPlace: \":\"])`  ",
+  ["_move.left:_"] = {
+  ["line"] = "--:: move.left(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
   ["kind"] = "face",
-  ["text"] = "Use plan.quarry to cut.",
+  ["sign"] = "move.left(count: #:?)  ",
+  ["out"] = "  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
+  ["text"] = "Count 0: just turn, 1: default",
 }
 ,
-  ["_move.situations:_"] = {
-  ["line"] = "--:: move.situations(:situations:) -> _Set `_G.Muse.situations` to situations._ -> situations",
-  ["out"] = " situations",
-  ["sign"] = "move.situations(:situations:)  ",
+  ["_move.track:_"] = {
+  ["line"] = "--:: move.track(enable: ^:) -> _Set tracking condition_ -> `enable: ^:`",
+  ["out"] = " `enable: ^:`",
+  ["sign"] = "move.track(enable: ^:)  ",
   ["kind"] = "face",
-  ["text"] = "Set `_G.Muse.situations` to situations.",
+  ["text"] = "Set tracking condition",
 }
 ,
-  ["_Places_"] = {
-  ["line"] = "--:< **Places - Points, Locations, Trails, and Ranges of Maps**",
-  ["sign"] = "**Places - Points, Locations, Trails, and Ranges of Maps** ",
-  ["kind"] = "word",
-  ["text"] = "Places - Points, Locations, Trails, and Ranges of Maps",
+  [" net"] = {
+  ["type"] = "lib",
+  ["name"] = " net",
+  ["childs"] = {
 }
 ,
-  ["_core.findItems:_"] = {
-  ["line"] = "  --:: core.findItems(targets: \":\"[]) -> _Selects found slot._ -> `detail?`",
-  ["out"] = " `detail?`",
-  ["sign"] = "core.findItems(targets: \":\"[])  ",
-  ["kind"] = "face",
-  ["text"] = "Selects found slot.",
+}
+,
+  ["_come_"] = {
+  ["line"] = "--:- come -> _rover turtle towards GPS player position._",
+  ["sign"] = "come  ",
+  ["text"] = "rover turtle towards GPS player position.",
+  ["kind"] = "cli",
 }
 ,
   ["_where_"] = {
@@ -4504,10 +4503,10 @@ Removes named place from array of places. Return new length of places table and 
   ["kind"] = "cli",
 }
 ,
-  ["_come_"] = {
-  ["line"] = "--:- come -> _rover turtle towards GPS player position._",
-  ["sign"] = "come  ",
-  ["text"] = "rover turtle towards GPS player position.",
+  ["_book_"] = {
+  ["line"] = "--:- book name label from to [span [item ...] ] -> _Spanned range with (default) items as properties; return cost less bank._",
+  ["sign"] = "book name label from to [span [item ...] ]  ",
+  ["text"] = "Spanned range with (default) items as properties; return cost less bank.",
   ["kind"] = "cli",
 }
 ,
@@ -4518,12 +4517,11 @@ Removes named place from array of places. Return new length of places table and 
   ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
 }
 ,
-  ["_core.inext:_"] = {
-  ["line"] = "--:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `():, {:}, #:`",
-  ["out"] = " `():, {:}, #:`",
-  ["sign"] = "core.inext(table: {:}, index: #:)  ",
-  ["kind"] = "face",
-  ["text"] = "Iterator over table beginning at index.",
+  ["_equip_"] = {
+  ["line"] = "  --:- equip direction -> _Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing)._",
+  ["sign"] = "equip direction  ",
+  ["kind"] = "cli",
+  ["text"] = "Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing).",
 }
 ,
   ["_tail_"] = {
@@ -4533,58 +4531,36 @@ Removes named place from array of places. Return new length of places table and 
   ["text"] = "Move `rover` every rate (default 5) seconds towards GPS player position.",
 }
 ,
-  ["_miner_"] = {
-  ["line"] = "--:- miner command argument... -> _See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface._",
-  ["sign"] = "miner command argument...  ",
-  ["text"] = "See <a href=\"../lib/net.html\" target=\"_blank\">/lib/net</a> for the remote command line interface.",
-  ["kind"] = "cli",
-}
-,
-  ["__remote.prepareCall:_"] = {
-  ["line"] = "--:: `_remote.prepareCall(server: \":\", command: \":\", arguments: any[])` -> _Serialize server request._ -> `serverID: #:, request: \":\" &: &!`",
+  ["_moves.along:_"] = {
+  ["line"] = "--:: moves.along(name: \":\") -> _Move from first to second situation of place._ -> `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["sign"] = "moves.along(name: \":\")  ",
   ["kind"] = "face",
-  ["sign"] = "`_remote.prepareCall(server: \":\", command: \":\", arguments: any[])`  ",
-  ["out"] = " `serverID: #:, request: \":\" &: &!`",
-  ["text"] = "Serialize server request.",
+  ["text"] = "Move from first to second situation of place.",
 }
 ,
-  ["_turtle.digTo:_"] = {
-  ["line"] = "  --:: turtle.digTo(:xyzf:, limit: #:?) -> _Unblocking move._ -> `code: \":\", remaining: #:, xyzf: \":\" &: &!` ",
-  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &: &!` ",
-  ["sign"] = "turtle.digTo(:xyzf:, limit: #:?)  ",
+  ["_field.fill:_"] = {
+  ["line"] = "--:: field.fill(parameters: [nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?]) -> _Fill, Till, Replace._ -> `\":\" &:`",
+  ["out"] = " `\":\" &:`",
+  ["sign"] = "field.fill(parameters: [nearPlace: \":\", farPlace: \":\", fill: \":\", target: \":\"?])  ",
   ["kind"] = "face",
-  ["text"] = "Unblocking move.",
-}
-,
-  ["_quarry_"] = {
-  ["line"] = "--:- quarry range firstPlot? lastPlot?? -> _Dig out the field to level it._",
-  ["sign"] = "quarry range firstPlot? lastPlot??  ",
-  ["kind"] = "cli",
-  ["text"] = "Dig out the field to level it.",
-}
-,
-  ["_core.orient:_"] = {
-  ["line"] = "  --:: core.orient(vectors: xyzMap, face: \":\"?, rotate: \":\"??) -> _Three dimensional rotation_ -> `xyzMap`",
-  ["out"] = " `xyzMap`",
-  ["sign"] = "core.orient(vectors: xyzMap, face: \":\"?, rotate: \":\"??)  ",
-  ["kind"] = "face",
-  ["text"] = "Three dimensional rotation",
+  ["text"] = "Fill, Till, Replace.",
 }
 ,
   ["check"] = {
   ["childs"] = {
-  ["all"] = {
+  ["regression"] = {
   ["returns"] = " `\":\"[]` <-\
 ",
   ["args"] = "testOrder: \":\"[]",
   ["type"] = "function",
-  ["name"] = "check.all",
+  ["name"] = "check.regression",
   ["description"] = "\
 Run ordered test names for regression.",
 }
 ,
   ["open"] = {
-  ["returns"] = " `{part:():, close:():}`  <-\
+  ["returns"] = " `{part:():, message:(): , close:():}`  <-\
 ",
   ["args"] = "testName:\":\", text: \":\"",
   ["type"] = "function",
@@ -4603,11 +4579,36 @@ Return object(closure)",
 Setup context, save and match expected results for parts of tests, run regression for those tests -> check",
 }
 ,
-  ["_dig_"] = {
-  ["line"] = "--:- dig direction distance hoeings...? -> Direction and distance to (possibly blocked) move, hoeings directions to hoe.",
-  ["sign"] = "dig direction distance hoeings...?  ",
-  ["text"] = "Direction and distance to (possibly blocked) move, hoeings directions to hoe.",
-  ["kind"] = "cli",
+  ["_turtle.digTo:_"] = {
+  ["line"] = "  --:: turtle.digTo(:xyzf:, limit: #:?) -> _Unblocking move._ -> `code: \":\", remaining: #:, xyzf: \":\" &: &!` ",
+  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &: &!` ",
+  ["sign"] = "turtle.digTo(:xyzf:, limit: #:?)  ",
+  ["kind"] = "face",
+  ["text"] = "Unblocking move.",
+}
+,
+  ["_core.match:_"] = {
+  ["line"] = "  --:: core.match(tableA: any[], tableB: any[]) -> _Find first matching item in pair of item tables._ -> `nil` | `any`",
+  ["out"] = " `nil` | `any`",
+  ["sign"] = "core.match(tableA: any[], tableB: any[])  ",
+  ["kind"] = "face",
+  ["text"] = "Find first matching item in pair of item tables.",
+}
+,
+  ["_core.orient:_"] = {
+  ["line"] = "  --:: core.orient(vectors: xyzMap, face: \":\"?, rotate: \":\"??) -> _Three dimensional rotation_ -> `xyzMap`",
+  ["out"] = " `xyzMap`",
+  ["sign"] = "core.orient(vectors: xyzMap, face: \":\"?, rotate: \":\"??)  ",
+  ["kind"] = "face",
+  ["text"] = "Three dimensional rotation",
+}
+,
+  ["_place.name:_"] = {
+  ["line"] = "  --:: place.name(name: \":\", label: \":\", supplied: situation?, :features:??) -> _Make or update place._ -> `\":\", #:`",
+  ["out"] = " `\":\", #:`",
+  ["sign"] = "place.name(name: \":\", label: \":\", supplied: situation?, :features:??)  ",
+  ["kind"] = "face",
+  ["text"] = "Make or update place.",
 }
 ,
   ["_launch_"] = {
@@ -4632,12 +4633,12 @@ Setup context, save and match expected results for parts of tests, run regressio
   ["kind"] = "cli",
 }
 ,
-  ["_core.record:_"] = {
-  ["line"] = "  --:: core.record(message: \":\") -> _Appends (status) message to log file on player._ -> `nil & !`",
-  ["out"] = " `nil & !`",
-  ["sign"] = "core.record(message: \":\")  ",
+  ["_moves.to:_"] = {
+  ["line"] = "--:: moves.to(target: \":\", first: \":\") -> _Move to target, first along direction._ -> `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["sign"] = "moves.to(target: \":\", first: \":\")  ",
   ["kind"] = "face",
-  ["text"] = "Appends (status) message to log file on player.",
+  ["text"] = "Move to target, first along direction.",
 }
 ,
   ["_move.clone:_"] = {
@@ -4648,10 +4649,10 @@ Setup context, save and match expected results for parts of tests, run regressio
   ["text"] = "Clone current situation",
 }
 ,
-  ["_move.east:_"] = {
-  ["line"] = "--:: move.east(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
+  ["_move.down:_"] = {
+  ["line"] = "--:: move.down(count: #:?) -> _Count 0: just turn, 1: default_ ->  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
   ["kind"] = "face",
-  ["sign"] = "move.east(count: #:?)  ",
+  ["sign"] = "move.down(count: #:?)  ",
   ["out"] = "  `\"done\", remaining: #:, xyzf, direction &!recovery` ",
   ["text"] = "Count 0: just turn, 1: default",
 }
@@ -4680,12 +4681,11 @@ Setup context, save and match expected results for parts of tests, run regressio
   ["text"] = "Set named place feature, send MU.",
 }
 ,
-  ["_core.where:_"] = {
-  ["line"] = "function core.where() --:: core.where() -> _GPS location if available._ -> `x: #:?, y: #:?, z: #:?`",
-  ["out"] = " `x: #:?, y: #:?, z: #:?`",
-  ["sign"] = "core.where()  ",
-  ["kind"] = "face",
-  ["text"] = "GPS location if available.",
+  ["_headings_"] = {
+  ["line"] = "  --:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds)._",
+  ["sign"] = "headings rate? place? count??  ",
+  ["kind"] = "cli",
+  ["text"] = "Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds).",
 }
 ,
   ["__remote.serverRequest:_"] = {

@@ -1,7 +1,23 @@
---:? muse/docs/tests/motion.txt <- **Test `lib/motion`** -> muse/docs/tests/motion.md    
+--:? muse/docs/tests/motion.txt <- **Test `lib/motion`** -> muse/docs/tests/motion.md   
+
+--:# Set configuration globals for tests by loading `lib/check`  
+
+--:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`  
+
+--:# Set log level default. Set lower to report less, higher to report more  
+
+--:# Bind `testName` as the last word (without extension) in the execution path  
+
+--:# Create the test object for this test  
 
 --:# **Test simple `move` motions**  
 
 --:# **Test compound operations**  
 
 --:# **Test simple `step` operations**  
+
+--:# Test `step` iterator  
+
+--:# Check "step.to 105 156 207 west")  
+
+--:# Close test object, report completion if we got here without errors  

@@ -2,15 +2,15 @@
 
 local  check = {}
 
--- Return object(closure)
--- check.open(testName:":", text: ":"):  `{part:():, close:():}`  <-
-
----@type fun( testName:string,  text: string):  { part: function,  close: function}
-function check.open() end
-
 -- Run ordered test names for regression.
--- check.all(testOrder: ":"[]):  `":"[]` <-
+-- check.regression(testOrder: ":"[]):  `":"[]` <-
 
 ---@type fun( testOrder: string[]):   string[]
-function check.all() end
+function check.regression() end
+
+-- Return object(closure)
+-- check.open(testName:":", text: ":"):  `{part:():, message:(): , close:():}`  <-
+
+---@type fun( testName:string,  text: string):  { part: function,  message: function,  close: function}
+function check.open() end
 return { check =  check}
