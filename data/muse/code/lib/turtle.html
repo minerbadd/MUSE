@@ -15,7 +15,7 @@
 </code></pre>
 The MUSE <code>turtle</code> module introduction is much like any other. One thing is notable, like the <code>situation</code> state variable in <code>lib/motion</code>, there's a <a href="https://minerbadd.github.io/CodeMark/Annotations.html" target="_blank"> CodeMark </a> <code>VALUE</code> mark, describing <code>direction</code> as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by <code>lib/mock</code>) are accessed in the <code>mock</code> table.
 <pre><code class="language-lua">
-local turtle = {} ---@module "signs.turtle" -- for functions exported from library
+local turtle = {}; turtle.hints = {} ---@module "signs.turtle" -- for functions exported from library
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
@@ -93,7 +93,7 @@ function turtle.inventory()
 end;
 
 function turtle.items() return core.string(turtle.inventory()) end --:- items -> <i>Returns items in turtle inventory as string.</i>
-
+-- NEED HINTS
 function turtle.check(targets, detail) -- item inspected by turtle is in targets?
   --:: turtle.check(targets: ":"[], :detail:) -> <i>Tries to match each target against</i> <code>detail.name</code>. -> <code></code>matched: ^:`
   for _, target in ipairs(targets) do if detail.name == target then return detail.name end end
@@ -145,7 +145,7 @@ function turtle.fuel() --:- fueling -> <i>Returns energy available in turtle slo
   local fuelTotal =  0; for i = 1, 16 do local detail = mock.getItemDetail(i)
     if detail then local energy = fuelEnergy[detail.name] or 0; fuelTotal = fuelTotal + (energy * detail.count) end
   end; return fuelTotal + mock.getFuelLevel()
-end; 
+end; -- NEED HINTS
 </code></pre>
 <a id="unblock"></a> 
 Abstracting away the difficulties in moving and digging is also a kind of information hiding.

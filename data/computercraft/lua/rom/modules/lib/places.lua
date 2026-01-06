@@ -190,7 +190,7 @@ We've spoken about tracking when we looked at the implementation of <a href="mot
 function place.fix(xyzf, track) -- set position, possibly for trailhead if tracking
 --:: place.fix(:xyzf:, track: ^:?) -> _Sets situation position, can start tracking for trail._ -> `xyzf`  
   move.set(table.unpack(xyzf)); move.track(track) -- enable tracking
-  move.situations({move.clone()}); -- set first situation in trail
+  move.situationsBegin(); -- set first situation in trail
   return xyzf
 end
 
@@ -206,7 +206,7 @@ function place.trail(headName, tailName, label) -- places for trail end and head
   local situations = move.clones() -- deep copy the track produced by `lib/motion`
   local headString = place.name(headName, label, situations) -- head place and end place share a label
   local tailString = place.name(tailName, label, reverseTrail(situations))
-  move.situations({}); move.track(false) -- clean up and disable tracking
+  move.situationsEnd(); move.track(false) -- clean up and disable tracking
   return headString, tailString 
 end
 

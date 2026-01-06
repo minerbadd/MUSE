@@ -29,8 +29,6 @@
 
 --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???) -> _Set position, optionally rest of situation._ -> `nil`  
 
---:: move.situations(:situations:) -> _Set `_G.Muse.situations` to situations._ -> situations  
-
 --:: move.clone() -> _Clone current situation_ -> situation  
 
 --:: move.clones() -> _Deep copy `_G.Muse.situations`._ ->  situations  

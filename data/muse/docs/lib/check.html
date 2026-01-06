@@ -9,23 +9,27 @@
 --:! {check: [":"]: ():} <- Regression Check Functions Library -> muse/docs/lib/check.md    
 --:| check: Setup context, save and match expected results for parts of tests, run regression for those tests -> check  
 
---:# Get path to executable calling this library  
+--:# Get path to calling executable  
 
 --:# Assumes tests directory structure as <code>tests/checks</code>  
-
---:# <i>Set Configuration Variables for tests: landed turtles, default site, tracking, delays, turtle <code>data</code> directory</i>  
 
 --:# Find results (if any) from a previous test.  
 
 --:# The poor man's object.... encapsulates but provides no inheritance facilities (didn't see the need to go there)  
 
---:: check.open(testName:":", text: ":") -> <i>Return object(closure)</i> -> <code>{part:():, message:(): , close:():}</code>   
+--:: check.open(testName:":", text: ":") -> <i>Return <code>check</code> object(closure)</i> -> <code>{part:():, message:():, close:():}</code>   
 
 --:# Access functions for the <code>check</code> object, each check object is independent in itself  
 
+--:# part(partID: ":", note: ":", ...: ":"): -> <i>Collect ... results for part, save or compare (for regression)</i> -> <code>nil</code>  
+
+--:# message(..: ":"): -> <i>Print ... if not regression</i> -> <code>nil</code>  
+
+--:# close(text: ":"): -> <i>Print text if regression, otherwise save results in</i> <code>checks</code> <i>directory for test</i> -> <code>nil</code>  
+
 --:# Run each test in this test directory that has expected results   
 
---:: check.regression(testOrder: ":"[]) -> <i>Run ordered test names for regression.</i> -> <code>":"[]</code>  
+--:: check.regression(testOrder: ":"[]) -> <i>Run ordered test (names) for regression.</i> -> <code>nil</code>  
 
 --:# Order to run tests comes from <code>tests/.regression</code>.  
 

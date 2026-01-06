@@ -153,8 +153,10 @@ _purely functional style_</a> would require creating a new `situation` table for
 --]]
 local function situation(setting) _G.Muse.situation = setting or _G.Muse.situation; return _G.Muse.situation end
 
-function move.situations(setting) _G.Muse.situations = setting or _G.Muse.situations; return _G.Muse.situations end
---:: move.situations(:situations:) -> _Set `_G.Muse.situations` to situations._ -> situations
+local function situationsUpdate(update) _G.Muse.situations[#_G.Muse.situations+ 1] = update; return _G.Muse.situations end
+local function situationsSet(table) _G.Muse.situations = table end
+function move.situationsBegin() _G.Muse.situations = {move.clone()}; return #_G.Muse.situations end
+function move.situationsEnd() local count = #_G.Muse.situations; _G.Muse.situations = {}; return count end
 
 function move.clone() -- easy cloning
 --:: move.clone() -> _Clone current situation_ -> situation
@@ -443,14 +445,14 @@ If we got here, we're at the end of the (ahem) trail. The `return` peels all the
 local resetTrack -- forward reference --:# **Tracking Movement: completing movement**
 
 trackMotion = function(current) -- from turn operations and xyzUpdate, add a situation only for turns and level changes 
-  local situations = move.situations(); situations[#situations + 1] = current; 
+  local situations = situationsUpdate(current)
   local reset = (_G.Muse.tracking.limit and #situations + 1 > _G.Muse.tracking.limit) 
   return reset and resetTrack(current) or "done" -- #situations and at() returned by `moveCount` or `stepCount`
 end
 
 resetTrack = function (current) -- dealing with tracking overflow
   core.status(3, "motion", "Trail reset, was longer than", _G.Muse.tracking.limit)
-  move.situations({current}); return "done"
+  situationsSet({current}); return "done"
 end
 --[[
 ```

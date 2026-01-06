@@ -5,27 +5,14 @@
 --:| check: Setup context, save and match expected results for parts of tests, run regression for those tests -> check
 ```Lua
 --]]
+local starts = require("_start"); local _ = starts -- loaded just to set configuration variables
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local lfs = require("lfs"); local check = {}; ---@module "signs.check"  
 
-_G.Muse = _G.Muse or {}; _G.Muse.path = "rom/modules/"
-
-local lfs = require("lfs"); local core = require("core").core ---@module "signs.core"
-local check = {}; ---@module "signs.check"  
-
-local tests = arg[0]:match('.*[/\\]') --:# Get path to executable calling this library
+local tests = arg[0]:match('.*[/\\]') --:# Get path to calling executable
 local checks = tests.."checks/" --:# Assumes tests directory structure as `tests/checks`
+_G.Muse.data = tests.."data/" -- separate from game when testing
 
---:# _Set Configuration Variables for tests: landed turtles, default site, tracking, delays, turtle `data` directory_
-_G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
-_G.Muse.IDs, _G.Muse.roles, _G.Muse.defaultSite = {}, {}, "base" -- with `site` program
-_G.Muse.tracking = {limit = 500, enabled = false}
-_G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
-_G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number in libraries)
-_G.Muse.attempts = 5 -- `lib/turtle` attempts to remove a blockage
-_G.Muse.rates = {}; _G.Muse.rates.headings = 5; _G.Muse.rates.tail = 0.5
-_G.Muse.permutations = {"y", "z", "x"} -- controlling axes order in permutations
--- {"y", "z", "x"} -> z x y, x z y, x y z, y x z, z y x, y z x
--- {"x", "y", "z"} -> y z x, z y x, z x y, x z y, y x z, x y z
-_G.Muse.data = tests.."data/"  -- for test environment separate from game environment
 --[[
 ```
 <a id="tests"></a>
@@ -37,10 +24,14 @@ For MUSE, all this is enabled by files in a specified `checks` directory. The ex
 ```Lua
 --]]
 
+local function directories()
+  assert(lfs.chdir(tests), "No tests directory here: "..tests) 
+  if lfs.chdir(checks) then return end -- or make a checks directory if needed
+  assert(lfs.mkdir("checks"), "Can't make tests/check/ in "..tests)
+end
+
 local function expected(testName) --:# Find results (if any) from a previous test.
-  assert(lfs.chdir(tests), "No tests directory here: "..tests) -- make a checks directory if needed
-  assert((io.open(checks, "r") or lfs.mkdir("checks")), "Can't make tests/check/ in "..tests)
-  local resultsFileName = checks..testName..".lua"
+  directories(); local resultsFileName = checks..testName..".lua"
   local resultsFunction = io.open(resultsFileName, "r") and loadfile(resultsFileName)
   local priors = resultsFunction and resultsFunction()
   return priors -- if any
@@ -48,25 +39,31 @@ end
 
 --:# The poor man's object.... encapsulates but provides no inheritance facilities (didn't see the need to go there)
 function check.open(testName, text, regression) -- create check object with context variables
-  --:: check.open(testName:":", text: ":") -> _Return object(closure)_ -> `{part:():, message:(): , close:():}` 
+  --:: check.open(testName:":", text: ":") -> _Return `check` object(closure)_ -> `{part:():, message:():, close:():}` 
   print(text); local priors = not regression and {} or assert(expected(testName), "No prior results for "..testName)
   local this = {priors = priors, testName = testName, regression = regression} -- instance variables
 
   --:# Access functions for the `check` object, each check object is independent in itself
   local function part(partID, note, ...) -- at each part of the test
+    --:# part(partID: ":", note: ":", ...: ":"): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`
     if not this.regression then print(note) end -- verbose if not regression
-    local partName = tostring(partID); local result, prior = core.string(...), this.priors[partName]
+    local partName = tostring(partID); local prior = this.priors[testName..":"..partName]
+    local ok, report = core.pass(pcall(core.string, ...))
+    local result = not ok and ("ERROR "..this.testName..".lua part "..partID..": "..note.." failed: "..report) or report  
     if (this.regression and result ~= prior) then error(result.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
-    if not this.regression then this.priors[partName] = result; print(result); return end -- save for regression
+    if not this.regression then this.priors[testName..":"..partName] = result; print(partName, result); return end --> regression
   end
 
   local function message(...) if not this.regression then print(...) end end
+  --:# message(..: ":"): -> _Print ... if not regression_ -> `nil`
 
   local function close(text) -- at end of test
+    --:# close(text: ":"): -> _Print text if regression, otherwise save results in_ `checks` _directory for test_ -> `nil`
     if this.regression then print(text); this = nil; return end
-    local serialized, path = core.serialize(this.priors), checks..testName..".lua"
-    local handle = assert(io.open(path, "w"), "Can't open "..path.." in check.lua")
+    directories(); local serialized, path = core.serialize(this.priors), checks..testName..".lua"
+    local handle = assert(io.open(path, "w"), "Can't open "..path.." in tests/check")
     handle:write(serialized); handle:close(); this = nil -- for gc
+    print(text, checks..testName..".lua")
   end
 
   return {part = part, message = message, close = close}
@@ -74,7 +71,7 @@ function check.open(testName, text, regression) -- create check object with cont
 end -- check object created by `check.open`
 
 --:# Run each test in this test directory that has expected results 
-function check.regression(testOrder) --:: check.regression(testOrder: ":"[]) -> _Run ordered test names for regression._ -> `":"[]`
+function check.regression(testOrder) --:: check.regression(testOrder: ":"[]) -> _Run ordered test (names) for regression._ -> `nil`
   local regression = true -- not the one in the `check` object
   for _, testName in ipairs(testOrder) do --:# Order to run tests comes from `tests/.regression`.
     if expected(testName) then -- TODO: maybe catch any thown errors and raise regression failed exception

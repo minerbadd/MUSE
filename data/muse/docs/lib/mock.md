@@ -9,7 +9,7 @@
 
 --:# _Inspection shows dirt for down direction, otherwise nothing._  
 
---:# turtle.block(blocker: #:?) -> _Counts down, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`  
+--:# turtle.block(blocker: #:?) -> _Counts down if number, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`  
 
 --:# _Turns just report success, other motions decrement the simulated fuel and report success unless blocked._    
 --:+ _Only forward motion can be blocked in simulation._  

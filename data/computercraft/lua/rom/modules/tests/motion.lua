@@ -12,6 +12,8 @@ local check = require("check").check --:# Set configuration globals for tests by
 
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
+local turtles = require("mock"); local turtle = turtles.turtle ---@module "signs.mock"
+
 
 local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
 core.log.level(regression and 0 or 5) --:# Set log level default. Set lower to report less, higher to report more
@@ -19,6 +21,8 @@ core.log.level(regression and 0 or 5) --:# Set log level default. Set lower to r
 local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind `testName` as the last word (without extension) in the execution path
 local text = "Beginning "..testName..".lua test at "..move.ats()
 local test = check.open(testName, text, regression) --:# Create the test object for this test
+
+turtle.blocking(false) -- `lib/motion` loaded `lib/mock`
 
 --:# **Test simple `move` motions**
 test.part(1, "east", move.east())
@@ -36,6 +40,10 @@ test.part(12, "north 0", move.north(0))
 test.part(13, "south 0", move.south(0))
 test.part(14, "up 10", move.up(10))
 test.part(15, "down 10", move.down(10))
+
+turtle.blocking(true) -- blocked in lib/motion xyzMotion
+test.part(16, "forward 10 blocked", move.forward(10))
+turtle.blocking(false)
 
 --:# **Test compound operations**
 test.part(17, "to 100 150 200 west", move.to({100, 150, 200,"west"}))
@@ -65,10 +73,17 @@ test.part(24, "steps 3 forward 3", more(), move.ats())
 test.part(25, "steps 4 forward 3", more(), move.ats()) 
 
 --:# Check "step.to 105 156 207 west")
-local stepping = 26
-for code, remaining, at, direction, all in step.to({105, 156, 207}) do stepping = stepping + 0.001
-  check.message(stepping, code, remaining, core.string(at), direction, all)
-end; test.part(28, "stepped to", core.ats())
+local stepping = 26; for code, remaining, at, direction, all in step.to({105, 156, 207}) do 
+  stepping = stepping + 0.001; test.part(stepping, code, remaining, core.string(at), direction, all)
+end; test.part(27, "stepped to", core.ats())
+
+--:# Check tracking
+test.part(28, "start tracking", move.situationsBegin())
+move.track(true); move.forward(5); move.up(5); move.back(5); move.down(5)
+test.part(29, "end tracking", move.situationsEnd())
+move.track(false)
+
+
 
 --:# Close test object, report completion if we got here without errors
 test.close("Test "..testName.." complete") 

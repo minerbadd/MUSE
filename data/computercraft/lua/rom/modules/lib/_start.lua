@@ -1,18 +1,17 @@
 --[[
-##Startup Operations for MUSE Computers
+##Startup Operations for MUSE Computers; Set Configuration Variables
 ```md
---:~ parallel.waitForAny(remote.wait) <- **MUSE start: Restore Places, DDS, Turtles Wait** -> muse/docs/daemons/.start.md  
+--:~ parallel.waitForAny(remote.wait) <- **MUSE start: Restore Places, DDS, Turtles Wait** -> muse/docs/lib/.start.md  
 --:+ _Autorun daemon by `startup.lua` for all MUSE (not GPS) computers (pocket and command computers, turtles)._  
---:+ `startup.lua` for MUSE computers is `shell.run('rom/modules/.start.lua')`  
+--:+ `startup.lua` for MUSE computers is `shell.run('rom/modules/lib/.start.lua')`  
 ``` 
 ```Lua
 --]]
 _G.Muse = _G.Muse or {}
 _G.Muse.path = "rom/modules/"; local path = _G.Muse.path -- shared across all worlds (most of Muse)
---_G.Muse.package = "/rom/modules/lib/?.lua"
 _G.Muse.charts = path.."charts/" -- for fields
 
-local peripheral, parallel = _G.peripheral, _G.parallel -- to supress static analysis lint warnings
+local peripheral, parallel, shell = _G.peripheral, _G.parallel, _G.shell -- to supress static analysis lint warnings
 
 local rednet = _G.rednet -- nil for out-game debug
 local player = _G.pocket; -- only the player has a pocket computer
@@ -26,17 +25,15 @@ _G.Muse.tracking = {limit = 500, enabled = false}
 _G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
 _G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number in libraries)
 _G.Muse.attempts = 5 -- `lib/turtle` attempts to remove a blockage
-_G.Muse.rates = {}; _G.Muse.rate.headings = 5; _G.Muse.rates.tail = 0.5
+_G.Muse.rates = {}; _G.Muse.rates.headings = 5; _G.Muse.rates.tail = 0.5
 _G.Muse.permutations = {"y", "z", "x"} -- controlling axes order in permutations
 -- {"y", "z", "x"} -> z x y, x z y, x y z, y x z, z y x, y z x
 -- {"x", "y", "z"} -> y z x, z y x, z x y, x z y, y x z, x y z
 
-
-_G.Muse.data = "muse/"-- local to turtle/computer
+_G.Muse.data = "muse/" -- local to turtle (overloaded by `lib/check` for tests)
 _G.Muse.map = _G.Muse.data.."map.map" -- name of map in _G.Muse.data
 _G.Muse.log = _G.Muse.data.."log.log"; 
 
---package.path = _G.Muse.package -- needed for each module
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local places = require("places"); local place = places.place ---@module "signs.places"
@@ -45,6 +42,8 @@ local nets = require("net"); local net = nets.net ---@module "signs.net"
 
 --:# _Set status and logging control parameters_
 local level, file = 5, "status"; core.logging({level, file})
+
+if not rednet then return end -- **enough for test environment**
 
 local site = place.site() or place.site(_G.Muse.defaultSite); 
 print("\nsite: "..place.site() or "?"..", `site` to change")

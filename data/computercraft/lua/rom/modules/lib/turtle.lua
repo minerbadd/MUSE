@@ -8,7 +8,7 @@
 The MUSE `turtle` module introduction is much like any other. One thing is notable, like the `situation` state variable in `lib/motion`, there's a <a href="https://minerbadd.github.io/CodeMark/Annotations.html" target="_blank"> CodeMark </a> `VALUE` mark, describing `direction` as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by `lib/mock`) are accessed in the `mock` table.
 ```Lua
 --]]
-local turtle = {} ---@module "signs.turtle" -- for functions exported from library
+local turtle = {}; turtle.hints = {} ---@module "signs.turtle" -- for functions exported from library
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
@@ -92,7 +92,7 @@ function turtle.inventory()
 end;
 
 function turtle.items() return core.string(turtle.inventory()) end --:- items -> _Returns items in turtle inventory as string._
-
+-- NEED HINTS
 function turtle.check(targets, detail) -- item inspected by turtle is in targets?
   --:: turtle.check(targets: ":"[], :detail:) -> _Tries to match each target against_ `detail.name`. -> ``matched: ^:`
   for _, target in ipairs(targets) do if detail.name == target then return detail.name end end
@@ -144,7 +144,7 @@ function turtle.fuel() --:- fueling -> _Returns energy available in turtle slots
   local fuelTotal =  0; for i = 1, 16 do local detail = mock.getItemDetail(i)
     if detail then local energy = fuelEnergy[detail.name] or 0; fuelTotal = fuelTotal + (energy * detail.count) end
   end; return fuelTotal + mock.getFuelLevel()
-end; 
+end; -- NEED HINTS
 --[[
 ```
 <a id="unblock"></a> 

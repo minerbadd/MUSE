@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+ <html>
+<head>
+<link href="https://minerbadd.github.io/CodeMark/assets/prism.css" rel="stylesheet" />
+<link href="https://minerbadd.github.io/CodeMark/assets/downmark.css" rel="stylesheet" />
+</head>
+<body>
+<script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
+
+<h2>Startup Operations for MUSE Computers; Set Configuration Variables</h2>
+<pre><code class="language-markdown">
+--:~ parallel.waitForAny(remote.wait) <- <b>MUSE start: Restore Places, DDS, Turtles Wait</b> -> muse/docs/lib/.start.md  
+--:+ <i>Autorun daemon by <code>startup.lua</code> for all MUSE (not GPS) computers (pocket and command computers, turtles).</i>  
+--:+ <code>startup.lua</code> for MUSE computers is <code>shell.run('rom/modules/lib/.start.lua')</code>  
+</code></pre>
+<pre><code class="language-lua">
+_G.Muse = _G.Muse or {}
+_G.Muse.path = "rom/modules/"; local path = _G.Muse.path -- shared across all worlds (most of Muse)
+_G.Muse.charts = path.."charts/" -- for fields
+
+local peripheral, parallel, shell = _G.peripheral, _G.parallel, _G.shell -- to supress static analysis lint warnings
+
+local rednet = _G.rednet -- nil for out-game debug
+local player = _G.pocket; -- only the player has a pocket computer
+local turtle = _G.turtle; -- GPS computers and the command computer are not turtles
+local command = _G.commands -- table or nil (if not a command computer)
+
+--:# <i>Set Configuration Variables: landed turtles, default site, tracking, delays, turtle <code>data</code> directory</i>
+_G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
+_G.Muse.IDs, _G.Muse.roles, _G.Muse.defaultSite = {}, {}, "base" -- with <code>site</code> program
+_G.Muse.tracking = {limit = 500, enabled = false}
+_G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
+_G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number in libraries)
+_G.Muse.attempts = 5 -- <code>lib/turtle</code> attempts to remove a blockage
+_G.Muse.rates = {}; _G.Muse.rates.headings = 5; _G.Muse.rates.tail = 0.5
+_G.Muse.permutations = {"y", "z", "x"} -- controlling axes order in permutations
+-- {"y", "z", "x"} -> z x y, x z y, x y z, y x z, z y x, y z x
+-- {"x", "y", "z"} -> y z x, z y x, z x y, x z y, y x z, x y z
+
+_G.Muse.data = "muse/" -- local to turtle (overloaded by <code>lib/check</code> for tests)
+_G.Muse.map = _G.Muse.data.."map.map" -- name of map in _G.Muse.data
+_G.Muse.log = _G.Muse.data.."log.log"; 
+
+local cores = require("core"); local core = cores.core ---@module "signs.core"
+local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
+local places = require("places"); local place = places.place ---@module "signs.places"
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
+local nets = require("net"); local net = nets.net ---@module "signs.net"
+
+--:# <i>Set status and logging control parameters</i>
+local level, file = 5, "status"; core.logging({level, file})
+
+if not rednet then return end -- <b>enough for test environment</b>
+
+local site = place.site() or place.site(_G.Muse.defaultSite); 
+print("\nsite: "..place.site() or "?"..", <code>site</code> to change")
+</code></pre>
+<a id="host"></a> 
+<h3>Register turtles and computers that run this script as Muse Query (<code>MQ</code>) hosts for discovery service.</h3>
+<pre><code class="language-lua">
+local function identity() -- temporary label as computer ID if needed for MQ registration
+  local label = core.getComputerLabel(); local labelled = not tonumber(label)
+  local role = labelled and label or (player and "player" or (command and "porter"))
+  local id = tostring(core.getComputerID()); -- for temporary label
+  core.setComputerLabel(role or id) -- if role nil, set temporary label
+  return core.getComputerLabel()
+end
+--:# <b>Get ready to run: turn on modems, setup for turtle registration</b>
+peripheral.find("modem", rednet.open)
+
+if player or turtle or command then -- not for GPS computers
+  shell.openTab(path..".update.lua"); shell.openTab(path..".erase.lua"); 
+  shell.openTab(path..".status.lua"); shell.openTab("bg") -- TODO: too many shells?
+end
+
+rednet.host("MQ", identity()) -- <b>start dds registration</b>, and give it time to settle
+</code></pre>
+<a id="complete"></a>
+<h3>Set up hints as shell command completions from <code>lib/net</code></h3>
+Using <a href="../lib/core.html#completer" target="_blank"> <code>core.completer</code></a>.
+<pre><code class="language-lua">
+--:# <i>Register completions for local and remote commands</i>
+local function complete(completions)
+  for command, completion in pairs(completions) do 
+    shell.setCompletionFunction(command, core.completer(completion)) 
+  end
+end; complete(net.hints)
+</code></pre>
+<a id="dds"></a> 
+<h3>Create dictionaries associating IDs to (role) labels and associating (role) labels to IDs.</h3>
+<pre><code class="language-lua">
+--:# <i>Setup <code>dds</code> IDs and labels. Needed for remote calls (which can report errors back to player)</i>
+if rednet then -- TODO: Are all these delays needed?
+  os.sleep(_G.Muse.delays.dds); dds.hosts(); os.sleep(_G.Muse.delays.map); os.sleep(0) --  -- need os.sleep(0) for gps!
+end
+</code></pre>
+<a id="fix"></a> 
+<h3>Say where command computer and turtles are, store site and map with remote calls (reporting errors)</h3>
+<pre><code class="language-lua">
+--:# <i>Report turtle situations and number of places in map; persist site in site file and places in map (reporting errors)</i>
+
+local function printings(host, id) return function(results) print(id.." "..host..": "..results) end end
+if player then 
+  for host, id in dds.map() do -- for each dds host, <code>fix</code> and <code>store</code> in <code>lib/map</code>
+    remote.call(host, "fix", {}, printings(host, id)) -- printings generates callback
+    remote.call(host, "store", {site}, function(results) print(results) end) -- persist new <code>site</code> established in <code>dds</code>
+  end
+end
+os.getComputerLabel() -- to show turtle nameplate
+</code></pre>
+<a id="wait"></a> 
+<h3>Finish startup in-game by putting turtles and command computer in wait loops.</h3>
+(GPS computers have their own startup. They don't run this one.)
+<pre><code class="language-lua">
+--:# <b>Turtles and Command Computer wait for remote command from player</b>
+if rednet and not player then parallel.waitForAny(remote.wait) end-- wait for net command (in game)
+
+  </body> 
+</html>
+

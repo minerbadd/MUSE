@@ -150,8 +150,10 @@ Implicitly there's another design decision in arranging to modify <code>situatio
 <pre><code class="language-lua">
 local function situation(setting) _G.Muse.situation = setting or _G.Muse.situation; return _G.Muse.situation end
 
-function move.situations(setting) _G.Muse.situations = setting or _G.Muse.situations; return _G.Muse.situations end
---:: move.situations(:situations:) -> <i>Set <code>_G.Muse.situations</code> to situations.</i> -> situations
+local function situationsUpdate(update) _G.Muse.situations[#_G.Muse.situations+ 1] = update; return _G.Muse.situations end
+local function situationsSet(table) _G.Muse.situations = table end
+function move.situationsBegin() _G.Muse.situations = {move.clone()}; return #_G.Muse.situations end
+function move.situationsEnd() local count = #_G.Muse.situations; _G.Muse.situations = {}; return count end
 
 function move.clone() -- easy cloning
 --:: move.clone() -> <i>Clone current situation</i> -> situation
@@ -418,14 +420,14 @@ If we got here, we're at the end of the (ahem) trail. The <code>return</code> pe
 local resetTrack -- forward reference --:# <b>Tracking Movement: completing movement</b>
 
 trackMotion = function(current) -- from turn operations and xyzUpdate, add a situation only for turns and level changes 
-  local situations = move.situations(); situations[#situations + 1] = current; 
+  local situations = situationsUpdate(current)
   local reset = (_G.Muse.tracking.limit and #situations + 1 > _G.Muse.tracking.limit) 
   return reset and resetTrack(current) or "done" -- #situations and at() returned by <code>moveCount</code> or <code>stepCount</code>
 end
 
 resetTrack = function (current) -- dealing with tracking overflow
   core.status(3, "motion", "Trail reset, was longer than", _G.Muse.tracking.limit)
-  move.situations({current}); return "done"
+  situationsSet({current}); return "done"
 end
 </code></pre>
 <h3>Exposing the Move and Step Functions</h3>

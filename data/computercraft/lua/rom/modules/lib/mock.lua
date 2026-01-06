@@ -53,11 +53,11 @@ function turtle.inspect() return false, "nothing here" end
 function turtle.inspectUp() return  true, {name="minecraft:coal"} end
 function turtle.inspectDown() return true, {name="minecraft:dirt"}  end
 
-_G.Muse.block = 0
---:# turtle.block(blocker: #:?) -> _Counts down, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`
+local blocked = false
+--:# turtle.block(blocker: #:?) -> _Counts down if number, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`
 function turtle.blocking(blocker) 
-  if _G.Muse.block > 0 then _G.Muse.block = _G.Muse.block - 1 end
-  if blocker then _G.Muse.block = blocker end; return _G.Muse.block > 0 
+  if blocker ~= nil then blocked = blocker; return (type(blocked) == "number" and blocked > 0) or blocked end
+  if type(blocked) == "number" and blocked > 0 then blocked = blocked - 1; return true end
 end
 
 --:# _Turns just report success, other motions decrement the simulated fuel and report success unless blocked._
@@ -69,9 +69,9 @@ function turtle.back() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.up() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.down() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.forward() 
-  if turtle.blocking() then _G.Muse.fuel = _G.Muse.fuel - 1; return success end 
-  return false
-end
+  if turtle.blocking() then return false end
+_G.Muse.fuel = _G.Muse.fuel - 1; return success 
+end 
 
 --:# _Primitive turtle operations are mocked: attack, dig, place, detect, compare, drop, and suck._
 function turtle.attack() return true end
