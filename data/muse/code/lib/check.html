@@ -53,11 +53,11 @@ function check.open(testName, text, regression) -- create check object with cont
   local function part(partID, note, ...) -- at each part of the test
     --:# part(partID: ":", note: ":", ...: ":"): -> <i>Collect ... results for part, save or compare (for regression)</i> -> <code>nil</code>
     if not this.regression then print(note) end -- verbose if not regression
-    local partName = tostring(partID); local prior = this.priors[testName..":"..partName]
+    local partName = tostring(partID); local prior = this.priors['["'..partName..'"]']
     local ok, report = core.pass(pcall(core.string, ...))
     local result = not ok and ("ERROR "..this.testName..".lua part "..partID..": "..note.." failed: "..report) or report  
     if (this.regression and result ~= prior) then error(result.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
-    if not this.regression then this.priors[testName..":"..partName] = result; print(partName, result); return end --> regression
+    if not this.regression then this.priors['["'..partName..'"]'] = result; print(partName, result); return end --> regression
   end
 
   local function message(...) if not this.regression then print(...) end end
