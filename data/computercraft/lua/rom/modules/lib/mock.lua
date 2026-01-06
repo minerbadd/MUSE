@@ -55,9 +55,10 @@ function turtle.inspectDown() return true, {name="minecraft:dirt"}  end
 
 local blocked = false
 --:# turtle.block(blocker: #:?) -> _Counts down if number, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`
-function turtle.blocking(blocker) 
-  if blocker ~= nil then blocked = blocker; return (type(blocked) == "number" and blocked > 0) or blocked end
-  if type(blocked) == "number" and blocked > 0 then blocked = blocked - 1; return true end
+function turtle.blocking(blocker)
+  if blocker == nil and type(blocked) ~= "number" then return blocked end
+  if blocker == nil then blocked = math.abs(blocked); if blocked > 0 then blocked = blocked - 1 end return blocked > 0 end
+  blocked = blocker; return (type(blocked) == "number" and math.abs(blocked) > 0) or blocked
 end
 
 --:# _Turns just report success, other motions decrement the simulated fuel and report success unless blocked._
@@ -70,7 +71,7 @@ function turtle.up() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.down() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.forward() 
   if turtle.blocking() then return false end
-_G.Muse.fuel = _G.Muse.fuel - 1; return success 
+  _G.Muse.fuel = _G.Muse.fuel - 1; return success 
 end 
 
 --:# _Primitive turtle operations are mocked: attack, dig, place, detect, compare, drop, and suck._

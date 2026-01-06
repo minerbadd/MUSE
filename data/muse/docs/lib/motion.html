@@ -48,7 +48,7 @@
 --:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ^: ok</code>    
 --:+ <i>If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.</i>  
 
---:> recovery: <i>For some errors</i> -> <code>[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]</code>  
+--:> recovery: <i>For some errors</i> -> <code>[call: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]</code>  
 
 --:# <b>Forward! Up! Down! move, step ... again (raising errors, providing for recovery)</b>  
 

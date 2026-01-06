@@ -291,14 +291,14 @@ The (cardinal) direction abstraction for `face` turns is built on the `turnRight
 If turning the turtle encounters trouble, the functions we've been exploring return something other than `"done"`. In this case MUSE raises an error supplying a `recovery` table that might be used to recover from the error, perhaps by resolving the turtle's `"blocked"` condition.
 ```Lua
 --]]
---:> recovery: _For some errors_ -> `[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
+--:> recovery: _For some errors_ -> `[call: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
 
 local ops -- forward references to what actually moves the turtle: `moveCount` or `stepCount`
 
 local function turn(turnOperation, count, direction, op) --primitive: left or right, and provide for turn failure
   local turnResult = turnOperation(); -- do the turn: `turnLeft` or `turnRight` and if ok, attempt the (forward) motion
   if turnResult == "done" then return ops[op](wayForward, count, direction) end -- `moveCount` or `stepCount` **(Move turtle!)**
-  error {"motion.turn", "Failed because ", turnResult, count, move.ats(), direction, "turnMove"} --recovery
+  error {"motion.turn", turnResult, count, move.ats(), direction, "turnMove"} --recovery
 end
 
 local function turnFacing(direction) -- Given NESW compass points, finds and performs turn operation from turns table
@@ -312,7 +312,7 @@ local function face(direction, count, op) -- cardinal directions now including `
   local turnResult = turnFacing(direction); -- first turn in specified direction, ignoring `up` or `down`
   local way = vertical[direction] or wayForward -- if not `up` or `down` just figure on going forward
   if turnResult == "done" then return ops[op](way, count, direction) end -- `moveCount` or `stepCount` **(Turtle motion attempt!)**
-  error {"motion.face", "Failed because ", turnResult, count, move.ats(), direction, "faceMove"} --recovery
+  error {"motion.face", turnResult, count, move.ats(), direction, "faceMove"} --recovery
 end
 --[[
 ```
@@ -331,7 +331,7 @@ local function moveCount(way, count, direction) --xyz only, way: `wayUp`, `wayDo
   if count and count == 0 then return "done", count, move.ats() end -- to just report xyzf
   for i = 1, count do local result = fueledMotion(way, count, direction) -- check fuel, try `way` to move turtle
     if result ~= "done" then direction = direction or "???" -- handling possibility of unspecified direction
-      error {"motion.moveCount", "Failed because ", result, count - i + 1, move.ats(), direction, "moveCount"} -- recover
+      error {"motion.moveCount", result, count - i + 1, move.ats(), direction, "moveCount"} -- recover
     end-- for all failures: could be "empty", "lost", or "blocked"
   end; return "done", 0, move.ats() -- nothing left to do, completed the sequence of move operations
 end
@@ -340,12 +340,12 @@ local function stepCount(way, count, direction) --return a closure to iterate st
   count = count or 0; local i = 0 -- upvalues for closure
   return function() -- this is the iterator, returns nil when exhausted, errors on `empty`, `lost`, `blocked`
     local turnResult = turnFacing(direction); if turnResult ~= "done" then -- tried to turn and failed, can't iterate
-      error {"motion.stepCount", "Failed turn because ", turnResult, count - (i-1), move.ats(), direction, "stepCount"} 
+      error {"motion.stepCount turn", turnResult, count - (i-1), move.ats(), direction, "stepCount"} 
     end
     i = i + 1; if count - i < 0 then return nil end -- exhausted, terminate iteration
     local result = fueledMotion(way, direction) -- check fuel and try doing specified movement
     if result == "done" then return "done", count - i, move.ats(), direction end -- success
-    error {"motion.stepCount", "Failed because ", result, count - (i-1), move.ats(), direction, "stepCount"} --recovery
+    error {"motion.stepCount", result, count - (i-1), move.ats(), direction, "stepCount"} --recovery
   end
 end
 
@@ -496,7 +496,7 @@ function step.back(count) count = count or 1; return stepCount(wayBack, count, "
 ```
 These functions only return values if there have been no errors in the functions they call (and that are called in turn). They mostly return a status code (as a string), the number of Minecraft blocks remaining to traverse (as a number), the position and orientation of the turtle (as a string produced by the call to `move.ats`), and in which way it was supposed to move (as a string). Of course, if there have been no errors in a `move`, the number of blocks remaining is zero. However if there is an error raised, the number of blocks remaining is non-zero as included in the error recovery table we talked about earlier.
 
-This populates most of the two tables of functions returned by loading this library file.  There's just a few more, higher level operations that, of course, build on what we've already discussed.
+This populates most of the two tables of functions returned by loading this module.  There's just a few more, higher level operations that, of course, build on what we've already discussed.
 
 #Moving to a Target
 

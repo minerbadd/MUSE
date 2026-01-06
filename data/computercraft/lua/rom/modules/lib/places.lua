@@ -223,7 +223,7 @@ Mostly just placing a naming layer on `move` and `step` but look at how iterator
 --]]
 --:# **Moving and stepping for known places: to points or along trails**
 function moves.along(name) -- move along trail
---:: moves.along(name: ":") -> _Move from first to second situation of place._ -> `code: ":", remaining: #:, xyzf: ":" &! recovery`
+--:: moves.along(name: ":") -> _Move from first to second situation of place._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`
 --:+ _If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head._
   local _, _, situations = place.track(name); -- existing trail?
   if #situations == 0 then return "done", 0, move.ats() end -- note `{} ~= nil` however `#{} == 0`
@@ -232,7 +232,7 @@ function moves.along(name) -- move along trail
 end
 
 function steps.along(name) -- step from each situation to the next beginning with the current situation
---:: steps.along(name: ":") -> _Iterator: first to next situation of place._ -> `(): code: ":", remaining: #:, xyzf: ":" &! recovery`
+--:: steps.along(name: ":") -> _Iterator: first to next situation of place._ -> `(): code: ":", remaining: #:, xyzf: ":" &!recovery`
 --:+ _If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head._
   local _, _, situations = place.track(name); local iterators = {}; 
   local clonedSituations = core.clone(situations); -- deep copy because there's a mutation coming next
@@ -259,10 +259,10 @@ local function checkTarget(target) -- separated out from `moves.to` for clarity
 end
 
 function moves.to(target, first) local xyzfTarget = checkTarget(target); return move.to(xyzfTarget, first) end
---:: moves.to(target: ":", first: ":") -> _Move to target, first along direction._ -> `code: ":", remaining: #:, xyzf: ":" &! recovery`
+--:: moves.to(target: ":", first: ":") -> _Move to target, first along direction._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`
 
 function steps.to(target) assert(target, "places: Need target to step there")
-  --:: steps.to(target: ":") -> _Step (iterator) to target place._ -> `(): code: ":", remaining: #:, xyzf: ":" &! recovery`
+  --:: steps.to(target: ":") -> _Step (iterator) to target place._ -> `(): code: ":", remaining: #:, xyzf: ":" &!recovery`
   local xyzf = assert(place.xyzf(target), "places: Place to step to not found: "..target)
   return step.to(xyzf)
 end

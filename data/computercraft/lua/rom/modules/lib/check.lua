@@ -21,6 +21,8 @@ There's an example here, `check.open`, of what's called _a poor man's object_. T
 _(The code illustrates <a href="https://wiki.c2.com/?ClosuresAndObjectsAreEquivalent" target="_blank"> `poor man's objects`</a>. This link dumps you into a theory heavy digression. Go there when you're ready for that.)_
 
 For MUSE, all this is enabled by files in a specified `checks` directory. The expected results from the previous run of a test are found in the file in that directory for the given test. The results files instantiate when loaded as tables of result strings keyed by part identifiers (as strings) in the test.
+
+Test parts are executed as protected calls so errors can be used in regression testing. This requires part operations to be deferred by applying functions to arguments in `check.part` rather than in the tests themselves.  
 ```Lua
 --]]
 
@@ -44,16 +46,17 @@ function check.open(testName, text, regression) -- create check object with cont
   local this = {priors = priors, testName = testName, regression = regression} -- instance variables
 
   --:# Access functions for the `check` object, each check object is independent in itself
-  local function part(partID, note, ...) -- at each part of the test
-    --:# part(partID: ":", note: ":", ...: ":"): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`
+  local function part(partID, note, fun, ...) -- at each part of the test
+    --:# part(partID: ":", note: ":", fun: ():, ...: any): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`
     if not this.regression then print(note) end -- verbose if not regression
     local partName = tostring(partID); local prior = this.priors['["'..partName..'"]']
-    local ok, report = core.pass(pcall(core.string, ...))
-    local result = not ok and ("ERROR "..this.testName..".lua part "..partID..": "..note.." failed: "..report) or report  
-    if (this.regression and result ~= prior) then error(result.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
-    if not this.regression then this.priors['["'..partName..'"]'] = result; print(partName, result); return end --> regression
+    local ok, result = core.pass(pcall(fun, ...)) -- **execute the test part deferred till now (with protection)**
+    local failure = ("ERROR "..this.testName..".lua part "..partID..": "..note.." failed: "..core.string(result))
+    local report = ok and core.string(result) or failure
+    if (this.regression and report ~= prior) then error(report.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
+    if not this.regression then this.priors['["'..partName..'"]'] = report; print(partName, report); return end --> regression
   end
-
+  
   local function message(...) if not this.regression then print(...) end end
   --:# message(..: ":"): -> _Print ... if not regression_ -> `nil`
 

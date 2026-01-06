@@ -214,7 +214,7 @@ Mostly just placing a naming layer on <code>move</code> and <code>step</code> bu
 <pre><code class="language-lua">
 --:# <b>Moving and stepping for known places: to points or along trails</b>
 function moves.along(name) -- move along trail
---:: moves.along(name: ":") -> <i>Move from first to second situation of place.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &! recovery</code>
+--:: moves.along(name: ":") -> <i>Move from first to second situation of place.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &!recovery</code>
 --:+ <i>If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head.</i>
   local _, _, situations = place.track(name); -- existing trail?
   if #situations == 0 then return "done", 0, move.ats() end -- note <code>{} ~= nil</code> however <code>#{} == 0</code>
@@ -223,7 +223,7 @@ function moves.along(name) -- move along trail
 end
 
 function steps.along(name) -- step from each situation to the next beginning with the current situation
---:: steps.along(name: ":") -> <i>Iterator: first to next situation of place.</i> -> <code>(): code: ":", remaining: #:, xyzf: ":" &! recovery</code>
+--:: steps.along(name: ":") -> <i>Iterator: first to next situation of place.</i> -> <code>(): code: ":", remaining: #:, xyzf: ":" &!recovery</code>
 --:+ <i>If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head.</i>
   local _, _, situations = place.track(name); local iterators = {}; 
   local clonedSituations = core.clone(situations); -- deep copy because there's a mutation coming next
@@ -250,10 +250,10 @@ local function checkTarget(target) -- separated out from <code>moves.to</code> f
 end
 
 function moves.to(target, first) local xyzfTarget = checkTarget(target); return move.to(xyzfTarget, first) end
---:: moves.to(target: ":", first: ":") -> <i>Move to target, first along direction.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &! recovery</code>
+--:: moves.to(target: ":", first: ":") -> <i>Move to target, first along direction.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &!recovery</code>
 
 function steps.to(target) assert(target, "places: Need target to step there")
-  --:: steps.to(target: ":") -> <i>Step (iterator) to target place.</i> -> <code>(): code: ":", remaining: #:, xyzf: ":" &! recovery</code>
+  --:: steps.to(target: ":") -> <i>Step (iterator) to target place.</i> -> <code>(): code: ":", remaining: #:, xyzf: ":" &!recovery</code>
   local xyzf = assert(place.xyzf(target), "places: Place to step to not found: "..target)
   return step.to(xyzf)
 end

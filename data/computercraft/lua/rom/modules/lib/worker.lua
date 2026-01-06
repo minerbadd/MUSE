@@ -72,7 +72,7 @@ local function operateStep(elements, plan, index, pathOperations, more) -- step 
     error("work.operateStep: failed hard "..plan.name.." "..direction.." "..distance.." "..index.." "..result)
   end -- otherwise get `move` failure type and remaining blocks for stepping the recovery
 
-  local _, _, fail, remaining, at, movement, motion = table.unpack(condition) -- handle step failures
+  local _, fail, remaining, at, movement, motion = table.unpack(condition) -- handle step failures
   return failures[fail](plan, pathOperations, index, direction, remaining, at, movement, motion)
 end
 

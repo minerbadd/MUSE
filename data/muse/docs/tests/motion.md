@@ -12,11 +12,13 @@
 
 --:# **Test simple `move` motions**  
 
+--:# Test blocked move  
+
 --:# **Test compound operations**  
 
 --:# **Test simple `step` operations**  
 
---:# Test `step` iterator  
+--:# Test `step` iterator exhaustion  
 
 --:# Check "step.to 105 156 207 west")  
 

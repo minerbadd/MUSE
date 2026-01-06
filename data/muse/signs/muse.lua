@@ -419,8 +419,8 @@ Orientation and position reporting, broadcast and persistence of places_ -> map"
 }
 ,
   ["_moves.along:_"] = {
-  ["line"] = "--:: moves.along(name: \":\") -> _Move from first to second situation of place._ -> `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["line"] = "--:: moves.along(name: \":\") -> _Move from first to second situation of place._ -> `code: \":\", remaining: #:, xyzf: \":\" &!recovery`",
+  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &!recovery`",
   ["sign"] = "moves.along(name: \":\")  ",
   ["kind"] = "face",
   ["text"] = "Move from first to second situation of place.",
@@ -910,8 +910,8 @@ Client and server side support for RPCs and client (player) side support for_ `c
 }
 ,
   ["_steps.along:_"] = {
-  ["line"] = "--:: steps.along(name: \":\") -> _Iterator: first to next situation of place._ -> `(): code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["out"] = " `(): code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["line"] = "--:: steps.along(name: \":\") -> _Iterator: first to next situation of place._ -> `(): code: \":\", remaining: #:, xyzf: \":\" &!recovery`",
+  ["out"] = " `(): code: \":\", remaining: #:, xyzf: \":\" &!recovery`",
   ["sign"] = "steps.along(name: \":\")  ",
   ["kind"] = "face",
   ["text"] = "Iterator: first to next situation of place.",
@@ -969,7 +969,7 @@ For tracking",
 ,
   [":recovery"] = {
   ["type"] = "value",
-  ["returns"] = " `[call: \":\", failure: \":\", cause: \":\", remaining: #:, :xyzf:, :direction:, operation: \":\"]`",
+  ["returns"] = " `[call: \":\", cause: \":\", remaining: #:, :xyzf:, :direction:, operation: \":\"]`",
   ["name"] = "recovery",
   ["description"] = "\
 For some errors",
@@ -3349,8 +3349,8 @@ Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go`
 }
 ,
   ["_moves.to:_"] = {
-  ["line"] = "--:: moves.to(target: \":\", first: \":\") -> _Move to target, first along direction._ -> `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["line"] = "--:: moves.to(target: \":\", first: \":\") -> _Move to target, first along direction._ -> `code: \":\", remaining: #:, xyzf: \":\" &!recovery`",
+  ["out"] = " `code: \":\", remaining: #:, xyzf: \":\" &!recovery`",
   ["sign"] = "moves.to(target: \":\", first: \":\")  ",
   ["kind"] = "face",
   ["text"] = "Move to target, first along direction.",
@@ -4502,8 +4502,8 @@ Replaces game definitions, unifies operations to all directions: north, east, so
 }
 ,
   ["_steps.to:_"] = {
-  ["line"] = "  --:: steps.to(target: \":\") -> _Step (iterator) to target place._ -> `(): code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
-  ["out"] = " `(): code: \":\", remaining: #:, xyzf: \":\" &! recovery`",
+  ["line"] = "  --:: steps.to(target: \":\") -> _Step (iterator) to target place._ -> `(): code: \":\", remaining: #:, xyzf: \":\" &!recovery`",
+  ["out"] = " `(): code: \":\", remaining: #:, xyzf: \":\" &!recovery`",
   ["sign"] = "steps.to(target: \":\")  ",
   ["kind"] = "face",
   ["text"] = "Step (iterator) to target place.",

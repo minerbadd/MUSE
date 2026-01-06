@@ -13,7 +13,7 @@
 
 --:# Access functions for the `check` object, each check object is independent in itself  
 
---:# part(partID: ":", note: ":", ...: ":"): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`  
+--:# part(partID: ":", note: ":", fun: ():, ...: any): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`  
 
 --:# message(..: ":"): -> _Print ... if not regression_ -> `nil`  
 

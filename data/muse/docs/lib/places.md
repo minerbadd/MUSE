@@ -60,12 +60,12 @@
 
 --:# **Moving and stepping for known places: to points or along trails**  
 
---:: moves.along(name: ":") -> _Move from first to second situation of place._ -> `code: ":", remaining: #:, xyzf: ":" &! recovery`    
+--:: moves.along(name: ":") -> _Move from first to second situation of place._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`    
 --:+ _If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head._  
 
---:: steps.along(name: ":") -> _Iterator: first to next situation of place._ -> `(): code: ":", remaining: #:, xyzf: ":" &! recovery`    
+--:: steps.along(name: ":") -> _Iterator: first to next situation of place._ -> `(): code: ":", remaining: #:, xyzf: ":" &!recovery`    
 --:+ _If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head._  
 
---:: moves.to(target: ":", first: ":") -> _Move to target, first along direction._ -> `code: ":", remaining: #:, xyzf: ":" &! recovery`  
+--:: moves.to(target: ":", first: ":") -> _Move to target, first along direction._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`  
 
---:: steps.to(target: ":") -> _Step (iterator) to target place._ -> `(): code: ":", remaining: #:, xyzf: ":" &! recovery`  
+--:: steps.to(target: ":") -> _Step (iterator) to target place._ -> `(): code: ":", remaining: #:, xyzf: ":" &!recovery`  

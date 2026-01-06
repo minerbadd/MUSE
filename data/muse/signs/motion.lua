@@ -19,8 +19,8 @@ local  motion, move, step = {}, {}, {}
 ---@alias situation.fuel  number # Simulated fuel level checked against reported fuel to validate dead reckoning
 
 
--- recovery:  `[call: ":", failure: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
----@alias recovery [  string,   string,   string,   number,   xyzf,   direction,   string] # For some errors
+-- recovery:  `[call: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
+---@alias recovery [  string,   string,   number,   xyzf,   direction,   string] # For some errors
 
 
 -- situation.level:  `"same"|"rise"|"fall"`
