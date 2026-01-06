@@ -22,6 +22,8 @@
 
 --:# Check "step.to 105 156 207 west")  
 
+--:# Check blocked step operations  
+
 --:# Check tracking  
 
 --:# Close test object, report completion if we got here without errors  
