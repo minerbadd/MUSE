@@ -13,6 +13,8 @@ local tests = arg[0]:match('.*[/\\]') --:# Get path to calling executable
 local checks = tests.."checks/" --:# Assumes tests directory structure as `tests/checks`
 _G.Muse.data = tests.."data/" -- separate from game when testing
 
+function check.echo(...) return ... end -- so `check.part` has some function to apply
+
 --[[
 ```
 <a id="tests"></a>
@@ -43,18 +45,18 @@ end
 function check.open(testName, text, regression) -- create check object with context variables
   --:: check.open(testName:":", text: ":") -> _Return `check` object(closure)_ -> `{part:():, message:():, close:():}` 
   print(text); local priors = not regression and {} or assert(expected(testName), "No prior results for "..testName)
-  local this = {priors = priors, testName = testName, regression = regression} -- instance variables
+  local partID = 0; local this = {priors = priors, testName = testName, regression = regression, partID = partID} 
 
   --:# Access functions for the `check` object, each check object is independent in itself
   local function part(partID, note, fun, ...) -- at each part of the test
     --:# part(partID: ":", note: ":", fun: ():, ...: any): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`
     if not this.regression then print(note) end -- verbose if not regression
-    local partName = tostring(partID); local prior = this.priors['["'..partName..'"]']
-    local ok, result = core.pass(pcall(fun, ...)) -- **execute the test part deferred till now (with protection)**
-    local failure = ("ERROR "..this.testName..".lua part "..partID..": "..note.." failed: "..core.string(result))
+    partID = partID + 1; local partName, prior = tostring(partID), this.priors[partID]
+    local ok, result = core.past(pcall(fun, ...)) -- **execute the test part deferred till now (with protection)**
+    local failure = ("ERROR "..this.testName..".lua part "..partName..": "..note.." failed: "..core.string(result))
     local report = ok and core.string(result) or failure
-    if (this.regression and report ~= prior) then error(report.." ~= "..prior or ''.. " in "..this.testName..":"..partName) end
-    if not this.regression then this.priors['["'..partName..'"]'] = report; print(partName, report); return end --> regression
+    if (this.regression and report ~= prior) then error(report.." ~= "..prior or ''.. " in "..this.testName..": "..note) end
+    if not this.regression then this.priors[partID] = report; print(note, report); return report end --> 
   end
   
   local function message(...) if not this.regression then print(...) end end

@@ -53,7 +53,7 @@ function place.count() end
 -- Returns trail
 -- place.track(name: ":"):  `name: ":"?, label: ":"?, situations`? <-
 
----@type fun( name: string):   name: string?  label: string?  situations? 
+---@type fun( name: string):   name: string? , label: string?,  situations: situations[] 
 function place.track() end
 
 -- Sorted
