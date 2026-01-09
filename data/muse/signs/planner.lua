@@ -1,6 +1,6 @@
 ---@meta
 
-local  planner, plan, moves, steps = {}, {}, {}, {}
+local  planner, plan = {}, {}
 
 -- plan.fixtures:  `":"[]`
 ---@diagnostic disable-next-line: duplicate-doc-alias
@@ -9,7 +9,7 @@ local  planner, plan, moves, steps = {}, {}, {}, {}
 
 -- plan.mark:  `(:plan:, :marking:): markerName: ":", label: ":", report: ":"`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias plan.mark fun( plan: plan,  marking: marking):   markerName: string  label: string  report: string # for execution as specified by_ `plan.path` _markers
+---@alias plan.mark fun( plan: plan,  marking: marking):   markerName: string,  label: string,  report: string # for execution as specified by_ `plan.path` _markers
 
 
 -- markElement:  `[op: "mark", :marking:]`
@@ -37,7 +37,7 @@ local  planner, plan, moves, steps = {}, {}, {}, {}
 -- Create path operations table for plan.
 -- planner.make(plan:plan):  `pathElements, fuelOK: ^:, pathDistance: #:` <-
 
----@type fun( plan:plan):   pathElements  fuelOK: boolean  pathDistance: number 
+---@type fun( plan:plan):   pathElements,  fuelOK: boolean,  pathDistance: number 
 function planner.make() end
 
 -- Instantiates what is returned from a plan file.
@@ -70,6 +70,6 @@ function planner.load() end
 -- Parse marker name into parts.
 -- planner.mark(markerName: ":"):  `shaft: ":"?, level: ":"?, tag: ":"?)` <-
 
----@type fun( markerName: string):   shaft: string?  level: string?  tag: string?) 
+---@type fun( markerName: string):   shaft: string?,  level: string?,  tag: string?) 
 function planner.mark() end
-return { planner =  planner, plan = plan, moves = moves, steps = steps}
+return { planner =  planner, plan = plan}

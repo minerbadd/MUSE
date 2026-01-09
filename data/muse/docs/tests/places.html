@@ -6,7 +6,23 @@
 <body>
 <pre>
 
---:? muse/docs/tests/places.txt <- <b>Run Regression Test for Muse</b> -> muse/docs/tests/places.md    
+--:? muse/docs/tests/places.txt <- <b>Test <code>lib/places</code></b> -> muse/docs/tests/places.md   
+
+--:# Set configuration globals for tests by loading <code>lib/check</code>  
+
+--:# Bind <code>regression</code> parameter <code>true</code> from call by <code>check.regression</code> in <code>lib/check</code>; otherwise <code>nil</code>  
+
+--:# Set log level default. Set lower to report less, higher to report more  
+
+--:# Bind <code>testName</code> as the last word (without extension) in the execution path  
+
+--:# Create the test object for this test  
+
+--:# Name and rename some places and verify their coordinates  
+
+--:# test2	{10, 25, 35, }	test1	{10, 20, 30, }	head2	{10, 25, 35, }	tail1	{10, 20, 30, }  
+
+--:# Close test object, report completion if we got here without errors  
 
     </pre>
   </body> 

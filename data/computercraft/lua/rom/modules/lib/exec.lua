@@ -15,6 +15,7 @@ local cores = require("core"); local core = cores.core ---@module "signs.core"
 local places = require("places"); local place = places.place ---@module "signs.places"
 local maps = require("map"); local map = maps.map ---@module "signs.map"
 
+---@diagnostic disable-next-line: undefined-field
 local commands = _G.rednet and _G.commands or require("mock").commands -- for out-game testing
 --[[
 ```

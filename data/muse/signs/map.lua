@@ -29,7 +29,7 @@ function map.set() end
 -- Reinstantiate places from map file.
 -- map.read(thisMap: ":"):  `serial: ":", index: #: &!` <-
 
----@type fun( thisMap: string):   serial: string  index: number 
+---@type fun( thisMap: string):   serial: string,  index: number 
 function map.read() end
 
 -- Create, send point update.
@@ -41,13 +41,13 @@ function map.point() end
 -- Set named place feature, send MU.
 -- map.put(name: ":", key: ":", value: any?):   `key: ":"?, value: any|true|nil &!` <-
 
----@type fun( name: string,  key: string,  value: any?):    key: string?  value: any | true | nil 
+---@type fun( name: string,  key: string,  value: any?):    key: string?,  value: any | true | nil 
 function map.put() end
 
 -- Instantiate string as named place, include in named places.
 -- map.place(placeString: ":"):  `serial: ":", index: #: &!` <-
 
----@type fun( placeString: string):   serial: string  index: number 
+---@type fun( placeString: string):   serial: string,  index: number 
 function map.place() end
 
 -- Command Line Interface
@@ -71,13 +71,13 @@ function map.gets() end
 -- Set string feature value, send MU.
 -- map.puts(name: ":", key: ":", value: ":"?):  `key: ":", value: ":"|true &!` <-
 
----@type fun( name: string,  key: string,  value: string?):   key: string  value: string | true 
+---@type fun( name: string,  key: string,  value: string?):   key: string,  value: string | true 
 function map.puts() end
 
 -- Get range elements
 -- map.borders(range: place):  `borders, features, position, position &!` <-
 
----@type fun( range: place):   borders  features  position  position 
+---@type fun( range: place):   borders,  features,  position,  position 
 function map.borders() end
 
 -- borders:  {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}

@@ -33,6 +33,6 @@ function port.available() end
 -- Testing Returns payment inventory used for `costToPay`, excess energy to bank, inventory energy used
 -- port.inventory(costToPay: #:, orderedItems: port.order, playerInventory: [port.item]: #:):  `":"[], #:, #:` <-
 
----@type fun( costToPay: number,  orderedItems: port.order,  playerInventory: { [port.item]: number }):   string[]  number  number 
+---@type fun( costToPay: number,  orderedItems: port.order,  playerInventory: { [port.item]: number }):   string[],  number,  number 
 function port.inventory() end
 return { port =  port}

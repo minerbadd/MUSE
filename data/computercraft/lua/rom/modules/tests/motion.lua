@@ -22,7 +22,6 @@ local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind `testName` as the last wo
 local text = "Beginning "..testName..".lua test at "..move.ats()
 local test = check.open(testName, text, regression) --:# Create the test object for this test
 
-local function echo(...) return ... end -- so `check.part` has some function to apply
 
 turtle.blocking(false) -- `lib/motion` loaded `lib/mock`
 
@@ -53,19 +52,19 @@ test.part("to 100 150 200 west", move.to, {100, 150, 200, "west"})
 
 --:# **Test simple `step` operations**
 for code, remaining, ats in step.east(3) do 
-  test.part("step.east(3)", echo, code, remaining, ats)
+  test.part("step.east(3)", check.echo, code, remaining, ats)
 end
 
 for code, remaining, ats in step.south(3) do
-  test.part("step.south(3)", echo, code, remaining, ats)
+  test.part("step.south(3)", check.echo, code, remaining, ats)
 end
 
 for code, remaining, ats in step.west(3) do
-  test.part("step.west(3)", echo, code, remaining, ats)
+  test.part("step.west(3)", check.echo, code, remaining, ats)
 end
 
 for code, remaining, ats in step.north(3) do 
-  test.part("step.north(3)", echo, code, remaining, ats)
+  test.part("step.north(3)", check.echo, code, remaining, ats)
 end
 
 --:# Test `step` iterator exhaustion
@@ -77,14 +76,14 @@ test.part("steps 4 forward 3", more, move.ats())
 --]]
 --:# Check "step.to 105 156 207 west")
 for code, remaining, at, direction, all in step.to({105, 156, 207}) do 
-  test.part(move.ats(), echo, code, remaining, core.string(at), direction, all)
+  test.part(move.ats(), check.echo, code, remaining, core.string(at), direction, all)
 end; 
 
-test.part("stepped to", echo, core.ats())
+test.part("stepped to", check.echo, core.ats())
 
 local function blockedStep(stepping, target) 
   for code, remaining, at, direction, all in step.to(target) do 
-    test.part(stepping, move.ats(), echo, code, remaining, at, direction, all)
+    test.part(stepping, move.ats(), check.echo, code, remaining, at, direction, all)
   end 
 end
 

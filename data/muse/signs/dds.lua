@@ -33,7 +33,7 @@ function dds.role() end
 -- Populates players IDs and labels using a MQ rednet protocol.
 -- dds.hosts():  `IDs, roles` <-
 
----@type fun(): IDs  roles 
+---@type fun():  IDs,  roles 
 function dds.hosts() end
 
 -- Fix ID role association for next startup, id given by player.
@@ -45,6 +45,6 @@ function dds.join() end
 -- Returns associations from Muse roles to ComputerCraft IDs
 -- dds.map():  `IDs` <-
 
----@type fun(): IDs 
+---@type fun():  IDs 
 function dds.map() end
 return { dds =  dds}

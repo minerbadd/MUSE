@@ -30,18 +30,18 @@
 
 --:: place.distance(a: xyzf, b: xyzf) -> <i>Manhattan: abs(delta x) + abs(delta y) + abs(delta z).</i> -> <code>distance: #:</code>  
 
---:: place.match(name: ":") -> <i>Lookup place qualified by site, return</i> <code>nil</code> <i>if not found.</i> -> <code>index: #:?, place?</code>  
+--:: place.match(name: ":") -> <i>Lookup place qualified by site, return</i> <code>nil</code> <i>if not found.</i> -> <code>order: #:?, place?</code>  
 
---:: place.xyzf(name: ":"?, number: #:?) -> <i>Looks up name [defaults to current situation].</i> -> <code>xyzf?, index: #:?</code>  
+--:: place.xyzf(name: ":"?, index: #:?) -> <i>Looks up index in name [defaults to current situation].</i> -> <code>xyzf?, order: #:?</code>  
 
 --:: place.name(name: ":", label: ":", supplied: situation?, :features:??) -> <i>Make or update place.</i> -> <code>":", #:</code>    
 --:+ <i>Include current situation or optionally supplied situation in places. Optionally update features with key = value.</i>    
---:+ <i>Return index of situation in global places and the serialized situation including its features.</i>  
+--:+ <i>Return order of situation in global places and the serialized situation including its features.</i>  
 
---:: place.add(name: ":", :situation:) -> <i>Add situation to situations of an existing place.</i> -> <code>serialized: ":", index: #:</code>  
+--:: place.add(name: ":", :situation:) -> <i>Add situation to situations of an existing place.</i> -> <code>serialized: ":", prder: #:</code>  
 
---::place.erase(name: ":") -> <i>Removes named place from array of places.</i> -> <code>#:, index: #:</code>    
---:+ <i>Return new length of places table and the (previous) index of the removed place.</i>  
+--::place.erase(name: ":") -> <i>Removes named place from array of places.</i> -> <code>#:, order: #:</code>    
+--:+ <i>Return new length of places table and the (previous) order of the removed place.</i>  
 
 --:# <b>Answering "where?"</b>  
 
@@ -64,7 +64,7 @@
 --:: place.trail(headName: ":", tailName: ":", label: ":") -> <i>Makes two places.</i> -> <code>headSerial: ":", tailSerial: ":"</code>    
 --:+ <i>Trail places share a label and represent trails from head to tail and tail to head; head set by</i> <code>place.fix</code>.  
 
---:: place.track(name: ":") -> <i>Returns trail</i> -> <code>name: ":"?, label: ":"?, situations</code>?  
+--:: place.track(name: ":") -> <i>Returns trail</i> -> <code>name: ":"?, label: ":"?, situations?</code>  
 
 --:# <b>Moving and stepping for known places: to points or along trails</b>  
 

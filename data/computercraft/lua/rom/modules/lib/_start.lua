@@ -11,11 +11,16 @@ _G.Muse = _G.Muse or {}
 _G.Muse.path = "rom/modules/"; local path = _G.Muse.path -- shared across all worlds (most of Muse)
 _G.Muse.charts = path.."charts/" -- for fields
 
+---@diagnostic disable-next-line: undefined-field
 local peripheral, parallel, shell = _G.peripheral, _G.parallel, _G.shell -- to supress static analysis lint warnings
 
+---@diagnostic disable-next-line: undefined-field
 local rednet = _G.rednet -- nil for out-game debug
+---@diagnostic disable-next-line: undefined-field
 local player = _G.pocket; -- only the player has a pocket computer
+---@diagnostic disable-next-line: undefined-field
 local turtle = _G.turtle; -- GPS computers and the command computer are not turtles
+---@diagnostic disable-next-line: undefined-field
 local command = _G.commands -- table or nil (if not a command computer)
 
 --:# _Set Configuration Variables: landed turtles, default site, tracking, delays, turtle `data` directory_
@@ -90,6 +95,7 @@ end; complete(net.hints)
 --]]
 --:# _Setup `dds` IDs and labels. Needed for remote calls (which can report errors back to player)_
 if rednet then -- TODO: Are all these delays needed?
+---@diagnostic disable-next-line: undefined-field
   os.sleep(_G.Muse.delays.dds); dds.hosts(); os.sleep(_G.Muse.delays.map); os.sleep(0) --  -- need os.sleep(0) for gps!
 end
 --[[
@@ -107,6 +113,7 @@ if player then
     remote.call(host, "store", {site}, function(results) print(results) end) -- persist new `site` established in `dds`
   end
 end
+---@diagnostic disable-next-line: undefined-field
 os.getComputerLabel() -- to show turtle nameplate
 --[[
 ```

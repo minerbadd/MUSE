@@ -19,16 +19,20 @@ local dds = {} ---@module "signs.dds" -- for functions exported from library
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local places = require("places"); local place = places.place ---@module "signs.places"
 
+---@diagnostic disable-next-line: undefined-field
 local rednet, parallel = _G.rednet, _G.parallel -- for static analysis
 
+---@diagnostic disable-next-line: undefined-field
 local player = _G.pocket -- only the player has the (only) pocket computer
 
 _G.Muse.IDs = _G.Muse.IDs or -- for out-game 
 --:> IDs: _Dictionary of ComputerCraft computer IDs keyed by MUSE role_ -> `[role]: ID`
 --:> ID: _ComputerCraft computer ID_ -> `#:`
+---@diagnostic disable-next-line: undefined-field
 (_G.rednet and {} or {player = 0, porter = 1, rover = 5, miner = 6, logger = 7, farmer = 8}) 
 
 _G.Muse.roles = _G.Muse.roles or -- for out-game
+---@diagnostic disable-next-line: undefined-field
 (_G.rednet and {} or {[0] = "player", [1] = "porter", [5] = "rover", [6] = "miner", [7] = "logger", [8] = "farmer"})
 --:> roles: _ Sparse array of Computercraft labels for MUSE roles indexed by Computercraft IDs_ -> `role[]`
 --:> role: _ComputerCraft label as MUSE role_ -> `":"`

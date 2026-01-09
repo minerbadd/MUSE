@@ -17,7 +17,7 @@ function remote.come() end
 -- Setup turtle to repeatedly wait for MC network requests, send MR results.
 -- remote.wait():  `nil` <-
 
----@type fun(): nil 
+---@type fun():  nil 
 function remote.wait() end
 
 -- Repeatedly towards player position, default rate _G.Muse.rates.tail seconds
@@ -41,7 +41,7 @@ function _remote.serverRequest() end
 -- On client: Prepare remote call to server turtle by getting player xyz position and forming argument table.
 -- _remote.testCome(turtle: ":", command: ":"):  `turtle: ":", command: ":", xyz, ^:` <-
 
----@type fun( turtle: string,  command: string):   turtle: string  command: string  xyz  boolean 
+---@type fun( turtle: string,  command: string):   turtle: string,  command: string,  xyz,  boolean 
 function _remote.testCome() end
 
 -- Apply callback to deserialized client result.
@@ -53,6 +53,6 @@ function _remote.clientResult() end
 -- Serialize server request.
 -- _remote.prepareCall(server: ":", command: ":", arguments: any[]):  `serverID: #:, request: ":" &: &!` <-
 
----@type fun( server: string,  command: string,  arguments: any[]):   serverID: number  request: string 
+---@type fun( server: string,  command: string,  arguments: any[]):   serverID: number,  request: string 
 function _remote.prepareCall() end
 return { remote =  remote, _remote = _remote}

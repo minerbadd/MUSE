@@ -17,25 +17,25 @@ local  places, place, moves, steps = {}, {}, {}, {}
 -- Makes two places. Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.
 -- place.trail(headName: ":", tailName: ":", label: ":"):  `headSerial: ":", tailSerial: ":"` <-
 
----@type fun( headName: string,  tailName: string,  label: string):   headSerial: string  tailSerial: string 
+---@type fun( headName: string,  tailName: string,  label: string):   headSerial: string,  tailSerial: string 
 function place.trail() end
 
 -- Resets places to the empty table.
 -- place.reset():  `nil` <-
 
----@type fun(): nil 
+---@type fun():  nil 
 function place.reset() end
 
 --  If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position). If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.
 -- place.near(span: #:?, reference?: ":"|position):  (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"` <-
 
----@type fun( span: number?,  reference?: string | position):  fun(): name: string  label: string  xyz  distance: number  situations  serial: string 
+---@type fun( span: number?,  reference?: string | position):  fun():  name: string,  label: string,  xyz,  distance: number,  situations,  serial: string 
 function place.near() end
 
--- Looks up name [defaults to current situation].
--- place.xyzf(name: ":"?, number: #:?):  `xyzf?, index: #:?` <-
+-- Looks up index in name [defaults to current situation].
+-- place.xyzf(name: ":"?, index: #:?):  `xyzf?, order: #:?` <-
 
----@type fun( name: string?,  number: number?):   xyzf?  index: number? 
+---@type fun( name: string?,  index: number?):   xyzf?,  order: number? 
 function place.xyzf() end
 
 -- Manhattan: abs(delta x) + abs(delta y) + abs(delta z).
@@ -47,13 +47,13 @@ function place.distance() end
 -- Returns number of places.
 -- place.count():  `#:` <-
 
----@type fun(): number 
+---@type fun():  number 
 function place.count() end
 
 -- Returns trail
--- place.track(name: ":"):  `name: ":"?, label: ":"?, situations`? <-
+-- place.track(name: ":"):  `name: ":"?, label: ":"?, situations?` <-
 
----@type fun( name: string):   name: string? , label: string?,  situations: situations[] 
+---@type fun( name: string):   name: string?,  label: string?,  situations? 
 function place.track() end
 
 -- Sorted
@@ -63,15 +63,15 @@ function place.track() end
 function place.nearby() end
 
 -- Lookup place qualified by site, return_ `nil` _if not found.
--- place.match(name: ":"):  `index: #:?, place?` <-
+-- place.match(name: ":"):  `order: #:?, place?` <-
 
----@type fun( name: string):   index: number?  place? 
+---@type fun( name: string):   order: number?,  place? 
 function place.match() end
 
 -- Add situation to situations of an existing place.
--- place.add(name: ":", :situation:):  `serialized: ":", index: #:` <-
+-- place.add(name: ":", :situation:):  `serialized: ":", prder: #:` <-
 
----@type fun( name: string,  situation: situation):   serialized: string  index: number 
+---@type fun( name: string,  situation: situation):   serialized: string,  prder: number 
 function place.add() end
 
 -- Return already sited name, otherwise prepend site to name
@@ -92,15 +92,39 @@ function place.site() end
 ---@type fun( xyzf: xyzf,  track: boolean?):   xyzf   
 function place.fix() end
 
--- Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return index of situation in global places and the serialized situation including its features.
+-- Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return order of situation in global places and the serialized situation including its features.
 -- place.name(name: ":", label: ":", supplied: situation?, :features:??):  `":", #:` <-
 
----@type fun( name: string,  label: string,  supplied: situation?,  features: features?):   string  number 
+---@type fun( name: string,  label: string,  supplied: situation?,  features: features?):   string,  number 
 function place.name() end
 
--- Removes named place from array of places. Return new length of places table and the (previous) index of the removed place.
--- place.erase(name: ":"):  `#:, index: #:` <-
+-- Removes named place from array of places. Return new length of places table and the (previous) order of the removed place.
+-- place.erase(name: ":"):  `#:, order: #:` <-
 
----@type fun( name: string):   number  index: number 
+---@type fun( name: string):   number,  order: number 
 function place.erase() end
+
+-- Move to target, first along direction.
+-- moves.to(target: ":", first: ":"):  `code: ":", remaining: #:, xyzf: ":" &!recovery` <-
+
+---@type fun( target: string,  first: string):   code: string,  remaining: number,  xyzf: string 
+function moves.to() end
+
+-- Move from first to second situation of place. If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head.
+-- moves.along(name: ":"):  `code: ":", remaining: #:, xyzf: ":" &!recovery` <-
+
+---@type fun( name: string):   code: string,  remaining: number,  xyzf: string 
+function moves.along() end
+
+-- Step (iterator) to target place.
+-- steps.to(target: ":"):  `(): code: ":", remaining: #:, xyzf: ":" &!recovery` <-
+
+---@type fun( target: string):  fun():  code: string,  remaining: number,  xyzf: string 
+function steps.to() end
+
+-- Iterator: first to next situation of place. If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head.
+-- steps.along(name: ":"):  `(): code: ":", remaining: #:, xyzf: ":" &!recovery` <-
+
+---@type fun( name: string):  fun():  code: string,  remaining: number,  xyzf: string 
+function steps.along() end
 return { places =  places, place = place, moves = moves, steps = steps}

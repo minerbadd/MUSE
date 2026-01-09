@@ -144,8 +144,13 @@ function core.pass(ok, ...)
   if ok then return true, ... end
   local report, conditions = core.string(...), ...
   return false, report, conditions
-end -- failure returns false, report
+end 
 
+function core.past(ok, ...) -- like <code>core.pass</code> but encapsulates ... 
+  if ok then return true, {...} end
+  local report, conditions = core.string(...), ...
+  return false, report, conditions
+end 
 </code></pre>
 <a id="where"></a>
 The <code>core.where</code> implementation binds a dummy function, <code>function() end</code> (which returns <code>nil</code>), to <code>gpslocate</code> in the out-of-game environment. This takes the place of the in-game function <code>gps.locate</code>. Follow the <a href="places.html#nearby" target="_blank"> link to see another example of this technique </a> which uses a dummy (null) function as a default. An optional function argument only implementable at the higher level overrides the dummy default when calling the lower level function.

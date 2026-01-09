@@ -22,18 +22,18 @@
 
 --:: place.distance(a: xyzf, b: xyzf) -> _Manhattan: abs(delta x) + abs(delta y) + abs(delta z)._ -> `distance: #:`  
 
---:: place.match(name: ":") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `index: #:?, place?`  
+--:: place.match(name: ":") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `order: #:?, place?`  
 
---:: place.xyzf(name: ":"?, number: #:?) -> _Looks up name [defaults to current situation]._ -> `xyzf?, index: #:?`  
+--:: place.xyzf(name: ":"?, index: #:?) -> _Looks up index in name [defaults to current situation]._ -> `xyzf?, order: #:?`  
 
 --:: place.name(name: ":", label: ":", supplied: situation?, :features:??) -> _Make or update place._ -> `":", #:`    
 --:+ _Include current situation or optionally supplied situation in places. Optionally update features with key = value._    
---:+ _Return index of situation in global places and the serialized situation including its features._  
+--:+ _Return order of situation in global places and the serialized situation including its features._  
 
---:: place.add(name: ":", :situation:) -> _Add situation to situations of an existing place._ -> `serialized: ":", index: #:`  
+--:: place.add(name: ":", :situation:) -> _Add situation to situations of an existing place._ -> `serialized: ":", prder: #:`  
 
---::place.erase(name: ":") -> _Removes named place from array of places._ -> `#:, index: #:`    
---:+ _Return new length of places table and the (previous) index of the removed place._  
+--::place.erase(name: ":") -> _Removes named place from array of places._ -> `#:, order: #:`    
+--:+ _Return new length of places table and the (previous) order of the removed place._  
 
 --:# **Answering "where?"**  
 
@@ -56,7 +56,7 @@
 --:: place.trail(headName: ":", tailName: ":", label: ":") -> _Makes two places._ -> `headSerial: ":", tailSerial: ":"`    
 --:+ _Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.  
 
---:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, situations`?  
+--:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, situations?`  
 
 --:# **Moving and stepping for known places: to points or along trails**  
 

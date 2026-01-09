@@ -62,13 +62,13 @@ local  mine, _mine = {}, {}
 -- Make place name, report result. Called by `worker.execute` to make marker name and use it to add map point for navigation in mine. Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore. Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`.
 -- mine.mark(:plan:, :marking:):  `markerName: ":", label: ":", report: ":"` <-
 
----@type fun( plan: plan,  marking: marking):   markerName: string  label: string  report: string 
+---@type fun( plan: plan,  marking: marking):   markerName: string,  label: string,  report: string 
 function mine.mark() end
 
 -- Dig. Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans.
 -- mine.op(arguments: [op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]):  `^:, ":", #: &:` <-
 
----@type fun( arguments: [  string,   string,   string | number,   string]):   boolean  string  number 
+---@type fun( arguments: [  string,   string,   string | number,   string]):   boolean,  string,  number 
 function mine.op() end
 
 -- mine.post:  (markerName: ":", :bores:):  `marking[]`
@@ -108,31 +108,31 @@ function mine.op() end
 -- Go to marker and bore Use shaft plans and bore plans to navigate to marker, bore horizontal tunnels using bore plans. Add "bore" and bore plans name as key and value to bore plans for inclusion in marker. Bores plans at even or odd level, potentially leaves place marks and torches.
 -- _mine.bore(markerName: ":", borePlans: bores, shaftPlans:shafts):  `"done", ":", #: &: &!` <-
 
----@type fun( markerName: string,  borePlans: bores,  shaftPlans:shafts):   "done"  string  number 
+---@type fun( markerName: string,  borePlans: bores,  shaftPlans:shafts):   "done",  string,  number 
 function _mine.bore() end
 
 -- To minehead Execute shaft plans back to return to minehead from one below target level Add "shaft" and shaft plans name as key and value to shaft plans for inclusion in marker
 -- _mine.back(mineheadName: ":",  targetLevel: #:, shaftPlansBack: shafts, shaftPlansName: ":"):  `":", ":"  &!` <-
 
----@type fun( mineheadName: string,   targetLevel: number,  shaftPlansBack: shafts,  shaftPlansName: string):   string  string  
+---@type fun( mineheadName: string,   targetLevel: number,  shaftPlansBack: shafts,  shaftPlansName: string):   string,  string  
 function _mine.back() end
 
 -- Dig shaft through levels.
 -- _mine.shaftOp(mineheadName: ":", levels: #:, shaftPlans: shafts):  `":", ":", #:` &! <-
 
----@type fun( mineheadName: string,  levels: number,  shaftPlans: shafts):   string  string  number 
+---@type fun( mineheadName: string,  levels: number,  shaftPlans: shafts):   string,  string,  number 
 function _mine.shaftOp() end
 
 -- Make, fill in, execute at level.
 -- _mine.atWork(:plan:, head: ":", level: #:, key: ":", value: any):  `":", ":" &: &!` <-
 
----@type fun( plan: plan,  head: string,  level: number,  key: string,  value: any):   string  string 
+---@type fun( plan: plan,  head: string,  level: number,  key: string,  value: any):   string,  string 
 function _mine.atWork() end
 
 -- Excavate ores Use shaft plans and instantiated bore plans to go to marker and execute mining operations
 -- _mine.ores(markerName: ":", thisLevel: #:, borePlans: bores):  "done", `":", #: &: &!` <-
 
----@type fun( markerName: string,  thisLevel: number,  borePlans: bores):   "done"  string  number 
+---@type fun( markerName: string,  thisLevel: number,  borePlans: bores):   "done",  string,  number 
 function _mine.ores() end
 
 -- Dig shaft Start dig down from minehead, finish by placing marker one level below target level, error raised for failure. Add "shaft" and shaft plans name as key and value to shaft plans for inclusion in marker.
@@ -144,6 +144,6 @@ function _mine.down() end
 -- Navigate to post
 -- _mine.toPost(markerName: ":", borePlans: bores, shaftPlans: shafts):  `"done", ":", #: &!` <-
 
----@type fun( markerName: string,  borePlans: bores,  shaftPlans: shafts):   "done"  string  number 
+---@type fun( markerName: string,  borePlans: bores,  shaftPlans: shafts):   "done",  string,  number 
 function _mine.toPost() end
 return { mine =  mine, _mine = _mine}

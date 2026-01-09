@@ -5,7 +5,7 @@ local  field, _field = {}, {}
 -- Plots placed Returns `nplots: #:, slots: #:, strides: eP, run: eP, striding: xyz, turn: ^:, back: ^: Extents for `stride` (shorter) and `run` (longer) virtual axes for each `opName` in the `strides` entries unless `faced`.
 -- field.extents(:bounds:, :strides:, faced: ":"?):  `field.count, field.count , eP, eP, striding, ^:, ^:` <-
 
----@type fun( bounds: bounds,  strides: strides,  faced: string?):   field.count  field.count   eP  eP  striding  boolean  boolean 
+---@type fun( bounds: bounds,  strides: strides,  faced: string?):   field.count,  field.count ,  eP,  eP,  striding,  boolean,  boolean 
 function field.extents() end
 
 -- _field.runs:  `{oddlevel: _field.plans, evenlevel: _field.plans}`
@@ -67,7 +67,7 @@ function field.fence() end
 -- Called by plan prototype file to generate plans for plot.
 -- field.paths(bounds: xyz[]):  `paths, yDelta: #:, xzEdge: facing` <-
 
----@type fun( bounds: xyz[]):   paths  yDelta: number  xzEdge: facing 
+---@type fun( bounds: xyz[]):   paths,  yDelta: number,  xzEdge: facing 
 function field.paths() end
 
 -- Quarry out blocks from one place to the other.
@@ -139,13 +139,13 @@ function _field.put() end
 -- Fly ox.
 -- _field.runElements(bounds: [xyzStart: xyz, xyzFinish: xyz]):  `runs:_field.runs, yDelta: #:, xzDelta: #:, xzEdge: facing` <-
 
----@type fun( bounds: [  xyz,   xyz]):   runs:_field.runs  yDelta: number  xzDelta: number  xzEdge: facing 
+---@type fun( bounds: [  xyz,   xyz]):   runs:_field.runs,  yDelta: number,  xzDelta: number,  xzEdge: facing 
 function _field.runElements() end
 
 -- Get coordinate pair for named places.
 -- _field.makeBounds(nearPlace: ":", farPlace: ":"):  `xyz, xyz, #:, #:` <-
 
----@type fun( nearPlace: string,  farPlace: string):   xyz  xyz  number  number 
+---@type fun( nearPlace: string,  farPlace: string):   xyz,  xyz,  number,  number 
 function _field.makeBounds() end
 
 -- Use plan.quarry to cut.

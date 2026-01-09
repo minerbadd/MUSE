@@ -29,7 +29,7 @@ function core.findItems() end
 -- Iterator over table beginning at index.
 -- core.inext(table: {:}, index: #:):  `():, {:}, #:` <-
 
----@type fun( table: table,  index: number):  function  table  number 
+---@type fun( table: table,  index: number):  function,  table,  number 
 function core.inext() end
 
 -- bounds:  `[xyz, xyz]`
@@ -44,7 +44,7 @@ function core.inext() end
 -- Optional number and/or string.
 -- core.optionals(string: ":"?, number: #:?, ...: any):  `string: ":"?, number: #:?, ...: any` <-
 
----@type fun( string: string?,  number: number?,  ...: any):   string: string?  number: number?  ...: any 
+---@type fun( string: string?,  number: number?,  ...: any):   string: string?,  number: number?,  ...: any 
 function core.optionals() end
 
 -- Appends (status) message to log file on player.
@@ -182,13 +182,13 @@ function core.string() end
 -- Pass input but report string if not ok.
 -- core.pass(ok: ^:, ...: any):  ok: `true|false, result: ...|":", any?` <-
 
----@type fun( ok: boolean,  ...: any):   ok: true | false  result: ... | string  any? 
+---@type fun( ok: boolean,  ...: any):   ok: true | false,  result: ... | string,  any? 
 function core.pass() end
 
 -- GPS location if available.
 -- core.where():  `x: #:?, y: #:?, z: #:?` <-
 
----@type fun(): x: number?  y: number?  z: number? 
+---@type fun():  x: number?,  y: number?,  z: number? 
 function core.where() end
 
 -- Create `result` _by applying_ `op` _function to elements of_ `table

@@ -1,5 +1,5 @@
 --:! {planner: [":"]: ():} <- **Functions Library to Build a Plan** -> muse/docs/lib/planner.md    
---:| planner: _Given a_ `plan`, _create a table of operations to be performed by_ `worker.execute`. -> planner, plan, moves, steps  
+--:| planner: _Given a_ `plan`, _create a table of operations to be performed by_ `worker.execute`. -> planner, plan  
 
 --:> plan: _How to do work_ -> `{name: plan.name, path: plan.path, work: plan.work, fixtures: plan.fixtures, mark: plan.mark}`  
 

@@ -352,6 +352,26 @@ Orientation and position reporting, broadcast and persistence of places_ -> map"
   ["type"] = "lib",
   ["name"] = "steps",
   ["childs"] = {
+  ["to"] = {
+  ["returns"] = " `(): code: \":\", remaining: #:, xyzf: \":\" &!recovery` <-\
+",
+  ["args"] = "target: \":\"",
+  ["type"] = "function",
+  ["name"] = "steps.to",
+  ["description"] = "\
+Step (iterator) to target place.",
+}
+,
+  ["along"] = {
+  ["returns"] = " `(): code: \":\", remaining: #:, xyzf: \":\" &!recovery` <-\
+",
+  ["args"] = "name: \":\"",
+  ["type"] = "function",
+  ["name"] = "steps.along",
+  ["description"] = "\
+Iterator: first to next situation of place. If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head.",
+}
+,
 }
 ,
 }
@@ -1764,19 +1784,19 @@ CLL for `book` and `port` commands assessing and clearing player inventory for s
 }
 ,
   ["_place.track:_"] = {
-  ["line"] = "  --:: place.track(name: \":\") -> _Returns trail_ -> `name: \":\"?, label: \":\"?, situations`?",
-  ["out"] = " `name: \":\"?, label: \":\"?, situations`?",
+  ["line"] = "  --:: place.track(name: \":\") -> _Returns trail_ -> `name: \":\"?, label: \":\"?, situations?`",
+  ["out"] = " `name: \":\"?, label: \":\"?, situations?`",
   ["sign"] = "place.track(name: \":\")  ",
   ["kind"] = "face",
   ["text"] = "Returns trail",
 }
 ,
   ["_place.xyzf:_"] = {
-  ["line"] = "  --:: place.xyzf(name: \":\"?, number: #:?) -> _Looks up name [defaults to current situation]._ -> `xyzf?, index: #:?`",
-  ["out"] = " `xyzf?, index: #:?`",
-  ["sign"] = "place.xyzf(name: \":\"?, number: #:?)  ",
+  ["line"] = "  --:: place.xyzf(name: \":\"?, index: #:?) -> _Looks up index in name [defaults to current situation]._ -> `xyzf?, order: #:?`",
+  ["out"] = " `xyzf?, order: #:?`",
+  ["sign"] = "place.xyzf(name: \":\"?, index: #:?)  ",
   ["kind"] = "face",
-  ["text"] = "Looks up name [defaults to current situation].",
+  ["text"] = "Looks up index in name [defaults to current situation].",
 }
 ,
   ["_suck_"] = {
@@ -2077,8 +2097,8 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["_place.match:_"] = {
-  ["line"] = "  --:: place.match(name: \":\") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `index: #:?, place?`",
-  ["out"] = " `index: #:?, place?`",
+  ["line"] = "  --:: place.match(name: \":\") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `order: #:?, place?`",
+  ["out"] = " `order: #:?, place?`",
   ["sign"] = "place.match(name: \":\")  ",
   ["kind"] = "face",
   ["text"] = "Lookup place qualified by site, return_ `nil` _if not found.",
@@ -2716,13 +2736,13 @@ Resets places to the empty table.",
 }
 ,
   ["xyzf"] = {
-  ["returns"] = " `xyzf?, index: #:?` <-\
+  ["returns"] = " `xyzf?, order: #:?` <-\
 ",
-  ["args"] = "name: \":\"?, number: #:?",
+  ["args"] = "name: \":\"?, index: #:?",
   ["type"] = "function",
   ["name"] = "place.xyzf",
   ["description"] = "\
-Looks up name [defaults to current situation].",
+Looks up index in name [defaults to current situation].",
 }
 ,
   ["near"] = {
@@ -2756,7 +2776,7 @@ Manhattan: abs(delta x) + abs(delta y) + abs(delta z).",
 }
 ,
   ["track"] = {
-  ["returns"] = " `name: \":\"?, label: \":\"?, situations`? <-\
+  ["returns"] = " `name: \":\"?, label: \":\"?, situations?` <-\
 ",
   ["args"] = "name: \":\"",
   ["type"] = "function",
@@ -2776,7 +2796,7 @@ Set or return local `site` (isolates global).",
 }
 ,
   ["match"] = {
-  ["returns"] = " `index: #:?, place?` <-\
+  ["returns"] = " `order: #:?, place?` <-\
 ",
   ["args"] = "name: \":\"",
   ["type"] = "function",
@@ -2796,7 +2816,7 @@ Return already sited name, otherwise prepend site to name",
 }
 ,
   ["add"] = {
-  ["returns"] = " `serialized: \":\", index: #:` <-\
+  ["returns"] = " `serialized: \":\", prder: #:` <-\
 ",
   ["args"] = "name: \":\", :situation:",
   ["type"] = "function",
@@ -2832,17 +2852,17 @@ Returns number of places.",
   ["type"] = "function",
   ["name"] = "place.name",
   ["description"] = "\
-Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return index of situation in global places and the serialized situation including its features.",
+Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return order of situation in global places and the serialized situation including its features.",
 }
 ,
   ["erase"] = {
-  ["returns"] = " `#:, index: #:` <-\
+  ["returns"] = " `#:, order: #:` <-\
 ",
   ["args"] = "name: \":\"",
   ["type"] = "function",
   ["name"] = "place.erase",
   ["description"] = "\
-Removes named place from array of places. Return new length of places table and the (previous) index of the removed place.",
+Removes named place from array of places. Return new length of places table and the (previous) order of the removed place.",
 }
 ,
 }
@@ -3111,8 +3131,8 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
 }
 ,
   ["_place.erase:_"] = {
-  ["line"] = "--::place.erase(name: \":\") -> _Removes named place from array of places._ -> `#:, index: #:`",
-  ["out"] = " `#:, index: #:`",
+  ["line"] = "--::place.erase(name: \":\") -> _Removes named place from array of places._ -> `#:, order: #:`",
+  ["out"] = " `#:, order: #:`",
   ["sign"] = "place.erase(name: \":\")  ",
   ["kind"] = "face",
   ["text"] = "Removes named place from array of places.",
@@ -3173,8 +3193,8 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
 }
 ,
   ["_place.add:_"] = {
-  ["line"] = "--:: place.add(name: \":\", :situation:) -> _Add situation to situations of an existing place._ -> `serialized: \":\", index: #:`",
-  ["out"] = " `serialized: \":\", index: #:`",
+  ["line"] = "--:: place.add(name: \":\", :situation:) -> _Add situation to situations of an existing place._ -> `serialized: \":\", prder: #:`",
+  ["out"] = " `serialized: \":\", prder: #:`",
   ["sign"] = "place.add(name: \":\", :situation:)  ",
   ["kind"] = "face",
   ["text"] = "Add situation to situations of an existing place.",
@@ -3262,6 +3282,26 @@ Run what's been created by_ `planner` _while attempting to deal with a turtle's 
   ["type"] = "lib",
   ["name"] = "moves",
   ["childs"] = {
+  ["to"] = {
+  ["returns"] = " `code: \":\", remaining: #:, xyzf: \":\" &!recovery` <-\
+",
+  ["args"] = "target: \":\", first: \":\"",
+  ["type"] = "function",
+  ["name"] = "moves.to",
+  ["description"] = "\
+Move to target, first along direction.",
+}
+,
+  ["along"] = {
+  ["returns"] = " `code: \":\", remaining: #:, xyzf: \":\" &!recovery` <-\
+",
+  ["args"] = "name: \":\"",
+  ["type"] = "function",
+  ["name"] = "moves.along",
+  ["description"] = "\
+Move from first to second situation of place. If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head.",
+}
+,
 }
 ,
 }
@@ -3954,12 +3994,12 @@ for execution as specified by_ `plan.path` _markers",
 ,
 }
 ,
-  ["returns"] = " planner, plan, moves, steps",
+  ["returns"] = " planner, plan",
   ["kind"] = "module",
   ["type"] = "lib",
   ["name"] = "planner",
   ["description"] = "\
-Given a_ `plan`, _create a table of operations to be performed by_ `worker.execute`. -> planner, plan, moves, steps",
+Given a_ `plan`, _create a table of operations to be performed by_ `worker.execute`. -> planner, plan",
 }
 ,
   [" exec"] = {
