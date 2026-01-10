@@ -33,13 +33,13 @@
 
 --:: move.get(:situation:?) -> <i>Default current situation.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"</code>  
 
---:: move.track(enable: ^:) -> <i>Set tracking condition</i> -> <code>enable: ^:</code>  
-
 --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???) -> <i>Set position, optionally rest of situation.</i> -> <code>nil</code>  
 
 --:: move.clone() -> <i>Clone current situation</i> -> situation  
 
 --:: move.clones() -> <i>Deep copy <code>_G.Muse.situations</code>.</i> ->  situations  
+
+--:: move.tracking(enabled: ^:) -> <i>Set tracking condition and situations, return situations count</i> -> <code>count: ^#:</code>  
 
 --:: move.at(:situation:?) -> <i>(Current) situation xyzf.</i> -> <code>xyzf</code>  
 

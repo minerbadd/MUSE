@@ -48,7 +48,7 @@ function check.open(testName, text, regression) -- create check object with cont
   local partID = 0; local this = {priors = priors, testName = testName, regression = regression, partID = partID} 
 
   --:# Access functions for the `check` object, each check object is independent in itself
-  local function part(partID, note, fun, ...) -- at each part of the test
+  local function part(note, fun, ...) -- at each part of the test
     --:# part(partID: ":", note: ":", fun: ():, ...: any): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`
     if not this.regression then print(note) end -- verbose if not regression
     partID = partID + 1; local partName, prior = tostring(partID), this.priors[partID]

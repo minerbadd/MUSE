@@ -576,6 +576,6 @@ There's not much left to do in setting up your development environment for MUSE 
 - Set the project directory to the MUSE folder in your project directory.
 - Open `MUSE/data/muse/assets/museMark.lua` and execute it (without debugging). This should produce all fresh, all new, all the code completion, all the type checking files, and all the code documentation for MUSE. 
 
-There are tests for MUSE but no test framework. MUSE tests rely on human review of their output. A framework automating tests would be a useful addition (as would more extensive testing).
+There's a primitive test jig for MUSE. MUSE tests rely on human review of their output. But regression testing to see if a test output has changed is provided. You've likely explored it already. It's implemented by <a href="code/lib/check.html" target="_blank"> lib/check </a>. 
 
 And that's the lot. There's an <a href="https://github.com/minerbadd/MUSE/issues" target="_blank"> issues</a> reporting page for MUSE if (really when) you find something that needs reporting. All the best.

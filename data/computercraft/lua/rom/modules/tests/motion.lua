@@ -93,10 +93,10 @@ test.part("blocked step", blockedStep, 28, {106, 157, 208})
 turtle.blocking(false) -- unblocked in lib/motion xyzMotion
 
 --:# Check tracking
-test.part("start tracking", move.situationsBegin)
-move.track(true); move.forward(5); move.up(5); move.back(5); move.down(5)
-test.part("end tracking", move.situationsEnd)
-move.track(false)
+test.part("start tracking", move.tracking, true)
+move.forward(5); move.up(5); move.back(5); move.down(5)
+test.part("situations", move.situations)
+test.part("end tracking", move.tracking, false)
 
 --:# Close test object, report completion if we got here without errors
 test.close("Test "..testName.." complete") 

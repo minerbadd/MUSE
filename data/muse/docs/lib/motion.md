@@ -25,13 +25,13 @@
 
 --:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"`  
 
---:: move.track(enable: ^:) -> _Set tracking condition_ -> `enable: ^:`  
-
 --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???) -> _Set position, optionally rest of situation._ -> `nil`  
 
 --:: move.clone() -> _Clone current situation_ -> situation  
 
 --:: move.clones() -> _Deep copy `_G.Muse.situations`._ ->  situations  
+
+--:: move.tracking(enabled: ^:) -> _Set tracking condition and situations, return situations count_ -> `count: ^#:`  
 
 --:: move.at(:situation:?) -> _(Current) situation xyzf._ -> `xyzf`  
 

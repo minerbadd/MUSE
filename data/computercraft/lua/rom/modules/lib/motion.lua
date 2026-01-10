@@ -85,7 +85,7 @@ _G.Muse.situation = _G.Muse.situation or {position = {x=0, y=0, z=0}, facing = "
 _G.Muse.situations = _G.Muse.situations or {}; -- for session
 --[[
   ```
-As we'll see, `lib/motion` provide a tracking facility for repeated movement back and forth along a `trail` defined by certain changes in a turtle's `situation`. Trails, as `_G.Muse.situations`, represent a history of turtle state accumulated in an _array_ , a numerically indexed table, each element of which is a (copy of a) `situation`. Generally turtles are not tracked but they can be by calls to `move.track(true)`. 
+As we'll see, `lib/motion` provide a tracking facility for repeated movement back and forth along a `trail` defined by certain changes in a turtle's `situation`. Trails, as `_G.Muse.situations`, represent a history of turtle state accumulated in an _array_ , a numerically indexed table, each element of which is a (copy of a) `situation`. Generally turtles are not tracked but they can be by calls to `move.tracking(true)`. 
 
 Data structures like these are some of the most pervasive and long lasting elements of a design. You and the visitors from another planet will be working with them for a long time. Some thought about that could payoff in maintenance.
 
@@ -103,7 +103,7 @@ It helps to define utility functions used in the module toward the beginning of 
 --]]
 --:## **Some Utilities: position reporting and setting:**
 function move.get(situation) 
-  --:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"`
+--:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"`
   local s = situation or _G.Muse.situation; local p = s.position; 
   return tonumber(p.x), tonumber(p.y), tonumber(p.z), s.facing, s.fuel, s.level
 end
@@ -116,9 +116,7 @@ local function fuel(situation) local s = situation or _G.Muse.situation; return 
 -- fuel(:situation:?) -> _Default current situation's fuel_ -> `fuel: #:`
 local function setFuel(value) _G.Muse.situation.fuel = value; return value end
 -- setFuel(value: #:) -> _Set current situation's fuel._ -> `fuel: #:`
-function move.track(enable) _G.Muse.tracking.enabled = enable; return enable end
---:: move.track(enable: ^:) -> _Set tracking condition_ -> `enable: ^:`
-function move.set(x, y, z, f, fuel, level)
+function move.set(x, y, z, f, fuel, level) -- for testing
   --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???) -> _Set position, optionally rest of situation._ -> `nil`
   local s = _G.Muse.situation; s.position = {x = tonumber(x), y = tonumber(y), z = tonumber(z)}; 
   if f then s.facing = f end; if fuel then s.fuel = fuel end; if level then s.level = level end
@@ -129,13 +127,19 @@ core.set = move.set -- protect from override
 ```
 <a id="globals"/> ```
 #Globals Considered Harmful
-Globals are often <a href="https://dl.acm.org/doi/pdf/10.1145/953353.953355" target="_blank">bad hygiene</a>, a hole into which much maintenance can be and has been poured. In the code that follows they intensionally look really ugly. They're used here as discussed earlier, because they will hang around in the face of garbage collection. Setting globals (changing their value) is particularly stinky hygiene. There's often a long, expensive chase to track down where a global's value has been changed. Lua has good support for <a href="https://en.wikipedia.org/wiki/Information_hiding" target="_blank">
+Globals are often <a href="https://dl.acm.org/doi/pdf/10.1145/953353.953355" target="_blank">bad hygiene</a>, a hole into which much maintenance can be and has been poured. In the code they intensionally look really ugly. They're used here as discussed earlier, because they will hang around in the face of garbage collection. Setting globals (changing their value) is particularly stinky hygiene. There's often a long, expensive chase to track down where a global's value has been changed. Lua has good support for <a href="https://en.wikipedia.org/wiki/Information_hiding" target="_blank">
 _information hiding_</a> as Lua locals are not visible outside the file chunk (or block) in which they are defined.  Globals break that model.  Exposing the `move.set` API covers a mutation with a critical fig leaf. We can put a 
 <a href="https://en.wikipedia.org/wiki/Breakpoint" target="_blank">
 _breakpoint_</a> on  calls to this fig leaf. This is better hygiene than fiddling with the associated global directly. The function is made available in the `lib/core` library. (There's special attention in loading that library to prevent overriding this binding and that of `core.get` and `core.ats` needed for bootstrapping).
 
 The local function global mutators are collected together here as well. (Yes, that's pretty fastidious.)
-
+```Lua
+--]]
+local function situation(setting) _G.Muse.situation = setting or _G.Muse.situation; return _G.Muse.situation end
+local function situations(setting) _G.Muse.situations = setting or _G.Muse.situations; return _G.Muse.situations end
+local function situationsUpdate(update) _G.Muse.situations[#_G.Muse.situations+ 1] = update; return _G.Muse.situations end
+--[[
+```
 There's a design decision in foregoing the introduction of 
 <a href="https://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank">
 _objects_</a> for now. Lua provides primitives that can be used to organize state into objects, another means of localizing state. We don't need to introduce the associated concepts here since we:
@@ -149,25 +153,7 @@ _inheritance_</a> system for what's done, for example, with a `situation`.</i></
 Implicitly there's another design decision in arranging to modify `situation` state rather than creating a new `situation` for each change (and relying on the garbage collector to dispose of the detritus) . A 
 <a href="https://en.wikipedia.org/wiki/Functional_programming" target="_blank">
 _purely functional style_</a> would require creating a new `situation` table for every change in turtle position or orientation. At the cost of that purity, the decision here is to only create a new situation, cloning one from the current `situation`, when we need the old situation in `situations`, a `situation` history. MUSE uses that history to optionally provide `tracking` as mentioned previously. Operations on the history record (and clone) position and orientation for tracking only when either orientation or the kind of vertical movement changes.
-```Lua
---]]
-local function situation(setting) _G.Muse.situation = setting or _G.Muse.situation; return _G.Muse.situation end
 
-local function situationsUpdate(update) _G.Muse.situations[#_G.Muse.situations+ 1] = update; return _G.Muse.situations end
-local function situationsSet(table) _G.Muse.situations = table end
-function move.situationsBegin() _G.Muse.situations = {move.clone()}; return #_G.Muse.situations end
-function move.situationsEnd() local count = #_G.Muse.situations; _G.Muse.situations = {}; return count end
-
-function move.clone() -- easy cloning
---:: move.clone() -> _Clone current situation_ -> situation
-  local x, y, z, facing, fuel, level = move.get() 
-  return {position = {x = x, y = y, z = z}, facing = facing, fuel = fuel, level = level} 
-end
-
-function move.clones() return core.clone(_G.Muse.situations) end
---:: move.clones() -> _Deep copy `_G.Muse.situations`._ ->  situations
---[[
-```
 <a id="clone"/>
 #Here Come the Clones
 The history of `situations` represented by the global state `_G.Muse.situations` needs isolation just as `G.Muse.situation` does.
@@ -175,8 +161,24 @@ The history of `situations` represented by the global state `_G.Muse.situations`
 There is a bigger issue here though. Making a copy of a table is an explicit operation. Binding a name to a Lua table (for example the `situations` table) just provides a name for the underlying table. It doesn't make a copy of the table; binding a table to a new name does only that. No new table is created. If some operation changes something in that table, any references to that table, new name or old, will reflect that change. In the code above, we make a new table to save <a href="https://en.wikipedia.org/wiki/Cloning_(programming)" target="_blank">
 (_clone_)</a> a `situation` just as it was when it was added to the `situations` table.
 
-(Cloning the `_G.Muse.situations` history in `move.clone` needs a more general approach to cloning than cloning a single situation as in `move.clone`. Follow the <a href="core.html#clone" target="_blank"> link</a> to the `lib/core` function, `core.clone`, to see how this is done.)
+(Cloning the `_G.Muse.situations` history in `move.situation` needs a more general approach to cloning than cloning a single situation as in `move.situation`. Follow the <a href="core.html#clone" target="_blank"> link</a> to the `lib/core` function, `core.clone`, to see how this is done.)
+```Lua
+--]]
+function move.situation() --:: move.situation() -> _Clone current situation_ -> situation
+  local x, y, z, facing, fuel, level = move.get() 
+  return {position = {x = x, y = y, z = z}, facing = facing, fuel = fuel, level = level} 
+end
 
+function move.situations() return core.clone(_G.Muse.situations) end
+--:: move.situations() -> _Deep copy `_G.Muse.situations`._ ->  situations
+
+function move.tracking(enabled) 
+  --:: move.tracking(enabled: ^:) -> _Set tracking condition and situations, return situations count_ -> `count: ^#:`
+  if enabled then _G.Muse.tracking.enabled = true; situations({move.situation()}); return 1 end
+  _G.Muse.tracking = false; local count = #situations(); situations({}); return count
+end
+--[[
+```
 Back to simple stuff, here are some utilty functions to provide turtle position data:
 ```Lua
 --]]
@@ -223,7 +225,7 @@ local function getRight(direction) return facings[(directions[direction] + 1) % 
 local function getLeft(direction) return facings[(directions[direction] - 1) % 4] end -- %4: "north" to "west"
 
 local function situationSafe() 
-  local prior = situation(); return prior, situation(_G.Muse.tracking.enabled and move.clone() or prior)
+  local prior = situation(); return prior, situation(_G.Muse.tracking.enabled and move.situation() or prior)
 end
 
 local function setRight() 
@@ -429,7 +431,7 @@ end
 xyzUpdate = function (movement, newLevel) -- update dead reckoning x,y,z situation and track
   local px, py, pz, facing, fuel, level = move.get(); 
   local tracking = _G.Muse.tracking.enabled and newLevel ~= level
-  local newSituation = tracking and move.clone() or situation()
+  local newSituation = tracking and move.situation() or situation()
   local prior = situation(); situation(newSituation)
   local dx, dy, dz = table.unpack(movement[facing]) -- `movement`: advance/retreat/rise/fall
   move.set(px + dx, py + dy, pz + dz, facing, fuel - 1, newLevel); -- dead reckoning fuel and position 
@@ -445,14 +447,14 @@ If we got here, we're at the end of the (ahem) trail. The `return` peels all the
 local resetTrack -- forward reference --:# **Tracking Movement: completing movement**
 
 trackMotion = function(current) -- from turn operations and xyzUpdate, add a situation only for turns and level changes 
-  local situations = situationsUpdate(current)
-  local reset = (_G.Muse.tracking.limit and #situations + 1 > _G.Muse.tracking.limit) 
+  local newSituations = situationsUpdate(current)
+  local reset = _G.Muse.tracking.limit and #newSituations + 1 > _G.Muse.tracking.limit 
   return reset and resetTrack(current) or "done" -- #situations and at() returned by `moveCount` or `stepCount`
 end
 
 resetTrack = function (current) -- dealing with tracking overflow
   core.status(3, "motion", "Trail reset, was longer than", _G.Muse.tracking.limit)
-  situationsSet({current}); return "done"
+  situations({current}); return "done"
 end
 --[[
 ```

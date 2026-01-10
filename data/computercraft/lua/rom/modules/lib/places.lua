@@ -64,7 +64,7 @@ end
 function place.xyzf(target, index) -- target place (with index for situations) or current situation position 
   --:: place.xyzf(name: ":"?, index: #:?) -> _Looks up index in name [defaults to current situation]._ -> `xyzf?, order: #:?`
   if not target then return xyzfSituation() end -- current position of this turtle
-  local order, placed = place.match(target); if not index then return nil end
+  local order, placed = place.match(target); if not order then return nil end
   local _, _, situations = table.unpack(placed); -- trails and ranges have mre than one
   index = index or 1; assert(index <= #situations, "places.xyzf: has less than "..index.." situations")
   return xyzfSituation(situations[index], order) -- place situation 
@@ -81,7 +81,7 @@ function place.name(name, label, supplied, features) -- newSituation(s) is from 
   --:: place.name(name: ":", label: ":", supplied: situation?, :features:??) -> _Make or update place._ -> `":", #:`
   --:+ _Include current situation or optionally supplied situation in places. Optionally update features with key = value._
   --:+ _Return order of situation in global places and the serialized situation including its features._
-  local situation = supplied or move.clone(); features = features or {} -- clone to capture current situation
+  local situation = supplied or move.situation(); features = features or {} -- clone to capture current situation
   local situations = #situation > 0 and situation or {situation} -- must be an array
 
   local order, matched = place.match(name); -- look for pre-existing
@@ -165,7 +165,7 @@ _anonymous function_</a> that specifies how the sort is to be done.</li>
 </ul></br>
 ```Lua
 --]]
-function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing cardinals argumen
+function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing cardinals argument
 --:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]`
 --:> cardinals: _Function to get one of the eight cardinal points of the compass_ -> (dx: #:, dz: #:): cardinal: ":"
 --:+ _Nearest places to specified xyzf coordinates or current position (as default)._ 
@@ -191,8 +191,7 @@ We've spoken about tracking when we looked at the implementation of <a href="mot
 --:# **Support for trails (names and labels for sequences of situations)**
 function place.fix(xyzf, track) -- set position, possibly for trailhead if tracking
 --:: place.fix(:xyzf:, track: ^:?) -> _Sets situation position, can start tracking for trail._ -> `xyzf`  
-  move.set(table.unpack(xyzf)); move.track(track) -- enable tracking
-  move.situationsBegin(); -- set first situation in trail
+  move.set(table.unpack(xyzf)); move.tracking(track) -- enable tracking, set first situation in trail
   return xyzf
 end
 
@@ -203,19 +202,19 @@ local function reverseTrail(situations) -- get trail from end back to head
 end
 
 function place.trail(headName, tailName, label) -- places for trail end and head 
---:: place.trail(headName: ":", tailName: ":", label: ":") -> _Makes two places._ -> `headSerial: ":", tailSerial: ":"`
+--:: place.trail(headName: ":", tailName: ":", label: ":") -> _Makes two places._ -> `headSerial: ":", tailSerial: ":", count: #:`
 --:+ _Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.
-  local situations = move.clones() -- deep copy the track produced by `lib/motion`
+  local situations = move.situations() -- deep copy the track produced by `lib/motion`
   local headString = place.name(headName, label, situations) -- head place and end place share a label
   local tailString = place.name(tailName, label, reverseTrail(situations))
-  move.situationsEnd(); move.track(false) -- clean up and disable tracking
-  return headString, tailString 
+  local count = move.tracking(false) -- return #situations in trail; clean up and disable tracking, 
+  return headString, tailString, count
 end
 
 function place.track(name) -- return track elements of trail if trail exists
   --:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, situations?`
   assert(name, "places: Need a name for trail")
-  local index, matched = place.match(name); if not index then return nil end
+  local order, matched = place.match(name); if not order then return nil end
   return table.unpack(matched) -- name, label, situations
 end
 --[[
@@ -238,7 +237,7 @@ function steps.along(name) -- step from each situation to the next beginning wit
 --:+ _If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head._
   local _, _, situations = place.track(name); local iterators = {}; 
   local clonedSituations = core.clone(situations); -- deep copy because there's a mutation coming next
-  table.insert(clonedSituations, 1, move.clone()) -- push a copy of the current situation onto the cloned table
+  table.insert(clonedSituations, 1, move.situation()) -- push a copy of the current situation onto the cloned table
   
   for index = 2, #clonedSituations do 
     local current, prior = clonedSituations[index], clonedSituations[index - 1]

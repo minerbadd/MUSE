@@ -48,23 +48,17 @@ function move.right() end
 ---@type fun( xyzf: xyzf,  first: string?):   "done",  number,  xyzf 
 function move.to() end
 
--- Count 0: just turn, 1: default
--- move.east(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
+-- Set tracking condition and situations, return situations count
+-- move.tracking(enabled: ^:):  `count: ^#:` <-
 
----@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
-function move.east() end
+---@type fun( enabled: boolean):   count: ^number 
+function move.tracking() end
 
 -- Count 0: just turn, 1: default
 -- move.down(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
 
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
 function move.down() end
-
--- Set tracking condition
--- move.track(enable: ^:):  `enable: ^:` <-
-
----@type fun( enable: boolean):   enable: boolean 
-function move.track() end
 
 -- Count 0: just turn, 1: default
 -- move.left(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
@@ -120,6 +114,12 @@ function move.up() end
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
 function move.west() end
 
+-- (Current) situation position and facing string (`""` in game if not turtle).
+-- move.ats(:situation:?):  `xyzf: ":"` <-
+
+---@type fun( situation: situation?):   xyzf: string 
+function move.ats() end
+
 -- Clone current situation
 -- move.clone():  situation <-
 
@@ -132,12 +132,6 @@ function move.clone() end
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
 function move.south() end
 
--- (Current) situation position and facing string (`""` in game if not turtle).
--- move.ats(:situation:?):  `xyzf: ":"` <-
-
----@type fun( situation: situation?):   xyzf: string 
-function move.ats() end
-
 -- Count 0: just turn, 1: default
 -- move.moves(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
 
@@ -149,6 +143,12 @@ function move.moves() end
 
 ---@type fun( tx: number?,  ty: number?,  tz: number?,  tf: string?):   x: number,  y: number,  z: number,  facing: string,  boolean ok 
 function move.where() end
+
+-- Count 0: just turn, 1: default
+-- move.east(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
+
+---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
+function move.east() end
 
 -- Default current situation.
 -- move.get(:situation:?):  `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"` <-

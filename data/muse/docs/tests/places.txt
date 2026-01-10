@@ -11,6 +11,22 @@ Create the test object for this test
 
 Name and rename some places and verify their coordinates
 
+Match a place and find distance between places
+
+Iterate over places near specified coordinate
+
+Apply place.near to get distance sorted table of all named places
+
+Then erase one place and get one fewer
+
+Move between two places; setup to create a trail
+
+Check that trail is created and move along it
+
 test2	{10, 25, 35, }	test1	{10, 20, 30, }	head2	{10, 25, 35, }	tail1	{10, 20, 30, }
+
+Then step along it forward and reverse
+
+Get situation and provide a feature
 
 Close test object, report completion if we got here without errors
