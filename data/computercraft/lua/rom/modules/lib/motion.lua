@@ -173,9 +173,9 @@ function move.situations() return core.clone(_G.Muse.situations) end
 --:: move.situations() -> _Deep copy `_G.Muse.situations`._ ->  situations
 
 function move.tracking(enabled) 
-  --:: move.tracking(enabled: ^:) -> _Set tracking condition and situations, return situations count_ -> `count: ^#:`
-  if enabled then _G.Muse.tracking.enabled = true; situations({move.situation()}); return 1 end
-  _G.Muse.tracking = false; local count = #situations(); situations({}); return count
+  --:: move.tracking(enabled: ^:) -> _Set tracking condition and situations, return situations count_ -> `copy: situation, count: ^#:`
+  if enabled then _G.Muse.tracking.enabled = true; local copy = move.situation(); situations({copy}); return copy, 1 end
+  _G.Muse.tracking.enabled = false; local count, copy = #situations(), move.situation(); situations({}); return copy, count
 end
 --[[
 ```

@@ -207,7 +207,7 @@ function place.trail(headName, tailName, label) -- places for trail end and head
   local situations = move.situations() -- deep copy the track produced by `lib/motion`
   local headString = place.name(headName, label, situations) -- head place and end place share a label
   local tailString = place.name(tailName, label, reverseTrail(situations))
-  local count = move.tracking(false) -- return #situations in trail; clean up and disable tracking, 
+  local _, count = move.tracking(false) -- return #situations in trail; clean up and disable tracking, 
   return headString, tailString, count
 end
 

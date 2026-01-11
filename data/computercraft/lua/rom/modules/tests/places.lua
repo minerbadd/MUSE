@@ -13,7 +13,7 @@ local turtles = require("mock"); local turtle = turtles.turtle ---@module "signs
 local places = require("places"); local steps, moves, place = places.steps, places.moves, places.place ---@module "signs.places"
 
 local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
-core.log.level(regression and 0 or 5) --:# Set log level default. Set lower to report less, higher to report more
+core.log.level(regression and 0 or 3) --:# Set log level default. Set lower to report less, higher to report more
 
 local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind `testName` as the last word (without extension) in the execution path
 local text = "Beginning "..testName..".lua test at "..move.ats()
@@ -24,6 +24,7 @@ turtle.blocking(false) -- `lib/motion` loaded `lib/mock`
 
 --:# Name and rename some places and verify their coordinates
 test.part("Set test site", place.site, "TP")
+
 test.part("1st place.fix", place.fix, {10, 20, 30, "east"})
 test.part("1st place.name", place.name, "test1", "label1")
 test.part("2nd place.fix", place.fix, {20, 30, 40, "west"})
@@ -45,18 +46,20 @@ test.part("place.nearby", place.nearby, {20,35,40})
 test.part("place.erase", place.erase, "test1")
 test.part("less nearby", place.nearby, {20,35,40})
 
---:# Move between two places; setup to create a trail
+--:# Move between two places
 test.part("new 2nd fix", place.fix, {10, 15, 25, "west"})
 test.part("replace 2nd", place.name, "test2", "label2")
+test.part("moves.to", moves.to, "test2", "y") -- test2: 10, max(15, 50), 25, "west" 
+
+--:# Setup to create a trail
 test.part("new 1st fix", place.fix, {10, 20, 30,"east"})
 test.part("replace 1st", place.name, "test1", "label1")
-test.part("moves.to", moves.to, "test2", "y") -- test2: 10, max(15, 50), 25, "west" 
 test.part("start trail", place.fix, {10, 25, 35, "west"}, true) -- track == true
 test.part("at test2", place.name, "test2", "label2") 
 for name, label, xyz, order, situations in place.near() do -- check places
   test.part("check places", check.echo, name, label, xyz, order, #situations) 
 end
-test.part("to test1", moves.to, "test1")
+test.part("to test1", moves.to, "test1") -- from test2
 test.part("make trail", place.trail, "head2", "tail1", "trail21")
 
 --:# Check that trail is created and move along it
@@ -75,7 +78,7 @@ for code, remaining, at, direction, all, index in steps.along("tail1") do -- rev
 end
 
 --:# Get situation and provide a feature
-test.part("add feature", place.name, "test1", move.situation(), {"feature", "value"})
+test.part("add feature", place.name, "test1", "label1", move.situation(), {"feature", "value"})
 
 --:# Close test object, report completion if we got here without errors
 test.close("Test "..testName.." complete") 

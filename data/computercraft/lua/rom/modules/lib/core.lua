@@ -154,8 +154,7 @@ end
 
 function core.past(ok, ...) -- like `core.pass` but encapsulates ... 
   if ok then return true, {...} end
-  local report, conditions = core.string(...), ...
-  return false, report, conditions
+  return false, {...}, ...
 end 
 --[[
 ```
