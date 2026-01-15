@@ -31,7 +31,7 @@ function turtle.category() end
 ---@alias turtle.compares { [direction]:fun():  same: boolean } # Check block in direction has the same ID as selected slot
 
 
--- Retrys (default `_G.Muse.attempts`) dig to limit or bedrock. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
+-- Retrys (default `_G.Muse.attempts`) dig to limit or bedrock.
 -- turtle.unblock(direction: ":", limit: #:?):  `"done", nil|"undug" &!`  <-
 
 ---@type fun( direction: string,  limit: number?):   "done",  nil | "undug" 
@@ -49,9 +49,9 @@ function turtle.unblock() end
 function turtle.item() end
 
 -- Unblocking dig. Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.
--- turtle.digAround(orientation: ":", name: ":", diggings: ":"[]):  `"done" &: &!` <-
+-- turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?):  `"done" &: &!` <-
 
----@type fun( orientation: string,  name: string,  diggings: string[]):   "done" 
+---@type fun( orientation: string,  diggings: string[],  name: string?):   "done" 
 function turtle.digAround() end
 
 -- turtle.detects:  `[direction]: (): ^:`
@@ -75,7 +75,7 @@ function turtle.digTo() end
 
 -- turtle.digs:  `[direction]: (side: ":"?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.digs fun( side: string?):   boolean,  string? # Try to dig block in direction and call_ suck().
+---@alias turtle.digs fun( side: string?):   boolean,  string? # Try to dig block in direction and implicitly call_ suck().
 
 
 -- Tries to match each target against_ `detail.name`.
@@ -84,7 +84,7 @@ function turtle.digTo() end
 ---@type fun( targets: string[],  detail: detail):   matched: boolean 
 function turtle.check() end
 
--- Total energy actually available in turtle slots plus turtle fuel level.
+-- Total energy actually available in turtle slots plus turtle fuel level. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
 -- turtle.fuel():  `fuelTotal: #:` <-
 
 ---@type fun():  fuelTotal: number 
@@ -107,7 +107,7 @@ function turtle.select() end
 
 
 -- direction:  `"north"|"east"|"south"|"west"|"up"|"down"`
----@alias direction  "north" | "east" | "south" | "west" | "up" | "down" # Four compass points and verticals
+---@alias direction  "north" | "east" | "south" | "west" | "up" | "down" # Four compass points (cardinals) and verticals
 
 
 -- ores:  `ore[]`

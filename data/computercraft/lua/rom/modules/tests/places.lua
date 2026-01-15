@@ -1,10 +1,9 @@
 --[[
 ##Test: `tests/places` for `place`, `moves` and `steps` interfaces of `lib/places`
-
-
+```md
+--:? muse/docs/tests/places.txt <- **Test `lib/places`** -> muse/docs/tests/places.md 
 ```Lua
 --]]
---:? muse/docs/tests/places.txt <- **Test `lib/places`** -> muse/docs/tests/places.md 
 local check = require("check").check --:# Set configuration globals for tests by loading `lib/check`
 
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
@@ -62,7 +61,7 @@ end
 test.part("to test1", moves.to, "test1") -- from test2
 test.part("make trail", place.trail, "head2", "tail1", "trail21")
 
---:# Check that trail is created and move along it
+--:# Check that the trail is created and move along it
 for name, label, xyz, order, situations in place.near() do -- check places with trails
   test.part("trail places", check.echo, name, label, xyz, order, #situations) 
 end
@@ -76,6 +75,10 @@ end
 for code, remaining, at, direction, all, index in steps.along("tail1") do -- reverse to {10, 25, 35, }
   test.part("step along", check.echo, code, remaining, at, direction, all, index)
 end
+
+turtle.blocking(true)
+test.part("blocked move", moves.to, "test1")
+turtle.blocking(false)
 
 --:# Get situation and provide a feature
 test.part("add feature", place.name, "test1", "label1", move.situation(), {"feature", "value"})

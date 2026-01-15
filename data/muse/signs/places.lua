@@ -15,9 +15,9 @@ local  places, place, moves, steps = {}, {}, {}, {}
 
 
 -- Makes two places. Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.
--- place.trail(headName: ":", tailName: ":", label: ":"):  `headSerial: ":", tailSerial: ":"` <-
+-- place.trail(headName: ":", tailName: ":", label: ":"):  `headSerial: ":", tailSerial: ":", count: #:` <-
 
----@type fun( headName: string,  tailName: string,  label: string):   headSerial: string,  tailSerial: string 
+---@type fun( headName: string,  tailName: string,  label: string):   headSerial: string,  tailSerial: string,  count: number 
 function place.trail() end
 
 -- Resets places to the empty table.

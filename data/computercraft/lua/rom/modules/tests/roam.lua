@@ -1,29 +1,49 @@
---:? muse/docs/tests/roam.txt <- **Run Regression Test for Muse** -> muse/docs/tests/roam.md  
--- **Tests for `lib/roam` ....also needs to be run with `turtle.blocking(true)`**
+--[[
+##Test: `tests/roam` for turtle movement command library: `go`, `to`, `trace`, `come` `tail` 
+```md
+--:? muse/docs/tests/roaam.txt <- **Test `lib/roam`** -> muse/docs/tests/roam.md 
+```Lua
+--]]
+local check = require("check").check --:# Set configuration globals for tests by loading `lib/check`
 
-dofile(arg[0]:match('.*[/\\]').."/_preface.lua");  -- set test environment using `preface` in execution path
+local cores = require("core"); local core = cores.core ---@module "signs.core" 
+local motion = require("motion"); local move = motion.move ---@module "signs.motion"
+local places = require("places"); local place, moves = places.place, places.moves ---@module "signs.place"
+local turtles = require("mock"); local turtle = turtles.turtle ---@module "signs.mock"
+local roams = require("roam"); local roam = roams.roam ---@module "signs.roam"
 
-local core, places, turtle, roam = require("core").core, require("places"), require("turtle").turtle, require("roam").roam
-local place, moves = places.place, places.moves
+local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
+core.log.level(regression and 0 or 3) --:# Set log level default. Set lower to report less, higher to report more
 
-turtle.blocking(false); core.log.level(4); place.site("TR")
+local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind `testName` as the last word (without extension) in the execution path
+local text = "Beginning "..testName..".lua test at "..move.ats()
 
+local test = check.open(testName, text, regression) --:# Create the test object for this test
+
+turtle.blocking(false); core.log.level(3); place.site("TR")
+
+--:# Setup place and trail names for tests
 place.fix({10,25,35,"west"}); place.name("test2", "label2")
-place.fix({10,20,30,"east"}); place.name("test1", "label1"); moves.to("test2") -- situations from from test1 to test2
+place.fix({10,20,30,"east", true}); place.name("test1", "label1"); moves.to("test2") -- situations from from test1 to test2
 place.trail("head1", "tail2", "trail12") -- head1: from test1 to test2; tail2: from test2 back to test1
 
-print(1, roam.op({"go", "e", "4", "w", "4", "d", "u"})) -- from test2 to test2: 10,25,35  "r", "10", "left", "10", 
-print(2, roam.op({"to", "test1"})) -- 10,20,30,"east"
-print(3, roam.op({"to", "20", "30", "40", "east"}))
-print(4, roam.op({"trace", "head1"})) -- to 10, 20, 30
-print(5, "From "..core.string(place.xyzf()).." to near "..core.string{15,25,35})
-print(5, roam.come({15,25,35}))
-print(6, roam.op({"go", "e", "4", "w", "4", "d", "u"})) -- from test2 to test2: 10,25,35  "r", "10", "left", "10", 
-print(7, roam.op({"to", "test1"})) -- 10,20,30,"east"
-print(8, roam.op({"to", "20", "30", "40", "east"}))
-print(9, roam.op({"trace", "head1"})) -- to 10, 20, 30
-print(10, "From "..core.string(place.xyzf()).." to near "..core.string{10,20,30})
-for _  = 1, 2 do
-print(11, roam.come({10,20,30}))
-end
+--:# Test commands: `go`, `to`, `trace`, `come`
+test.part("go and return", roam.op, {"go", "e", "4", "w", "4", "d", "u"})
+test.part("to test1", roam.op, {"to", "test1"}) -- to 10,20,30,"east"
+test.part("to {20,30,40,'east'}", roam.op, {"to", "20", "30", "40", "east"})
+test.part("trace head1", roam.op, {"trace", "head1"}) -- to 10, 20, 30
+test.message("From "..core.string(place.xyzf()).." to near "..core.string{15,25,35})
+test.part("come {15,25,35}", roam.come, {15,25,35})
 
+--:# Test "empty" (too far for fuel)
+local fuel, at = turtle.fuel(), move.at(); local atx, aty, atz = table.unpack(at)
+test.part("to too far", roam.op, {"to", atx + fuel + 1, aty, atz})
+
+--:# Test successful and failing permutation retry
+roam.op({"to", "test1"}); turtle.blocking(3)
+test.part("retry ok", roam.op, {"to", "test2"})
+turtle.blocking(7)
+test.part("retry fails", roam.op, {"to", "test1"})
+
+--:# Close test object, report completion if we got here without errors
+test.close("Test "..testName.." complete") 

@@ -44,7 +44,7 @@ local sides = { -- for logging
 
 function farm.logs(seedlings, direction) -- direction of movement
   --:: farm.logs(seedlings: ":"[], :direction:) -> _Logs down and sides, plants found seedlings._ -> `report: ":" &!`
-  turtle.digAround(direction, "logs", sides[direction]); 
+  turtle.digAround(direction, sides[direction], "logs"); 
   if not turtle.find(seedlings) then error("farm.logs: Can't find "..core.string(seedlings)) end
   local plantOK, failure = turtle.puts["down"](); local report = plantOK and "done" or failure
   core.status(4, "farm", direction, "tree planting", report); return report
@@ -65,7 +65,7 @@ function farm.put(putAim, item) -- `putAim` not direction of travel
 end
 
 local function replace(direction, putAim, item) 
-  turtle.digAround(direction, "replace", {putAim}); return farm.put(putAim, item) 
+  turtle.digAround(direction, {putAim}, "replace"); return farm.put(putAim, item) 
 end
 
 function farm.replacer(putAim, item, removables) -- not direction of travel, only replace removables

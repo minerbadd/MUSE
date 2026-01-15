@@ -10,7 +10,7 @@
 --:| turtle: <i>Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down.</i> -> turtle    
 --:+ <i>Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking.</i>    
 
---:> direction: <i>Four compass points and verticals</i> -> <code>"north"|"east"|"south"|"west"|"up"|"down"</code>  
+--:> direction: <i>Four compass points (cardinals) and verticals</i> -> <code>"north"|"east"|"south"|"west"|"up"|"down"</code>  
 
 --:# <b>Turtle operations north, east, south, west, up, down</b>  
 
@@ -22,7 +22,7 @@
 
 --:> turtle.detects: <i>Check block in direction is solid: not air, mob, liquid or floater.</i> -> <code>[direction]: (): ^:</code>  
 
---:> turtle.digs: <i>Try to dig block in direction and call</i> suck(). -> <code>[direction]: (side: ":"?): ^:, ":"?</code>    
+--:> turtle.digs: <i>Try to dig block in direction and implicitly call</i> suck(). -> <code>[direction]: (side: ":"?): ^:, ":"?</code>    
 --:+ <i>Sucked items go to inventory. If a hoe is used to attempt to "dig" a dirt block, it will be tilled instead.</i>    
 --:+ <i>Tilling is also possible if the space in front of the turtle is empty but dirt exists below that point.</i>  
 
@@ -33,7 +33,7 @@
 
 --:> turtle.puts:  <i>Attempt placing block of the selected slot in direction.</i> -> <code>[direction]: (text: ":"?): ^:, ":"?</code>    
 --:+ <i>Collects water or lava if the currently selected slot is an empty bucket. Text is used for placed sign.</i>     
---:+ <i>Value of <code>turtle.puts[:direction:]</code> is a function of one optional argument calling which returns a boolean.</i>  
+--:+ <i>Value of <code>turtle.puts[direction]</code> is a function of one optional argument calling which returns a boolean.</i>  
 
 --:> turtle.sucks: <i>Move count [or all] from direction to inventory.</i> -> <code>[direction]: (count: #:?): ^:, ":"?</code>    
 --:+ <i>Move from ground or first non empty slot of adjacent inventory enabled block to selected or next turtle slot.</i>    
@@ -65,7 +65,7 @@
 
 --:> group: <i>Materials</i> -> <code>"fuel" | "ore"| "fill" | "dirt" | "stone" | "fence" | "test"</code>  
 
---:# <b>Fence material specified by short name (e.g. <code>oak</code>) along points specified by <code>range</code></b>  
+--:# <b>Fence material specified by short name (e.g. <code>oak</code>)</b>  
 
 --:> fencings: <i>Wooden materials</i> <code>-> "birch" | "acacia" | "bamboo" | "cherry" | "chrimson" | "dark oak" | "mangrove" | "oak"</code>  
 
@@ -73,17 +73,17 @@
 
 --:- fueling -> <i>Returns energy available in turtle slots.</i>  
 
---:: turtle.fuel() -> <i>Total energy actually available in turtle slots plus turtle fuel level.</i> -> <code>fuelTotal: #:</code>  
-
---:: turtle.unblock(direction: ":", limit: #:?) -> <i>Retrys (default <code>_G.Muse.attempts</code>) dig to limit or bedrock.</i> -> <code>"done", nil|"undug" &!</code>     
+--:: turtle.fuel() -> <i>Total energy actually available in turtle slots plus turtle fuel level.</i> -> <code>fuelTotal: #:</code>    
 --:+ <i>Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.</i>  
+
+--:: turtle.unblock(direction: ":", limit: #:?) -> <i>Retrys (default <code>_G.Muse.attempts</code>) dig to limit or bedrock.</i> -> <code>"done", nil|"undug" &!</code>   
 
 --:: turtle.digTo(:xyzf:, limit: #:?) -> <i>Unblocking move.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &: &!</code>     
 --:+ <i>Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty".</i>    
 --:+ <i>Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason.</i>    
 --:+ <i>Normally return just what a successful move would: "done", 0 remaining, current position.</i>  
 
---:: turtle.digAround(orientation: ":", name: ":", diggings: ":"[]) -> <i>Unblocking dig.</i> -> <code>"done" &: &!</code>    
+--:: turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?) -> <i>Unblocking dig.</i> -> <code>"done" &: &!</code>    
 --:+ <i>Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.</i>  
 
     </pre>

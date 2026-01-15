@@ -37,7 +37,7 @@ end
 
 local function blocked(plan, pathOperations, index, direction, remaining, at, movement, motion) -- attempt unblock
   core.status(3, "worker", "blocked so unblocking at", at, "for", plan.name,  movement, motion) 
-  turtle.unblock(direction, 5); move[direction](0) -- unblocking failure raises error, `operate` if unblocked
+  turtle.unblock(direction); move[direction](0) -- unblocking failure raises error, `operate` if unblocked
   -- turned in original direction, work not done, continue current operation for remaining blocks
   turtle.blocking(0) -- for out-game operation, imagine that the blockage has been removed
   return operate(plan, pathOperations, index, remaining) -- plan, pathOperations, index, more; 
@@ -86,7 +86,7 @@ local function operatePut(elements, plan, index, pathOperations)
   local _, direction, item = table.unpack(elements); -- try to find item and if found, select for `turtle.puts`
   local items = turtle.category(item) -- `turtle.find` expects a list
   if not turtle.find(items) then error("worker.operatePut: no "..item .." found in ".. plan.name.." plan") end
-  turtle.unblock(direction, 5); turtle.puts[direction](); return operate(plan, pathOperations, index +1)
+  turtle.unblock(direction); turtle.puts[direction](); return operate(plan, pathOperations, index +1)
 end
 
 local function finishOperations(plan)

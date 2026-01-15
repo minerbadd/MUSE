@@ -8,20 +8,20 @@
 <script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
 
 <h2> Functions, State, and History: <code>lib/motion</code> for Turtle Motion</h2>
-<p>
+<pre><code class="language-markdown">
 The first chunk of code using ComputerCraft that we'll look at is the <code>lib/motion</code> module. Of course, it's about moving turtles. Each <a href="https://en.wikipedia.org/wiki/Library_(computing)" target="_blank">
 <i>library</i></a>, in the module is a collection of code elements for moving turtles in some way. Libraries often build upon each other. That's the case for MUSE and since <code>lib/motion</code> is fundamental in that build, it's where we'll start our exploration. 
-<p>
+
 It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Spoonful of sugar time I'm afraid. Without the sugar. Buckle up.
-<p>
+
 We'll use this module to illustrate how functions, a fundamental part of Lua, are used to implement our libraries. We'll also use it to introduce some ideas for managing the <a href="https://en.wikipedia.org/wiki/State<i>(computer</i>science)" target="_blank">
 <i>state</i></a> of a turtle and handling the history of that state.
-<p>
+
 <h3>Introduction and Exports: the overview</h3>
 To help readers and maintainers understand a module, it's useful to organize it by leading it off with an introductory section. We can look at the introduction of this module to get an overall understanding of what it does, its <a href="https://en.wikipedia.org/wiki/Global_variable" target="_blank">
 <i>global</i></a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The <code>motion</code> module includes two libraries, <code>move</code>, and <code>step</code> as noted in the CodeMark <a href="https://en.wikipedia.org/wiki/API" target="_blank"> application programming interface</a> (API) <a href = "https://minerbadd.github.io/CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following this filemark, the <code>LIB</code> <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. The exported interfaces of each library along with annotated type declarations not particular to either library are collected together in the API repository file for the entire project. The latter are saved in a <a href="https://en.wikibooks.org/wiki/A-level<i>Computing/AQA/Paper</i>1/Fundamentals<i>of</i>data<i>structures/Dictionaries" target="_blank"> dictionary</a> with the module name. The ZeroBrane Studio <a href="https://en.wikipedia.org/wiki/Integrated</i>development_environment" target="_blank">
 <i>IDE</i></a>, an integrated development environment, can make use of this file for code completion and other API documentation when it it most needed: when you're coding a call to an API. None of this is executable code; it's just documentation.
-<pre><code class="language-lua">
+
 --:! {move: [":"]: ():, step: [":"]: ():} <- <b>Move and Step Function Libraries</b> -> muse/docs/lib/motion.md  
 --:| motion: <i>Libraries to move turtles and move turtles by steps allowing operations at each step.</i> -> motion, move, step
 --:+ move: <b>Position setting, tracking, and reporting by dead reckoning checked by fuel consumption.</b>  
@@ -30,6 +30,7 @@ To help readers and maintainers understand a module, it's useful to organize it 
 --:# <i>Provide fuel level check to validate a dead reckoning move, can track movement for retracing move as a trail.</i>  
 --:+ <i>Report error conditions <code>"blocked"</code>, <code>"lost"</code> (for apparent but invalid movement), <code>"empty"</code> (for no fuel).</i>  
 --:+ <i>Throw some errors as tables rather than strings to allow for attempted recovery operations.</i> 
+
 </code></pre>
 The first line of the introduction above sets the stage. It tells us that moving turtles is implemented using tables (as dictionaries) of <code>move</code> functions and of something we've called <code>step</code> functions (producing <a href="https://en.wikipedia.org/wiki/Closure<i>(computer</i>programming)" target="_blank">
 <i>closures</i> </a> which we'll talk about a bit further on). It exports these as libraries exporting functions whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank"><i>Markdown</i></a> and HTML documentation, <code>muse/docs/lib/motion.md</code> and <code>muse/docs/lib/motion.html</code>, is found in the <code>docs</code> sub-directory of the <code>muse</code> project directory (for when you might want to look at them later). Below are those tables of exported functions. We'll fill them in as we go.
@@ -157,21 +158,21 @@ The history of <code>situations</code> represented by the global state <code>_G.
 There is a bigger issue here though. Making a copy of a table is an explicit operation. Binding a name to a Lua table (for example the <code>situations</code> table) just provides a name for the underlying table. It doesn't make a copy of the table; binding a table to a new name does only that. No new table is created. If some operation changes something in that table, any references to that table, new name or old, will reflect that change. In the code above, we make a new table to save <a href="https://en.wikipedia.org/wiki/Cloning_(programming)" target="_blank">
 (<i>clone</i>)</a> a <code>situation</code> just as it was when it was added to the <code>situations</code> table.
 <p>
-(Cloning the <code>_G.Muse.situations</code> history in <code>move.clone</code> needs a more general approach to cloning than cloning a single situation as in <code>move.clone</code>. Follow the <a href="core.html#clone" target="_blank"> link</a> to the <code>lib/core</code> function, <code>core.clone</code>, to see how this is done.)
+(Cloning the <code>_G.Muse.situations</code> history in <code>move.situation</code> needs a more general approach to cloning than cloning a single situation as in <code>move.situation</code>. Follow the <a href="core.html#clone" target="_blank"> link</a> to the <code>lib/core</code> function, <code>core.clone</code>, to see how this is done.)
 <pre><code class="language-lua">
-function move.clone() --:: move.clone() -> <i>Clone current situation</i> -> situation
+function move.situation() --:: move.situation() -> <i>Clone current situation</i> -> situation
   local x, y, z, facing, fuel, level = move.get() 
   return {position = {x = x, y = y, z = z}, facing = facing, fuel = fuel, level = level} 
 end
 
-function move.clones() return core.clone(_G.Muse.situations) end
---:: move.clones() -> <i>Deep copy <code>_G.Muse.situations</code>.</i> ->  situations
+function move.situations() return core.clone(_G.Muse.situations) end
+--:: move.situations() -> <i>Deep copy <code>_G.Muse.situations</code>.</i> ->  situations
 
 function move.tracking(enabled) 
-  --:: move.tracking(enabled: ^:) -> <i>Set tracking condition and situations, return situations count</i> -> <code>count: ^#:</code>
-  if enabled then _G.Muse.tracking.enabled = true; situations({move.clone()}); return 1 end
-    _G.Muse.tracking = false; local count = #situations(); situations({}); return count
-  end
+  --:: move.tracking(enabled: ^:) -> <i>Set tracking condition and situations, return situations count</i> -> <code>copy: situation, count: ^#:</code>
+  if enabled then _G.Muse.tracking.enabled = true; local copy = move.situation(); situations({copy}); return copy, 1 end
+  _G.Muse.tracking.enabled = false; local count, copy = #situations(), move.situation(); situations({}); return copy, count
+end
 </code></pre>
 Back to simple stuff, here are some utilty functions to provide turtle position data:
 <pre><code class="language-lua">
@@ -212,7 +213,7 @@ local function getRight(direction) return facings[(directions[direction] + 1) % 
 local function getLeft(direction) return facings[(directions[direction] - 1) % 4] end -- %4: "north" to "west"
 
 local function situationSafe() 
-  local prior = situation(); return prior, situation(_G.Muse.tracking.enabled and move.clone() or prior)
+  local prior = situation(); return prior, situation(_G.Muse.tracking.enabled and move.situation() or prior)
 end
 
 local function setRight() 
@@ -406,7 +407,7 @@ end
 xyzUpdate = function (movement, newLevel) -- update dead reckoning x,y,z situation and track
   local px, py, pz, facing, fuel, level = move.get(); 
   local tracking = _G.Muse.tracking.enabled and newLevel ~= level
-  local newSituation = tracking and move.clone() or situation()
+  local newSituation = tracking and move.situation() or situation()
   local prior = situation(); situation(newSituation)
   local dx, dy, dz = table.unpack(movement[facing]) -- <code>movement</code>: advance/retreat/rise/fall
   move.set(px + dx, py + dy, pz + dz, facing, fuel - 1, newLevel); -- dead reckoning fuel and position 
@@ -420,8 +421,8 @@ If we got here, we're at the end of the (ahem) trail. The <code>return</code> pe
 local resetTrack -- forward reference --:# <b>Tracking Movement: completing movement</b>
 
 trackMotion = function(current) -- from turn operations and xyzUpdate, add a situation only for turns and level changes 
-  local situations = situationsUpdate(current)
-  local reset = (_G.Muse.tracking.limit and #situations + 1 > _G.Muse.tracking.limit) 
+  local newSituations = situationsUpdate(current)
+  local reset = _G.Muse.tracking.limit and #newSituations + 1 > _G.Muse.tracking.limit 
   return reset and resetTrack(current) or "done" -- #situations and at() returned by <code>moveCount</code> or <code>stepCount</code>
 end
 

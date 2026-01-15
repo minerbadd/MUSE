@@ -1,6 +1,6 @@
 --[[
 ## Functions, State, and History: `lib/motion` for Turtle Motion
-
+```md
 The first chunk of code using ComputerCraft that we'll look at is the `lib/motion` module. Of course, it's about moving turtles. Each <a href="https://en.wikipedia.org/wiki/Library_(computing)" target="_blank">
 _library_</a>, in the module is a collection of code elements for moving turtles in some way. Libraries often build upon each other. That's the case for MUSE and since `lib/motion` is fundamental in that build, it's where we'll start our exploration. 
 
@@ -13,8 +13,7 @@ _state_</a> of a turtle and handling the history of that state.
 To help readers and maintainers understand a module, it's useful to organize it by leading it off with an introductory section. We can look at the introduction of this module to get an overall understanding of what it does, its <a href="https://en.wikipedia.org/wiki/Global_variable" target="_blank">
 _global_</a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The `motion` module includes two libraries, `move`, and `step` as noted in the CodeMark <a href="https://en.wikipedia.org/wiki/API" target="_blank"> application programming interface</a> (API) <a href = "https://minerbadd.github.io/CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following this filemark, the `LIB` <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. The exported interfaces of each library along with annotated type declarations not particular to either library are collected together in the API repository file for the entire project. The latter are saved in a <a href="https://en.wikibooks.org/wiki/A-level_Computing/AQA/Paper_1/Fundamentals_of_data_structures/Dictionaries" target="_blank"> dictionary</a> with the module name. The ZeroBrane Studio <a href="https://en.wikipedia.org/wiki/Integrated_development_environment" target="_blank">
 _IDE_</a>, an integrated development environment, can make use of this file for code completion and other API documentation when it it most needed: when you're coding a call to an API. None of this is executable code; it's just documentation.
-```Lua
---]]
+
 --:! {move: [":"]: ():, step: [":"]: ():} <- **Move and Step Function Libraries** -> muse/docs/lib/motion.md  
 --:| motion: _Libraries to move turtles and move turtles by steps allowing operations at each step._ -> motion, move, step
 --:+ move: **Position setting, tracking, and reporting by dead reckoning checked by fuel consumption.**  
@@ -23,7 +22,7 @@ _IDE_</a>, an integrated development environment, can make use of this file for 
 --:# _Provide fuel level check to validate a dead reckoning move, can track movement for retracing move as a trail._  
 --:+ _Report error conditions `"blocked"`, `"lost"` (for apparent but invalid movement), `"empty"` (for no fuel)._  
 --:+ _Throw some errors as tables rather than strings to allow for attempted recovery operations._ 
---[[
+
 ```
 The first line of the introduction above sets the stage. It tells us that moving turtles is implemented using tables (as dictionaries) of `move` functions and of something we've called `step` functions (producing <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="_blank">
 _closures_ </a> which we'll talk about a bit further on). It exports these as libraries exporting functions whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">_Markdown_</a> and HTML documentation, `muse/docs/lib/motion.md` and `muse/docs/lib/motion.html`, is found in the `docs` sub-directory of the `muse` project directory (for when you might want to look at them later). Below are those tables of exported functions. We'll fill them in as we go.

@@ -52,6 +52,7 @@ turtle.slots = {
 function turtle.select(i) selected = i; return turtle.slots[i]end
 function turtle.getItemDetail(i) return turtle.slots[i or selected] end 
 
+function turtle.fuel = _G.Muse.fuel
 function turtle.refuel() _G.Muse.fuel = refuelLevel; return _G.Muse.fuel > 0 end
 function turtle.getFuelLevel() return _G.Muse.fuel end
 
@@ -88,7 +89,7 @@ function turtle.attackDown() return true end
 
 function turtle.dig() return true end
 function turtle.digUp() return true end
-function turtle.digDown() return true end
+function turtle.digDown() return turtle.blocking() and true or false end
 
 function turtle.place() return true end
 function turtle.placeUp() return true end

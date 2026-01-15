@@ -8,19 +8,20 @@
 <script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
 
 <h2>Test: <code>tests/motion</code> for <code>move</code> and <code>step</code> interfaces of <code>lib/motion</code></h2>
-<p>
-So here we are, exploring our first MUSE test. It is meant to fit into the MUSE regression jig implemented by <code>lib/check</code>. It's neither a library nor a ComputerCraft program. It is an executable though. Just execute it as you would any Lua program. 
-<p>
-The HELP file mark above specifies that there will be a help text file and a summary markdown document. The markdown document will be processed to produce an html file describing the test using the HEAD comments in the test.
-<p>
-<pre><code class="language-lua">
+<pre><code class="language-markdown">
 --:? muse/docs/tests/motion.txt <- <b>Test <code>lib/motion</code></b> -> muse/docs/tests/motion.md 
+
+So here we are, exploring our first MUSE test. It is meant to fit into the MUSE regression jig implemented by <code>lib/check</code>. It's neither a library nor a ComputerCraft program. It is an executable though. Just execute it as you would any Lua program. 
+
+The HELP file mark above specifies that there will be a help text file and a summary markdown document. The markdown document will be processed to produce an html file describing the test using the HEAD comments in the test.
+
+</code></pre>
+<pre><code class="language-lua">
 local check = require("check").check --:# Set configuration globals for tests by loading <code>lib/check</code>
 
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
 local turtles = require("mock"); local turtle = turtles.turtle ---@module "signs.mock"
-
 
 local regression = ... --:# Bind <code>regression</code> parameter <code>true</code> from call by <code>check.regression</code> in <code>lib/check</code>; otherwise <code>nil</code>
 core.log.level(regression and 0 or 5) --:# Set log level default. Set lower to report less, higher to report more
@@ -99,10 +100,10 @@ test.part("blocked step", blockedStep, 28, {106, 157, 208})
 turtle.blocking(false) -- unblocked in lib/motion xyzMotion
 
 --:# Check tracking
-test.part("start tracking", move.situationsBegin)
-move.track(true); move.forward(5); move.up(5); move.back(5); move.down(5)
-test.part("end tracking", move.situationsEnd)
-move.track(false)
+test.part("start tracking", move.tracking, true)
+move.forward(5); move.up(5); move.back(5); move.down(5)
+test.part("situations", move.situations)
+test.part("end tracking", move.tracking, false)
 
 --:# Close test object, report completion if we got here without errors
 test.close("Test "..testName.." complete") 

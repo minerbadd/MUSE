@@ -9,20 +9,12 @@ Bind `testName` as the last word (without extension) in the execution path
 
 Create the test object for this test
 
-turtle.inspects east and up (two arms of makeDirections)
+Setup place and trail names for tests
 
-turtle.inventory -- returns currrent turtle inventory as table
+Test commands: `go`, `to`, `trace`, `come
 
-turtle.check(targets, itemDetail) -- item inspected by turtle is in targets?
+Test "empty" (too far for fuel)
 
-turtle.category check: test, dirt, nomatch, fill
-
-turtle.fuel -- energy available in turtle slots
-
-turtle.unblock(direction, limit) --waits, retrys for gravel; attacks
-
-digTo unblocks and fails
-
-digAround ok and fails
+Test successful and failing permutation retry
 
 Close test object, report completion if we got here without errors

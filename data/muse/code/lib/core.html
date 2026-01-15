@@ -148,8 +148,7 @@ end
 
 function core.past(ok, ...) -- like <code>core.pass</code> but encapsulates ... 
   if ok then return true, {...} end
-  local report, conditions = core.string(...), ...
-  return false, report, conditions
+  return false, {...}, ...
 end 
 </code></pre>
 <a id="where"></a>

@@ -2,7 +2,7 @@
 --:| turtle: _Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down._ -> turtle    
 --:+ _Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking._    
 
---:> direction: _Four compass points and verticals_ -> `"north"|"east"|"south"|"west"|"up"|"down"`  
+--:> direction: _Four compass points (cardinals) and verticals_ -> `"north"|"east"|"south"|"west"|"up"|"down"`  
 
 --:# **Turtle operations north, east, south, west, up, down**  
 
@@ -14,7 +14,7 @@
 
 --:> turtle.detects: _Check block in direction is solid: not air, mob, liquid or floater._ -> `[direction]: (): ^:`  
 
---:> turtle.digs: _Try to dig block in direction and call_ suck(). -> `[direction]: (side: ":"?): ^:, ":"?`    
+--:> turtle.digs: _Try to dig block in direction and implicitly call_ suck(). -> `[direction]: (side: ":"?): ^:, ":"?`    
 --:+ _Sucked items go to inventory. If a hoe is used to attempt to "dig" a dirt block, it will be tilled instead._    
 --:+ _Tilling is also possible if the space in front of the turtle is empty but dirt exists below that point._  
 
@@ -25,7 +25,7 @@
 
 --:> turtle.puts:  _Attempt placing block of the selected slot in direction._ -> `[direction]: (text: ":"?): ^:, ":"?`    
 --:+ _Collects water or lava if the currently selected slot is an empty bucket. Text is used for placed sign._     
---:+ _Value of `turtle.puts[:direction:]` is a function of one optional argument calling which returns a boolean._  
+--:+ _Value of `turtle.puts[direction]` is a function of one optional argument calling which returns a boolean._  
 
 --:> turtle.sucks: _Move count [or all] from direction to inventory._ -> `[direction]: (count: #:?): ^:, ":"?`    
 --:+ _Move from ground or first non empty slot of adjacent inventory enabled block to selected or next turtle slot._    
@@ -57,7 +57,7 @@
 
 --:> group: _Materials_ -> `"fuel" | "ore"| "fill" | "dirt" | "stone" | "fence" | "test"`  
 
---:# **Fence material specified by short name (e.g. `oak`) along points specified by `range`**  
+--:# **Fence material specified by short name (e.g. `oak`)**  
 
 --:> fencings: _Wooden materials_ `-> "birch" | "acacia" | "bamboo" | "cherry" | "chrimson" | "dark oak" | "mangrove" | "oak"`  
 
@@ -65,15 +65,15 @@
 
 --:- fueling -> _Returns energy available in turtle slots._  
 
---:: turtle.fuel() -> _Total energy actually available in turtle slots plus turtle fuel level._ -> `fuelTotal: #:`  
-
---:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys (default `_G.Muse.attempts`) dig to limit or bedrock._ -> `"done", nil|"undug" &!`     
+--:: turtle.fuel() -> _Total energy actually available in turtle slots plus turtle fuel level._ -> `fuelTotal: #:`    
 --:+ _Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached._  
+
+--:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys (default `_G.Muse.attempts`) dig to limit or bedrock._ -> `"done", nil|"undug" &!`   
 
 --:: turtle.digTo(:xyzf:, limit: #:?) -> _Unblocking move._ -> `code: ":", remaining: #:, xyzf: ":" &: &!`     
 --:+ _Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty"._    
 --:+ _Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason._    
 --:+ _Normally return just what a successful move would: "done", 0 remaining, current position._  
 
---:: turtle.digAround(orientation: ":", name: ":", diggings: ":"[]) -> _Unblocking dig._ -> `"done" &: &!`    
+--:: turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?) -> _Unblocking dig._ -> `"done" &: &!`    
 --:+ _Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation._  

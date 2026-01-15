@@ -1,5 +1,7 @@
 --[[
 ##Test: `tests/motion` for `move` and `step` interfaces of `lib/motion`
+```md
+--:? muse/docs/tests/motion.txt <- **Test `lib/motion`** -> muse/docs/tests/motion.md 
 
 So here we are, exploring our first MUSE test. It is meant to fit into the MUSE regression jig implemented by `lib/check`. It's neither a library nor a ComputerCraft program. It is an executable though. Just execute it as you would any Lua program. 
 
@@ -7,13 +9,11 @@ The HELP file mark above specifies that there will be a help text file and a sum
 
 ```Lua
 --]]
---:? muse/docs/tests/motion.txt <- **Test `lib/motion`** -> muse/docs/tests/motion.md 
 local check = require("check").check --:# Set configuration globals for tests by loading `lib/check`
 
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
 local turtles = require("mock"); local turtle = turtles.turtle ---@module "signs.mock"
-
 
 local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
 core.log.level(regression and 0 or 5) --:# Set log level default. Set lower to report less, higher to report more

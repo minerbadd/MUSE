@@ -15,7 +15,9 @@ local motion =  require("motion"); local move = motion.move ---@module "signs.mo
 local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module "signs.mock"
 -- if no `_G.turtle` then `mock` is the out-of-game mocked turtle, otherwise `mock` is the in game turtle.
 
---:> direction: _Four compass points and verticals_ -> `"north"|"east"|"south"|"west"|"up"|"down"`
+local slots = _G.turtle and _G.Muse.slots or #mock.slots -- test environment not limited to in-game slots
+
+--:> direction: _Four compass points (cardinals) and verticals_ -> `"north"|"east"|"south"|"west"|"up"|"down"`
 --[[
 ```
 <a id="operations"></a>
@@ -48,7 +50,7 @@ local operations = {
   detects = {up = mock.detectUp, down = mock.detectDown, front = mock.detect},
   --:> turtle.detects: _Check block in direction is solid: not air, mob, liquid or floater._ -> `[direction]: (): ^:`
   digs = {up = mock.digUp, down = mock.digDown, front = mock.dig},
-  --:> turtle.digs: _Try to dig block in direction and call_ suck(). -> `[direction]: (side: ":"?): ^:, ":"?`
+  --:> turtle.digs: _Try to dig block in direction and implicitly call_ suck(). -> `[direction]: (side: ":"?): ^:, ":"?`
   --:+ _Sucked items go to inventory. If a hoe is used to attempt to "dig" a dirt block, it will be tilled instead._
   --:+ _Tilling is also possible if the space in front of the turtle is empty but dirt exists below that point._
   drops = {up = mock.dropUp, down = mock.dropDown, front = mock.drop},
@@ -59,7 +61,7 @@ local operations = {
   puts = {up = mock.placeUp, down = mock.placeDown, front = mock.place},
   --:> turtle.puts:  _Attempt placing block of the selected slot in direction._ -> `[direction]: (text: ":"?): ^:, ":"?`
   --:+ _Collects water or lava if the currently selected slot is an empty bucket. Text is used for placed sign._ 
-  --:+ _Value of `turtle.puts[:direction:]` is a function of one optional argument calling which returns a boolean._
+  --:+ _Value of `turtle.puts[direction]` is a function of one optional argument calling which returns a boolean._
   sucks = {up = mock.suckUp, down = mock.suckDown, front = mock.suck},
   --:> turtle.sucks: _Move count [or all] from direction to inventory._ -> `[direction]: (count: #:?): ^:, ":"?`
   --:+ _Move from ground or first non empty slot of adjacent inventory enabled block to selected or next turtle slot._
@@ -86,13 +88,13 @@ More abstractions: categories of items and the detail of which slot of turtle in
 
 function turtle.inventory() 
   --:: turtle.inventory() -> _Returns currrent turtle inventory as turtle detail table_. -> `detail[]`
-  local inventoryTable = {}; for i = 1, _G.Muse.slots do local detail = mock.getItemDetail(i)
+  local inventoryTable = {}; for i = 1, slots do local detail = mock.getItemDetail(i)
     if detail then inventoryTable[#inventoryTable + 1] = {detail.name, detail.count, detail.damage} end
   end; return inventoryTable 
 end;
 
 function turtle.items() return core.string(turtle.inventory()) end --:- items -> _Returns items in turtle inventory as string._
--- NEED HINTS
+
 function turtle.check(targets, detail) -- item inspected by turtle is in targets?
   --:: turtle.check(targets: ":"[], :detail:) -> _Tries to match each target against_ `detail.name`. -> ``matched: ^:`
   for _, target in ipairs(targets) do if detail.name == target then return detail.name end end
@@ -127,7 +129,7 @@ local categories = {fuel = fuels, ore = ores, fill = fills, dirt = dirts, stone 
 
 local function qualify(name) local prefix = string.match(name, "(%a*):(%a*)"); return prefix and name or "minecraft:"..name end
 
-local fencings = { --:# **Fence material specified by short name (e.g. `oak`) along points specified by `range`**
+local fencings = { --:# **Fence material specified by short name (e.g. `oak`)**
   birch = "minecraft:birch_fence", acacia = "minecraft:acacia_fence", bamboo = "minecraft:bamboo_fence", 
   cherry = "minecraft:cherry_fence", chrimson = "minecraft:chrimson_fence", ["dark oak"] = "minecraft:dark_oak_fence", 
   mangrove = "minecraft:mangrove_fence", oak = "minecraft:oak_fence", 
@@ -141,10 +143,10 @@ local fuelEnergy =
 
 function turtle.fuel() --:- fueling -> _Returns energy available in turtle slots._
   --:: turtle.fuel() -> _Total energy actually available in turtle slots plus turtle fuel level._ -> `fuelTotal: #:`
-  local fuelTotal =  0; for i = 1, 16 do local detail = mock.getItemDetail(i)
+  local fuelTotal =  0; for i = 1, slots do local detail = mock.getItemDetail(i)
     if detail then local energy = fuelEnergy[detail.name] or 0; fuelTotal = fuelTotal + (energy * detail.count) end
   end; return fuelTotal + mock.getFuelLevel()
-end; -- NEED HINTS
+end; 
 --[[
 ```
 <a id="unblock"></a> 
@@ -162,16 +164,25 @@ local function attemptDig(direction) -- "done if air or the undug, else attack (
   turtle.attacks[direction](); local dug, report = turtle.digs[direction](); return dug, report or found.name
 end 
 
-function turtle.unblock(direction, limit, attempts) -- returns "done" or raises an error
-  --:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys (default `_G.Muse.attempts`) dig to limit or bedrock._ -> `"done", nil|"undug" &!` 
+local function unblock(direction, limit, attempts) -- returns "done" or raises an error
   --:+ _Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached._
-  limit = limit or _G.Muse.attempts; attempts = attempts or 0; -- waits, arbitrary default retrys for gravel; attacks
+  limit = limit or _G.Muse.attempts; -- arbitrary waits, default retrys for gravel; attacks
   if attempts > limit then error("turtle.unblock: Failed at "..move.ats().." "..direction)
   end; -- failed: not air, water, lava, bedrock, sand, gravel (or succesful attack of mobs)
   local done, report = attemptDig(direction); if done then return done, report end -- **dig succeeded**
   core.status(2, "turtle", "Unblocking", direction, attempts) -- report blockage
   core.sleep(0.5); -- wait for gravel or sand to finish falling... and then try again
   return turtle.unblock(direction, limit, attempts + 1) -- try again, dig failure or the undug?
+end
+
+function turtle.unblock(direction, limit)
+  --:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys (default `_G.Muse.attempts`) dig to limit or bedrock._ -> `"done", nil|"undug" &!` 
+  return unblock(direction, limit, 1)
+end
+
+local function continue(direction, xyzf, limit)
+  turtle.unblock(direction, limit); return turtle.digTo(xyzf, limit)
+-- if unblock didn't suceed, it raised error and won't return here
 end
 
 function turtle.digTo(xyzf, limit)
@@ -185,16 +196,16 @@ function turtle.digTo(xyzf, limit)
   local _, report, fail, remaining, _, direction, from = table.unpack(condition) -- failures: `blocked`, `lost`, `empty`
   if fail ~= "blocked" then error("turtle.digTo: Unblock "..remaining.." failed because "..report) end
   if not direction then error("turtle.digTo: no direction for unblock "..from.." "..report) end
-  core.status(2, "turtle", "Unblocking move", direction, "to", xyzf)
-  return turtle.unblock(direction, limit)  -- returns true or raises error (and a report for bedrock) 
+  core.status(3, "turtle", "Unblocking move", direction, "to", xyzf)
+  return continue(direction, xyzf, limit)  -- returns true or raises error (and a report for bedrock) 
 end
 
-function turtle.digAround(orientation, name, diggings)
-  --:: turtle.digAround(orientation: ":", name: ":", diggings: ":"[]) -> _Unblocking dig._ -> `"done" &: &!`
+function turtle.digAround(orientation, diggings, name)
+  --:: turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?) -> _Unblocking dig._ -> `"done" &: &!`
   --:+ _Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation._
   for _, digging in ipairs(diggings) do core.status(5, "turtle", "around", orientation, diggings)
-    local OK, fail = core.pass(pcall(turtle.unblock, digging)); if not OK then -- restore initial orientation
-      move[orientation](0); error("turtle.digAround: "..name.." "..digging.." failed, "..fail..", refacing "..orientation)
+    local ok, fail = core.pass(pcall(turtle.unblock, digging)); if not ok then -- restore initial orientation
+      move[orientation](0); error("turtle.digAround: "..name or "".." "..digging.." failed, "..fail..", refacing "..orientation)
     end
   end; return "done"
 end

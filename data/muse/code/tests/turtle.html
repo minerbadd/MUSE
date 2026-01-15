@@ -7,44 +7,69 @@
 <body>
 <script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
 
---:? muse/docs/tests/turtle.txt <- <b>Run Regression Test for Muse</b> -> muse/docs/tests/turtle.md  
--- <b>Tests for lib/turtle extensions to turtle operations</b>
-<p>
-dofile(arg[0]:match('.*[/\\]').."/_preface.lua");  -- set test environment using <code>preface</code> in execution path
-local core, turtle = require("core").core, require("turtle").turtle
-<p>
-do local result, item = turtle.inspects.east(); print (1, result, result and item.name or item) end
-do local result, item = turtle.inspects.up(); print (1.1, result, result and item.name or item) end
-<p>
--- checkTarget(targets, itemDetail) -- item inspected by turtle is in targets?
+<h2>Test: <code>tests/turtle</code> for extensions to ComputerCraft turtle operations</h2>
+--:? muse/docs/tests/places.txt <- <b>Test <code>lib/places</code></b> -> muse/docs/tests/places.md 
+<pre><code class="language-lua">
+local check = require("check").check --:# Set configuration globals for tests by loading <code>lib/check</code>
+
+local cores = require("core"); local core = cores.core ---@module "signs.core" 
+local motion = require("motion"); local move = motion.move ---@module "signs.motion"
+local mocks = require("mock"); local mock = mocks.turtle ---@module "signs.mock"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
+
+local regression = ... --:# Bind <code>regression</code> parameter <code>true</code> from call by <code>check.regression</code> in <code>lib/check</code>; otherwise <code>nil</code>
+core.log.level(regression and 0 or 3) --:# Set log level default. Set lower to report less, higher to report more
+
+local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind <code>testName</code> as the last word (without extension) in the execution path
+local text = "Beginning "..testName..".lua test at "..move.ats()
+
+local test = check.open(testName, text, regression) --:# Create the test object for this test
+
+--:# turtle.inspects east and up (two arms of makeDirections)
+test.part("inspects east", turtle.inspects.east)
+test.part("inspects up", turtle.inspects.up)
+
+--:# turtle.inventory -- returns currrent turtle inventory as table
+test.part("inventory", turtle.inventory)
+
+--:# turtle.check(targets, itemDetail) -- item inspected by turtle is in targets?
 local ores = {"minecraft:coal<i>ore", "minecraft:iron</i>ore", "minecraft:gold_ore",}
+test.part("check ores", turtle.check, ores, {name = "minecraft:coal_ore"})
 do local result = turtle.check(ores, {name = "minecraft:coal_ore"}); print(2, result) end
-<p>
---category check
-do local result = turtle.category("test"); print(3, table.unpack(result)) end
-do local result = turtle.category("dirt"); print(4, table.unpack(result)) end
-do local result = turtle.category("nomatch"); print(5, table.unpack(result), "(minecraft:nomatch expected)") end
-do local result = turtle.category("fill"); print(6, table.unpack(result)) end
-<p>
--- fuelAvailable() -- energy available in turtle slots
-print(7, turtle.fuel(), "fuel available")
-<p>
--- digUnblock(direction, limit, attempts) attempts = attempts or 0; --waits, retrys for gravel; attacks
-do local result, direction, bedrock = turtle.unblock("east", 5) -- normal usage
-  print(8, result, direction, bedrock and "bedrock" or "not bedrock")
-end
-<p>
-do local ok, result, notice, direction = core.pass(pcall(turtle.unblock, "east", 5, 6)) --force fail
-  if ok then print(9, "Should have failed", ok, result, notice, direction) end
-  if not ok then print(9, "failure expected", result, core.string(notice)) end
-end
-<p>
--- inventory() -- returns currrent turtle inventory as table
-for _, item in ipairs(turtle.inventory()) do local name, count = table.unpack(item)
-  print(10, count, name) 
-end
-<p>
-<p>
+
+--:# turtle.category check: test, dirt, nomatch, fill
+test.part("category test", turtle.category, "test")
+test.part("category dirt", turtle.category, "dirt")
+test.part("category nomatch", turtle.category, "nomatch")
+test.part("category fill", turtle.category, "fill")
+
+--:# turtle.fuel -- energy available in turtle slots
+test.part("turtle.fuel", turtle.fuel)
+
+--:# turtle.unblock(direction, limit) --waits, retrys for gravel; attacks
+test.part("turtle.unblock normal", turtle.unblock, "east", 5)
+mock.blocking(true) -- the mock turtle supports blocking for testing
+test.part("turtle.unblock fail", turtle.unblock, "down")
+mock.blocking(false)
+
+--:# digTo unblocks and fails
+move.to({10, 20, 30})
+move.to({10, 20, 35}) -- setup moving forward on z- coordinate
+mock.blocking(2) -- should unblock
+test.part("dig to unblocked ok", turtle.digTo, {10, 20, 40})
+mock.blocking(6)
+test.part("dig to unblocked fail", turtle.digTo, {10, 20, 40})
+mock.blocking(false)
+
+--:# digAround ok and fails
+test.part("digAround ok", turtle.digAround, "east", {"north", "west", "south"})
+mock.blocking(true)
+test.part("digAround fails", turtle.digAround, "north", {"up", "down", "east"})
+mock.blocking(true)
+
+--:# Close test object, report completion if we got here without errors
+test.close("Test "..testName.." complete") 
+
   </body> 
 </html>
 

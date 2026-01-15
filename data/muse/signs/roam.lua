@@ -8,7 +8,7 @@ local  roam = {}
 ---@type fun( arguments: string[]):   string 
 function roam.op() end
 
--- Server side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come.
+-- Server (turtle) side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come.
 -- roam.come(:xyz:):  `":" &:` <-
 
 ---@type fun( xyz: xyz):   string 

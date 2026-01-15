@@ -1,1 +1,21 @@
---:? muse/docs/tests/roam.txt <- **Run Regression Test for Muse** -> muse/docs/tests/roam.md    
+--:? muse/docs/tests/roaam.txt <- **Test `lib/roam`** -> muse/docs/tests/roam.md   
+
+--:# Set configuration globals for tests by loading `lib/check`  
+
+--:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`  
+
+--:# Set log level default. Set lower to report less, higher to report more  
+
+--:# Bind `testName` as the last word (without extension) in the execution path  
+
+--:# Create the test object for this test  
+
+--:# Setup place and trail names for tests  
+
+--:# Test commands: `go`, `to`, `trace`, `come`  
+
+--:# Test "empty" (too far for fuel)  
+
+--:# Test successful and failing permutation retry  
+
+--:# Close test object, report completion if we got here without errors  

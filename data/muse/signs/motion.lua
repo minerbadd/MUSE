@@ -42,16 +42,22 @@ local  motion, move, step = {}, {}, {}
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
 function move.right() end
 
--- Current situation to x, z, y, and optionally face. Optional argument_ `first` _is "x", "y", or "z" to select first move in that direction to deal with blockages.
--- move.to(xyzf: xyzf, first: ":"?):  `"done", #:, xyzf &!recovery`  <-
+-- Returns GPS results if available. If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.
+-- move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?):  `x: #:, y: #:, z: #:, facing: ":", ^: ok` <-
 
----@type fun( xyzf: xyzf,  first: string?):   "done",  number,  xyzf 
-function move.to() end
+---@type fun( tx: number?,  ty: number?,  tz: number?,  tf: string?):   x: number,  y: number,  z: number,  facing: string,  boolean ok 
+function move.where() end
+
+-- Deep copy `_G.Muse.situations`.
+-- move.situations():   situations <-
+
+---@type fun():   situations 
+function move.situations() end
 
 -- Set tracking condition and situations, return situations count
--- move.tracking(enabled: ^:):  `count: ^#:` <-
+-- move.tracking(enabled: ^:):  `copy: situation, count: ^#:` <-
 
----@type fun( enabled: boolean):   count: ^number 
+---@type fun( enabled: boolean):   copy: situation,  count: ^number 
 function move.tracking() end
 
 -- Count 0: just turn, 1: default
@@ -84,23 +90,17 @@ function move.forward() end
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
 function move.north() end
 
--- Deep copy `_G.Muse.situations`.
--- move.clones():   situations <-
-
----@type fun():   situations 
-function move.clones() end
-
 -- (Current) situation xyzf.
 -- move.at(:situation:?):  `xyzf` <-
 
 ---@type fun( situation: situation?):   xyzf 
 function move.at() end
 
--- Set position, optionally rest of situation.
--- move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???):  `nil` <-
+-- (Current) situation position and facing string (`""` in game if not turtle).
+-- move.ats(:situation:?):  `xyzf: ":"` <-
 
----@type fun( x: number,  y: number,  z: number,  f: facing?,  fuel: number?,  level: string?):   nil 
-function move.set() end
+---@type fun( situation: situation?):   xyzf: string 
+function move.ats() end
 
 -- Count 0: just turn, 1: default
 -- move.up(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
@@ -114,23 +114,23 @@ function move.up() end
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
 function move.west() end
 
--- (Current) situation position and facing string (`""` in game if not turtle).
--- move.ats(:situation:?):  `xyzf: ":"` <-
-
----@type fun( situation: situation?):   xyzf: string 
-function move.ats() end
-
--- Clone current situation
--- move.clone():  situation <-
-
----@type fun():  situation 
-function move.clone() end
-
 -- Count 0: just turn, 1: default
--- move.south(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
+-- move.east(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
 
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
-function move.south() end
+function move.east() end
+
+-- Clone current situation
+-- move.situation():  situation <-
+
+---@type fun():  situation 
+function move.situation() end
+
+-- Set position, optionally rest of situation.
+-- move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???):  `nil` <-
+
+---@type fun( x: number,  y: number,  z: number,  f: facing?,  fuel: number?,  level: string?):   nil 
+function move.set() end
 
 -- Count 0: just turn, 1: default
 -- move.moves(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
@@ -138,17 +138,17 @@ function move.south() end
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
 function move.moves() end
 
--- Returns GPS results if available. If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.
--- move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?):  `x: #:, y: #:, z: #:, facing: ":", ^: ok` <-
-
----@type fun( tx: number?,  ty: number?,  tz: number?,  tf: string?):   x: number,  y: number,  z: number,  facing: string,  boolean ok 
-function move.where() end
-
 -- Count 0: just turn, 1: default
--- move.east(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
+-- move.south(count: #:?):   `"done", remaining: #:, xyzf, direction &!recovery`  <-
 
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf,  direction 
-function move.east() end
+function move.south() end
+
+-- Current situation to x, z, y, and optionally face. Optional argument_ `first` _is "x", "y", or "z" to select first move in that direction to deal with blockages.
+-- move.to(xyzf: xyzf, first: ":"?):  `"done", #:, xyzf &!recovery`  <-
+
+---@type fun( xyzf: xyzf,  first: string?):   "done",  number,  xyzf 
+function move.to() end
 
 -- Default current situation.
 -- move.get(:situation:?):  `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"` <-

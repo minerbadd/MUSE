@@ -92,12 +92,12 @@ local function doOnce(puttings, op, fill, targets)
 end
 
 local function doMany(distance, towards, puttings, op, clear, fill, targets)
-  if clear then turtle.unblock(towards, _G.Muse.attempts) end -- attempts to unblock for dig
+  if clear then turtle.unblock(towards) end -- attempts to unblock for dig
   if not distance then move[towards](0); return doOnce(puttings, op, fill, targets) end
   
   for code, remaining, ats in step[towards](tonumber(distance)) do -- e.g., step.east
     if code ~= "done" then return false, "Failed: "..code.." at "..ats..", "..remaining.." blocks remaining" end
-    if clear then turtle.unblock(towards, _G.Muse.attempts) end
+    if clear then turtle.unblock(towards) end
     doOnce(puttings, op, fill, targets); move[towards](0) -- and reorient after op
   end; return "done "..distance.." blocks "..towards.." "..table.concat(puttings, " ").." to "..move.ats()
   

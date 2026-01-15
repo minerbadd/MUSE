@@ -40,7 +40,7 @@ local function permuting(currentAxes, targetAxes)
     if code == "done" then return "done" end -- successful movement; else try another permutation
   end -- tried all permutations but not at target; if any movement, try permutations from new position
   local mx, my, mz = move.get(); local distance = math.abs(x - mx) + math.abs(y - my) + math.abs(z - mz)
-  core.status(4, "roam retry", distance, mx, my, mz)
+  core.status(3, "roam retry", distance, mx, my, mz)
   return distance == 0 and code or permuting({x = mx, y = my, z = mz}, targetAxes)
 end
 
@@ -60,10 +60,10 @@ local function moving(tx, ty, tz, ttx, tty, ttz, op) -- `op` is `roam.come` or `
   return code == "done" and "At "..at.." "..message or op..code.." at "..at -- failure report
 end
 
---:: roam.come(:xyz:) -> _Server side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come. -> `":" &:`
-function roam.come(xyz) -- **needs GPS for {xyz}**, lib/remote RPC "come" dispatched by lib/net 
+--:: roam.come(:xyz:) -> _Server (turtle) side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come. -> `":" &:`
+function roam.come(xyz) -- **needs GPS for {xyz} in game**, lib/remote RPC "come" dispatched by lib/net 
   local px, py, pz = table.unpack(xyz); local txyz = assert(place.xyzf(), "roam come: no turtle situation??")
-  local tx, ty, tz = table.unpack(txyz); local dx, dz = px - tx, pz - tz -- x and z distance to turtle from player's px, pz
+  local tx, ty, tz = table.unpack(txyz); local dx, dz = px - tx, pz - tz -- x and z distance to turtle (t) from player's px, pz
   local ttx = px - 1 * (dx == 0 and 0 or math.abs(dx)/dx) -- turtle target 1 away from player along travel vector
   local ttz = pz - 1 * (dz == 0 and 0 or math.abs(dz)/dz) -- turtle target 1 away from player along travel vector
   local tty = py - 1; return moving(tx, ty, tz, ttx, tty, ttz, "rome.come ")
@@ -75,14 +75,14 @@ roam.tail = roam.come; roam.hints["tail"] = {["?rate"] = {}} -- separate but equ
 ```
 <a id="to"></a> 
 #Coordinate Movement: `to` a `place` or a `position
-The `to` function is used in order to move to a `position` (with `move.to`) or a `place` (with `moves.to`). 
+The `to` function is used in order to move to a `position` (with `move.to`) or a `place` (with `moves.to`). Tries all permutations
 ```Lua
 --]]
-local function to(arguments) -- repeated calls try each direction in turn
+local function to(arguments) 
   --:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._ 
   local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
   local to = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
-  local ttx, tty, ttz = table.unpack(to); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ")
+  local ttx, tty, ttz = table.unpack(to); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- **do it!**
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
 --[[
 ```
@@ -94,14 +94,14 @@ local function trace(arguments)
   --:- trace trailname ->  _Move turtle along traced situations in named trail from one end of trail to the other._
   local _, trailname = table.unpack(arguments) -- first argument is command
   local moveOK, code, index = core.pass(pcall(moves.along, trailname))
-  if moveOK then return "trace "..index.." to "..move.ats() end
+  if moveOK then return "trace "..index.." to "..move.ats() end -- no permutation retry on failure
   return "roam.trace: "..trailname.." failed because "..code.." with "..index.." remaining at "..move.ats() 
 end roam.hints["trace"] = {["?trail"] = {}} 
 --[[
 ```
 <a id="go"></a>
 #Chained Movement: the `go` command
-The `go` command is implemented with a relatively thin envelope around the primitive operations. Mostly the envelope deals with parsing, dispatch, and errors. This is a common pattern allowing easier modification of the user interface (UI) as needed . The hard work, that done by the underlying libraries, is unaffected when the UI needs to be modified.
+The `go` command is implemented with a relatively thin envelope around the primitive (no permutations retry) operations. Mostly the envelope deals with parsing, dispatch, and errors. This is a common pattern allowing easier modification of the user interface (UI) as needed . The hard work, that done by the underlying libraries, is unaffected when the UI needs to be modified. 
 
 The command is provided with a tiny language to chain together where to `go`.
 ```Lua

@@ -6,7 +6,27 @@
 <body>
 <pre>
 
---:? muse/docs/tests/roam.txt <- <b>Run Regression Test for Muse</b> -> muse/docs/tests/roam.md    
+--:? muse/docs/tests/roaam.txt <- <b>Test <code>lib/roam</code></b> -> muse/docs/tests/roam.md   
+
+--:# Set configuration globals for tests by loading <code>lib/check</code>  
+
+--:# Bind <code>regression</code> parameter <code>true</code> from call by <code>check.regression</code> in <code>lib/check</code>; otherwise <code>nil</code>  
+
+--:# Set log level default. Set lower to report less, higher to report more  
+
+--:# Bind <code>testName</code> as the last word (without extension) in the execution path  
+
+--:# Create the test object for this test  
+
+--:# Setup place and trail names for tests  
+
+--:# Test commands: <code>go</code>, <code>to</code>, <code>trace</code>, <code>come</code>  
+
+--:# Test "empty" (too far for fuel)  
+
+--:# Test successful and failing permutation retry  
+
+--:# Close test object, report completion if we got here without errors  
 
     </pre>
   </body> 

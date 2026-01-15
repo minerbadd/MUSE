@@ -84,7 +84,7 @@ function place.name(name, label, supplied, features) -- newSituation(s) is from 
   --:: place.name(name: ":", label: ":", supplied: situation?, :features:??) -> <i>Make or update place.</i> -> <code>":", #:</code>
   --:+ <i>Include current situation or optionally supplied situation in places. Optionally update features with key = value.</i>
   --:+ <i>Return order of situation in global places and the serialized situation including its features.</i>
-  local situation = supplied or move.clone(); features = features or {} -- clone to capture current situation
+  local situation = supplied or move.situation(); features = features or {} -- clone to capture current situation
   local situations = #situation > 0 and situation or {situation} -- must be an array
 
   local order, matched = place.match(name); -- look for pre-existing
@@ -195,19 +195,19 @@ local function reverseTrail(situations) -- get trail from end back to head
 end
 
 function place.trail(headName, tailName, label) -- places for trail end and head 
---:: place.trail(headName: ":", tailName: ":", label: ":") -> <i>Makes two places.</i> -> <code>headSerial: ":", tailSerial: ":"</code>
+--:: place.trail(headName: ":", tailName: ":", label: ":") -> <i>Makes two places.</i> -> <code>headSerial: ":", tailSerial: ":", count: #:</code>
 --:+ <i>Trail places share a label and represent trails from head to tail and tail to head; head set by</i> <code>place.fix</code>.
-  local situations = move.clones() -- deep copy the track produced by <code>lib/motion</code>
+  local situations = move.situations() -- deep copy the track produced by <code>lib/motion</code>
   local headString = place.name(headName, label, situations) -- head place and end place share a label
   local tailString = place.name(tailName, label, reverseTrail(situations))
-  move.tracking(false) -- clean up and disable tracking
-  return headString, tailString 
+  local _, count = move.tracking(false) -- return #situations in trail; clean up and disable tracking, 
+  return headString, tailString, count
 end
 
 function place.track(name) -- return track elements of trail if trail exists
   --:: place.track(name: ":") -> <i>Returns trail</i> -> <code>name: ":"?, label: ":"?, situations?</code>
   assert(name, "places: Need a name for trail")
-  local index, matched = place.match(name); if not index then return nil end
+  local order, matched = place.match(name); if not order then return nil end
   return table.unpack(matched) -- name, label, situations
 end
 </code></pre>
@@ -228,7 +228,7 @@ function steps.along(name) -- step from each situation to the next beginning wit
 --:+ <i>If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head.</i>
   local _, _, situations = place.track(name); local iterators = {}; 
   local clonedSituations = core.clone(situations); -- deep copy because there's a mutation coming next
-  table.insert(clonedSituations, 1, move.clone()) -- push a copy of the current situation onto the cloned table
+  table.insert(clonedSituations, 1, move.situation()) -- push a copy of the current situation onto the cloned table
   
   for index = 2, #clonedSituations do 
     local current, prior = clonedSituations[index], clonedSituations[index - 1]

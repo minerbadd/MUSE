@@ -46,7 +46,7 @@ local function permuting(currentAxes, targetAxes)
     if code == "done" then return "done" end -- successful movement; else try another permutation
   end -- tried all permutations but not at target; if any movement, try permutations from new position
   local mx, my, mz = move.get(); local distance = math.abs(x - mx) + math.abs(y - my) + math.abs(z - mz)
-  core.status(4, "roam retry", distance, mx, my, mz)
+  core.status(3, "roam retry", distance, mx, my, mz)
   return distance == 0 and code or permuting({x = mx, y = my, z = mz}, targetAxes)
 end
 
@@ -66,10 +66,10 @@ local function moving(tx, ty, tz, ttx, tty, ttz, op) -- <code>op</code> is <code
   return code == "done" and "At "..at.." "..message or op..code.." at "..at -- failure report
 end
 
---:: roam.come(:xyz:) -> <i>Server side: move turtle (close to) player's GPS</i> <code>xyz</code> <i>from</i> <code>remote.come. -> </code>":" &:`
-function roam.come(xyz) -- <b>needs GPS for {xyz}</b>, lib/remote RPC "come" dispatched by lib/net 
+--:: roam.come(:xyz:) -> <i>Server (turtle) side: move turtle (close to) player's GPS</i> <code>xyz</code> <i>from</i> <code>remote.come. -> </code>":" &:`
+function roam.come(xyz) -- <b>needs GPS for {xyz} in game</b>, lib/remote RPC "come" dispatched by lib/net 
   local px, py, pz = table.unpack(xyz); local txyz = assert(place.xyzf(), "roam come: no turtle situation??")
-  local tx, ty, tz = table.unpack(txyz); local dx, dz = px - tx, pz - tz -- x and z distance to turtle from player's px, pz
+  local tx, ty, tz = table.unpack(txyz); local dx, dz = px - tx, pz - tz -- x and z distance to turtle (t) from player's px, pz
   local ttx = px - 1 * (dx == 0 and 0 or math.abs(dx)/dx) -- turtle target 1 away from player along travel vector
   local ttz = pz - 1 * (dz == 0 and 0 or math.abs(dz)/dz) -- turtle target 1 away from player along travel vector
   local tty = py - 1; return moving(tx, ty, tz, ttx, tty, ttz, "rome.come ")
@@ -80,13 +80,13 @@ roam.tail = roam.come; roam.hints["tail"] = {["?rate"] = {}} -- separate but equ
 </code></pre>
 <a id="to"></a> 
 <h3>Coordinate Movement: <code>to</code> a <code>place</code> or a `position</h3>
-The <code>to</code> function is used in order to move to a <code>position</code> (with <code>move.to</code>) or a <code>place</code> (with <code>moves.to</code>). 
+The <code>to</code> function is used in order to move to a <code>position</code> (with <code>move.to</code>) or a <code>place</code> (with <code>moves.to</code>). Tries all permutations
 <pre><code class="language-lua">
-local function to(arguments) -- repeated calls try each direction in turn
+local function to(arguments) 
   --:- to place | x y z face?-> <i>To named place or position and face. Retry permutation for different first direction.</i> 
   local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
   local to = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
-  local ttx, tty, ttz = table.unpack(to); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ")
+  local ttx, tty, ttz = table.unpack(to); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- <b>do it!</b>
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
 </code></pre>
 <a id="trace"></a>
@@ -96,13 +96,13 @@ local function trace(arguments)
   --:- trace trailname ->  <i>Move turtle along traced situations in named trail from one end of trail to the other.</i>
   local _, trailname = table.unpack(arguments) -- first argument is command
   local moveOK, code, index = core.pass(pcall(moves.along, trailname))
-  if moveOK then return "trace "..index.." to "..move.ats() end
+  if moveOK then return "trace "..index.." to "..move.ats() end -- no permutation retry on failure
   return "roam.trace: "..trailname.." failed because "..code.." with "..index.." remaining at "..move.ats() 
 end roam.hints["trace"] = {["?trail"] = {}} 
 </code></pre>
 <a id="go"></a>
 <h3>Chained Movement: the <code>go</code> command</h3>
-The <code>go</code> command is implemented with a relatively thin envelope around the primitive operations. Mostly the envelope deals with parsing, dispatch, and errors. This is a common pattern allowing easier modification of the user interface (UI) as needed . The hard work, that done by the underlying libraries, is unaffected when the UI needs to be modified.
+The <code>go</code> command is implemented with a relatively thin envelope around the primitive (no permutations retry) operations. Mostly the envelope deals with parsing, dispatch, and errors. This is a common pattern allowing easier modification of the user interface (UI) as needed . The hard work, that done by the underlying libraries, is unaffected when the UI needs to be modified. 
 <p>
 The command is provided with a tiny language to chain together where to <code>go</code>.
 <pre><code class="language-lua">
