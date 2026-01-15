@@ -7,6 +7,7 @@
 --]]
 local starts = require("_start"); local _ = starts -- loaded just to set configuration variables
 local cores = require("core"); local core = cores.core ---@module "signs.core"
+local remotes = require("remote"); local remote = remotes.remote ---@module "signs remote"
 local lfs = require("lfs"); local check = {}; ---@module "signs.check"  
 
 local tests = arg[0]:match('.*[/\\]') --:# Get path to calling executable
@@ -51,14 +52,25 @@ function check.open(testName, text, regression) -- create check object with cont
   local function part(note, fun, ...) -- at each part of the test
     --:# part(partID: ":", note: ":", fun: ():, ...: any): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`
     partID = partID + 1; local partName, prior = tostring(partID), this.priors[partID]
-    local ok, result = core.past(pcall(fun, ...)) -- **execute the test part deferred till now (with protection)**
-    local text = core.string(table.unpack(result))
+    local ok, results = core.past(pcall(fun, ...)) -- **execute the test part deferred till now (with protection)**
+    local text = core.string(table.unpack(results))
     local failure = ("ERROR "..this.testName..".lua part "..partName..": "..note.." failed: "..text)
     local report = ok and text or failure
     if (this.regression and report ~= prior) then error(report.." ~= "..prior or ''.. " in "..this.testName..": "..note) end
-    if not this.regression then this.priors[partID] = report; print(note, report); return report end --> 
+    if not this.regression then this.priors[partID] = report; print(note, report); return report, results end --> 
   end
-  
+
+  local function call(note, server, command, arguments)
+    -- testCall = prepareCall, -- (server: ":", command: ":", {arguments: ":"[]} -> serverID: #:, request: ":"
+    local _, returns = part(note.." >", remote.testCall, server, command, arguments)
+    local _, serverID, request = table.unpack(returns)
+    -- testRequest = serverRequest, -- (clientID: ":", request: ":") -> result: ":"
+    local _, results = part(note.." <", remote.testRequest, 0, request)
+    local _, result = table.unpack(results)
+    -- testResult = clientResult, -- (serverID: #:, result: ":", callback{}) -> `nil`
+    part(note.." =", remote.testResult, serverID, result, function(result) return core.string(result) end)
+  end
+
   local function message(...) if not this.regression then print(...) end end
   --:# message(..: ":"): -> _Print ... if not regression_ -> `nil`
 
@@ -71,7 +83,7 @@ function check.open(testName, text, regression) -- create check object with cont
     print(text, checks..testName..".lua")
   end
 
-  return {part = part, message = message, close = close}
+  return {part = part, call = call, message = message, close = close}
 
 end -- check object created by `check.open`
 
