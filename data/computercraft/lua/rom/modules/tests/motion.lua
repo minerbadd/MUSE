@@ -13,7 +13,7 @@ local check = require("check").check --:# Set configuration globals for tests by
 
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
-local turtles = require("mock"); local turtle = turtles.turtle ---@module "signs.mock"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle" -- just for blocking
 
 local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
 core.log.level(regression and 0 or 5) --:# Set log level default. Set lower to report less, higher to report more
@@ -23,7 +23,7 @@ local text = "Beginning "..testName..".lua test at "..move.ats()
 local test = check.open(testName, text, regression) --:# Create the test object for this test
 
 
-turtle.blocking(false) -- `lib/motion` loaded `lib/mock`
+turtle.blocking(false) 
 
 --:# **Test simple `move` motions**
 test.part("east", move.east)

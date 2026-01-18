@@ -2,9 +2,9 @@
 --:| turtle: _Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down._ -> turtle    
 --:+ _Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking._    
 
---:> direction: _Four compass points (cardinals) and verticals_ -> `"north"|"east"|"south"|"west"|"up"|"down"`  
-
 --:# **Turtle operations north, east, south, west, up, down**  
+
+--:> direction: _Four compass points (cardinals) and verticals_ -> `"north"|"east"|"south"|"west"|"up"|"down"`  
 
 --:# **Operation dictionaries keyed by direction, values are generally functions of no arguments calling which return a boolean.**  
 
@@ -33,13 +33,9 @@
 
 --:# **Function References**  
 
---:: turtle.find(targets: ":"[]) -> _Selects found slot._ -> `detail?`  
+--:: turtle.find -- `core.findItems` gets mocked turtle if not in-game(targets: ":"[]) -> _Selects found slot._ -> `detail?`, #:?, ^:?  
 
---:: turtle.select(slot: #:) -> _Attempts to select the specified slot._ -> `selected: ^:`  
-
---:: turtle.item(slot: #:?) ->  _Detail of specified or currently selected slot._ -> `nil | detail`  
-
---:# **Item name and turtle status utilities**  
+--:# **Item name and turtle status utilities** (don't exist in-game so not mocked)  
 
 --:: turtle.inventory() -> _Returns currrent turtle inventory as turtle detail table_. -> `detail[]`  
 
@@ -77,3 +73,7 @@
 
 --:: turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?) -> _Unblocking dig._ -> `"done" &: &!`    
 --:+ _Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation._  
+
+--:# For testing; `blocked` is a boolean or a number counted down to end blocking (of course, not used in-game)  
+
+--:# turtle.block(blocker: #:?) -> _Counts down if number, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`  

@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field
 --[[
 ## Functions, State, and History: `lib/motion` for Turtle Motion
 ```md
@@ -25,10 +26,13 @@ _IDE_</a>, an integrated development environment, can make use of this file for 
 
 ```
 The first line of the introduction above sets the stage. It tells us that moving turtles is implemented using tables (as dictionaries) of `move` functions and of something we've called `step` functions (producing <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="_blank">
-_closures_ </a> which we'll talk about a bit further on). It exports these as libraries exporting functions whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">_Markdown_</a> and HTML documentation, `muse/docs/lib/motion.md` and `muse/docs/lib/motion.html`, is found in the `docs` sub-directory of the `muse` project directory (for when you might want to look at them later). Below are those tables of exported functions. We'll fill them in as we go.
+_closures_ </a> which we'll talk about a bit further on). It exports these as libraries exporting functions whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">_Markdown_</a> and HTML documentation, `muse/docs/lib/motion.md` and `muse/docs/lib/motion.html`, is found in the `docs` sub-directory of the `muse` project directory (for when you might want to look at them later). Below are those tables of exported functions, `motion.move`, and `motion.step`. We'll fill them in as we go. (We' load `signs.motion` to allow type checking in the module.)
 ```Lua
 --]]
-local move, step = {}, {} ---@module "signs.motion"
+require("signs.motion"); local move, step = {}, {} ---@module "signs.motion" 
+
+--motion.move, motion.step = {}, {}; 
+ 
 --[[
 ```
 As mentioned, the exported APIs for these libraries is provided in two tables of functions: `move` and `step`.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the module with<a href="https://www.lua.org/pil/8.1.html" target="_blank"> `require` </a> returns these tables. Just below we'll see that done for libraries that `lib/motion` depends on. 
@@ -102,7 +106,7 @@ It helps to define utility functions used in the module toward the beginning of 
 --]]
 --:## **Some Utilities: position reporting and setting:**
 function move.get(situation) 
---:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"`
+--:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"
   local s = situation or _G.Muse.situation; local p = s.position; 
   return tonumber(p.x), tonumber(p.y), tonumber(p.z), s.facing, s.fuel, s.level
 end
@@ -115,10 +119,10 @@ local function fuel(situation) local s = situation or _G.Muse.situation; return 
 -- fuel(:situation:?) -> _Default current situation's fuel_ -> `fuel: #:`
 local function setFuel(value) _G.Muse.situation.fuel = value; return value end
 -- setFuel(value: #:) -> _Set current situation's fuel._ -> `fuel: #:`
-function move.set(x, y, z, f, fuel, level) -- for testing
-  --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???) -> _Set position, optionally rest of situation._ -> `nil`
+function move.set(x, y, z, f, fuels, level) -- for testing
+  --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuels: #:??, level: ":"???) -> _Set position, optionally rest of situation._ -> `nil`
   local s = _G.Muse.situation; s.position = {x = tonumber(x), y = tonumber(y), z = tonumber(z)}; 
-  if f then s.facing = f end; if fuel then s.fuel = fuel end; if level then s.level = level end
+  if f then s.facing = f end; if fuels then s.fuel = fuels end; if level then s.level = level end
 end
 
 core.set = move.set -- protect from override 
@@ -164,15 +168,15 @@ There is a bigger issue here though. Making a copy of a table is an explicit ope
 ```Lua
 --]]
 function move.situation() --:: move.situation() -> _Clone current situation_ -> situation
-  local x, y, z, facing, fuel, level = move.get() 
-  return {position = {x = x, y = y, z = z}, facing = facing, fuel = fuel, level = level} 
+  local x, y, z, facings, fuels, level = move.get() 
+  return {position = {x = x, y = y, z = z}, facing = facings, fuel = fuels, level = level} 
 end
 
 function move.situations() return core.clone(_G.Muse.situations) end
 --:: move.situations() -> _Deep copy `_G.Muse.situations`._ ->  situations
 
 function move.tracking(enabled) 
-  --:: move.tracking(enabled: ^:) -> _Set tracking condition and situations, return situations count_ -> `copy: situation, count: ^#:`
+  --:: move.tracking(enabled: ^:) -> _Set tracking condition and situations, return situations count_ -> `copy: situation, count: #:`
   if enabled then _G.Muse.tracking.enabled = true; local copy = move.situation(); situations({copy}); return copy, 1 end
   _G.Muse.tracking.enabled = false; local count, copy = #situations(), move.situation(); situations({}); return copy, count
 end
@@ -181,11 +185,11 @@ end
 Back to simple stuff, here are some utilty functions to provide turtle position data:
 ```Lua
 --]]
-function move.at(situation) local x, y, z, f = move.get(situation); return {x, y, z, f} end
---:: move.at(:situation:?) -> _(Current) situation xyzf._ -> `xyzf`
-function move.ats(situation)
---:: move.ats(:situation:?) -> _(Current) situation position and facing string (`""` in game if not turtle)._ -> `xyzf: ":"`
-  local x, y, z, f = move.get(situation); return turtle and ("{"..x..", "..y..", "..z.."}, "..(f or "")) or ""
+function move.at(theSituation) local x, y, z, f = move.get(theSituation); return {x, y, z, f} end
+--:: move.at(theSituation:situation?) -> _(Current) situation xyzf._ -> `xyzf`
+function move.ats(theSituation)
+--:: move.ats(theSituation:situation?) -> _(Current) situation position and facing string (`""` in game if not turtle)._ -> `xyzf: ":"`
+  local x, y, z, f = move.get(theSituation); return turtle and ("{"..x..", "..y..", "..z.."}, "..(f or "")) or ""
 end
 --[[
 ```
@@ -380,9 +384,9 @@ local refuel, xyzMotion -- forward references to move the turtle using `way` tab
 
 fueledMotion = function (way, count, direction) -- for one block motion from move/step count
   if turtle.getFuelLevel() > 0 then return xyzMotion(way) end -- **Move the turtle one block!**
-  local detail, slot = core.findItems(fuels); slot = slot or "_none_"
+  local detail, slot = core.findItems(fuels); local slotq = slot or "_none_"
   local detailName = detail and detail.name or "_no fuel_"
-  core.status(4, "motion", "Refueling?", detailName, "in slot", slot)
+  core.status(4, "motion", "Refueling?", detailName, "in slot", slotq)
   return detail and refuel(way, count, direction) or "empty" 
   -- if fuel found, try refueling (and try moving the turtle)
 end
@@ -428,12 +432,12 @@ function xyzMotion(way) -- move the turtle using `way` table
 end
 
 xyzUpdate = function (movement, newLevel) -- update dead reckoning x,y,z situation and track
-  local px, py, pz, facing, fuel, level = move.get(); 
+  local px, py, pz, facingss, theFuel, level = move.get(); 
   local tracking = _G.Muse.tracking.enabled and newLevel ~= level
   local newSituation = tracking and move.situation() or situation()
   local prior = situation(); situation(newSituation)
-  local dx, dy, dz = table.unpack(movement[facing]) -- `movement`: advance/retreat/rise/fall
-  move.set(px + dx, py + dy, pz + dz, facing, fuel - 1, newLevel); -- dead reckoning fuel and position 
+  local dx, dy, dz = table.unpack(movement[facingss]) -- `movement`: advance/retreat/rise/fall
+  move.set(px + dx, py + dy, pz + dz, facing, theFuel - 1, newLevel); -- dead reckoning fuel and position 
   return tracking and trackMotion(prior) or "done"-- trackMotion returns "done" and adds to `_G.Muse.situations`
 end
 --[[
@@ -482,12 +486,17 @@ function move.back(count) count = count or 1; return moveCount(wayBack, count, "
 --:> stepping: _Iterator (default 1 step)_ -> `(): "done", remaining: #:, xyzf, direction &!recovery`
 -- Each of these step functions have common definitions and indirectly call `stepCount(goForward, count, direction)`
 
+---@diagnostic disable-next-line: return-type-mismatch -- LLS (sometimes) confused by ops[op] in `turn` and `face`
 function step.left(count) count = count or 1; return turn(turnLeft, count, "left", "step") end --:= step.steps:: step.left: 
+---@diagnostic disable-next-line: return-type-mismatch
 function step.right(count) count = count or 1; return turn(turnRight, count, "right", "step") end --:= step.steps:: step.right:
+---@diagnostic disable-next-line: return-type-mismatch
 function step.north(count) count = count or 1; return face("north", count, "step") end --:= step.steps:: step.north:
+---@diagnostic disable-next-line: return-type-mismatch
 function step.east(count) count = count or 1; return face("east", count, "step") end --:= step.steps:: step.east: 
+---@diagnostic disable-next-line: return-type-mismatch
 function step.south(count) count = count or 1; return face("south", count, "step") end --:= step.steps:: step.south:
-function step.west(count) count = count or 1; return face("west", count, "step") end --:= step.steps:: step.left:
+function step.west(count) count = count or 1; return face("west", count, "step") end --:= step.steps:: step.west:
 
 function step.up(count) count = count or 1; return stepCount(wayUp, count, "up") end --:= step.steps:: step.up:
 function step.down(count) count = count or 1; return stepCount(wayDown, count, "down") end --:= step.steps:: step.down: 
@@ -523,14 +532,14 @@ function move.to(xyzf, first) -- no navigation, y last unless `first` specified
 --:: move.to(xyzf: xyzf, first: ":"?) -> _Current situation to x, z, y, and optionally face._ -> `"done", #:, xyzf &!recovery` 
 --:+ _Optional argument_ `first` _is "x", "y", or "z" to select first move in that direction to deal with blockages._
   if not xyzf then error("motion.move.to: attempt to go to nil (road unpaved)") end
-  local x, y, z, face = table.unpack(xyzf); local sx, sy, sz = move.get(); local dx, dy, dz = x - sx, y - sy, z - sz
+  local x, y, z, faced = table.unpack(xyzf); local sx, sy, sz = move.get(); local dx, dy, dz = x - sx, y - sy, z - sz
   local xD, xOp = dx < 0 and "west" or "east", dx < 0 and move.west or move.east; local adx = math.abs(dx)
   local yD, yOp = dy < 0 and "down" or "up", dy < 0 and move.down or move.up; local ady = math.abs(dy)
   local zD, zOp = dz < 0 and "north" or "south", dz < 0 and move.north or move.south; local adz = math.abs(dz)
   core.status(4, "motion", "move.to", xD, yD, zD, "to", xyzf)
   local movement = not first and moving.x or moving[first]; -- pick the function for `moving`
   if not movement then error("motion.move.to: first to "..first.." not supported") end
-  movement(xOp, adx, zOp, adz, yOp, ady); if face then turnFacing(face) end  -- call the `moving` function
+  movement(xOp, adx, zOp, adz, yOp, ady); if face then turnFacing(faced) end  -- call the `moving` function
   return "done", 0, move.ats() -- if not "done", error has been thrown
 end
 --[[
@@ -544,13 +553,13 @@ The bindings for movement operations such as `move.west` and `move.east` referen
 The `stepTo` function uses iterators created by `stepCount` to create a composite iterator.
 ```Lua
 --]]
-function step.to(xyzf, situation) -- iterator closure returns nil only if all directions done
---:: step.to(:xyzf:, situation:situation?) -> _Step to position from (current) sItuation._ -> `(): nil &!recovery`
+function step.to(xyzf, theSituation) -- iterator closure returns nil only if all directions done
+--:: step.to(:xyzf:, theSituation:situation?) -> _Step to position from (current) sItuation._ -> `(): nil &!recovery`
 --:+ _Iterate first in x direction to completion, then z, and finally y. Once complete, each iterator is exhausted._
 --:+ _Finally turn to face if supplied. Returned iterator returns_ `nil` _when iterators for all directions are exhausted._
   if not xyzf then error("motion.step.to: attempt to step to nil (road unpaved)") end
   if type(xyzf) ~= "table" then error("motion.step.to: expected table", xyzf) end
-  local x, y, z, face = table.unpack(xyzf); local target = situation or _G.Muse.situation
+  local x, y, z, faced = table.unpack(xyzf); local target = theSituation or _G.Muse.situation
   local tx, ty, tz = move.get(target); local dx, dy, dz = x - tx, y - ty, z - tz; 
   local xD, xOp, adx = dx < 0 and "west" or "east", dx < 0 and step.west or step.east, math.abs(dx)
   local zD, zOp, ady = dz < 0 and "north" or "south", dz < 0 and step.north or step.south, math.abs(dy)
@@ -570,7 +579,7 @@ But wait, there's more.  So far, we've just setup the upvalues. The `step.to` fu
         core.status(3, "motion", "step.to", index, code, remaining, at, direction, xyzf)
         if code then dxyz = dxyz - 1; return code, remaining, at, direction, dxyz end 
       end; 
-    end; if face then turnFacing(face) end; return nil end; -- end of iterator closure
+    end; if face then turnFacing(faced) end; return nil end; -- end of iterator closure
     end
 --[[
 ```

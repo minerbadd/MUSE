@@ -22,7 +22,7 @@
 
 --:: place.distance(a: xyzf, b: xyzf) -> _Manhattan: abs(delta x) + abs(delta y) + abs(delta z)._ -> `distance: #:`  
 
---:: place.match(name: ":") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `order: #:?, place?`  
+--:: place.match(name: ":") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `order: #:?, place: place?`  
 
 --:: place.xyzf(name: ":"?, index: #:?) -> _Looks up index in name [defaults to current situation]._ -> `xyzf?, order: #:?`  
 
@@ -56,7 +56,7 @@
 --:: place.trail(headName: ":", tailName: ":", label: ":") -> _Makes two places._ -> `headSerial: ":", tailSerial: ":", count: #:`    
 --:+ _Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.  
 
---:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, situations?`  
+--:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, :situations:?"  
 
 --:# **Moving and stepping for known places: to points or along trails**  
 
@@ -66,6 +66,6 @@
 --:: steps.along(name: ":") -> _Iterator: first to next situation of place._ -> `(): code: ":", remaining: #:, xyzf: ":" &!recovery`    
 --:+ _If the named place is the head of a trail, step from there to its tail. If it's a tail of a trail, step to its head._  
 
---:: moves.to(target: ":", first: ":") -> _Move to target, first along direction._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`  
+--:: moves.to(target: ":", first: ":"?) -> _Move to target, first along direction._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`  
 
 --:: steps.to(target: ":") -> _Step (iterator) to target place._ -> `(): code: ":", remaining: #:, xyzf: ":" &!recovery`  

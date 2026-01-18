@@ -9,8 +9,8 @@ local  check = {}
 function check.regression() end
 
 -- Return `check` object(closure)
--- check.open(testName:":", text: ":"):  `{part:():, message:():, close:():}`  <-
+-- check.open(testName:":", text: ":"):  `{part:():, message:():, call: ():, close:():}`  <-
 
----@type fun( testName:string,  text: string):  { part: function,  message: function,  close: function}
+---@type fun( testName:string,  text: string):  { part: function,  message: function,  call: function,  close: function}
 function check.open() end
 return { check =  check}

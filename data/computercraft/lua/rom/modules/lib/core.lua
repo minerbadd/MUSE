@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field
 --[[
 ## Core: A Collection of Generally Useful Functions for MUSE
 ```md
@@ -7,7 +8,8 @@
 --]]
 ---@diagnostic disable-next-line: undefined-field
 local rednet, turtle = _G.rednet, _G.turtle or require("mock").turtle -- mock out game
-local core = {}; core.hints = {}; --- @module "signs.core"  
+local cores = require("signs.core"); cores.core = {}; local core = cores.core ---@module "signs.core"  
+core.hints = {};
 --[[
 ```
 <a id="clone"></a>
@@ -106,6 +108,7 @@ local function inSerialize(input, partial, simple) -- adapted from PiL 12.1.1; `
 end
 
 --:: core.serialize(input: any) -> _Executable string to instantiate input._ -> `"return "..":" &!`
+---@diagnostic disable-next-line: return-type-mismatch
 function core.serialize(input) return "return " .. (input and inSerialize(input) or "{}") end
 
 local function makeString(item) return inSerialize(item, "", true) end -- third argument `true` for simple
@@ -164,7 +167,7 @@ The `core.where` implementation binds a dummy function, `function() end` (which 
 As it turns out, the in-game `gps.locate` returns `NaN`, Not A Number, rather than `nil` when it can't compute a position. The idiom `gx == gx` is used to detect NaN since the IEEE spec requires that `NaN` is not equal to anything including "itself".
 ```Lua
 --]]
-function core.where() --:: core.where() -> _GPS location if available._ -> `x: #:?, y: #:?, z: #:?`
+function core.where() --:: core.where() -> _GPS location if available._ -> `x: #:|false, y: #:|false, z: #:|false`
   ---@diagnostic disable-next-line: undefined-field
   local gps = _G.gps; local gpslocate = gps and gps.locate or function() end
   ---@diagnostic disable-next-line: redundant-parameter
@@ -192,7 +195,7 @@ local function reckon(message)                                    -- find bad re
   ---@diagnostic disable-next-line: undefined-field
   if not _G.turtle then return message end                        -- pointless if not for turtles (in-game)
   local tx, ty, tz = core.get(); local gx, gy, gz = core.where(); --overloaded by lib/motion
-  if not gx then return message end                               -- no GPS assume reckoned
+  if not gx or not gy or not gz then return message end                               -- no GPS assume reckoned
   local matched = core.round(tx) == core.round(gx) and core.round(ty) == core.round(gy) and
   core.round(tz) == core.round(gz)
   if matched then return message end
@@ -307,7 +310,7 @@ end
 function core.echo(...) return ... end --:- echo arguments ... -> _For testing: just returns its arguments._
 
 function core.optionals(string, number, ...)
-  --:: core.optionals(string: ":"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: ":"?, number: #:?, ...: any`
+  --:: core.optionals(string: ":"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: ":"|false, number: #:|false, ...: any`
   local stringIsNumber = tonumber(string); string = not stringIsNumber and string;
   number = stringIsNumber or number; return string, number, ...
 end
@@ -450,7 +453,7 @@ A completely straight forward implementation (for a change).
 --]]
 --:# **Lowest level turtle and mock turtle support used by several libraries including lib/motion**
 function core.findItems(targets) -- nil if no slot with target otherwise slot detail, does selection
-  --:: core.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`
+  --:: core.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`, #:?, ^:?
   --:> detail: _Defined by Computercraft_ -> `{name: detail.name, count: detail.count, damage: detail.damage}`
   --:> detail.name: _Prepended by the mod name `"minecraft:"`._ -> `":"`
   --:> detail.count: _Available in inventory_ -> `#:`

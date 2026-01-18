@@ -7,9 +7,11 @@
 --:+ _As well as barrels, granite, potatoes, carrots, beetroot seeds, and kelp._    
 --:+ _And advanced computers, ender modems, disk drives and floppies in its slots._  
 
---:# _Inspection shows dirt for down direction, otherwise nothing._  
+--:# turtle.select(slot: #:) -> _Attempts to select the specified slot._ -> `selected: ^:`  
 
---:# turtle.block(blocker: #:?) -> _Counts down if number, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`  
+--:# turtle.item(slot: #:?) ->  _Detail of specified or currently selected slot._ -> `nil | detail`  
+
+--:# _Inspection shows dirt for down direction, otherwise nothing._  
 
 --:# _Turns just report success, other motions decrement the simulated fuel and report success unless blocked._    
 --:+ _Only forward motion can be blocked in simulation._  

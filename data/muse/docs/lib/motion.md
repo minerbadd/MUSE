@@ -23,19 +23,19 @@
 
 --:## **Some Utilities: position reporting and setting:**  
 
---:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"`  
+--:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"  
 
---:: move.set(x: #:, y: #:, z: #:, f: facing?, fuel: #:??, level: ":"???) -> _Set position, optionally rest of situation._ -> `nil`  
+--:: move.set(x: #:, y: #:, z: #:, f: facing?, fuels: #:??, level: ":"???) -> _Set position, optionally rest of situation._ -> `nil`  
 
 --:: move.situation() -> _Clone current situation_ -> situation  
 
 --:: move.situations() -> _Deep copy `_G.Muse.situations`._ ->  situations  
 
---:: move.tracking(enabled: ^:) -> _Set tracking condition and situations, return situations count_ -> `copy: situation, count: ^#:`  
+--:: move.tracking(enabled: ^:) -> _Set tracking condition and situations, return situations count_ -> `copy: situation, count: #:`  
 
---:: move.at(:situation:?) -> _(Current) situation xyzf._ -> `xyzf`  
+--:: move.at(theSituation:situation?) -> _(Current) situation xyzf._ -> `xyzf`  
 
---:: move.ats(:situation:?) -> _(Current) situation position and facing string (`""` in game if not turtle)._ -> `xyzf: ":"`  
+--:: move.ats(theSituation:situation?) -> _(Current) situation position and facing string (`""` in game if not turtle)._ -> `xyzf: ":"`  
 
 --:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> _Returns GPS results if available._ -> `x: #:, y: #:, z: #:, facing: ":", ^: ok`    
 --:+ _If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation._  
@@ -86,7 +86,7 @@
 
 --:: step.south(count: #:?) -> _Iterator (default 1 step)_ -> `(): "done", remaining: #:, xyzf, direction &!recovery`  
 
---:: step.left(count: #:?) -> _Iterator (default 1 step)_ -> `(): "done", remaining: #:, xyzf, direction &!recovery`  
+--:: step.west(count: #:?) -> _Iterator (default 1 step)_ -> `(): "done", remaining: #:, xyzf, direction &!recovery`  
 
 --:: step.up(count: #:?) -> _Iterator (default 1 step)_ -> `(): "done", remaining: #:, xyzf, direction &!recovery`  
 
@@ -101,6 +101,6 @@
 --:: move.to(xyzf: xyzf, first: ":"?) -> _Current situation to x, z, y, and optionally face._ -> `"done", #:, xyzf &!recovery`     
 --:+ _Optional argument_ `first` _is "x", "y", or "z" to select first move in that direction to deal with blockages._  
 
---:: step.to(:xyzf:, situation:situation?) -> _Step to position from (current) sItuation._ -> `(): nil &!recovery`    
+--:: step.to(:xyzf:, theSituation:situation?) -> _Step to position from (current) sItuation._ -> `(): nil &!recovery`    
 --:+ _Iterate first in x direction to completion, then z, and finally y. Once complete, each iterator is exhausted._    
 --:+ _Finally turn to face if supplied. Returned iterator returns_ `nil` _when iterators for all directions are exhausted._  

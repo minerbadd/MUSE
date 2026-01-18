@@ -64,11 +64,10 @@ function field.fence() end
 ---@alias strides { [fieldOp]: number } # dictionary keyed by `opName` for the distance along the stride axis for a striding
 
 
--- Called by plan prototype file to generate plans for plot.
--- field.paths(bounds: xyz[]):  `paths, yDelta: #:, xzEdge: facing` <-
+-- field.plotSpan: _ `[_:, _:, first: #:?, last: #:??]`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias field.plotSpan [ any,  any,   number?,   number?] # {}` spans all plots; if only first, default plots after first
 
----@type fun( bounds: xyz[]):   paths,  yDelta: number,  xzEdge: facing 
-function field.paths() end
 
 -- Quarry out blocks from one place to the other.
 -- field.cut(places: [nearPlace: ":", farPlace: ":"]):  `":" &:` <-
@@ -113,10 +112,11 @@ function field.plan() end
 ---@alias fieldParameters.removeables  group | craft[] # Material replaced by fill
 
 
--- field.plotSpan: _ `[_:, _:, first: #:?, last: #:??]`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias field.plotSpan [ any,  any,   number?,   number?] # {}` spans all plots; if only first, default plots after first
+-- Called by plan prototype file to generate plans for plot.
+-- field.paths(bounds: xyz[]):  `paths, yDelta: #:, xzEdge: facing` <-
 
+---@type fun( bounds: xyz[]):   paths,  yDelta: number,  xzEdge: facing 
+function field.paths() end
 
 -- To `put``.
 -- _field.fillTill(thePlan: ":", parameters: [nearPlace: ":", farPlace: ":", filling: ":", target: ":"?]):  `":"` <-

@@ -14,7 +14,6 @@ local check = require("check").check --:# Set configuration globals for tests by
 
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
-local mocks = require("mock"); local mock = mocks.turtle ---@module "signs.mock"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
 
 local regression = ... --:# Bind <code>regression</code> parameter <code>true</code> from call by <code>check.regression</code> in <code>lib/check</code>; otherwise <code>nil</code>
@@ -43,29 +42,29 @@ test.part("category dirt", turtle.category, "dirt")
 test.part("category nomatch", turtle.category, "nomatch")
 test.part("category fill", turtle.category, "fill")
 
---:# turtle.fuel -- energy available in turtle slots
+--:# turtle.fuel -- total energy available in turtle slots
 test.part("turtle.fuel", turtle.fuel)
 
 --:# turtle.unblock(direction, limit) --waits, retrys for gravel; attacks
 test.part("turtle.unblock normal", turtle.unblock, "east", 5)
-mock.blocking(true) -- the mock turtle supports blocking for testing
+turtle.blocking(true) -- the enhanced turtle supports blocking for testing
 test.part("turtle.unblock fail", turtle.unblock, "down")
-mock.blocking(false)
+turtle.blocking(false)
 
 --:# digTo unblocks and fails
 move.to({10, 20, 30})
 move.to({10, 20, 35}) -- setup moving forward on z- coordinate
-mock.blocking(2) -- should unblock
+turtle.blocking(2) -- should unblock
 test.part("dig to unblocked ok", turtle.digTo, {10, 20, 40})
-mock.blocking(6)
+turtle.blocking(6)
 test.part("dig to unblocked fail", turtle.digTo, {10, 20, 40})
-mock.blocking(false)
+turtle.blocking(false)
 
 --:# digAround ok and fails
 test.part("digAround ok", turtle.digAround, "east", {"north", "west", "south"})
-mock.blocking(true)
+turtle.blocking(true)
 test.part("digAround fails", turtle.digAround, "north", {"up", "down", "east"})
-mock.blocking(true)
+turtle.blocking(true)
 
 --:# Close test object, report completion if we got here without errors
 test.close("Test "..testName.." complete") 

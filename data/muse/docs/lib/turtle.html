@@ -10,9 +10,9 @@
 --:| turtle: <i>Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down.</i> -> turtle    
 --:+ <i>Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking.</i>    
 
---:> direction: <i>Four compass points (cardinals) and verticals</i> -> <code>"north"|"east"|"south"|"west"|"up"|"down"</code>  
-
 --:# <b>Turtle operations north, east, south, west, up, down</b>  
+
+--:> direction: <i>Four compass points (cardinals) and verticals</i> -> <code>"north"|"east"|"south"|"west"|"up"|"down"</code>  
 
 --:# <b>Operation dictionaries keyed by direction, values are generally functions of no arguments calling which return a boolean.</b>  
 
@@ -41,13 +41,9 @@
 
 --:# <b>Function References</b>  
 
---:: turtle.find(targets: ":"[]) -> <i>Selects found slot.</i> -> <code>detail?</code>  
+--:: turtle.find -- <code>core.findItems</code> gets mocked turtle if not in-game(targets: ":"[]) -> <i>Selects found slot.</i> -> <code>detail?</code>, #:?, ^:?  
 
---:: turtle.select(slot: #:) -> <i>Attempts to select the specified slot.</i> -> <code>selected: ^:</code>  
-
---:: turtle.item(slot: #:?) ->  <i>Detail of specified or currently selected slot.</i> -> <code>nil | detail</code>  
-
---:# <b>Item name and turtle status utilities</b>  
+--:# <b>Item name and turtle status utilities</b> (don't exist in-game so not mocked)  
 
 --:: turtle.inventory() -> <i>Returns currrent turtle inventory as turtle detail table</i>. -> <code>detail[]</code>  
 
@@ -85,6 +81,10 @@
 
 --:: turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?) -> <i>Unblocking dig.</i> -> <code>"done" &: &!</code>    
 --:+ <i>Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.</i>  
+
+--:# For testing; <code>blocked</code> is a boolean or a number counted down to end blocking (of course, not used in-game)  
+
+--:# turtle.block(blocker: #:?) -> <i>Counts down if number, reports or sets</i> <code>blocked</code> <i>status for debug</i> -> blocked: <code>^:</code>  
 
     </pre>
   </body> 

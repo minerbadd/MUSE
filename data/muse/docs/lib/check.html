@@ -17,11 +17,13 @@
 
 --:# The poor man's object.... encapsulates but provides no inheritance facilities (didn't see the need to go there)  
 
---:: check.open(testName:":", text: ":") -> <i>Return <code>check</code> object(closure)</i> -> <code>{part:():, message:():, close:():}</code>   
+--:: check.open(testName:":", text: ":") -> <i>Return <code>check</code> object(closure)</i> -> <code>{part:():, message:():, call: ():, close:():}</code>   
 
 --:# Access functions for the <code>check</code> object, each check object is independent in itself  
 
 --:# part(partID: ":", note: ":", fun: ():, ...: any): -> <i>Collect ... results for part, save or compare (for regression)</i> -> <code>nil</code>  
+
+--:# call(note: ":", server: ":", command: ":", arguments: any[]): -> <i>Test remote calls without network</i> -> <code>nil</code>  
 
 --:# message(..: ":"): -> <i>Print ... if not regression</i> -> <code>nil</code>  
 

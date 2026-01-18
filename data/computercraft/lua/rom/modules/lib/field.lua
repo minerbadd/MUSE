@@ -48,8 +48,8 @@ function field.make(commands, faced) -- loads and runs `fields/` file which call
   local range = farm and map.get(farm, "fields")[selector] or selector -- if farm, field range name is one of the fields
   local borders, features = map.borders(range); -- features.fields specifies field file
   local fieldFile = _G.Muse.path.."fields/"..features.fields..".lua"
-  local field = loadfile(fieldFile) -- get the field function (TODO: cache?)
-  local _, report = core.pass(pcall(field, commands, borders, faced)) -- **run field file** (calling `field.plots`)
+  local fieldFn = assert(loadfile(fieldFile), "field.make: no function loaded from "..(fieldFile or 'unknown')) -- TODO: cache?)
+  local _, report = core.pass(pcall(fieldFn, commands, borders, faced)) -- **run field file** (calling `field.plots`)
   return report
 end;
 --[[

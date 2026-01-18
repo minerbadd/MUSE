@@ -43,9 +43,10 @@ turtle.slots = {
 }
 
 function turtle.select(i) selected = i; return turtle.slots[i]end
+--:# turtle.select(slot: #:) -> _Attempts to select the specified slot._ -> `selected: ^:`
 function turtle.getItemDetail(i) return turtle.slots[i or selected] end 
+--:# turtle.item(slot: #:?) ->  _Detail of specified or currently selected slot._ -> `nil | detail`
 
-function turtle.fuel = _G.Muse.fuel
 function turtle.refuel() _G.Muse.fuel = refuelLevel; return _G.Muse.fuel > 0 end
 function turtle.getFuelLevel() return _G.Muse.fuel end
 
@@ -53,14 +54,6 @@ function turtle.getFuelLevel() return _G.Muse.fuel end
 function turtle.inspect() return false, "nothing here" end
 function turtle.inspectUp() return  true, {name="minecraft:coal"} end
 function turtle.inspectDown() return true, {name="minecraft:dirt"}  end
-
-local blocked = false
---:# turtle.block(blocker: #:?) -> _Counts down if number, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`
-function turtle.blocking(blocker)
-  if blocker == nil and type(blocked) ~= "number" then return blocked end
-  if blocker == nil then blocked = math.abs(blocked); if blocked > 0 then blocked = blocked - 1 end return blocked > 0 end
-  blocked = blocker; return (type(blocked) == "number" and math.abs(blocked) > 0) or blocked
-end
 
 --:# _Turns just report success, other motions decrement the simulated fuel and report success unless blocked._
 --:+ _Only forward motion can be blocked in simulation._
@@ -71,7 +64,7 @@ function turtle.back() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.up() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.down() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.forward() 
-  if turtle.blocking() then return false end
+  if _G.Muse.blocked then return false end
   _G.Muse.fuel = _G.Muse.fuel - 1; return success 
 end 
 

@@ -42,11 +42,9 @@ function turtle.unblock() end
 ---@alias turtle.sucks fun( count: number?):   boolean,  string? # Move count [or all] from direction to inventory.
 
 
--- Detail of specified or currently selected slot.
--- turtle.item(slot: #:?):  `nil | detail` <-
+-- direction:  `"north"|"east"|"south"|"west"|"up"|"down"`
+---@alias direction  "north" | "east" | "south" | "west" | "up" | "down" # Four compass points (cardinals) and verticals
 
----@type fun( slot: number?):   nil  |  detail 
-function turtle.item() end
 
 -- Unblocking dig. Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.
 -- turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?):  `"done" &: &!` <-
@@ -58,12 +56,6 @@ function turtle.digAround() end
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.detects { [direction]:fun():  boolean } # Check block in direction is solid: not air, mob, liquid or floater.
 
-
--- Unblocking move. Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty". Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason. Normally return just what a successful move would: "done", 0 remaining, current position.
--- turtle.digTo(:xyzf:, limit: #:?):  `code: ":", remaining: #:, xyzf: ":" &: &!`  <-
-
----@type fun( xyzf: xyzf,  limit: number?):   code: string,  remaining: number,  xyzf: string 
-function turtle.digTo() end
 
 -- fencings:  "birch" | "acacia" | "bamboo" | "cherry" | "chrimson" | "dark oak" | "mangrove" | "oak"`
 ---@alias fencings  "birch"  |  "acacia"  |  "bamboo"  |  "cherry"  |  "chrimson"  |  "dark oak"  |  "mangrove"  |  "oak" # Wooden materials
@@ -84,30 +76,9 @@ function turtle.digTo() end
 ---@type fun( targets: string[],  detail: detail):   matched: boolean 
 function turtle.check() end
 
--- Total energy actually available in turtle slots plus turtle fuel level. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
--- turtle.fuel():  `fuelTotal: #:` <-
-
----@type fun():  fuelTotal: number 
-function turtle.fuel() end
-
 -- turtle.puts:  `[direction]: (text: ":"?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias turtle.puts fun( text: string?):   boolean,  string? # Attempt placing block of the selected slot in direction.
-
-
--- Attempts to select the specified slot.
--- turtle.select(slot: #:):  `selected: ^:` <-
-
----@type fun( slot: number):   selected: boolean 
-function turtle.select() end
-
--- turtle.inspects:  `[direction]: (): `^:, detail?`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.inspects { [direction]:fun():  boolean,  detail? } # If true, get detail block information in direction.
-
-
--- direction:  `"north"|"east"|"south"|"west"|"up"|"down"`
----@alias direction  "north" | "east" | "south" | "west" | "up" | "down" # Four compass points (cardinals) and verticals
 
 
 -- ores:  `ore[]`
@@ -115,10 +86,27 @@ function turtle.select() end
 
 
 -- Selects found slot.
--- turtle.find(targets: ":"[]):  `detail?` <-
+-- turtle.find(targets: ":"[]):  `detail?`, #:?, ^:? <-
 
----@type fun( targets: string[]):   detail? 
+---@type fun( targets: string[]):   detail?,  number?,  boolean? 
 function turtle.find() end
+
+-- turtle.inspects:  `[direction]: (): `^:, detail?`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias turtle.inspects { [direction]:fun():  boolean,  detail? } # If true, get detail block information in direction.
+
+
+-- Total energy actually available in turtle slots plus turtle fuel level. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
+-- turtle.fuel():  `fuelTotal: #:` <-
+
+---@type fun():  fuelTotal: number 
+function turtle.fuel() end
+
+-- Unblocking move. Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty". Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason. Normally return just what a successful move would: "done", 0 remaining, current position.
+-- turtle.digTo(:xyzf:, limit: #:?):  `code: ":", remaining: #:, xyzf: ":" &: &!`  <-
+
+---@type fun( xyzf: xyzf,  limit: number?):   code: string,  remaining: number,  xyzf: string 
+function turtle.digTo() end
 
 -- Returns currrent turtle inventory as turtle detail table_.
 -- turtle.inventory():  `detail[]` <-

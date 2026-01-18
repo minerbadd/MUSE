@@ -476,7 +476,8 @@ When you're ready to try running MUSE in the Minecraft/Computercraft environment
 
 - For Lua's `require` function, set the `LUA_PATH` environment variable to include:
   <pre>
-   %MUSE_PROJECTS%/CodeMark/?.lua;%MUSE_PROJECTS%/MUSE/data/computercraft/lua/rom/modules/lib/?.lua;;
+   %MUSE_PROJECTS%/CodeMark/?.lua;%MUSE_PROJECTS%/MUSE/data/computercraft/lua/rom/modules/lib/?.lua;%MUSE_PROJECTS%/MUSE/data/muse/?.lua;;
+
    </pre>
 
 - In the Minecraft launcher, choose the Forge 1.20.1 installation and ask to `play` it.

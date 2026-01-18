@@ -7,6 +7,7 @@
 <body>
 <script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
 
+---@diagnostic disable: duplicate-set-field
 <h2> Core: A Collection of Generally Useful Functions for MUSE</h2>
 <pre><code class="language-markdown">
 --:! {core:[":"]: ():} <- <b>Core Functions Library</b> -> muse/docs/lib/core.md
@@ -15,7 +16,8 @@
 <pre><code class="language-lua">
 ---@diagnostic disable-next-line: undefined-field
 local rednet, turtle = _G.rednet, _G.turtle or require("mock").turtle -- mock out game
-local core = {}; core.hints = {}; --- @module "signs.core"  
+local cores = require("signs.core"); cores.core = {}; local core = cores.core ---@module "signs.core"  
+core.hints = {};
 </code></pre>
 <a id="clone"></a>
 <h3>Deep Copy</h3>
@@ -106,6 +108,7 @@ local function inSerialize(input, partial, simple) -- adapted from PiL 12.1.1; <
 end
 
 --:: core.serialize(input: any) -> <i>Executable string to instantiate input.</i> -> <code>"return "..":" &!</code>
+---@diagnostic disable-next-line: return-type-mismatch
 function core.serialize(input) return "return " .. (input and inSerialize(input) or "{}") end
 
 local function makeString(item) return inSerialize(item, "", true) end -- third argument <code>true</code> for simple
@@ -156,7 +159,7 @@ The <code>core.where</code> implementation binds a dummy function, <code>functio
 <p>
 As it turns out, the in-game <code>gps.locate</code> returns <code>NaN</code>, Not A Number, rather than <code>nil</code> when it can't compute a position. The idiom <code>gx == gx</code> is used to detect NaN since the IEEE spec requires that <code>NaN</code> is not equal to anything including "itself".
 <pre><code class="language-lua">
-function core.where() --:: core.where() -> <i>GPS location if available.</i> -> <code>x: #:?, y: #:?, z: #:?</code>
+function core.where() --:: core.where() -> <i>GPS location if available.</i> -> <code>x: #:|false, y: #:|false, z: #:|false</code>
   ---@diagnostic disable-next-line: undefined-field
   local gps = _G.gps; local gpslocate = gps and gps.locate or function() end
   ---@diagnostic disable-next-line: redundant-parameter
@@ -182,7 +185,7 @@ local function reckon(message)                                    -- find bad re
   ---@diagnostic disable-next-line: undefined-field
   if not _G.turtle then return message end                        -- pointless if not for turtles (in-game)
   local tx, ty, tz = core.get(); local gx, gy, gz = core.where(); --overloaded by lib/motion
-  if not gx then return message end                               -- no GPS assume reckoned
+  if not gx or not gy or not gz then return message end                               -- no GPS assume reckoned
   local matched = core.round(tx) == core.round(gx) and core.round(ty) == core.round(gy) and
   core.round(tz) == core.round(gz)
   if matched then return message end
@@ -293,7 +296,7 @@ end
 function core.echo(...) return ... end --:- echo arguments ... -> <i>For testing: just returns its arguments.</i>
 
 function core.optionals(string, number, ...)
-  --:: core.optionals(string: ":"?, number: #:?, ...: any) -> <i>Optional number and/or string.</i> -> <code>string: ":"?, number: #:?, ...: any</code>
+  --:: core.optionals(string: ":"?, number: #:?, ...: any) -> <i>Optional number and/or string.</i> -> <code>string: ":"|false, number: #:|false, ...: any</code>
   local stringIsNumber = tonumber(string); string = not stringIsNumber and string;
   number = stringIsNumber or number; return string, number, ...
 end
@@ -424,7 +427,7 @@ A completely straight forward implementation (for a change).
 <pre><code class="language-lua">
 --:# <b>Lowest level turtle and mock turtle support used by several libraries including lib/motion</b>
 function core.findItems(targets) -- nil if no slot with target otherwise slot detail, does selection
-  --:: core.findItems(targets: ":"[]) -> <i>Selects found slot.</i> -> <code>detail?</code>
+  --:: core.findItems(targets: ":"[]) -> <i>Selects found slot.</i> -> <code>detail?</code>, #:?, ^:?
   --:> detail: <i>Defined by Computercraft</i> -> <code>{name: detail.name, count: detail.count, damage: detail.damage}</code>
   --:> detail.name: <i>Prepended by the mod name <code>"minecraft:"</code>.</i> -> <code>":"</code>
   --:> detail.count: <i>Available in inventory</i> -> <code>#:</code>

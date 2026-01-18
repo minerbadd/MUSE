@@ -8,7 +8,7 @@ local check = require("check").check --:# Set configuration globals for tests by
 
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
-local turtles = require("mock"); local turtle = turtles.turtle ---@module "signs.mock"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle" -- just for blocking
 local places = require("places"); local steps, moves, place = places.steps, places.moves, places.place ---@module "signs.places"
 
 local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
@@ -19,7 +19,7 @@ local text = "Beginning "..testName..".lua test at "..move.ats()
 
 local test = check.open(testName, text, regression) --:# Create the test object for this test
 
-turtle.blocking(false) -- `lib/motion` loaded `lib/mock`
+turtle.blocking(false) 
 
 --:# Name and rename some places and verify their coordinates
 test.part("Set test site", place.site, "TP")

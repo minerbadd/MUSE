@@ -18,7 +18,7 @@ The implementations of these libraries are fairly straight forward. There are fe
 All that said, here's the introduction and utilities for the module.
 ```Lua
 --]]
-local place, moves, steps  = {}, {}, {} ---@module "signs.places"
+local place, moves, steps = {}, {}, {} ---@module "signs.places"
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
@@ -55,7 +55,7 @@ After `place.match` is a function, `place.xyzf`, to report the coordinates and o
 ```Lua
 --]]
 function place.match(name) 
-  --:: place.match(name: ":") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `order: #:?, place?`
+  --:: place.match(name: ":") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `order: #:?, place: place?`
   local qualified = place.qualify(name); for order, placed in ipairs(placePlaces) do 
     if qualified == table.unpack(placed) then return order, placed end 
   end
@@ -212,7 +212,7 @@ function place.trail(headName, tailName, label) -- places for trail end and head
 end
 
 function place.track(name) -- return track elements of trail if trail exists
-  --:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, situations?`
+  --:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, :situations:?"
   assert(name, "places: Need a name for trail")
   local order, matched = place.match(name); if not order then return nil end
   return table.unpack(matched) -- name, label, situations
@@ -260,7 +260,7 @@ local function checkTarget(target) -- separated out from `moves.to` for clarity
 end
 
 function moves.to(target, first) local xyzfTarget = checkTarget(target); return move.to(xyzfTarget, first) end
---:: moves.to(target: ":", first: ":") -> _Move to target, first along direction._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`
+--:: moves.to(target: ":", first: ":"?) -> _Move to target, first along direction._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`
 
 function steps.to(target) assert(target, "places: Need target to step there")
   --:: steps.to(target: ":") -> _Step (iterator) to target place._ -> `(): code: ":", remaining: #:, xyzf: ":" &!recovery`

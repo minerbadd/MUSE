@@ -26,23 +26,17 @@ function place.trail() end
 ---@type fun():  nil 
 function place.reset() end
 
---  If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position). If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.
--- place.near(span: #:?, reference?: ":"|position):  (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"` <-
-
----@type fun( span: number?,  reference?: string | position):  fun():  name: string,  label: string,  xyz,  distance: number,  situations,  serial: string 
-function place.near() end
-
 -- Looks up index in name [defaults to current situation].
 -- place.xyzf(name: ":"?, index: #:?):  `xyzf?, order: #:?` <-
 
 ---@type fun( name: string?,  index: number?):   xyzf?,  order: number? 
 function place.xyzf() end
 
--- Manhattan: abs(delta x) + abs(delta y) + abs(delta z).
--- place.distance(a: xyzf, b: xyzf):  `distance: #:` <-
+--  If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position). If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.
+-- place.near(span: #:?, reference?: ":"|position):  (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"` <-
 
----@type fun( a: xyzf,  b: xyzf):   distance: number 
-function place.distance() end
+---@type fun( span: number?,  reference?: string | position):  fun():  name: string,  label: string,  xyz,  distance: number,  situations,  serial: string 
+function place.near() end
 
 -- Returns number of places.
 -- place.count():  `#:` <-
@@ -50,35 +44,17 @@ function place.distance() end
 ---@type fun():  number 
 function place.count() end
 
+-- Sets situation position, can start tracking for trail.
+-- place.fix(:xyzf:, track: ^:?):  `xyzf`   <-
+
+---@type fun( xyzf: xyzf,  track: boolean?):   xyzf   
+function place.fix() end
+
 -- Returns trail
--- place.track(name: ":"):  `name: ":"?, label: ":"?, situations?` <-
+-- place.track(name: ":"):  `name: ":"?, label: ":"?, :situations:?" <-
 
----@type fun( name: string):   name: string?,  label: string?,  situations? 
+---@type fun( name: string):   name: string?,  label: string?,  situations: situations?" 
 function place.track() end
-
--- Sorted
--- place.nearby(:xyzf:?, :cardinals:):  `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]` <-
-
----@type fun( xyzf: xyzf?,  cardinals: cardinals):  [  number,   string,   string,   string,   xyzf]
-function place.nearby() end
-
--- Lookup place qualified by site, return_ `nil` _if not found.
--- place.match(name: ":"):  `order: #:?, place?` <-
-
----@type fun( name: string):   order: number?,  place? 
-function place.match() end
-
--- Add situation to situations of an existing place.
--- place.add(name: ":", :situation:):  `serialized: ":", prder: #:` <-
-
----@type fun( name: string,  situation: situation):   serialized: string,  prder: number 
-function place.add() end
-
--- Return already sited name, otherwise prepend site to name
--- place.qualify(name: ":"):  `sitedName: ":"` <-
-
----@type fun( name: string):   sitedName: string 
-function place.qualify() end
 
 -- Set or return local `site` (isolates global).
 -- place.site(value: ":"?):  `":"` <-
@@ -86,11 +62,35 @@ function place.qualify() end
 ---@type fun( value: string?):   string 
 function place.site() end
 
--- Sets situation position, can start tracking for trail.
--- place.fix(:xyzf:, track: ^:?):  `xyzf`   <-
+-- Lookup place qualified by site, return_ `nil` _if not found.
+-- place.match(name: ":"):  `order: #:?, place: place?` <-
 
----@type fun( xyzf: xyzf,  track: boolean?):   xyzf   
-function place.fix() end
+---@type fun( name: string):   order: number?,  place: place? 
+function place.match() end
+
+-- Return already sited name, otherwise prepend site to name
+-- place.qualify(name: ":"):  `sitedName: ":"` <-
+
+---@type fun( name: string):   sitedName: string 
+function place.qualify() end
+
+-- Add situation to situations of an existing place.
+-- place.add(name: ":", :situation:):  `serialized: ":", prder: #:` <-
+
+---@type fun( name: string,  situation: situation):   serialized: string,  prder: number 
+function place.add() end
+
+-- Sorted
+-- place.nearby(:xyzf:?, :cardinals:):  `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]` <-
+
+---@type fun( xyzf: xyzf?,  cardinals: cardinals):  [  number,   string,   string,   string,   xyzf]
+function place.nearby() end
+
+-- Manhattan: abs(delta x) + abs(delta y) + abs(delta z).
+-- place.distance(a: xyzf, b: xyzf):  `distance: #:` <-
+
+---@type fun( a: xyzf,  b: xyzf):   distance: number 
+function place.distance() end
 
 -- Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return order of situation in global places and the serialized situation including its features.
 -- place.name(name: ":", label: ":", supplied: situation?, :features:??):  `":", #:` <-
@@ -105,9 +105,9 @@ function place.name() end
 function place.erase() end
 
 -- Move to target, first along direction.
--- moves.to(target: ":", first: ":"):  `code: ":", remaining: #:, xyzf: ":" &!recovery` <-
+-- moves.to(target: ":", first: ":"?):  `code: ":", remaining: #:, xyzf: ":" &!recovery` <-
 
----@type fun( target: string,  first: string):   code: string,  remaining: number,  xyzf: string 
+---@type fun( target: string,  first: string?):   code: string,  remaining: number,  xyzf: string 
 function moves.to() end
 
 -- Move from first to second situation of place. If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head.

@@ -29,7 +29,7 @@
 
 --:: core.pass(ok: ^:, ...: any) -> _Pass input but report string if not ok._ -> ok: `true|false, result: ...|":", any?`  
 
---:: core.where() -> _GPS location if available._ -> `x: #:?, y: #:?, z: #:?`  
+--:: core.where() -> _GPS location if available._ -> `x: #:|false, y: #:|false, z: #:|false`  
 
 --:# **Logging and Quit Control Globals**  
 
@@ -57,7 +57,7 @@
 
 --:- echo arguments ... -> _For testing: just returns its arguments._  
 
---:: core.optionals(string: ":"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: ":"?, number: #:?, ...: any`  
+--:: core.optionals(string: ":"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: ":"|false, number: #:|false, ...: any`  
 
 --:# **Math utilities**  
 
@@ -97,7 +97,7 @@
 
 --:# **Lowest level turtle and mock turtle support used by several libraries including lib/motion**  
 
---:: core.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`  
+--:: core.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`, #:?, ^:?  
 
 --:> detail: _Defined by Computercraft_ -> `{name: detail.name, count: detail.count, damage: detail.damage}`  
 

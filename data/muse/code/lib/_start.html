@@ -37,6 +37,7 @@ _G.Muse.tracking = {limit = 500, enabled = false}
 _G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
 _G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number in libraries)
 _G.Muse.attempts = 5 -- <code>lib/turtle</code> attempts to remove a blockage
+_G.Muse.blocked = false
 _G.Muse.rates = {}; _G.Muse.rates.headings = 5; _G.Muse.rates.tail = 0.5
 _G.Muse.permutations = {"y", "z", "x"} -- controlling axes order in permutations
 -- {"y", "z", "x"} -> z x y, x z y, x y z, y x z, z y x, y z x

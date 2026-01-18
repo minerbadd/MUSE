@@ -25,7 +25,7 @@ The implementations of these libraries are fairly straight forward. There are fe
 <p>
 All that said, here's the introduction and utilities for the module.
 <pre><code class="language-lua">
-local place, moves, steps  = {}, {}, {} ---@module "signs.places"
+local place, moves, steps = {}, {}, {} ---@module "signs.places"
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
@@ -60,7 +60,7 @@ The following is an unassuming little function, <code>place.match</code>, right 
 After <code>place.match</code> is a function, <code>place.xyzf</code>, to report the coordinates and orientations associated with a <code>place</code>. There may be several as needed for a <code>trail</code> or a <code>range</code> named by the <code>place</code>.
 <pre><code class="language-lua">
 function place.match(name) 
-  --:: place.match(name: ":") -> <i>Lookup place qualified by site, return</i> <code>nil</code> <i>if not found.</i> -> <code>order: #:?, place?</code>
+  --:: place.match(name: ":") -> <i>Lookup place qualified by site, return</i> <code>nil</code> <i>if not found.</i> -> <code>order: #:?, place: place?</code>
   local qualified = place.qualify(name); for order, placed in ipairs(placePlaces) do 
     if qualified == table.unpack(placed) then return order, placed end 
   end
@@ -205,7 +205,7 @@ function place.trail(headName, tailName, label) -- places for trail end and head
 end
 
 function place.track(name) -- return track elements of trail if trail exists
-  --:: place.track(name: ":") -> <i>Returns trail</i> -> <code>name: ":"?, label: ":"?, situations?</code>
+  --:: place.track(name: ":") -> <i>Returns trail</i> -> `name: ":"?, label: ":"?, :situations:?"
   assert(name, "places: Need a name for trail")
   local order, matched = place.match(name); if not order then return nil end
   return table.unpack(matched) -- name, label, situations
@@ -251,7 +251,7 @@ local function checkTarget(target) -- separated out from <code>moves.to</code> f
 end
 
 function moves.to(target, first) local xyzfTarget = checkTarget(target); return move.to(xyzfTarget, first) end
---:: moves.to(target: ":", first: ":") -> <i>Move to target, first along direction.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &!recovery</code>
+--:: moves.to(target: ":", first: ":"?) -> <i>Move to target, first along direction.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &!recovery</code>
 
 function steps.to(target) assert(target, "places: Need target to step there")
   --:: steps.to(target: ":") -> <i>Step (iterator) to target place.</i> -> <code>(): code: ":", remaining: #:, xyzf: ":" &!recovery</code>

@@ -44,7 +44,7 @@ end
 
 --:# The poor man's object.... encapsulates but provides no inheritance facilities (didn't see the need to go there)
 function check.open(testName, text, regression) -- create check object with context variables
-  --:: check.open(testName:":", text: ":") -> _Return `check` object(closure)_ -> `{part:():, message:():, close:():}` 
+  --:: check.open(testName:":", text: ":") -> _Return `check` object(closure)_ -> `{part:():, message:():, call: ():, close:():}` 
   print(text); local priors = not regression and {} or assert(expected(testName), "No prior results for "..testName)
   local partID = 0; local this = {priors = priors, testName = testName, regression = regression, partID = partID} 
 
@@ -61,6 +61,7 @@ function check.open(testName, text, regression) -- create check object with cont
   end
 
   local function call(note, server, command, arguments)
+    --:# call(note: ":", server: ":", command: ":", arguments: any[]): -> _Test remote calls without network_ -> `nil`
     -- testCall = prepareCall, -- (server: ":", command: ":", {arguments: ":"[]} -> serverID: #:, request: ":"
     local _, returns = part(note.." >", remote.testCall, server, command, arguments)
     local _, serverID, request = table.unpack(returns)

@@ -112,6 +112,7 @@ local function getAim(situation) -- `situation` is target, get direction to aim 
 end
 
 local function doAlong(trail, puttings, op, clear, fill, targets)
+---@diagnostic disable-next-line: missing-parameter
   moves.to(trail); local name, label, situations = place.track(trail); 
   for _, situation in ipairs(situations) do 
     local towards, distance = getAim(situation)

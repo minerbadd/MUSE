@@ -12,12 +12,9 @@ local turtle = {}; turtle.hints = {} ---@module "signs.turtle" -- for functions 
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
+---@diagnostic disable-next-line: undefined-field
 local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module "signs.mock"
--- if no `_G.turtle` then `mock` is the out-of-game mocked turtle, otherwise `mock` is the in game turtle.
-
-local slots = _G.turtle and _G.Muse.slots or #mock.slots -- test environment not limited to in-game slots
-
---:> direction: _Four compass points (cardinals) and verticals_ -> `"north"|"east"|"south"|"west"|"up"|"down"`
+-- if no `_G.turtle` then `mock` is the out-of-game mocked turtle, otherwise `mock` is the in game turtle _(not so mocked)_
 --[[
 ```
 <a id="operations"></a>
@@ -25,6 +22,7 @@ Each appropriate `turtle` operation is redefined to support the new abstraction 
 ```Lua
 --]]
 --:# **Turtle operations north, east, south, west, up, down**
+--:> direction: _Four compass points (cardinals) and verticals_ -> `"north"|"east"|"south"|"west"|"up"|"down"`
 
 local cardinals = {"north", "east", "south", "west"}
 
@@ -42,7 +40,7 @@ end
 
 --:# **Operation dictionaries keyed by direction, values are generally functions of no arguments calling which return a boolean.**
 
-local operations = {
+local operations = { -- when in-game `mock` is really `turtle`
   attacks = {up = mock.attackUp, down = mock.attackDown, front = mock.attack}, 
   --:> turtle.attacks: _Attack in direction and return attack success._ -> `[direction]: (): ^:, ":"?`
   compares = {up = mock.compareUp, down = mock.compareDown, front = mock.compare},
@@ -75,20 +73,21 @@ Passing interfaces through as if they were part of the `turtle` library complete
 ```Lua
 --]]
 --:# **Function References**
-turtle.find = core.findItems --:= core.findItems:: turtle.find
-turtle.select = mock.select --:: turtle.select(slot: #:) -> _Attempts to select the specified slot._ -> `selected: ^:`
-turtle.item = mock.getItemDetail --:: turtle.item(slot: #:?) ->  _Detail of specified or currently selected slot._ -> `nil | detail`
+turtle.find = core.findItems --:= core.findItems:: turtle.find -- `core.findItems` gets mocked turtle if not in-game
 --[[
 ```
 <a id="inventory"></a> 
 More abstractions: categories of items and the detail of which slot of turtle inventory an item is in.
 ```Lua
 --]]
---:# **Item name and turtle status utilities**
+--:# **Item name and turtle status utilities** (don't exist in-game so not mocked)
 
-function turtle.inventory() 
+---@diagnostic disable-next-line: undefined-field
+local slots = _G.turtle and _G.Muse.slots or #mock.slots -- test environment not limited to in-game slots
+
+function turtle.inventory()  
   --:: turtle.inventory() -> _Returns currrent turtle inventory as turtle detail table_. -> `detail[]`
-  local inventoryTable = {}; for i = 1, slots do local detail = mock.getItemDetail(i)
+  local inventoryTable = {}; for i = 1, slots do local detail = turtle.getItemDetail(i)
     if detail then inventoryTable[#inventoryTable + 1] = {detail.name, detail.count, detail.damage} end
   end; return inventoryTable 
 end;
@@ -143,9 +142,9 @@ local fuelEnergy =
 
 function turtle.fuel() --:- fueling -> _Returns energy available in turtle slots._
   --:: turtle.fuel() -> _Total energy actually available in turtle slots plus turtle fuel level._ -> `fuelTotal: #:`
-  local fuelTotal =  0; for i = 1, slots do local detail = mock.getItemDetail(i)
+  local fuelTotal =  0; for i = 1, slots do local detail = mock.getItemDetail(i) -- from turtle if in game
     if detail then local energy = fuelEnergy[detail.name] or 0; fuelTotal = fuelTotal + (energy * detail.count) end
-  end; return fuelTotal + mock.getFuelLevel()
+  end; return fuelTotal + turtle.getFuelLevel()
 end; 
 --[[
 ```
@@ -172,7 +171,7 @@ local function unblock(direction, limit, attempts) -- returns "done" or raises a
   local done, report = attemptDig(direction); if done then return done, report end -- **dig succeeded**
   core.status(2, "turtle", "Unblocking", direction, attempts) -- report blockage
   core.sleep(0.5); -- wait for gravel or sand to finish falling... and then try again
-  return turtle.unblock(direction, limit, attempts + 1) -- try again, dig failure or the undug?
+  return turtle.unblock(direction, limit) -- try again, dig failure or the undug?
 end
 
 function turtle.unblock(direction, limit)
@@ -208,6 +207,19 @@ function turtle.digAround(orientation, diggings, name)
       move[orientation](0); error("turtle.digAround: "..name or "".." "..digging.." failed, "..fail..", refacing "..orientation)
     end
   end; return "done"
+end
+
+--:# For testing; `blocked` is a boolean or a number counted down to end blocking (of course, not used in-game)
+local blocked = false
+
+local function setBlocked() _G.Muse.blocked = type(blocked) == "number" and blocked > 0 or blocked; return _G.Muse.blocked end 
+local function ab(value) return type(value) == "number" and math.abs(value) or value end
+local function less(value) return type(value) == "number" and (value > 0 and value - 1 or value) or value end
+
+--:# turtle.block(blocker: #:?) -> _Counts down if number, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`
+function turtle.blocking(blocker) -- doesn't exist in game so not mockable
+  if blocker == nil then blocked = less(blocked); return setBlocked() end
+  blocked = ab(blocker); return setBlocked()
 end
 
 return {turtle = turtle}

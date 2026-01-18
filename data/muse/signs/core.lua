@@ -21,9 +21,9 @@ function core.serialize() end
 function core.xyzf() end
 
 -- Selects found slot.
--- core.findItems(targets: ":"[]):  `detail?` <-
+-- core.findItems(targets: ":"[]):  `detail?`, #:?, ^:? <-
 
----@type fun( targets: string[]):   detail? 
+---@type fun( targets: string[]):   detail?,  number?,  boolean? 
 function core.findItems() end
 
 -- Iterator over table beginning at index.
@@ -42,9 +42,9 @@ function core.inext() end
 
 
 -- Optional number and/or string.
--- core.optionals(string: ":"?, number: #:?, ...: any):  `string: ":"?, number: #:?, ...: any` <-
+-- core.optionals(string: ":"?, number: #:?, ...: any):  `string: ":"|false, number: #:|false, ...: any` <-
 
----@type fun( string: string?,  number: number?,  ...: any):   string: string?,  number: number?,  ...: any 
+---@type fun( string: string?,  number: number?,  ...: any):   string: string | false,  number: number | false,  ...: any 
 function core.optionals() end
 
 -- Appends (status) message to log file on player.
@@ -186,9 +186,9 @@ function core.string() end
 function core.pass() end
 
 -- GPS location if available.
--- core.where():  `x: #:?, y: #:?, z: #:?` <-
+-- core.where():  `x: #:|false, y: #:|false, z: #:|false` <-
 
----@type fun():  x: number?,  y: number?,  z: number? 
+---@type fun():  x: number | false,  y: number | false,  z: number | false 
 function core.where() end
 
 -- Create `result` _by applying_ `op` _function to elements of_ `table

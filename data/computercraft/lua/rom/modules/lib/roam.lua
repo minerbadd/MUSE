@@ -81,8 +81,8 @@ The `to` function is used in order to move to a `position` (with `move.to`) or a
 local function to(arguments) 
   --:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._ 
   local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
-  local to = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
-  local ttx, tty, ttz = table.unpack(to); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- **do it!**
+  local toPlace = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
+  local ttx, tty, ttz = table.unpack(toPlace); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- **do it!**
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
 --[[
 ```
@@ -136,13 +136,13 @@ end
 local function go(line) -- returns the result from last chain command attempted
   --:# Movements are `r[ight], l[eft], f[orward], b[ack], u[p], d[own], n[orth], e[ast], s[outh], w[est]`.
   --:- go _(first letter of) directions followed by optional counts, e.g. `r 10 u east 3 u 4 d n`._ -> _Chained movement._
-  local commandOK, code, remaining; local commands = chain(2, line, {}); -- line[1] is  "go"
-  for _, command in ipairs(commands) do commandOK, code, remaining  = core.pass(pcall(doChain, command))
+  local commandOK, code; local commands = chain(2, line, {}); -- line[1] is  "go"
+  for _, command in ipairs(commands) do commandOK, code  = core.pass(pcall(doChain, command))
     if not commandOK then 
       error("roam.go: Failed "..core.string(command).." in "..core.string(line).." because "..code.." at "..move.ats()) 
     end
   end; return "roamed to "..move.ats()
-end; roam.hints["go"] = {["?chain"] = {}}
+end; roam.hints["go"] = {["?chain n e s w u p r l f b"] = {}}
 --[[
 ```
 <a id="op"></a> 

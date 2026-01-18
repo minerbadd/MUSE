@@ -9,7 +9,7 @@ local check = require("check").check --:# Set configuration globals for tests by
 local cores = require("core"); local core = cores.core ---@module "signs.core" 
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local places = require("places"); local place, moves = places.place, places.moves ---@module "signs.place"
-local turtles = require("mock"); local turtle = turtles.turtle ---@module "signs.mock"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle" -- just for blocking
 local roams = require("roam"); local roam = roams.roam ---@module "signs.roam"
 
 local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`

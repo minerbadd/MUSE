@@ -17,8 +17,8 @@ local  mine, _mine = {}, {}
 ---@alias shafts.back  levels # Plan for returning to minehead, placing fixtures and safety shelves for player
 
 
--- downs:  `{downs.even: plan, downs.odd: plan, downs.last: plan }`
----@alias downs { downs.even: plan,  downs.odd: plan,  downs.last: plan } # Mark, dig, ladder, and fill one level (for landing platforms)
+-- shafts:  `{shafts.name: ":", shafts.down: downs, shafts.back: levels, shafts.lower: levels, shafts.higher: levels}`
+---@alias shafts { shafts.name: string,  shafts.down: downs,  shafts.back: levels,  shafts.lower: levels,  shafts.higher: levels} # Dig
 
 
 -- shafts.higher:  `levels`
@@ -55,25 +55,9 @@ local  mine, _mine = {}, {}
 ---@alias shafts.lower  levels # Plan for navigating from one (even or odd) level to the next lower
 
 
--- bores:  `{bores.name: ":", bores.post: mine.post, bores.even: plan, bores.odd: plan, bores.fix: plan }`
----@alias bores { bores.name: string,  bores.post: mine.post,  bores.even: plan,  bores.odd: plan,  bores.fix: plan } # Horizontals
-
-
--- Make place name, report result. Called by `worker.execute` to make marker name and use it to add map point for navigation in mine. Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore. Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`.
--- mine.mark(:plan:, :marking:):  `markerName: ":", label: ":", report: ":"` <-
-
----@type fun( plan: plan,  marking: marking):   markerName: string,  label: string,  report: string 
-function mine.mark() end
-
--- Dig. Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans.
--- mine.op(arguments: [op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]):  `^:, ":", #: &:` <-
-
----@type fun( arguments: [  string,   string,   string | number,   string]):   boolean,  string,  number 
-function mine.op() end
-
--- mine.post:  (markerName: ":", :bores:):  `marking[]`
+-- levels.even:  `plan`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias mine.post fun( markerName: string,  bores: bores):    marking[] # Navigate shaft and bores to go to marker.
+---@alias levels.even  plan # Plan for navigating from one even level to the next
 
 
 -- shafts.down:  `downs`
@@ -81,18 +65,34 @@ function mine.op() end
 ---@alias shafts.down  downs # Plan for digging shaft one level through even and odd levels
 
 
+-- mine.post:  (markerName: ":", :bores:):  `marking[]`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias mine.post fun( markerName: string,  bores: bores):    marking[] # Navigate shaft and bores to go to marker.
+
+
+-- Dig. Dig shaft; go to post at level; bore, mark, and torch; get ores. Markers hold saved plans.
+-- mine.op(arguments: [op: ":", placeName: ":", borePlansFileOrLevels: ":"|#:, shaftPlansFile: ":"]):  `^:, ":", #: &:` <-
+
+---@type fun( arguments: [  string,   string,   string | number,   string]):   boolean,  string,  number 
+function mine.op() end
+
+-- Make place name, report result. Called by `worker.execute` to make marker name and use it to add map point for navigation in mine. Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore. Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`.
+-- mine.mark(:plan:, :marking:):  `markerName: ":", label: ":", report: ":"` <-
+
+---@type fun( plan: plan,  marking: marking):   markerName: string,  label: string,  report: string 
+function mine.mark() end
+
 -- shafts.name:  `":"`
 ---@diagnostic disable-next-line: duplicate-doc-alias
 ---@alias shafts.name  string # Included in error and status reports
 
 
--- shafts:  `{shafts.name: ":", shafts.down: downs, shafts.back: levels, shafts.lower: levels, shafts.higher: levels}`
----@alias shafts { shafts.name: string,  shafts.down: downs,  shafts.back: levels,  shafts.lower: levels,  shafts.higher: levels} # Dig
+-- downs:  `{downs.even: plan, downs.odd: plan, downs.last: plan }`
+---@alias downs { downs.even: plan,  downs.odd: plan,  downs.last: plan } # Mark, dig, ladder, and fill one level (for landing platforms)
 
 
--- levels.even:  `plan`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias levels.even  plan # Plan for navigating from one even level to the next
+-- bores:  `{bores.name: ":", bores.post: mine.post, bores.even: plan, bores.odd: plan, bores.fix: plan }`
+---@alias bores { bores.name: string,  bores.post: mine.post,  bores.even: plan,  bores.odd: plan,  bores.fix: plan } # Horizontals
 
 
 -- bores.even:  `plan`
@@ -123,11 +123,11 @@ function _mine.back() end
 ---@type fun( mineheadName: string,  levels: number,  shaftPlans: shafts):   string,  string,  number 
 function _mine.shaftOp() end
 
--- Make, fill in, execute at level.
--- _mine.atWork(:plan:, head: ":", level: #:, key: ":", value: any):  `":", ":" &: &!` <-
+-- Navigate to post
+-- _mine.toPost(markerName: ":", borePlans: bores, shaftPlans: shafts):  `"done", ":", #: &!` <-
 
----@type fun( plan: plan,  head: string,  level: number,  key: string,  value: any):   string,  string 
-function _mine.atWork() end
+---@type fun( markerName: string,  borePlans: bores,  shaftPlans: shafts):   "done",  string,  number 
+function _mine.toPost() end
 
 -- Excavate ores Use shaft plans and instantiated bore plans to go to marker and execute mining operations
 -- _mine.ores(markerName: ":", thisLevel: #:, borePlans: bores):  "done", `":", #: &: &!` <-
@@ -141,9 +141,9 @@ function _mine.ores() end
 ---@type fun( mineheadName: string,  targetLevel: number,  shaftPlansDown: downs,  shaftPlansName: string):   "done" 
 function _mine.down() end
 
--- Navigate to post
--- _mine.toPost(markerName: ":", borePlans: bores, shaftPlans: shafts):  `"done", ":", #: &!` <-
+-- Make, fill in, execute at level.
+-- _mine.atWork(:plan:, head: ":", level: #:, key: ":", value: any):  `":", ":" &: &!` <-
 
----@type fun( markerName: string,  borePlans: bores,  shaftPlans: shafts):   "done",  string,  number 
-function _mine.toPost() end
+---@type fun( plan: plan,  head: string,  level: number,  key: string,  value: any):   string,  string 
+function _mine.atWork() end
 return { mine =  mine, _mine = _mine}
