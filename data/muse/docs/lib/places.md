@@ -30,14 +30,14 @@
 --:+ _Include current situation or optionally supplied situation in places. Optionally update features with key = value._    
 --:+ _Return order of situation in global places and the serialized situation including its features._  
 
---:: place.add(name: ":", :situation:) -> _Add situation to situations of an existing place._ -> `serialized: ":", prder: #:`  
+--:: place.add(name: ":", :situation:) -> _Add situation to situations of an existing place._ -> `serialized: ":"?, order: #:?`  
 
---::place.erase(name: ":") -> _Removes named place from array of places._ -> `#:, order: #:`    
+--::place.erase(name: ":") -> _Removes named place from array of places._ -> `#:, order: #:?`    
 --:+ _Return new length of places table and the (previous) order of the removed place._  
 
 --:# **Answering "where?"**  
 
---:: place.near(span: #:?, reference?: ":"|position) -> __ -> (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"`    
+--:: place.near(span: #:?, reference?:":"|[x:#:,y:#:,z:#:]) ->  -> (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"`    
 --:+ _If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position)._    
 --:+ _If only the span is specified, return places within a span of blocks of the current situation or player position._    
 --:+ _If neither is specified return each of the named places. In any case, iterator returns include serialized places._  
@@ -56,7 +56,7 @@
 --:: place.trail(headName: ":", tailName: ":", label: ":") -> _Makes two places._ -> `headSerial: ":", tailSerial: ":", count: #:`    
 --:+ _Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.  
 
---:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, :situations:?"  
+--:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, :situations:?`  
 
 --:# **Moving and stepping for known places: to points or along trails**  
 

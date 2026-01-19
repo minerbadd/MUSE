@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field
 --[[
 ## Serialization, Feature Lists, and Using Iterators: `lib/places` to Name Positions
 ```md
@@ -15,10 +16,11 @@ As we've indicated, these libraries depend on `lib/motion`. Keeping its <a href=
 
 The implementations of these libraries are fairly straight forward. There are fewer ways to go wrong and fewer ways to specify what's to be done. So thankfully, there's not much new beyond what's been discussed for <a href="motion.html" target="_blank"> `lib/motion` </a>. There won't be much to discuss about the code. One thing to note though is that the `place` type (in serialized form) will be sent around the network and persist on disk storage. Because of that there's value in keeping it both simple and flexible. If all of this were in the real world, changing it if it weren't simple and flexible would be difficult to manage. There'd be all those (now incompatible) `place` data structures hanging about on disks spread all over the network. This motivates the incorporation of `features`, which we'll come to in a bit.
 
-All that said, here's the introduction and utilities for the module.
+All that said, here's the introduction and utilities for the module. As in `lib/motion`, we provide for type checking in the module by LLS by loading `signs.places` and referencing what's loaded.
 ```Lua
 --]]
-local place, moves, steps = {}, {}, {} ---@module "signs.places"
+local placings = require("signs.places"); placings.places, placings.place, placings.moves, placings.steps = {}, {}, {}, {}
+local _, place, moves, steps = placings.places, placings.place, placings.moves, placings.steps ---@module "signs.places"
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
@@ -64,7 +66,7 @@ end
 function place.xyzf(target, index) -- target place (with index for situations) or current situation position 
   --:: place.xyzf(name: ":"?, index: #:?) -> _Looks up index in name [defaults to current situation]._ -> `xyzf?, order: #:?`
   if not target then return xyzfSituation() end -- current position of this turtle
-  local order, placed = place.match(target); if not order then return nil end
+  local order, placed = place.match(target); if not (order and placed) then return nil end
   local _, _, situations = table.unpack(placed); -- trails and ranges have mre than one
   index = index or 1; assert(index <= #situations, "places.xyzf: has less than "..index.." situations")
   return xyzfSituation(situations[index], order) -- place situation 
@@ -100,14 +102,15 @@ As mentioned, there may be a number of `situations` associated with a `place`. H
 ```Lua
 --]]
 function place.add(name, situation)
---:: place.add(name: ":", :situation:) -> _Add situation to situations of an existing place._ -> `serialized: ":", prder: #:`
+--:: place.add(name: ":", :situation:) -> _Add situation to situations of an existing place._ -> `serialized: ":"?, order: #:?`
+---@diagnostic disable-next-line: missing-return-value
   local order, matched = place.match(name); if not matched then return end
   local _, _, situations = table.unpack(matched); situations[#situations + 1] = situation
   return core.serialize(matched), order
 end 
 
 function place.erase(name) -- remove place if found
---::place.erase(name: ":") -> _Removes named place from array of places._ -> `#:, order: #:`
+--::place.erase(name: ":") -> _Removes named place from array of places._ -> `#:, order: #:?`
 --:+ _Return new length of places table and the (previous) order of the removed place._
   local order = place.match(name); if order then table.remove(placePlaces, order) end
   return #placePlaces, order -- leaves sparse array
@@ -121,6 +124,7 @@ Implementing support for the "where" of things is straightforward. But look at `
 --:# **Answering "where?"**
 local function placeSituation(name) -- situation for named place;
   local order, matched = place.match(name); if not order then return nil end
+---@diagnostic disable-next-line: param-type-mismatch
   local _, label, situations = table.unpack(matched); return situations[1], label
 end
 --[[
@@ -130,12 +134,12 @@ The upvalues of iterators establish part of its execution context. It's tempting
 ```Lua
 --]]
 function  place.near(span, reference) -- iterator: places in span distance of current situation|place or all places
---:: place.near(span: #:?, reference?: ":"|position) -> __ -> (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"`
+--:: place.near(span: #:?, reference?:":"|[x:#:,y:#:,z:#:]) ->  -> (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"`
 --:+ _If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position)._
 --:+ _If only the span is specified, return places within a span of blocks of the current situation or player position._
 --:+ _If neither is specified return each of the named places. In any case, iterator returns include serialized places._
   local situation = type(reference) == "string" and placeSituation(reference) or _G.Muse.situation
-  local xyzSituation = type(reference) == "table" and reference or {move.get(situation)}
+  local x, y, z = move.get(situation); local xyzReference = type(reference) == "table" and reference or {x, y, z}
   local order = 0; local count = #placePlaces;  -- upvalues for returned closure
 
   return function() -- the iterator; 
@@ -144,7 +148,7 @@ function  place.near(span, reference) -- iterator: places in span distance of cu
       local namePlace, labelPlace, situations = table.unpack(placePlaces[order])
       local positionPlace = situations[1].position; -- trails and ranges have more than one
       local xyzPlace = {positionPlace.x, positionPlace.y, positionPlace.z}
-      local distance = place.distance(xyzPlace, xyzSituation); 
+      local distance = place.distance(xyzPlace, xyzReference); 
       if not span or distance <= span then 
         return namePlace, labelPlace, xyzPlace, distance, situations, core.serialize(placePlaces[order]) 
       end
@@ -212,9 +216,10 @@ function place.trail(headName, tailName, label) -- places for trail end and head
 end
 
 function place.track(name) -- return track elements of trail if trail exists
-  --:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, :situations:?"
+  --:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, :situations:?`
   assert(name, "places: Need a name for trail")
   local order, matched = place.match(name); if not order then return nil end
+---@diagnostic disable-next-line: redundant-return-value, param-type-mismatch
   return table.unpack(matched) -- name, label, situations
 end
 --[[
@@ -227,7 +232,8 @@ function moves.along(name) -- move along trail
 --:: moves.along(name: ":") -> _Move from first to second situation of place._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`
 --:+ _If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head._
   local _, _, situations = place.track(name); -- existing trail?
-  if #situations == 0 then return "done", 0, move.ats() end -- note `{} ~= nil` however `#{} == 0`
+    if not situations then error("moves.along: can't find "..name) end
+    if #situations == 0 then return "done", 0, move.ats() end -- note `{} ~= nil` however `#{} == 0`
   for _, situation in ipairs(situations) do local xyzf = xyzfSituation(situation); move.to(xyzf)
   end; return "done", 0, move.ats()
 end

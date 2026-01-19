@@ -23,7 +23,7 @@
 
 --:: core.xyzf(:xyzf:) -> _Returns specially formatted string for `xyzf`._ -> `":"`  
 
---:> xyzf: _Position and facing as table_ -> `[x: #:, y: #:, z: #:, facing: ":"]`  
+--:> xyzf: _Position and facing as table_ -> `[x: #:, y: #:, z: #:, facing: ":"?]`  
 
 --:# **Handling errors and reporting operations**  
 

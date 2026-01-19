@@ -23,7 +23,7 @@
 
 --:## **Some Utilities: position reporting and setting:**  
 
---:: move.get(:situation:?) -> _Default current situation._ -> `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"  
+--:: move.get(:situation:?) -> _Default current situation._ -> `x: #:?, y: #:?, z: #:?, facing: ":", fuel: #:, level: ":"  
 
 --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuels: #:??, level: ":"???) -> _Set position, optionally rest of situation._ -> `nil`  
 
@@ -37,7 +37,7 @@
 
 --:: move.ats(theSituation:situation?) -> _(Current) situation position and facing string (`""` in game if not turtle)._ -> `xyzf: ":"`  
 
---:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> _Returns GPS results if available._ -> `x: #:, y: #:, z: #:, facing: ":", ^: ok`    
+--:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> _Returns GPS results if available._ -> `x: #:, y: #:, z: #:, facing: ":", ok: #:|^:`    
 --:+ _If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation._  
 
 --:> recovery: _For some errors_ -> `[call: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`  
@@ -48,27 +48,27 @@
 
 --:# **Exposed APIs for move functions: turn left|right or face cardinal if needed, then repeat count forward**  
 
---:: move.moves(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.moves(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.left(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.left(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.right(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.right(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.north(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.north(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.east(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.east(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.south(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.south(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.west(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.west(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.up(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.up(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.down(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.down(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.forward(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.forward(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
---:: move.back(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf, direction &!recovery`   
+--:: move.back(count: #:?) -> _Count 0: just turn, 1: default_ ->  `"done", remaining: #:, xyzf: ":", direction &!recovery`   
 
 --:# **Exposed APIs for step functions: turn or face direction if needed then step count forward in that direction**   
 
@@ -98,7 +98,7 @@
 
 --:# **Move or Step to target xyzf position**  
 
---:: move.to(xyzf: xyzf, first: ":"?) -> _Current situation to x, z, y, and optionally face._ -> `"done", #:, xyzf &!recovery`     
+--:: move.to(xyzf: xyzf, first: ":"?) -> _Current situation to x, z, y, and optionally face._ -> `"done", #:, xyzf: ":" &!recovery`     
 --:+ _Optional argument_ `first` _is "x", "y", or "z" to select first move in that direction to deal with blockages._  
 
 --:: step.to(:xyzf:, theSituation:situation?) -> _Step to position from (current) sItuation._ -> `(): nil &!recovery`    

@@ -33,9 +33,9 @@ function place.reset() end
 function place.xyzf() end
 
 --  If both span and name (or a position) are specified, return places within a span of blocks of the named place (or position). If only the span is specified, return places within a span of blocks of the current situation or player position. If neither is specified return each of the named places. In any case, iterator returns include serialized places.
--- place.near(span: #:?, reference?: ":"|position):  (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"` <-
+-- place.near(span: #:?, reference?:":"|[x:#:,y:#:,z:#:]):  (): `name: ":", label: ":", xyz, distance: #:, situations, serial: ":"` <-
 
----@type fun( span: number?,  reference?: string | position):  fun():  name: string,  label: string,  xyz,  distance: number,  situations,  serial: string 
+---@type fun( span: number?,  reference?:string | [ number, number, number]):  fun():  name: string,  label: string,  xyz,  distance: number,  situations,  serial: string 
 function place.near() end
 
 -- Returns number of places.
@@ -51,9 +51,9 @@ function place.count() end
 function place.fix() end
 
 -- Returns trail
--- place.track(name: ":"):  `name: ":"?, label: ":"?, :situations:?" <-
+-- place.track(name: ":"):  `name: ":"?, label: ":"?, :situations:?` <-
 
----@type fun( name: string):   name: string?,  label: string?,  situations: situations?" 
+---@type fun( name: string):   name: string?,  label: string?,  situations: situations? 
 function place.track() end
 
 -- Set or return local `site` (isolates global).
@@ -75,9 +75,9 @@ function place.match() end
 function place.qualify() end
 
 -- Add situation to situations of an existing place.
--- place.add(name: ":", :situation:):  `serialized: ":", prder: #:` <-
+-- place.add(name: ":", :situation:):  `serialized: ":"?, order: #:?` <-
 
----@type fun( name: string,  situation: situation):   serialized: string,  prder: number 
+---@type fun( name: string,  situation: situation):   serialized: string?,  order: number? 
 function place.add() end
 
 -- Sorted
@@ -99,9 +99,9 @@ function place.distance() end
 function place.name() end
 
 -- Removes named place from array of places. Return new length of places table and the (previous) order of the removed place.
--- place.erase(name: ":"):  `#:, order: #:` <-
+-- place.erase(name: ":"):  `#:, order: #:?` <-
 
----@type fun( name: string):   number,  order: number 
+---@type fun( name: string):   number,  order: number? 
 function place.erase() end
 
 -- Move to target, first along direction.

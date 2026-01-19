@@ -49,7 +49,7 @@
 
 --:- items -> <i>Returns items in turtle inventory as string.</i>  
 
---:: turtle.check(targets: ":"[], :detail:) -> <i>Tries to match each target against</i> <code>detail.name</code>. -> <code></code>matched: ^:`  
+--:: turtle.check(targets: ":"[], :detail:) -> <i>Tries to match each target against</i> <code>detail.name</code>. -> <code>matched: ":"?</code>  
 
 --:# <i>Categories provide names for sets of minecraft items.</i>  
 
@@ -74,7 +74,7 @@
 
 --:: turtle.unblock(direction: ":", limit: #:?) -> <i>Retrys (default <code>_G.Muse.attempts</code>) dig to limit or bedrock.</i> -> <code>"done", nil|"undug" &!</code>   
 
---:: turtle.digTo(:xyzf:, limit: #:?) -> <i>Unblocking move.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &: &!</code>     
+--:: turtle.digTo(:xyzf:, limit: #:?) -> <i>Unblocking move.</i> -> <code>done: ":" &: &!</code>     
 --:+ <i>Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty".</i>    
 --:+ <i>Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason.</i>    
 --:+ <i>Normally return just what a successful move would: "done", 0 remaining, current position.</i>  

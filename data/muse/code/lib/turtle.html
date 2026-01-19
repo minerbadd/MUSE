@@ -7,6 +7,7 @@
 <body>
 <script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
 
+---@diagnostic disable: duplicate-set-field
 <h2> Consistency for Turtle Operations: <code>lib/turtle</code> for Turtle Abstractions</h2>
 <pre><code class="language-markdown">
 --:! {turtle: [":"]: ():} <- <b>Turtle Operations Overlay Library</b> -> muse/docs/lib/turtle.md  
@@ -15,7 +16,8 @@
 </code></pre>
 The MUSE <code>turtle</code> module introduction is much like any other. One thing is notable, like the <code>situation</code> state variable in <code>lib/motion</code>, there's a <a href="https://minerbadd.github.io/CodeMark/Annotations.html" target="_blank"> CodeMark </a> <code>VALUE</code> mark, describing <code>direction</code> as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by <code>lib/mock</code>) are accessed in the <code>mock</code> table.
 <pre><code class="language-lua">
-local turtle = {}; turtle.hints = {} ---@module "signs.turtle" -- for functions exported from library
+local turtles = require("signs.turtle"); turtles.turtle = {}; local turtle = turtles.turtle ---@module "signs.turtle" 
+turtle.hints = {} -- for operations defined in <code>lib/net</code>
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
@@ -96,7 +98,7 @@ end;
 function turtle.items() return core.string(turtle.inventory()) end --:- items -> <i>Returns items in turtle inventory as string.</i>
 
 function turtle.check(targets, detail) -- item inspected by turtle is in targets?
-  --:: turtle.check(targets: ":"[], :detail:) -> <i>Tries to match each target against</i> <code>detail.name</code>. -> <code></code>matched: ^:`
+  --:: turtle.check(targets: ":"[], :detail:) -> <i>Tries to match each target against</i> <code>detail.name</code>. -> <code>matched: ":"?</code>
   for _, target in ipairs(targets) do if detail.name == target then return detail.name end end
 end
 
@@ -184,7 +186,7 @@ local function continue(direction, xyzf, limit)
 end
 
 function turtle.digTo(xyzf, limit)
-  --:: turtle.digTo(:xyzf:, limit: #:?) -> <i>Unblocking move.</i> -> <code>code: ":", remaining: #:, xyzf: ":" &: &!</code> 
+  --:: turtle.digTo(:xyzf:, limit: #:?) -> <i>Unblocking move.</i> -> <code>done: ":" &: &!</code> 
   --:+ <i>Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty".</i>
   --:+ <i>Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason.</i>
   --:+ <i>Normally return just what a successful move would: "done", 0 remaining, current position.</i>

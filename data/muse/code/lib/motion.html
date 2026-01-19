@@ -31,19 +31,18 @@ To help readers and maintainers understand a module, it's useful to organize it 
 --:# <i>Provide fuel level check to validate a dead reckoning move, can track movement for retracing move as a trail.</i>  
 --:+ <i>Report error conditions <code>"blocked"</code>, <code>"lost"</code> (for apparent but invalid movement), <code>"empty"</code> (for no fuel).</i>  
 --:+ <i>Throw some errors as tables rather than strings to allow for attempted recovery operations.</i> 
-
 </code></pre>
 The first line of the introduction above sets the stage. It tells us that moving turtles is implemented using tables (as dictionaries) of <code>move</code> functions and of something we've called <code>step</code> functions (producing <a href="https://en.wikipedia.org/wiki/Closure<i>(computer</i>programming)" target="_blank">
-<i>closures</i> </a> which we'll talk about a bit further on). It exports these as libraries exporting functions whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank"><i>Markdown</i></a> and HTML documentation, <code>muse/docs/lib/motion.md</code> and <code>muse/docs/lib/motion.html</code>, is found in the <code>docs</code> sub-directory of the <code>muse</code> project directory (for when you might want to look at them later). Below are those tables of exported functions, <code>motion.move</code>, and <code>motion.step</code>. We'll fill them in as we go. (We' load <code>signs.motion</code> to allow type checking in the module.)
+<i>closures</i> </a> which we'll talk about a bit further on). It exports these as libraries exporting functions whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank"><i>Markdown</i></a> and HTML documentation, <code>muse/docs/lib/motion.md</code> and <code>muse/docs/lib/motion.html</code>, is found in the <code>docs</code> sub-directory of the <code>muse</code> project directory (for when you might want to look at them later). Below are those tables of exported functions, <code>motion.move</code>, and <code>motion.step</code>. We'll fill them in (referenced by <code>move</code> and <code>step</code>) as we go. 
+<p>
+We load <code>signs.motion</code> to allow <a href="https://luals.github.io/wiki/type-checking/" target="_blank"> type checking </a> in the module by <a href="https://luals.github.io/wiki/" target="_blank">LLS</a>, the Lua Language Server.
 <pre><code class="language-lua">
-require("signs.motion"); local move, step = {}, {} ---@module "signs.motion" 
-
---motion.move, motion.step = {}, {}; 
- 
+local motion = require("signs.motion"); motion.move, motion.step = {}, {} ---@module "signs.motion" 
+local move, step = motion.move, motion.step
 </code></pre>
 As mentioned, the exported APIs for these libraries is provided in two tables of functions: <code>move</code> and <code>step</code>.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the module with<a href="https://www.lua.org/pil/8.1.html" target="_blank"> <code>require</code> </a> returns these tables. Just below we'll see that done for libraries that <code>lib/motion</code> depends on. 
 <p>
-Finally, the <code>@module</code> <a href="https://www.geeksforgeeks.org/software-testing/best-practices-for-using-annotations/" target="_blank"> annotation </a> indicates where to find the <a <code>signs</code>, the API signatures for each of the functions exported by the module. The Lua Language Server <a href="https://luals.github.io/wiki/type-checking/" target="_blank"> type checking </a> facility uses these signatures to check references to those functions by other modules. (The particular way the external references are made local to this module seemed to be how LLS needed them.) 
+Finally, the <code>@module</code> <a href="https://www.geeksforgeeks.org/software-testing/best-practices-for-using-annotations/" target="_blank"> annotation </a> indicates where to find the <a <code>signs</code>, the API signatures for each of the functions exported by the module. The Lua Laguage Server type checking </a> facility uses these signatures to check references to those functions by other modules. (The particular way the external references are made local to this module seemed to be how LLS needed them.) 
 <p>
 Here's what all that looks like for these libraries:
 <pre><code class="language-lua">
@@ -107,9 +106,10 @@ It helps to define utility functions used in the module toward the beginning of 
 <pre><code class="language-lua">
 --:## <b>Some Utilities: position reporting and setting:</b>
 function move.get(situation) 
---:: move.get(:situation:?) -> <i>Default current situation.</i> -> `x: #:, y: #:, z: #:, facing: ":", fuel: #:, level: ":"
-  local s = situation or _G.Muse.situation; local p = s.position; 
-  return tonumber(p.x), tonumber(p.y), tonumber(p.z), s.facing, s.fuel, s.level
+--:: move.get(:situation:?) -> <i>Default current situation.</i> -> `x: #:?, y: #:?, z: #:?, facing: ":", fuel: #:, level: ":"
+  local s = situation or _G.Muse.situation; local p = s.position
+  local x, y, z = tonumber(p.x) or 0, tonumber(p.y) or 0, tonumber(p.z) or 0 -- force numbers for LLS
+  return x, y, z, s.facing, s.fuel, s.level
 end
 
 core.get = move.get -- overrides the dummy binding in <code>lib/core</code>
@@ -198,7 +198,7 @@ core.ats = move.ats -- protect from override
 Look at the <a href="core.html#where" target="_blank"> implementation </a> of <code>core.where</code> to see how function bindings are used to handle in-game and out-game environments.
 <pre><code class="language-lua">
 function move.where(tx, ty, tz, tf) -- where's the turtle?
---:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ^: ok</code>
+--:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ok: #:|^:</code>
 --:+ <i>If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.</i>
   local px, py, pz, pf = table.unpack(move.at()); local gx, gy, gz = core.where() -- gx is nil if GPS fails or no GPS
 ---@diagnostic disable-next-line: undefined-field
@@ -268,38 +268,53 @@ local wayUp, wayDown = {turtle.up, rise, "rise", "up"}, {turtle.down, fall, "fal
 local vertical = {up = wayUp, down = wayDown} -- the way for vertical movement
 
 local function noop() return "done" end -- neither left nor right
-local turns = {[0] = noop, turnRight, turnAround, turnLeft} -- turn functions (here comes the modulo again)
+local turning = {[0] = noop, turnRight, turnAround, turnLeft} -- turn functions (here comes the modulo again)
 </code></pre>
 <a id="face+turn"></a>
 <h3>Facing and Turning for Movement</h3>
 <p>
-Before any movement, the turtle needs to be turned. Either in a cardinal direction or just left or right. MUSE supports the primitive <code>turn</code> operations in <code>turnRight</code> and <code>turnLeft</code>. They're done before attempting motion. All the information needed to do that is captured in <code>wayForward</code> which is passed on to <code>moveCount</code> or <code>stepCount</code> in the <code>ops[op]()</code> call in the <code>turn</code>.
+Before any movement, the turtle needs to be turned. Either in a cardinal direction or just left or right. MUSE supports the primitive <code>turn</code> operations in <code>turnRight</code> and <code>turnLeft</code>. They're done before attempting motion. All the information needed to do that is captured in <code>wayForward</code> which is passed on to <code>moveCount</code> or <code>stepCount</code>.
 <p>
-The (cardinal) direction abstraction for <code>face</code> turns is built on the <code>turnRight</code> and <code>turnLeft</code> primitives. It's further extended in the <code>face</code> function to include <code>up</code> or <code>down</code>, not just north, east, west, and south. The function <code>turnFacing</code> uses the <code>directions</code> constant table from the introduction part of <code>lib/motion</code> to get numbers for the four cardinal directions with which to do arithmetic. The amount to turn, a value from 0 to 3, is used to select one of the appropriate <code>turns</code> function primitives (including a <code>noop</code>). After the left or right turn is made, the turtle might be moved (<code>moveCount</code>) or stepped (<code>stepCount</code>) a <code>count</code> of blocks. 
+The (cardinal) direction abstraction for <code>face</code>, turns is built on the <code>turnRight</code> and <code>turnLeft</code> primitives. It's further extended in the <code>face</code> function to include <code>up</code> or <code>down</code>, not just north, east, west, and south. The function <code>turnFacing</code> uses the <code>directions</code> constant table from the introduction part of <code>lib/motion</code> to get numbers for the four cardinal directions with which to do arithmetic. The amount to turn, a value from 0 to 3, is used to select one of the appropriate <code>turns</code> function primitives (including a <code>noop</code>). After the left or right turn is made, the turtle might be moved (<code>moveCount</code>) or stepped (<code>stepCount</code>) a <code>count</code> of blocks. 
 <p>
 If turning the turtle encounters trouble, the functions we've been exploring return something other than <code>"done"</code>. In this case MUSE raises an error supplying a <code>recovery</code> table that might be used to recover from the error, perhaps by resolving the turtle's <code>"blocked"</code> condition.
+<p>
+Rather than fighting with LLS, there are two separate but very similar pair of functions <code>turn</code>/<code>turns</code> and <code>face</code>/faces`
 <pre><code class="language-lua">
 --:> recovery: <i>For some errors</i> -> <code>[call: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]</code>
 
-local ops -- forward references to what actually moves the turtle: <code>moveCount</code> or <code>stepCount</code>
+local moveCount, stepCount -- forward references
 
-local function turn(turnOperation, count, direction, op) --primitive: left or right, and provide for turn failure
+local function turn(turnOperation, count, direction) --primitive: left or right, and provide for turn failure
   local turnResult = turnOperation(); -- do the turn: <code>turnLeft</code> or <code>turnRight</code> and if ok, attempt the (forward) motion
-  if turnResult == "done" then return ops[op](wayForward, count, direction) end -- <code>moveCount</code> or <code>stepCount</code> <b>(Move turtle!)</b>
+  if turnResult == "done" then return moveCount(wayForward, count, direction) end -- <code>moveCount</code> or <code>stepCount</code> <b>(Move turtle!)</b>
+  error {"motion.turn", turnResult, count, move.ats(), direction, "turnMove"} --recovery
+end
+
+local function turns(turnOperation, count, direction) --primitive: left or right, and provide for turn failure
+  local turnResult = turnOperation(); -- do the turn: <code>turnLeft</code> or <code>turnRight</code> and if ok, attempt the (forward) motion
+  if turnResult == "done" then return stepCount(wayForward, count, direction) end -- <code>moveCount</code> or <code>stepCount</code> <b>(Move turtle!)</b>
   error {"motion.turn", turnResult, count, move.ats(), direction, "turnMove"} --recovery
 end
 
 local function turnFacing(direction) -- Given NESW compass points, finds and performs turn operation from turns table
   local from, to = directions[facing()], directions[direction] -- numbers for arithmetic
-  if not from or not to then return turns[0]() end -- no turns for <code>up</code> or <code>down</code> 
-  local turnOperation = turns[(to - from) % 4] -- -1 % 4 = 3; -3 % 4 = 1; e.g. ("south" - "west") % 4 = turnLeft
+  if not from or not to then return turning[0]() end -- no turns for <code>up</code> or <code>down</code> 
+  local turnOperation = turning[(to - from) % 4] -- -1 % 4 = 3; -3 % 4 = 1; e.g. ("south" - "west") % 4 = turnLeft
   return turnOperation() -- <code>noop</code>, <code>turnRight</code>, <code>turnAround</code>, <code>turnLeft</code>
 end
 
-local function face(direction, count, op) -- cardinal directions now including <code>up</code> and <code>down</code>
+local function face(direction, count) -- cardinal directions now including <code>up</code> and <code>down</code>
   local turnResult = turnFacing(direction); -- first turn in specified direction, ignoring <code>up</code> or <code>down</code>
   local way = vertical[direction] or wayForward -- if not <code>up</code> or <code>down</code> just figure on going forward
-  if turnResult == "done" then return ops[op](way, count, direction) end -- <code>moveCount</code> or <code>stepCount</code> <b>(Turtle motion attempt!)</b>
+  if turnResult == "done" then return moveCount(way, count, direction) end -- <b>(Turtle motion attempt!)</b>
+  error {"motion.face", turnResult, count, move.ats(), direction, "faceMove"} --recovery
+end
+
+local function faces(direction, count) -- cardinal directions now including <code>up</code> and <code>down</code>
+  local turnResult = turnFacing(direction); -- first turn in specified direction, ignoring <code>up</code> or <code>down</code>
+  local way = vertical[direction] or wayForward -- if not <code>up</code> or <code>down</code> just figure on going forward
+  if turnResult == "done" then return stepCount(way, count, direction) end -- <b>(Turtle motion attempt!)</b>
   error {"motion.face", turnResult, count, move.ats(), direction, "faceMove"} --recovery
 end
 </code></pre>
@@ -313,16 +328,16 @@ of the iterator, a function that is a <a href="https://en.wikipedia.org/wiki/Clo
 
 local fueledMotion -- forward reference for turtle motion if there's fuel
 
-local function moveCount(way, count, direction) --xyz only, way: <code>wayUp</code>, <code>wayDown</code>, <code>wayForward</code>
+function moveCount(way, count, direction) --xyz only, way: <code>wayUp</code>, <code>wayDown</code>, <code>wayForward</code>
   if count and count == 0 then return "done", count, move.ats() end -- to just report xyzf
   for i = 1, count do local result = fueledMotion(way, count, direction) -- check fuel, try <code>way</code> to move turtle
     if result ~= "done" then direction = direction or "???" -- handling possibility of unspecified direction
       error {"motion.moveCount", result, count - i + 1, move.ats(), direction, "moveCount"} -- recover
     end-- for all failures: could be "empty", "lost", or "blocked"
-  end; return "done", 0, move.ats() -- nothing left to do, completed the sequence of move operations
+  end; return "done", 0, move.ats(), direction-- nothing left to do, completed the sequence of move operations
 end
 
-local function stepCount(way, count, direction) --return a closure to iterate step operation 
+function stepCount(way, count, direction) --return a closure to iterate step operation 
   count = count or 0; local i = 0 -- upvalues for closure
   return function() -- this is the iterator, returns nil when exhausted, errors on <code>empty</code>, <code>lost</code>, <code>blocked</code>
     local turnResult = turnFacing(direction); if turnResult ~= "done" then -- tried to turn and failed, can't iterate
@@ -334,8 +349,6 @@ local function stepCount(way, count, direction) --return a closure to iterate st
     error {"motion.stepCount", result, count - (i-1), move.ats(), direction, "stepCount"} --recovery
   end
 end
-
-ops = {move = moveCount, step = stepCount} -- functions defined above to move or step the turtle
 </code></pre>
 <a id="fueling"></a>
 <h3>Fueling Around</h3>
@@ -409,12 +422,12 @@ function xyzMotion(way) -- move the turtle using <code>way</code> table
 end
 
 xyzUpdate = function (movement, newLevel) -- update dead reckoning x,y,z situation and track
-  local px, py, pz, facingss, theFuel, level = move.get(); 
+  local px, py, pz, theFacing, theFuel, level = move.get(); 
   local tracking = _G.Muse.tracking.enabled and newLevel ~= level
   local newSituation = tracking and move.situation() or situation()
   local prior = situation(); situation(newSituation)
-  local dx, dy, dz = table.unpack(movement[facingss]) -- <code>movement</code>: advance/retreat/rise/fall
-  move.set(px + dx, py + dy, pz + dz, facing, theFuel - 1, newLevel); -- dead reckoning fuel and position 
+  local dx, dy, dz = table.unpack(movement[theFacing]) -- <code>movement</code>: advance/retreat/rise/fall
+  move.set(px + dx, py + dy, pz + dz, theFacing, theFuel - 1, newLevel); -- dead reckoning fuel and position 
   return tracking and trackMotion(prior) or "done"-- trackMotion returns "done" and adds to <code>_G.Muse.situations</code>
 end
 </code></pre>
@@ -439,15 +452,15 @@ end
 After all that, what's actually exposed by the library looks pretty simple. That was kind of the point. All the commonality for the twenty exposed motions below has been squeezed out. You might think of what we've been through as just really big utility functions for moving or stepping the turtle. 
 <pre><code class="language-lua">
 --:# <b>Exposed APIs for move functions: turn left|right or face cardinal if needed, then repeat count forward</b>
---:: move.moves(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf, direction &!recovery</code> 
+--:: move.moves(count: #:?) -> <i>Count 0: just turn, 1: default</i> ->  <code>"done", remaining: #:, xyzf: ":", direction &!recovery</code> 
 -- each of these move functions have common definitions and indirectly call  <code>moveCount(goForward, count, direction)</code> 
 
-function move.left(count) count = count or 1; return turn(turnLeft, count, "left", "move") end --:= move.moves:: move.left:
-function move.right(count) count = count or 1; return turn(turnRight, count, "right", "move") end --:= move.moves:: move.right:
-function move.north(count) count = count or 1; return face("north", count,"move") end --:= move.moves:: move.north:
-function move.east(count) count = count or 1; return face("east", count, "move") end --:= move.moves:: move.east:
-function move.south(count) count = count or 1; return face("south", count, "move") end --:= move.moves:: move.south:
-function move.west(count) count = count or 1; return face("west", count, "move") end --:= move.moves:: move.west:
+function move.left(count) count = count or 1; return turn(turnLeft, count, "left") end --:= move.moves:: move.left:
+function move.right(count) count = count or 1; return turn(turnRight, count, "right") end --:= move.moves:: move.right:
+function move.north(count) count = count or 1; return face("north", count) end --:= move.moves:: move.north:
+function move.east(count) count = count or 1; return face("east", count) end --:= move.moves:: move.east:
+function move.south(count) count = count or 1; return face("south", count) end --:= move.moves:: move.south:
+function move.west(count) count = count or 1; return face("west", count) end --:= move.moves:: move.west:
 
 function move.up(count) count = count or 1; return moveCount(wayUp, count, "up") end --:= move.moves:: move.up:
 function move.down(count) count = count or 1; return moveCount(wayDown, count, "down") end --:= move.moves:: move.down:
@@ -459,17 +472,12 @@ function move.back(count) count = count or 1; return moveCount(wayBack, count, "
 --:> stepping: <i>Iterator (default 1 step)</i> -> <code>(): "done", remaining: #:, xyzf, direction &!recovery</code>
 -- Each of these step functions have common definitions and indirectly call <code>stepCount(goForward, count, direction)</code>
 
----@diagnostic disable-next-line: return-type-mismatch -- LLS (sometimes) confused by ops[op] in <code>turn</code> and <code>face</code>
-function step.left(count) count = count or 1; return turn(turnLeft, count, "left", "step") end --:= step.steps:: step.left: 
----@diagnostic disable-next-line: return-type-mismatch
-function step.right(count) count = count or 1; return turn(turnRight, count, "right", "step") end --:= step.steps:: step.right:
----@diagnostic disable-next-line: return-type-mismatch
-function step.north(count) count = count or 1; return face("north", count, "step") end --:= step.steps:: step.north:
----@diagnostic disable-next-line: return-type-mismatch
-function step.east(count) count = count or 1; return face("east", count, "step") end --:= step.steps:: step.east: 
----@diagnostic disable-next-line: return-type-mismatch
-function step.south(count) count = count or 1; return face("south", count, "step") end --:= step.steps:: step.south:
-function step.west(count) count = count or 1; return face("west", count, "step") end --:= step.steps:: step.west:
+function step.left(count) count = count or 1; return turns(turnLeft, count, "left") end --:= step.steps:: step.left: 
+function step.right(count) count = count or 1; return turns(turnRight, count, "right") end --:= step.steps:: step.right:
+function step.north(count) count = count or 1; return faces("north", count) end --:= step.steps:: step.north:
+function step.east(count) count = count or 1; return faces("east", count) end --:= step.steps:: step.east: 
+function step.south(count) count = count or 1; return faces("south", count) end --:= step.steps:: step.south:
+function step.west(count) count = count or 1; return faces("west", count) end --:= step.steps:: step.west:
 
 function step.up(count) count = count or 1; return stepCount(wayUp, count, "up") end --:= step.steps:: step.up:
 function step.down(count) count = count or 1; return stepCount(wayDown, count, "down") end --:= step.steps:: step.down: 
@@ -500,7 +508,7 @@ local moving = { --table of the functions handling different orderings of motion
   z = function(xOp, adx, zOp, adz, yOp, ady) zOp(adz); yOp(ady); xOp(adx) end} -- zyx
 
 function move.to(xyzf, first) -- no navigation, y last unless <code>first</code> specified
---:: move.to(xyzf: xyzf, first: ":"?) -> <i>Current situation to x, z, y, and optionally face.</i> -> <code>"done", #:, xyzf &!recovery</code> 
+--:: move.to(xyzf: xyzf, first: ":"?) -> <i>Current situation to x, z, y, and optionally face.</i> -> <code>"done", #:, xyzf: ":" &!recovery</code> 
 --:+ <i>Optional argument</i> <code>first</code> <i>is "x", "y", or "z" to select first move in that direction to deal with blockages.</i>
   if not xyzf then error("motion.move.to: attempt to go to nil (road unpaved)") end
   local x, y, z, faced = table.unpack(xyzf); local sx, sy, sz = move.get(); local dx, dy, dz = x - sx, y - sy, z - sz

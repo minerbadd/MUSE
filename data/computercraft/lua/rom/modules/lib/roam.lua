@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field
 --[[
 ##Commands `go`, `to`, `trace`, `come` `tail` : lib/roam
 ```md
@@ -5,7 +6,8 @@
 --:| roam: _Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go` _commands, motion_ `to` _or_ `trace`. -> roam
 ```Lua
 --]]
-local roam = {}; roam.hints = {} ---@module "signs.roam" -- for functions exported from library
+local roams = require("signs.roam"); roams.roam = {}; local roam = roams.roam ---@module "signs.roam" 
+roam.hints = {} ---@module "signs.roam" -- for functions exported from library
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
@@ -82,6 +84,7 @@ local function to(arguments)
   --:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._ 
   local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
   local toPlace = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
+---@diagnostic disable-next-line: param-type-mismatch
   local ttx, tty, ttz = table.unpack(toPlace); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- **do it!**
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
 --[[

@@ -71,9 +71,9 @@ function turtle.digAround() end
 
 
 -- Tries to match each target against_ `detail.name`.
--- turtle.check(targets: ":"[], :detail:):  ``matched: ^:` <-
+-- turtle.check(targets: ":"[], :detail:):  `matched: ":"?` <-
 
----@type fun( targets: string[],  detail: detail):   matched: boolean 
+---@type fun( targets: string[],  detail: detail):   matched: string? 
 function turtle.check() end
 
 -- turtle.puts:  `[direction]: (text: ":"?): ^:, ":"?`
@@ -103,9 +103,9 @@ function turtle.find() end
 function turtle.fuel() end
 
 -- Unblocking move. Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty". Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason. Normally return just what a successful move would: "done", 0 remaining, current position.
--- turtle.digTo(:xyzf:, limit: #:?):  `code: ":", remaining: #:, xyzf: ":" &: &!`  <-
+-- turtle.digTo(:xyzf:, limit: #:?):  `done: ":" &: &!`  <-
 
----@type fun( xyzf: xyzf,  limit: number?):   code: string,  remaining: number,  xyzf: string 
+---@type fun( xyzf: xyzf,  limit: number?):   done: string 
 function turtle.digTo() end
 
 -- Returns currrent turtle inventory as turtle detail table_.

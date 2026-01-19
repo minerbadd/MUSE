@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field
 --[[
 ## Consistency for Turtle Operations: `lib/turtle` for Turtle Abstractions
 ```md
@@ -8,7 +9,8 @@
 The MUSE `turtle` module introduction is much like any other. One thing is notable, like the `situation` state variable in `lib/motion`, there's a <a href="https://minerbadd.github.io/CodeMark/Annotations.html" target="_blank"> CodeMark </a> `VALUE` mark, describing `direction` as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by `lib/mock`) are accessed in the `mock` table.
 ```Lua
 --]]
-local turtle = {}; turtle.hints = {} ---@module "signs.turtle" -- for functions exported from library
+local turtles = require("signs.turtle"); turtles.turtle = {}; local turtle = turtles.turtle ---@module "signs.turtle" 
+turtle.hints = {} -- for operations defined in `lib/net`
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion =  require("motion"); local move = motion.move ---@module "signs.motion"
@@ -95,7 +97,7 @@ end;
 function turtle.items() return core.string(turtle.inventory()) end --:- items -> _Returns items in turtle inventory as string._
 
 function turtle.check(targets, detail) -- item inspected by turtle is in targets?
-  --:: turtle.check(targets: ":"[], :detail:) -> _Tries to match each target against_ `detail.name`. -> ``matched: ^:`
+  --:: turtle.check(targets: ":"[], :detail:) -> _Tries to match each target against_ `detail.name`. -> `matched: ":"?`
   for _, target in ipairs(targets) do if detail.name == target then return detail.name end end
 end
 
@@ -185,7 +187,7 @@ local function continue(direction, xyzf, limit)
 end
 
 function turtle.digTo(xyzf, limit)
-  --:: turtle.digTo(:xyzf:, limit: #:?) -> _Unblocking move._ -> `code: ":", remaining: #:, xyzf: ":" &: &!` 
+  --:: turtle.digTo(:xyzf:, limit: #:?) -> _Unblocking move._ -> `done: ":" &: &!` 
   --:+ _Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty"._
   --:+ _Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason._
   --:+ _Normally return just what a successful move would: "done", 0 remaining, current position._
