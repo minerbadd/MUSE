@@ -70,7 +70,6 @@ keeps track of the whereabouts of the turtle depending on its supposed movement.
 The <code>"lost"</code>, <code>"blocked"</code>, and <code>"empty"</code> conditions each raise an <a href="https://www.lua.org/pil/8.3.html" target=_blank>
  <code>error</code> </a> reported to callers of <code>lib/motion</code> (and to their callers in turn).  The caller, for example <code>lib/roam</code> (discussed in another chapter), may attempt recovery operations depending on the error information or might just report the error.
 <p>
-<p>
 The dead reckoning turtle state, its <code>situation</code>, is collected in the <code>_G.Muse.situation</code> <a href="https://en.wikipedia.org/wiki/Associative_array" target="_blank">
 <i>dictionary</i></a>, a table accessed (keyed) by named fields. If there isn't one of these when the <code>lib/motion</code> library is loaded, a default set is provided (generally, for testing out of game in the IDE). Cleanly managing this state is one of the implementation issues we'll need to address. 
 <p>
@@ -102,7 +101,7 @@ No surprise here. As promised in the first lines of the file, this module export
 The module's CodeMark <a href="../../docs/lib/motion.html" target="_blank"> documentation</a> tells you about each (exported) function in terms of its <code>parameters</code> <code>-></code> <code>operation</code> <code>-></code> <code>values</code> (returned). Some parameters are documented as optional: <code>?</code>. The <a href = "../CodeMark/Annotations.html#type" target = "_blank"> type</a> of parameters and return values are also documented: numbers as <code>#:</code>, strings as <code>":"</code>, tables as <code>{:}</code>, and functions as <code>():</code>. The unspecified type is annotated as <code>any</code>. An ignored item is indicated by an underscore followed by a colon. Parameters and return values may be tagged with a label followed by a colon to provide information to the language server. Sometimes a parameter's name is the same as its type definition as in the annotation for <code>move.get</code> below. We'll see these annotations when looking at a library's summary documentation.
 <p>
 <h3>Foundation (Utility) Functions</h3>
-It helps to define utility functions used in the module toward the beginning of the file. They are referenced throughout. The ones for <code>lib/motion</code> are pretty simple. They define an interface to a turtle's <code>situation</code> state to provide better hygiene than working directly with the corresponding globals.
+It often helps to define utility functions used in the module toward the beginning of the file. They are referenced throughout. The ones for <code>lib/motion</code> are pretty simple. They define an interface to a turtle's <code>situation</code> state to provide better hygiene than working directly with the corresponding globals.
 <pre><code class="language-lua">
 --:## <b>Some Utilities: position reporting and setting:</b>
 function move.get(situation) 
@@ -127,6 +126,28 @@ function move.set(x, y, z, f, fuels, level) -- for testing
 end
 
 core.set = move.set -- protect from override 
+
+</code></pre>
+<a id="findItems"></a>
+A completely straight forward implementation (for a change). 
+<pre><code class="language-lua">
+--:# <b>Lowest level turtle and mock turtle support used by low level libraries including lib/motion</b>
+function move.findItems(targets) -- nil if no slot with target otherwise slot detail, does selection
+  --:: move.findItems(targets: ":"[]) -> <i>Selects found slot.</i> -> <code>detail?</code>, #:?, ^:?
+  --:> detail: <i>Defined by Computercraft</i> -> <code>{name: detail.name, count: detail.count, damage: detail.damage}</code>
+  --:> detail.name: <i>Prepended by the mod name <code>"minecraft:"</code>.</i> -> <code>":"</code>
+  --:> detail.count: <i>Available in inventory</i> -> <code>#:</code>
+  --:> detail.damage: <i>Distinguishing value</i> -> <code>#:</code>
+  ---@diagnostic disable-next-line: undefined-field
+  local slots = _G.turtle and _G.Muse.slots or #turtle.slots -- for out-of-game testing
+  for i = 1, slots do
+    local detail = turtle.getItemDetail(i)
+    for _, target in ipairs(targets) do  -- if target == "" then return true end
+      if detail and detail.name == target then return detail, i, turtle.select(i) end -- select if success
+    end
+  end; return nil
+end
+
 </code></pre>
 </code></pre>
 <h3>Globals Considered Harmful</h3>
@@ -355,17 +376,6 @@ end
 Before we actually move the turtle (I know, I know), we need to see if there's fuel in turtle inventory to do so. In the <code>fueledMotion</code> function, there are possible <code>nil</code> values returned for <code>detail</code> and <code>slot</code> from <code>core.findItems</code> in turtle inventory. The Lua ternary operator idiom is used to bind a useful value to <code>detailName</code>. 
 <p>
 If the turtle has no fuel, no movement is possible so the function returns <code>"empty"</code>. Otherwise it returns the call on <code>refuel</code> which in turn, if refueling is successful, calls <code>xyzMotion</code> to (finally) move the turtle just as if there had been no needed fueling. (Yeah, this is a bit terse.) If refueling is not successful, <code>refuel</code> raises an error indicating in its report string where in the project's code the error occurred and other, presumably helpful information (like where the turtle is so that a rescue party can bring fuel to the <code>empty</code> turtle.).
-<p>
-Here's the interface for <code>core.findItems</code> and the definitions for what Computercraft provides for the detail of what is found. The <a href="core.html#findItems" target="_blank"> implementation</a> is straight forward. 
-<pre><code class="language-lua">
--- :: core.findItems(target: ":"[]) -> <i>Selects found slot.</i> -> <code>nil | detail</code>
-
--- :> detail: <i>Defined by Computercraft</i> -> <code>[name: ":", count: #: damage: #:]</code>
--- :^ name: _Prepended by the mod name <code>"minecraft:"_ -> </code>":"`
--- :^ count: <i>Available in inventory</i> -> <code>#:</code>
--- :^ damage: <i>Distinguishing value</i> -> <code>#:</code>
-</code></pre>
-And here's how it's used:
 <pre><code class="language-lua">
 local fuels = {
   "minecraft:coal", "minecraft:coal_block", 
@@ -376,7 +386,7 @@ local refuel, xyzMotion -- forward references to move the turtle using <code>way
 
 fueledMotion = function (way, count, direction) -- for one block motion from move/step count
   if turtle.getFuelLevel() > 0 then return xyzMotion(way) end -- <b>Move the turtle one block!</b>
-  local detail, slot = core.findItems(fuels); local slotq = slot or "_none_"
+  local detail, slot = move.findItems(fuels); local slotq = slot or "_none_"
   local detailName = detail and detail.name or "_no fuel_"
   core.status(4, "motion", "Refueling?", detailName, "in slot", slotq)
   return detail and refuel(way, count, direction) or "empty" 

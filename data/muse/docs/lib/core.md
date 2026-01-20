@@ -29,6 +29,10 @@
 
 --:: core.pass(ok: ^:, ...: any) -> _Pass input but report string if not ok._ -> ok: `true|false, result: ...|":", any?`  
 
+--:: core.trace(err: any) -> _Reports traceback for xpcalls._ -> `err: any`  
+
+--:#  **Defensive programming: checking dead reckoning when logging or reporting status**   
+
 --:: core.where() -> _GPS location if available._ -> `x: #:|false, y: #:|false, z: #:|false`  
 
 --:# **Logging and Quit Control Globals**  
@@ -46,8 +50,6 @@
 --:: core.logging(arguments: {level: #:, filename: ":"}) -> _Set threshold level [and local log file] for status reports_ -> `nil`  
 
 --:: core.record(message: ":") -> _Appends (status) message to log file on player._ -> `nil & !`  
-
---:: core.trace(err: any) -> _Reports traceback for xpcalls._ -> `err: any`  
 
 --:# **User interface utilities**  
 
@@ -83,29 +85,19 @@
 
 --:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `():, {:}, #:`  
 
---:# **Iterator for coroutine partials of permutations**   
+--:# **Iterator for coroutine partials of permutations** (adapted from <a href="https://www.lua.org/pil/9.3.html" target="_blank">Programming in Lua</a><a id="permute">)  
 
---:: core.permute(array: any[]) -> _Iterator for permutations of array_ -> `():`  
+--:: core.permute(array: any[]) -> _Iterator for (factorial) permutations of array_ -> `():`  
 
---:# <a href="https://en.wikipedia.org/wiki/Map_(higher-order_function)" target="_blank">On Map</a>  
+--:# **Abstracting over actions: reference implementations of some higher order functions**  
 
 --:: core.map(op: ():, table: {:}) -> _Create_ `result` _by applying_ `op` _function to elements of_ `table` -> `{:}`  
 
---:#<a href="https://dgr.github.io/clojurecrazy/2022/01/09/reduce-my-favorite-clojure-function.html" target="_blank">On Fold</a>  
-
 --:: core.reduce(op: ():, initial: any, table: {:}) -> _Fold_ `table` _to produce_ `result` _by applying_ `op` _to_ `table` -> `any`  
 
---:# **Lowest level turtle and mock turtle support used by several libraries including lib/motion**  
+--:: core.compose(...: ():): -> _Produce function equivqlent to sucessive application of argument functions_ -> ():  
 
---:: core.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`, #:?, ^:?  
-
---:> detail: _Defined by Computercraft_ -> `{name: detail.name, count: detail.count, damage: detail.damage}`  
-
---:> detail.name: _Prepended by the mod name `"minecraft:"`._ -> `":"`  
-
---:> detail.count: _Available in inventory_ -> `#:`  
-
---:> detail.damage: _Distinguishing value_ -> `#:`  
+--:# **When there's no OS, mock it**  
 
 --:: core.sleep(#:?) -> _Mocks sleep as null operation out of game._ -> `nil`  
 

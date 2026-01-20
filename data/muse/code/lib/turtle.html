@@ -78,7 +78,7 @@ makeOperations(operations, turtle) -- fills in the table exported by this <code>
 Passing interfaces through as if they were part of the <code>turtle</code> library completes the operations abstraction. 
 <pre><code class="language-lua">
 --:# <b>Function References</b>
-turtle.find = core.findItems --:= core.findItems:: turtle.find -- <code>core.findItems</code> gets mocked turtle if not in-game
+turtle.find = move.findItems --:= move.findItems:: turtle.find -- <code>move.findItems</code> gets mocked turtle if not in-game
 </code></pre>
 <a id="inventory"></a> 
 More abstractions: categories of items and the detail of which slot of turtle inventory an item is in.

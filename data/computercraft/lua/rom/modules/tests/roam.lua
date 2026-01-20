@@ -1,5 +1,5 @@
 --[[
-##Test: `tests/roam` for turtle movement command library: `go`, `to`, `trace`, `come` `tail` 
+##Test: `tests/roam` for the turtle movement command library: `go`, `to`, `trace`, `come` `tail` 
 ```md
 --:? muse/docs/tests/roaam.txt <- **Test `lib/roam`** -> muse/docs/tests/roam.md 
 ```Lua
@@ -20,7 +20,7 @@ local text = "Beginning "..testName..".lua test at "..move.ats()
 
 local test = check.open(testName, text, regression) --:# Create the test object for this test
 
-turtle.blocking(false); core.log.level(3); place.site("TR")
+turtle.blocking(false); place.site("TR")
 
 --:# Setup place and trail names for tests
 place.fix({10,25,35,"west"}); place.name("test2", "label2")

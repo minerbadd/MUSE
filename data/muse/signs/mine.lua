@@ -59,30 +59,6 @@ local  mine, _mine = {}, {}
 ---@alias bores { bores.name: string,  bores.post: mine.post,  bores.even: plan,  bores.odd: plan,  bores.fix: plan } # Horizontals
 
 
--- downs.odd:  `plan`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias downs.odd  plan # Mark, dig, ladder, and fill an odd level (for landing platforms)
-
-
--- mine.post:  (markerName: ":", :bores:):  `marking[]`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias mine.post fun( markerName: string,  bores: bores):    marking[] # Navigate shaft and bores to go to marker.
-
-
--- levels.even:  `plan`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias levels.even  plan # Plan for navigating from one even level to the next
-
-
--- shafts:  `{shafts.name: ":", shafts.down: downs, shafts.back: levels, shafts.lower: levels, shafts.higher: levels}`
----@alias shafts { shafts.name: string,  shafts.down: downs,  shafts.back: levels,  shafts.lower: levels,  shafts.higher: levels} # Dig
-
-
--- shafts.name:  `":"`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias shafts.name  string # Included in error and status reports
-
-
 -- Make place name, report result. Called by `worker.execute` to make marker name and use it to add map point for navigation in mine. Puts plan name value in marker (keyed by `"shaft"` or `"bore"`) so marker is enough for navigating in shaft or bore. Marker place name formed as `head:level:base` or `head:base` or `head` with place labelled as `"outer"|"inner"|"shaft"`.
 -- mine.mark(:plan:, :marking:):  `markerName: ":", label: ":", report: ":"` <-
 
@@ -95,9 +71,9 @@ function mine.mark() end
 ---@type fun( arguments: [  string,   string,   string | number,   string]):   boolean,  string,  number 
 function mine.op() end
 
--- bores.even:  `plan`
+-- mine.post:  (markerName: ":", :bores:):  `marking[]`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias bores.even  plan # Plan for boring tunnels at even levels
+---@alias mine.post fun( markerName: string,  bores: bores):    marking[] # Navigate shaft and bores to go to marker.
 
 
 -- shafts.down:  `downs`
@@ -105,11 +81,35 @@ function mine.op() end
 ---@alias shafts.down  downs # Plan for digging shaft one level through even and odd levels
 
 
--- Navigate to post
--- _mine.toPost(markerName: ":", borePlans: bores, shaftPlans: shafts):  `"done", ":", #: &!` <-
+-- shafts.name:  `":"`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias shafts.name  string # Included in error and status reports
 
----@type fun( markerName: string,  borePlans: bores,  shaftPlans: shafts):   "done",  string,  number 
-function _mine.toPost() end
+
+-- shafts:  `{shafts.name: ":", shafts.down: downs, shafts.back: levels, shafts.lower: levels, shafts.higher: levels}`
+---@alias shafts { shafts.name: string,  shafts.down: downs,  shafts.back: levels,  shafts.lower: levels,  shafts.higher: levels} # Dig
+
+
+-- levels.even:  `plan`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias levels.even  plan # Plan for navigating from one even level to the next
+
+
+-- bores.even:  `plan`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias bores.even  plan # Plan for boring tunnels at even levels
+
+
+-- downs.odd:  `plan`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias downs.odd  plan # Mark, dig, ladder, and fill an odd level (for landing platforms)
+
+
+-- Go to marker and bore Use shaft plans and bore plans to navigate to marker, bore horizontal tunnels using bore plans. Add "bore" and bore plans name as key and value to bore plans for inclusion in marker. Bores plans at even or odd level, potentially leaves place marks and torches.
+-- _mine.bore(markerName: ":", borePlans: bores, shaftPlans:shafts):  `"done", ":", #: &: &!` <-
+
+---@type fun( markerName: string,  borePlans: bores,  shaftPlans:shafts):   "done",  string,  number 
+function _mine.bore() end
 
 -- To minehead Execute shaft plans back to return to minehead from one below target level Add "shaft" and shaft plans name as key and value to shaft plans for inclusion in marker
 -- _mine.back(mineheadName: ":",  targetLevel: #:, shaftPlansBack: shafts, shaftPlansName: ":"):  `":", ":"  &!` <-
@@ -141,9 +141,9 @@ function _mine.ores() end
 ---@type fun( mineheadName: string,  targetLevel: number,  shaftPlansDown: downs,  shaftPlansName: string):   "done" 
 function _mine.down() end
 
--- Go to marker and bore Use shaft plans and bore plans to navigate to marker, bore horizontal tunnels using bore plans. Add "bore" and bore plans name as key and value to bore plans for inclusion in marker. Bores plans at even or odd level, potentially leaves place marks and torches.
--- _mine.bore(markerName: ":", borePlans: bores, shaftPlans:shafts):  `"done", ":", #: &: &!` <-
+-- Navigate to post
+-- _mine.toPost(markerName: ":", borePlans: bores, shaftPlans: shafts):  `"done", ":", #: &!` <-
 
----@type fun( markerName: string,  borePlans: bores,  shaftPlans:shafts):   "done",  string,  number 
-function _mine.bore() end
+---@type fun( markerName: string,  borePlans: bores,  shaftPlans: shafts):   "done",  string,  number 
+function _mine.toPost() end
 return { mine =  mine, _mine = _mine}

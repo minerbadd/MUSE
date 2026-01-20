@@ -46,11 +46,11 @@ function turtle.unblock() end
 ---@alias direction  "north" | "east" | "south" | "west" | "up" | "down" # Four compass points (cardinals) and verticals
 
 
--- Unblocking dig. Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.
--- turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?):  `"done" &: &!` <-
+-- Tries to match each target against_ `detail.name`.
+-- turtle.check(targets: ":"[], :detail:):  `matched: ":"?` <-
 
----@type fun( orientation: string,  diggings: string[],  name: string?):   "done" 
-function turtle.digAround() end
+---@type fun( targets: string[],  detail: detail):   matched: string? 
+function turtle.check() end
 
 -- turtle.detects:  `[direction]: (): ^:`
 ---@diagnostic disable-next-line: duplicate-doc-alias
@@ -70,11 +70,11 @@ function turtle.digAround() end
 ---@alias turtle.digs fun( side: string?):   boolean,  string? # Try to dig block in direction and implicitly call_ suck().
 
 
--- Tries to match each target against_ `detail.name`.
--- turtle.check(targets: ":"[], :detail:):  `matched: ":"?` <-
+-- Unblocking dig. Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation.
+-- turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?):  `"done" &: &!` <-
 
----@type fun( targets: string[],  detail: detail):   matched: string? 
-function turtle.check() end
+---@type fun( orientation: string,  diggings: string[],  name: string?):   "done" 
+function turtle.digAround() end
 
 -- turtle.puts:  `[direction]: (text: ":"?): ^:, ":"?`
 ---@diagnostic disable-next-line: duplicate-doc-alias
@@ -85,16 +85,11 @@ function turtle.check() end
 ---@alias ores  ore[] # Category
 
 
--- Selects found slot.
--- turtle.find(targets: ":"[]):  `detail?`, #:?, ^:? <-
+-- Unblocking move. Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty". Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason. Normally return just what a successful move would: "done", 0 remaining, current position.
+-- turtle.digTo(:xyzf:, limit: #:?):  `done: ":" &: &!`  <-
 
----@type fun( targets: string[]):   detail?,  number?,  boolean? 
-function turtle.find() end
-
--- turtle.inspects:  `[direction]: (): `^:, detail?`
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias turtle.inspects { [direction]:fun():  boolean,  detail? } # If true, get detail block information in direction.
-
+---@type fun( xyzf: xyzf,  limit: number?):   done: string 
+function turtle.digTo() end
 
 -- Total energy actually available in turtle slots plus turtle fuel level. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
 -- turtle.fuel():  `fuelTotal: #:` <-
@@ -102,11 +97,16 @@ function turtle.find() end
 ---@type fun():  fuelTotal: number 
 function turtle.fuel() end
 
--- Unblocking move. Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty". Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason. Normally return just what a successful move would: "done", 0 remaining, current position.
--- turtle.digTo(:xyzf:, limit: #:?):  `done: ":" &: &!`  <-
+-- turtle.inspects:  `[direction]: (): `^:, detail?`
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias turtle.inspects { [direction]:fun():  boolean,  detail? } # If true, get detail block information in direction.
 
----@type fun( xyzf: xyzf,  limit: number?):   done: string 
-function turtle.digTo() end
+
+-- Selects found slot.
+-- turtle.find(targets: ":"[]):  `detail?`, #:?, ^:? <-
+
+---@type fun( targets: string[]):   detail?,  number?,  boolean? 
+function turtle.find() end
 
 -- Returns currrent turtle inventory as turtle detail table_.
 -- turtle.inventory():  `detail[]` <-

@@ -66,7 +66,6 @@ _state_</a> representing turtle position and orientation, that is, the `xyz` co-
 The `"lost"`, `"blocked"`, and `"empty"` conditions each raise an <a href="https://www.lua.org/pil/8.3.html" target=_blank>
  `error` </a> reported to callers of `lib/motion` (and to their callers in turn).  The caller, for example `lib/roam` (discussed in another chapter), may attempt recovery operations depending on the error information or might just report the error.
 
-
 The dead reckoning turtle state, its `situation`, is collected in the `_G.Muse.situation` <a href="https://en.wikipedia.org/wiki/Associative_array" target="_blank">
 _dictionary_</a>, a table accessed (keyed) by named fields. If there isn't one of these when the `lib/motion` library is loaded, a default set is provided (generally, for testing out of game in the IDE). Cleanly managing this state is one of the implementation issues we'll need to address. 
 
@@ -100,7 +99,7 @@ No surprise here. As promised in the first lines of the file, this module export
 The module's CodeMark <a href="../../docs/lib/motion.html" target="_blank"> documentation</a> tells you about each (exported) function in terms of its `parameters` `->` `operation` `->` `values` (returned). Some parameters are documented as optional: `?`. The <a href = "../CodeMark/Annotations.html#type" target = "_blank"> type</a> of parameters and return values are also documented: numbers as `#:`, strings as `":"`, tables as `{:}`, and functions as `():`. The unspecified type is annotated as `any`. An ignored item is indicated by an underscore followed by a colon. Parameters and return values may be tagged with a label followed by a colon to provide information to the language server. Sometimes a parameter's name is the same as its type definition as in the annotation for `move.get` below. We'll see these annotations when looking at a library's summary documentation.
 
 #Foundation (Utility) Functions
-It helps to define utility functions used in the module toward the beginning of the file. They are referenced throughout. The ones for `lib/motion` are pretty simple. They define an interface to a turtle's `situation` state to provide better hygiene than working directly with the corresponding globals.
+It often helps to define utility functions used in the module toward the beginning of the file. They are referenced throughout. The ones for `lib/motion` are pretty simple. They define an interface to a turtle's `situation` state to provide better hygiene than working directly with the corresponding globals.
 ```Lua
 --]]
 --:## **Some Utilities: position reporting and setting:**
@@ -126,6 +125,30 @@ function move.set(x, y, z, f, fuels, level) -- for testing
 end
 
 core.set = move.set -- protect from override 
+
+--[[
+```
+<a id="findItems"></a>
+A completely straight forward implementation (for a change). 
+```Lua
+--]]
+--:# **Lowest level turtle and mock turtle support used by low level libraries including lib/motion**
+function move.findItems(targets) -- nil if no slot with target otherwise slot detail, does selection
+  --:: move.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`, #:?, ^:?
+  --:> detail: _Defined by Computercraft_ -> `{name: detail.name, count: detail.count, damage: detail.damage}`
+  --:> detail.name: _Prepended by the mod name `"minecraft:"`._ -> `":"`
+  --:> detail.count: _Available in inventory_ -> `#:`
+  --:> detail.damage: _Distinguishing value_ -> `#:`
+  ---@diagnostic disable-next-line: undefined-field
+  local slots = _G.turtle and _G.Muse.slots or #turtle.slots -- for out-of-game testing
+  for i = 1, slots do
+    local detail = turtle.getItemDetail(i)
+    for _, target in ipairs(targets) do  -- if target == "" then return true end
+      if detail and detail.name == target then return detail, i, turtle.select(i) end -- select if success
+    end
+  end; return nil
+end
+
 --[[
 ```
 <a id="globals"/> ```
@@ -375,17 +398,6 @@ end
 Before we actually move the turtle (I know, I know), we need to see if there's fuel in turtle inventory to do so. In the `fueledMotion` function, there are possible `nil` values returned for `detail` and `slot` from `core.findItems` in turtle inventory. The Lua ternary operator idiom is used to bind a useful value to `detailName`. 
 
 If the turtle has no fuel, no movement is possible so the function returns `"empty"`. Otherwise it returns the call on `refuel` which in turn, if refueling is successful, calls `xyzMotion` to (finally) move the turtle just as if there had been no needed fueling. (Yeah, this is a bit terse.) If refueling is not successful, `refuel` raises an error indicating in its report string where in the project's code the error occurred and other, presumably helpful information (like where the turtle is so that a rescue party can bring fuel to the `empty` turtle.).
-
-Here's the interface for `core.findItems` and the definitions for what Computercraft provides for the detail of what is found. The <a href="core.html#findItems" target="_blank"> implementation</a> is straight forward. 
-```Lua
--- :: core.findItems(target: ":"[]) -> _Selects found slot._ -> `nil | detail`
-
--- :> detail: _Defined by Computercraft_ -> `[name: ":", count: #: damage: #:]`
--- :^ name: _Prepended by the mod name `"minecraft:"_ -> `":"`
--- :^ count: _Available in inventory_ -> `#:`
--- :^ damage: _Distinguishing value_ -> `#:`
-```
-And here's how it's used:
 ```Lua
 --]]
 local fuels = {
@@ -397,7 +409,7 @@ local refuel, xyzMotion -- forward references to move the turtle using `way` tab
 
 fueledMotion = function (way, count, direction) -- for one block motion from move/step count
   if turtle.getFuelLevel() > 0 then return xyzMotion(way) end -- **Move the turtle one block!**
-  local detail, slot = core.findItems(fuels); local slotq = slot or "_none_"
+  local detail, slot = move.findItems(fuels); local slotq = slot or "_none_"
   local detailName = detail and detail.name or "_no fuel_"
   core.status(4, "motion", "Refueling?", detailName, "in slot", slotq)
   return detail and refuel(way, count, direction) or "empty" 

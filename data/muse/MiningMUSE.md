@@ -104,7 +104,7 @@ With all these changes, `lib/turtle` has superseded the ComputerCraft definition
 
 The `lib/roam` <a href="code/lib/roam.html" target="_blank"> library </a> provides yet more movement extensions for our turtles: 
 
-- _**try again strategies**_  using permutations to look for ways around blockages, 
+- _**try again strategies**_  using permutations of movement directions to look for ways around blockages, 
   
 - _**going to a `place`**_ (as well as specified xyz coordinates) with `to`
   
@@ -114,10 +114,10 @@ The `lib/roam` <a href="code/lib/roam.html" target="_blank"> library </a> provid
   
 All this is done using both the abstractions of `lib/turtle` and the primitives of `lib/motion`. The library also shows a way to design a more maintainable <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank">  _Command Line Interface_  </a>(CLI) based user control facility.
 <a href="code/lib/roam.html" target="_blank"> <IMG SRC="drawings/03ATree.jpg" hspace ="20" ALIGN="left"/> </a> 
-The `lib/roam` library centralizes error handling, safety checks on turtle dead reckoning, and simulated blockage testing for all the commands it supports. It does all this in its CLI <a href="code/lib/roam#op.html" target="_blank">dispatch </a> mechanism, one part of keeping command code thin, a virtue eagerly to be sought. 
+The `lib/roam` library centralizes error handling and safety checks on turtle dead reckoning for all the commands it supports. It does all this in its CLI <a href="code/lib/roam#op.html" target="_blank">dispatch </a> mechanism, one part of keeping command code thin, a virtue eagerly to be sought. 
 
 <a id="UI"></a>
-Managing the inevitable and ongoing changes to the user interface is an important issue for maintainable code. MUSE, with commendable virtue, keeps the actual UI code "thin" in the command programs creating the UI. All the hard stuff is in the support libraries. Changes to the UI itself are generally pretty easy. That's good because experience with a UI is the most likely generator of reasons to change it. <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank"> <IMG SRC="drawings/03CLI.png" ALIGN="right" vspace = "10" hspace ="10"/> </a>
+Managing the inevitable and ongoing changes to the user interface is an important issue for maintainable code. MUSE, with that commendable virtue, keeps the actual UI code "thin" in the command programs creating the UI. All the hard stuff is in the support libraries. Changes to the UI itself are generally pretty easy. That's good because experience with a UI is the most likely generator of reasons to change it. <a href="https://en.wikipedia.org/wiki/Command-line_interface" target="_blank"> <IMG SRC="drawings/03CLI.png" ALIGN="right" vspace = "10" hspace ="10"/> </a>
 
  _(We have it a bit easier since the user interface for MUSE is just a CLI. The commands are simple text inputs to the <a href="https://www.computercraft.info/wiki/CraftOS" target="_blank"> CraftOS</a> command line. The design issues for a <a href="https://en.wikipedia.org/wiki/Graphical_user_interface" target="_blank"> graphical user interface, a GUI</a> are the subject of a whole other exploration.)_
 
@@ -567,7 +567,7 @@ There are VSC Lua debug extensions. It would be good to know if they work for wh
 
 ### Zerobrane Studio (ZBS) for a Run and Debug Envronment
 
-There's not much left to do in setting up your development environment for MUSE but it's arguably the most important part. Making changes to MUSE will mostly involve running code and testing it in the Zerobrane IDE. VSC analysis and source management is critical but not the main event. So, on to the main event:
+There's not much left to do in setting up your development environment for MUSE but it's arguably the most important part. Making changes to MUSE will mostly involve running code and testing it in the (very light weight) Zerobrane IDE. VSC analysis and source management is critical but not the main event. So, on to the main event:
 
 - Follow the installation directions for <a href="https://studio.zerobrane.com/" target="_blank">Zerobrane Studio</a>
 - Copy <a href="https://github.com/pkulchenko/ZeroBranePackage/blob/master/README.md" target="_blank">packages </a>:  `analyzeall.lua` and possibly `cloneview.lua` into the ZBS `package` directory

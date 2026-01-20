@@ -77,7 +77,9 @@ roam.tail = roam.come; roam.hints["tail"] = {["?rate"] = {}} -- separate but equ
 ```
 <a id="to"></a> 
 #Coordinate Movement: `to` a `place` or a `position
-The `to` function is used in order to move to a `position` (with `move.to`) or a `place` (with `moves.to`). Tries all permutations
+The `to` function is used in order to move to a `position` (with `move.to`) or a `place` (with `moves.to`). Tries all permutations.
+
+There's also some mysterious stuff around `roam.hints`. The stuff populates a table used by <a href="core.html#UI" target = "_blank">`core.completion` to provide shell completions in ComputerCraft's CraftOS in the format that it expects.
 ```Lua
 --]]
 local function to(arguments) 

@@ -86,7 +86,7 @@ function turtle.detectUp() return true end
 function turtle.detectDown() return true end
 
 function turtle.compare() return true end
-function turtle.compareUp() return true end
+function turtle.compareUp() return false end
 function turtle.compareDown() return true end
 
 function turtle.drop() return true end

@@ -7,9 +7,8 @@
 ```Lua
 --]]
 ---@diagnostic disable-next-line: undefined-field
-local rednet, turtle = _G.rednet, _G.turtle or require("mock").turtle -- mock out game
 local cores = require("signs.core"); cores.core = {}; local core = cores.core ---@module "signs.core"  
-core.hints = {};
+local rednet = _G.rednet; core.hints = {};
 --[[
 ```
 <a id="clone"></a>
@@ -23,8 +22,7 @@ Finally although MUSE makes no use of them, the <a href="https://www.lua.org/pil
 function core.clone(source)
   --:: core.clone(source: {:}|any) -> _Deep copy source table or return source if not table._ -> `{:}|any`
   if type(source) ~= "table" then return source end 
-  local result = {}
-  for key, value in pairs(source) do
+  local result = {}; for key, value in pairs(source) do
     if type(value) == "table" then result[key] = core.clone(value)
     else result[key] = value end
   end; setmetatable(result, getmetatable(source));
@@ -42,14 +40,12 @@ Another way to manage state is to "close over" a variable. The `core.state` func
 function core.state(table, key)
   --:: core.state(table: {:}?, key: ":"?) -> _Returns closure over closure variable_ -> `closing`
   local variable = nil
-  return
-  function(value)
+  return function(value)
     if type(value) == "nil" then return variable end
     variable = value; if table then table[key] = value end
     return variable
   end
 end
-
 --[[
 ```
 <a id="merge"/a>
@@ -59,8 +55,7 @@ Lua supports functions whose arguments are tables containing any type. It also s
 --]]
 --:# **Table Utilities: merging tables and finding common items in a pair of tables**
 function core.merge(...) --:: core.merge(...: {:}) -> _Merge any number of flat tables into one, allowing repeats._ -> `{:}`
-  local result = {}
-  for this = 1, select("#", ...) do
+  local result = {}; for this = 1, select("#", ...) do
     local thisTable = select(this, ...)
     for item = 1, #thisTable do result[#result + 1] = thisTable[item] end
   end; return result
@@ -82,35 +77,25 @@ The function `core.serialize`, <a href="https://www.lua.org/pil/12.1.html" targe
 local function inSerialize(input, partial, simple) -- adapted from PiL 12.1.1; `simple` generates non-instantiable string
   partial = partial or ""; local separator = ", "
   if type(input) == "table" then
-    local tstring = "{"
-    for k, v in pairs(input) do
-      if type(k) == "number" then
-        tstring = tstring .. inSerialize(v, partial, simple) .. separator
+    local tstring = "{"; for k, v in pairs(input) do
+      if type(k) == "number" then tstring = tstring..inSerialize(v, partial, simple)..separator
       else
-        local kstring = "" .. k .. "=";
-        local vstring = inSerialize(v, partial, simple);
-        tstring       = tstring .. kstring .. vstring .. separator
+        local kstring, vstring = "" .. k .. "=", inSerialize(v, partial, simple);
+        tstring = tstring..kstring..vstring..separator
       end
     end; return partial .. tstring .. "}"
-  elseif type(input) == "number" then
-    return partial .. input                                 -- _in this case, the `elseif` structure reads easily_
-  elseif type(input) == "string" then
-    return simple and partial .. input or partial .. string.format("%q", input)
-  elseif type(input) == "boolean" then
-    return partial .. tostring(input)
-  elseif type(input) == "nil" then
-    return simple and partial .. "" or partial .. tostring(input)
-  elseif type(input) == "function" then
-    return partial .. ' function() ...[skipped]...'
-  else
-    error("core.inSerialize: " .. type(input) .. " failed")
+  elseif type(input) == "number" then return partial .. input -- _in this case, the `elseif` structure reads easily_
+  elseif type(input) == "string" then return simple and partial .. input or partial .. string.format("%q", input)
+  elseif type(input) == "boolean" then return partial .. tostring(input)
+  elseif type(input) == "nil" then return simple and partial .. "" or partial .. tostring(input)
+  elseif type(input) == "function" then return partial..' function()...[skipped]...'
+  else error("core.inSerialize: " .. type(input) .. " failed")
   end
 end
 
 --:: core.serialize(input: any) -> _Executable string to instantiate input._ -> `"return "..":" &!`
 ---@diagnostic disable-next-line: return-type-mismatch
 function core.serialize(input) return "return " .. (input and inSerialize(input) or "{}") end
-
 local function makeString(item) return inSerialize(item, "", true) end -- third argument `true` for simple
 --[[
 ```
@@ -120,9 +105,7 @@ The `core.string` function turns a variable number of input structures into a st
 --]]
 function core.string(...) --:: core.string(...: any) -> _Makes string from any inputs, simplifies single entry tables._ -> `":"`
   local n = select("#", ...); local strings = {};
-  for i = 1, n do
-    local item = select(i, ...)
-    strings[#strings + 1] = makeString(item)
+  for i = 1, n do local item = select(i, ...); strings[#strings + 1] = makeString(item)
   end; return table.concat(strings, " ")
 end
 
@@ -161,12 +144,34 @@ function core.past(ok, ...) -- like `core.pass` but encapsulates ...
 end 
 --[[
 ```
+<a id="trace"></a>
+In-game examination of the call stack on errors is provided by `core.trace`. Desperate times, desperate measures.
+```Lua
+--]]
+--:: core.trace(err: any) -> _Reports traceback for xpcalls._ -> `err: any`
+function core.trace(err) core.status(1, "core", "trace", debug.traceback()) return err end -- for `xpcall`
+--[[
+```
+<a id="status"></a>
+#Monitoring Status, Logging, Quitting
+Reporting and logging on-going turtle status is an essential part of in-game debug (and useful in the out-of-game test environment as well). Providing a way to record status in a file allows off-line examination of suspect operation.
+
+The `log` table controls the level of status detail reported and potentially logged (`log.level`), the file name for log records (`log.file`), if any, in the computer's `muse` directory, and the file handle (`log.handle`) for file log operations. The table is bound to a global reference so it is guaranteed to stick around through session garbage collections but, for the usual reasons, no access to the global is made outside `lib/core`. Instead a closure is provided <a href="#state"> using `core.state` </a> to access each of the `log` fields.
+
+There's a <a href="../status.html" target="_blank"> truly paper thin command line interface (_CLI_)</a> for setting the `core.log.level` and setting up the `core.log.file` and `core.log.handle` to record status. It just packages the arguments, whatever they are, into a table of strings. The arguments from this CLI are passed directly to `core.logging` which sets up the filename and file handle for `core.record` which is called by the `.status` <a href = "https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank"> 
+_daemon_ </a>. For convenience, <a href="../.start.html" target="_blank">startup operations </a> set up defaults.
+
+In-game, a status message (a string including the current dead-reckoning position) is sent over the `rednet` network to the player as a "MS", Muse Status protocol, message. MUSE uses the `.status` daemon, to print `MS` messages received by the player's pocket computer. Follow the <a href="../.status.html" target="_blank">link to take a look at the implementation</a>. It's just an endless loop responding to selected network events, receipt of `MS` protocol messages, by printing and potentially recording those messages.
+
+As a piece of <a href="https://www.drdobbs.com/defensive-programming/184401915" target="_blank"> _defensive programming_ </a>, `status` operations use the GPS and the `reckon` function to see if a turtle is where it's expected to be. If it isn't it resets the turtle's position according to the GPS and tacks a (really loud) notice onto the status message. The `core.report` function does much of the same thing for operations where turtle position isn't relevant.
+
 <a id="where"></a>
 The `core.where` implementation binds a dummy function, `function() end` (which returns `nil`), to `gpslocate` in the out-of-game environment. This takes the place of the in-game function `gps.locate`. Follow the <a href="places.html#nearby" target="_blank"> link to see another example of this technique </a> which uses a dummy (null) function as a default. An optional function argument only implementable at the higher level overrides the dummy default when calling the lower level function.
 
 As it turns out, the in-game `gps.locate` returns `NaN`, Not A Number, rather than `nil` when it can't compute a position. The idiom `gx == gx` is used to detect NaN since the IEEE spec requires that `NaN` is not equal to anything including "itself".
 ```Lua
 --]]
+--:#  **Defensive programming: checking dead reckoning when logging or reporting status** 
 function core.where() --:: core.where() -> _GPS location if available._ -> `x: #:|false, y: #:|false, z: #:|false`
   ---@diagnostic disable-next-line: undefined-field
   local gps = _G.gps; local gpslocate = gps and gps.locate or function() end
@@ -176,43 +181,24 @@ function core.where() --:: core.where() -> _GPS location if available._ -> `x: #
   return isNumber and gx, isNumber and gy, isNumber and gz
 end
 
---[[
-```
-<a id="status"></a>
-#Monitoring Status, Logging, Quitting
-Reporting and logging on-going turtle status is an essential part of in-game debug (and useful in the out-of-game test environment as well). Providing a way to record status in a file allows off-line examination of suspect operation.
-
-The `log` table controls the level of status detail reported and potentially logged (`log.level`), the file name for log records (`log.file`), if any, in the computer's `muse` directory, and the file handle (`log.handle`) for file log operations. The table is bound to a global reference so it is guaranteed to stick around through session garbage collections but, for the usual reasons, no access to the global is made outside `lib/core`. Instead a closure is provided <a href="#state"> using `core.state` </a> to access each of the `log` fields.
-
-There's a <a href="../status.html" target="_blank"> truly paper thin command line interface (_CLI_)</a> for setting the `log.level` and setting up the `log.file` and `log.handle` to record status. It just packages the arguments, whatever they are, into a table of strings. The arguments from this CLI are passed directly to `core.logging` which sets up the filename and file handle for `core.record` which is called by the `.status` <a href = "https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank"> _daemon_ </a>. For convenience, <a href="../.start.html" target="_blank"> startup operations </a> set up defaults.
-
-In-game, a status message (a string including the current dead-reckoning position) is sent over the `rednet` network to the player as a "MS", Muse Status protocol, message. MUSE uses the `.status` daemon, to print `MS` messages received by the player's pocket computer. Follow the <a href="../.status.html" target="_blank">link to take a look at the implementation</a>. It's just an endless loop responding to selected network events, receipt of `MS` protocol messages, by printing and potentially recording those messages.
-
-As a piece of <a href="https://www.drdobbs.com/defensive-programming/184401915" target="_blank"> _defensive programming_ </a>, `status` operations use the GPS and the `reckon` function to see if a turtle is where it's expected to be. If it isn't it resets the turtle's position according to the GPS and tacks a (really loud) notice onto the status message.The `core.report` function does much of the same thing for operations where turtle position isn't relevant.
-```Lua
---]]
 local function reckon(message)                                    -- find bad reckoning for turtles if GPS
   ---@diagnostic disable-next-line: undefined-field
   if not _G.turtle then return message end                        -- pointless if not for turtles (in-game)
-  local tx, ty, tz = core.get(); local gx, gy, gz = core.where(); --overloaded by lib/motion
-  if not gx or not gy or not gz then return message end                               -- no GPS assume reckoned
-  local matched = core.round(tx) == core.round(gx) and core.round(ty) == core.round(gy) and
-  core.round(tz) == core.round(gz)
+  local tx, ty, tz = core.get(); local gx, gy, gz = core.where(); -- overloaded by lib/motion
+  if not gx or not gy or not gz then return message end           -- no GPS so assume reckoned
+  local matched = core.round(tx) == core.round(gx) and core.round(ty) == core.round(gy) and core.round(tz) == core.round(gz)
+
   if matched then return message end
+
   local xyz = "x: " .. tx .. " " .. gx .. ", y: " .. ty .. " " .. gy .. ", z: " .. tz .. " " .. gz
   core.set(gx, gy, gz)  -- **SETTING GLOBAL muse.situation.position** (core.set = move.set in lib/places.lua)
   return "\n!!!FIXED!!! " .. xyz .. "\n" .. message
 end
 
 --:# **Logging and Quit Control Globals**
-_G.Muse.log = _G.Muse.log or {};  -- log controls
-_G.Muse.quit = false; 
+_G.Muse.quit, _G.Muse.log = false, _G.Muse.log or {};  -- log controls
 
-function core.quit(value)
-  if value then _G.Muse.quit = value end 
-  return _G.Muse.quit
-end
-
+function core.quit(value) if value then _G.Muse.quit = value end return _G.Muse.quit end
 local function resume() _G.Muse.quit = false end
 
 --:- quit message -> _Set `quit` flag to message; next `core.status` throws `error` to abort operations._
@@ -225,7 +211,7 @@ end
 local logs = {}; --:> core.log: _Closure variable_ -> `{level: closing, file: closing, handle: closing}`
 core.log = {level = core.state(logs, "level"), file = core.state(logs, "file"), handle = core.state(logs, "handle")} --closures
 
-function core.status(level, ...)                                                                                  -- selected messages to player (lower levels are more important, higher are more detailed)
+function core.status(level, ...) -- selected messages to player (lower levels are more important, higher are more detailed)
   --:: core.status(level: #:, ...: any) -> _If level less than (elimination) threshold, then report rest as string._ -> `nil`
   --:+ _If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol._
   --:+ _If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report._
@@ -238,8 +224,7 @@ end; core.hints["status "] = { ["?level ??file"] = {} }
 function core.report(level, ...) -- skip looking at dead reckoning vs. gps
   --:: core.report(level: #:, ...: any) -> _If level less than `status` threshold, report `rest` as string._ -> `nil`
   if core.log.level() and level < core.log.level() then
-    local rest = core.string(...)
-    if rednet then rednet.send(_G.Muse.playerID, rest, "MS") else print(rest) end
+    local rest = core.string(...); if rednet then rednet.send(_G.Muse.playerID, rest, "MS") else print(rest) end
   end; return _G.Muse.quit and quitting()
 end; core.hints["report "] = { ["?level ??file"] = {} }
 
@@ -248,14 +233,14 @@ function core.logging(arguments)
   local level, filename = table.unpack(arguments); level = tonumber(level)
   if not level then return "Status "..core.log.level().." > "..(core.log.file() or "~") end -- **just reporting**
   core.log.level(level); local handled = core.log.handle() -- set level, get handle for open log file if any
-  if not filename and handled then
-    handled:close(); return "Status logging "..core.log.file().." done"
-  end
+
+  if not filename and handled then handled:close(); return "Status logging "..core.log.file().." done" end
   if not filename then return "Status "..core.log.level().." > "..(core.log.file() or "~") end -- no file operation, level set
+
   local logfile = _G.Muse.data..filename..".log"; core.log.file(logfile) -- new log file!
   local removeOK, removeReport = io.open(logfile, "w"):close() -- clear old status log file
   if not removeOK then error("core.logging: Can't remove log file "..logfile.." because "..removeReport) end
-  local filehandle, createReport = io.open(logfile, "a")                              --write file cleaned by read
+  local filehandle, createReport = io.open(logfile, "a")       --write file cleaned by read
   if not filehandle then error("core.logging: Can't create new ".. logfile.. " because "..createReport) end
   core.log.handle(filehandle); -- save the file handle for use by .status daemon call on core.record
 end
@@ -269,24 +254,11 @@ function core.record(message) -- file status messages used by `.status` daemon
   ---@diagnostic disable-next-line: undefined-field
   core.log.handle:flush()
 end
-
---[[
-```
-<a id="trace"></a>
-In-game examination of the call stack on errors is provided by `core.trace`. Desperate times, desperate measures.
-```Lua
---]]
---:: core.trace(err: any) -> _Reports traceback for xpcalls._ -> `err: any`
-function core.trace(err)
-  core.status(1, "core", "trace", debug.traceback())
-  return err
-end                                                                                        -- for `xpcall`
-
 --[[
 ```
 <a id="UI"></a>
-#Command Completion
-As an aid for remembering CLI arguments, `core.completer` enables shell completions in ComputerCraft's CraftOS. They are produced from tables that are defined by libraries creating a CLI and registered during <a href="../.start.html#complete" target="_blank"> session startup</a>. There are two other simple support functions: one, `core.echo` that just returns all of its (variable number of) arguments and one, `core.optionals` that deals with optional arguments distinguished by their type.
+#Command Completion and a Gift Being Simple
+As an aid for remembering CLI arguments, `core.completer` enables shell completions in ComputerCraft's CraftOS in the format it expects. They are produced from tables that are defined by libraries creating a CLI and registered during <a href="_start.html#complete" target="_blank"> session startup</a>. For relief, there are two other simple support functions: one, `core.echo` that just returns all of its (variable number of) arguments and one, `core.optionals` that deals with optional arguments distinguished by their type. You're welcome.
 ```Lua
 --]]
 --:# **User interface utilities**
@@ -314,22 +286,6 @@ function core.optionals(string, number, ...)
   local stringIsNumber = tonumber(string); string = not stringIsNumber and string;
   number = stringIsNumber or number; return string, number, ...
 end
-
---[[
-```
-<a id="compose"/>
-Adapted <a href="https://stackoverflow.com/questions/27170825/composing-two-functions-in-lua" target="_blank"> composition function</a>.
-```Lua
---]]
-function core.compose(...)
-  local functions = { ... };
-  local function compose(i, ...)
-    if i == #functions then return functions[i](...) end
-    return compose(i + 1, functions[i](...))
-  end
-  return function(...) return compose(1, ...) end
-end
-
 --[[
 ```
 <a id="math"></a>
@@ -360,16 +316,13 @@ function core.vectorPairs(start, addend, number, partial) -- each table element 
 end
 --[[
 ```
-More vector arithmetic. And a simple example of <a> href="https://en.wikipedia.org/wiki/Function_composition" target="_blank"> function composition </a>.
+More vector arithmetic. And a simple example of <a href="https://en.wikipedia.org/wiki/Function_composition" target="_blank"> function composition</a>.
 ```Lua
 --]]
 local faces = { -- north (NW: +z, +x); south (SE: -z, -x); west (SW: -z, +x); east (NE: +z, -x)
-  north = function(x, y, z) return x, y, z end,
-  south = function(x, y, z) return -x, y, -z end,
-  east = function(x, y, z) return -x, y, z end,
-  west = function(x, y, z) return x, y, -z end,
-  up = function(x, y, z) return x, y, z end,
-  down = function(x, y, z) return x, -y, z end,
+  north = function(x, y, z) return x, y, z end, south = function(x, y, z) return -x, y, -z end,
+  east = function(x, y, z) return -x, y, z end, west = function(x, y, z) return x, y, -z end,
+  up = function(x, y, z) return x, y, z end, down = function(x, y, z) return x, -y, z end,
   rotate = function(x, y, z) return z, y, x end
 }
 local function composition(f, g) return function(...) return f(g(...)) end end -- and see <a href="compose">core.compose</a>
@@ -382,10 +335,8 @@ function core.orient(vectors, face, rotate)
   --:> core.faces: _Key for composed function dictionary_ -> "north"|"south"|"east"|"west"|"up"|"down"|"rotate"
   local oriented = {}; for index, xyz in pairs(vectors) do -- key of array item  is index of item
     oriented[index] = { facing(face or "rotate", rotate)(table.unpack(xyz)) }
-  end
-  return oriented
+  end; return oriented
 end
-
 --[[
 ```
 <a id="round"></a>
@@ -394,7 +345,6 @@ Here's a simple definition for `round`. Nothing subtle: for its application in M
 --]]
 --:: core.round(n: #:) -> _Next integer down if below half fraction_ -> `#:`
 function core.round(n) return n % 1 >= 0.5 and math.ceil(n) or math.floor(n) end
-
 --[[
 ```
 <a id="inext"></a>
@@ -403,18 +353,12 @@ How to make an iterator that exposes its index. And how to make an iterator for 
 ```Lua
 --]]
 --:# **Example iterator, restartable at index**
-local function iter(a, i)
-  i = i + 1; local v = a[i]; if v then return i, v end
-end
+local function iter(a, i) i = i + 1; local v = a[i]; if v then return i, v end end
 
 --:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `():, {:}, #:`
-function core.inext(table, index)
-  index = index or 0; return iter, table, index
-end
+function core.inext(table, index) index = index or 0; return iter, table, index end
 
---:# **Iterator for coroutine partials of permutations** 
--- </a>adapted from <a href="https://www.lua.org/pil/9.3.html" target="_blank">Programming in Lua</a> <a id="permute">
-
+--:# **Iterator for coroutine partials of permutations** (adapted from <a href="https://www.lua.org/pil/9.3.html" target="_blank">Programming in Lua</a><a id="permute">)
 local function permgen(array, n) 
   if n == 0 then coroutine.yield(array) -- or printResult(a) to test
   else
@@ -426,54 +370,43 @@ local function permgen(array, n)
   end
 end
 
-function core.permute(array) -- return iterator for (factorial) permutations
-  --:: core.permute(array: any[]) -> _Iterator for permutations of array_ -> `():`
-  return coroutine.wrap(function() permgen(array, #array) end)
-end
-
-function core.map(op, table) 
-  --:# <a href="https://en.wikipedia.org/wiki/Map_(higher-order_function)" target="_blank">On Map</a>
+function core.permute(array) return coroutine.wrap(function() permgen(array, #array) end) end
+--:: core.permute(array: any[]) -> _Iterator for (factorial) permutations of array_ -> `():`
+--[[
+```
+<a id="map/reduce"></a>
+#Higher Order Functions
+Mostly just to show how they might be modelled: some implementations of `map`, `reduce` (in some computer languages called `fold`), and `compose`.
+```Lua
+--]]
+--:# **Abstracting over actions: reference implementations of some higher order functions**
+function core.map(op, table) -- <a href="https://en.wikipedia.org/wiki/Map_(higher-order_function)" target="_blank">**map**</a>
   --:: core.map(op: ():, table: {:}) -> _Create_ `result` _by applying_ `op` _function to elements of_ `table` -> `{:}`
   local result = {}; for index, element in pairs(table) do result[index] = op(element) end
-  return result
+  return result 
 end
 
-function core.reduce(op, initial, table) 
-  --:#<a href="https://dgr.github.io/clojurecrazy/2022/01/09/reduce-my-favorite-clojure-function.html" target="_blank">On Fold</a>
+function core.reduce(op, initial, table) -- <a href="https://dgr.github.io/clojurecrazy/2022/01/09/reduce-my-favorite-clojure-function.html" target="_blank">**fold/reduce**</a>
   --:: core.reduce(op: ():, initial: any, table: {:}) -> _Fold_ `table` _to produce_ `result` _by applying_ `op` _to_ `table` -> `any`
   local result = initial; for _, item in ipairs(table) do result = op(result, item) end
   return result
 end
 
---[[
-```
-<a id="findItems"></a>
-A completely straight forward implementation (for a change).
-```Lua
---]]
---:# **Lowest level turtle and mock turtle support used by several libraries including lib/motion**
-function core.findItems(targets) -- nil if no slot with target otherwise slot detail, does selection
-  --:: core.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`, #:?, ^:?
-  --:> detail: _Defined by Computercraft_ -> `{name: detail.name, count: detail.count, damage: detail.damage}`
-  --:> detail.name: _Prepended by the mod name `"minecraft:"`._ -> `":"`
-  --:> detail.count: _Available in inventory_ -> `#:`
-  --:> detail.damage: _Distinguishing value_ -> `#:`
-  ---@diagnostic disable-next-line: undefined-field
-  local slots = _G.turtle and _G.Muse.slots or #turtle.slots -- for out-of-game testing
-  for i = 1, slots do
-    local detail = turtle.getItemDetail(i)
-    for _, target in ipairs(targets) do  -- if target == "" then return true end --TODO: OK??
-      if detail and detail.name == target then return detail, i, turtle.select(i) end -- select if success
-    end
-  end; return nil
+function core.compose(...) -- An adapted implementation of <a href="https://stackoverflow.com/questions/27170825/composing-two-functions-in-lua" target="_blank">**compose**</a> <a id="compose"/>
+  --:: core.compose(...: ():): -> _Produce function equivqlent to sucessive application of argument functions_ -> ():
+  local functions = { ... };
+  local function compose(i, ...)
+    if i == #functions then return functions[i](...) end
+    return compose(i + 1, functions[i](...))
+  end; return function(...) return compose(1, ...) end
 end
-
 --[[
 ```
 <a id="outgame"></a>
-Support for out-of-game (debugging) operations.
+#Support for out-of-game (debugging) ComputerCraft `os` operations.
 ```Lua
 --]]
+--:# **When there's no OS, mock it**
 --:: core.sleep(#:?) -> _Mocks sleep as null operation out of game._ -> `nil`
 ---@diagnostic disable-next-line: undefined-field
 core.sleep = os.sleep or function() return nil end -- mock out-of-game

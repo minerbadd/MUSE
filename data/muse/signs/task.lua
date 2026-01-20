@@ -14,8 +14,8 @@ local  task, _task = {}, {}
 function task.op() end
 
 -- Tasks
--- _task.doTask(arguments: _task.puts, op: ():, clear: ^:, fill: ":"?, targets: ":"[]?):  ":" &!` <-
+-- _task.doTask(arguments: _task.puts, op: ():, clear: ^:, fill?: ":", targets?: ":"[]):  ":" &!` <-
 
----@type fun( arguments: _task.puts,  op: function,  clear: boolean,  fill: string?,  targets: string[]):   string 
+---@type fun( arguments: _task.puts,  op: function,  clear: boolean,  fill?: string,  targets?: string[]):   string 
 function _task.doTask() end
 return { task =  task, _task = _task}

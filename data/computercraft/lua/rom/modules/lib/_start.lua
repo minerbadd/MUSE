@@ -84,9 +84,7 @@ Using <a href="../lib/core.html#completer" target="_blank"> `core.completer`</a>
 --]]
 --:# _Register completions for local and remote commands_
 local function complete(completions)
-  for command, completion in pairs(completions) do 
-    shell.setCompletionFunction(command, core.completer(completion)) 
-  end
+  for command, completion in pairs(completions) do shell.setCompletionFunction(command, core.completer(completion)) end
 end; complete(net.hints)
 --[[
 ```

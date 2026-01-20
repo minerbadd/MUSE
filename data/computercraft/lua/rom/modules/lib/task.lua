@@ -1,13 +1,15 @@
+---@diagnostic disable: duplicate-set-field
 --[[
 ## Task Commands for Turtles: lib/task
 ```md
 --:! {task: [":"]: (): } <- **Command Line Library for Tasks: Low Level Turtle Operations** -> muse/docs/lib/task.md  
 --:| task: _Dispatch targets for_ `net` _library._ -> task, _task
 ```
-The `task` library uses the `direction` table abstractions built by `lib/turtle` to provide the new and improved turtle. It supports a few tasks, like `dig`, done while in motion. Those use the `step` closures of motion last seen in `lib/motion`. For motions along trails, it folds and xyz change into a scalar direction for the change. Finally, it uses the same implementation pattern for CLI support as other CLLs. 
+Like `roam`, which was about motion, the `task` library provides for command line specified operations. This time, for the other things turtles can do. The `task` library uses the `direction` table abstractions built by `lib/turtle` to further extend the new and improved turtle. It also supports a few tasks, like `dig`, done while in motion. Those use the `step` closures of motion developed in `lib/motion`. For motions along trails, because motion along trails is in one direction at a time, it folds `xyz` vectors into a scalar direction for each point along the trail. Might be a useful trick for other structures that look something like vectors. Finally, to do what it's mainly for, it uses the same implementation pattern for CLI support as other CLLs. 
  ```Lua
 --]]
-local task, _task = {}, {}; task.hints =  {} ---@module "signs.task" -- exports, internal for analysis, CLI hints
+local tasks = require("signs.task"); tasks.task, tasks._task = {}, {}; local task, _task = tasks.task, tasks._task
+task.hints =  {} ---@module "signs.task" -- exports, internal for analysis, CLI hints
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
@@ -80,12 +82,10 @@ end; task.hints["suck"] = {["?direction "] = {["?count"] = {}}}
 ```Lua
 --]]
 local function doOnce(puttings, op, fill, targets) 
-  
   for _, direction in ipairs(puttings) do 
     local ok, result = core.pass(pcall(op, getDirection(direction, true), fill, targets)) -- **do the task op**
     if not ok then return "Task failed "..direction.." because "..result end
   end; return "done "..table.concat(puttings, " ").." to "..move.ats() 
-  
 end
 
 local function doMany(distance, towards, puttings, op, clear, fill, targets)
@@ -93,7 +93,7 @@ local function doMany(distance, towards, puttings, op, clear, fill, targets)
   if not distance then move[towards](0); return doOnce(puttings, op, fill, targets) end
   
   for code, remaining, ats in step[towards](tonumber(distance)) do -- e.g., step.east
-    if code ~= "done" then return false, "Failed: "..code.." at "..ats..", "..remaining.." blocks remaining" end
+    if code ~= "done" then return "Failed: "..code.." at "..ats..", "..remaining.." blocks remaining" end
     if clear then turtle.unblock(towards) end
     doOnce(puttings, op, fill, targets); move[towards](0) -- and reorient after op
   end; return "done "..distance.." blocks "..towards.." "..table.concat(puttings, " ").." to "..move.ats()
@@ -104,7 +104,7 @@ local to = {[0] = "here", [2] = "west", [3] = "east", [4] = "down", [5] = "up", 
 
 local function getAim(situation) -- `situation` is target, get direction to aim the movement always one axis at a time.
   local x, y, z = move.get(); local sx, sy, sz = move.get(situation); local dx, dy, dz = sx - x, sy - y, sz - z
-  local distance = math.abs(dx) + math.abs(dy) + math.abs(dz); local flip = dx + dy + dz -- **flip: requires but one dx, dy, dz ~= 0**
+  local distance = math.abs(dx) + math.abs(dy) + math.abs(dz);local flip = dx + dy + dz -- **flip: requires only one dx, dy, dz > 0**
   local aims = (dx == 0 and 0 or 2) + (dy == 0 and 0 or 4) + (dz == 0 and 0 or 8) -- fold axes, missing elements for errors
   local code = aims + (flip > 0 and 1 or 0); local direction = to[code] -- `here` is 0, `west/east` etc +/- for `flip`
   assert(direction, "task.getAim: too many directions to move at once")
@@ -112,8 +112,8 @@ local function getAim(situation) -- `situation` is target, get direction to aim 
 end
 
 local function doAlong(trail, puttings, op, clear, fill, targets)
----@diagnostic disable-next-line: missing-parameter
-  moves.to(trail); local name, label, situations = place.track(trail); 
+  moves.to(trail); local name, label, situations = place.track(trail)
+  assert(situations, "task.doAlong: can't find "..trail )
   for _, situation in ipairs(situations) do 
     local towards, distance = getAim(situation)
     if distance > 0 then doMany(distance, towards, puttings, op, clear, fill, targets) end
@@ -122,10 +122,11 @@ local function doAlong(trail, puttings, op, clear, fill, targets)
 end
 
 function _task.doTask(arguments, op, clear, fill, targets) 
-  --:: `_task.doTask(arguments: _task.puts, op: ():, clear: ^:, fill: ":"?, targets: ":"[]?)`-> _Tasks_ -> ":" &!`
+  --:: `_task.doTask(arguments: _task.puts, op: ():, clear: ^:, fill?: ":", targets?: ":"[])`-> _Tasks_ -> ":" &!`
   --:> `_task.puts: _Common arguments_ -> `[direction: ":", distance: #:, puttings: ":"[] ]`
   local direction, distance = table.unpack(arguments); local puttings = {table.unpack(arguments, 3)} -- puttings: ":"[]
   if direction == "along" then return doAlong(distance, puttings, op, clear, fill, targets) end -- `distance` alias `trail`
+---@diagnostic disable-next-line: cast-local-type, param-type-mismatch
   direction, distance = core.optionals(direction, distance) -- 
   local toward = getDirection(direction, true) -- supress error for bogus directions like "here"
   if toward then return doMany(distance, toward, puttings, op, clear, fill, targets) end -- `doMany` checks no distance

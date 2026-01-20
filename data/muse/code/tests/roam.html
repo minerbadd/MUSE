@@ -7,7 +7,7 @@
 <body>
 <script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
 
-<h2>Test: <code>tests/roam</code> for turtle movement command library: <code>go</code>, <code>to</code>, <code>trace</code>, <code>come</code> <code>tail</code> </h2>
+<h2>Test: <code>tests/roam</code> for the turtle movement command library: <code>go</code>, <code>to</code>, <code>trace</code>, <code>come</code> <code>tail</code> </h2>
 <pre><code class="language-markdown">
 --:? muse/docs/tests/roaam.txt <- <b>Test <code>lib/roam</code></b> -> muse/docs/tests/roam.md 
 </code></pre>
@@ -28,7 +28,7 @@ local text = "Beginning "..testName..".lua test at "..move.ats()
 
 local test = check.open(testName, text, regression) --:# Create the test object for this test
 
-turtle.blocking(false); core.log.level(3); place.site("TR")
+turtle.blocking(false); place.site("TR")
 
 --:# Setup place and trail names for tests
 place.fix({10,25,35,"west"}); place.name("test2", "label2")

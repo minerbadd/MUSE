@@ -87,9 +87,7 @@ Using <a href="../lib/core.html#completer" target="_blank"> <code>core.completer
 <pre><code class="language-lua">
 --:# <i>Register completions for local and remote commands</i>
 local function complete(completions)
-  for command, completion in pairs(completions) do 
-    shell.setCompletionFunction(command, core.completer(completion)) 
-  end
+  for command, completion in pairs(completions) do shell.setCompletionFunction(command, core.completer(completion)) end
 end; complete(net.hints)
 </code></pre>
 <a id="dds"></a> 

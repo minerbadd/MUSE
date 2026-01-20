@@ -27,6 +27,18 @@
 
 --:: move.set(x: #:, y: #:, z: #:, f: facing?, fuels: #:??, level: ":"???) -> _Set position, optionally rest of situation._ -> `nil`  
 
+--:# **Lowest level turtle and mock turtle support used by low level libraries including lib/motion**  
+
+--:: move.findItems(targets: ":"[]) -> _Selects found slot._ -> `detail?`, #:?, ^:?  
+
+--:> detail: _Defined by Computercraft_ -> `{name: detail.name, count: detail.count, damage: detail.damage}`  
+
+--:> detail.name: _Prepended by the mod name `"minecraft:"`._ -> `":"`  
+
+--:> detail.count: _Available in inventory_ -> `#:`  
+
+--:> detail.damage: _Distinguishing value_ -> `#:`  
+
 --:: move.situation() -> _Clone current situation_ -> situation  
 
 --:: move.situations() -> _Deep copy `_G.Muse.situations`._ ->  situations  

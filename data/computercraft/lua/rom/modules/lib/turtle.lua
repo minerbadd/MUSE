@@ -75,7 +75,7 @@ Passing interfaces through as if they were part of the `turtle` library complete
 ```Lua
 --]]
 --:# **Function References**
-turtle.find = core.findItems --:= core.findItems:: turtle.find -- `core.findItems` gets mocked turtle if not in-game
+turtle.find = move.findItems --:= move.findItems:: turtle.find -- `move.findItems` gets mocked turtle if not in-game
 --[[
 ```
 <a id="inventory"></a> 

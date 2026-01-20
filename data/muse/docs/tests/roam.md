@@ -1,5 +1,7 @@
 --:? muse/docs/tests/roaam.txt <- **Test `lib/roam`** -> muse/docs/tests/roam.md   
 
+--:# Test attack, change, find, look, drop, suck, dig, put, and compare commands  
+
 --:# Set configuration globals for tests by loading `lib/check`  
 
 --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`  
@@ -10,12 +12,10 @@
 
 --:# Create the test object for this test  
 
---:# Setup place and trail names for tests  
+--:# Test simple operations: look, attack, find, drop, suck, compare  
 
---:# Test commands: `go`, `to`, `trace`, `come`  
+--:# Test dig, put, change with directions and distance  
 
---:# Test "empty" (too far for fuel)  
-
---:# Test successful and failing permutation retry  
+--:# Test dig, put, and change `along`  
 
 --:# Close test object, report completion if we got here without errors  

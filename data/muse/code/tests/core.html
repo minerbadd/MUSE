@@ -7,17 +7,117 @@
 <body>
 <script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
 
---:? muse/docs/tests/core.txt <- <b>Run Regression Test for Muse</b> -> muse/docs/tests/core.md  
 <p>
--- <b>Tests for lib/core</b>.log
+-- TODO: write unit tests!
 <p>
-dofile(arg[0]:match('.*[/\\]').."preface.lua") -- set test environment using <code>preface</code> in execution path
+--:! {core:[":"]: ():} <- Core Functions Library -> muse/docs/tests/core.md    
+--:| core: Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support. -> core  
 <p>
-local core = require("core").core -- 
-local log = _G.Muse.log
-local loggings = {level = core.state(log, "level")}
-loggings.level(5)
-print(loggings.level())
+<p>
+--:! {core:[":"]: ():} <- Core Functions Library -> muse/docs/lib/core.md    
+--:| core: Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support. -> core  
+<p>
+--:# Managing state: clone table, generate closure for session (non-persistent) state, cache loads  
+<p>
+--:: core.clone(source: {:}|any) -> Deep copy source table or return source if not table. -> {:}|any  
+<p>
+--:> closing: Returns value or sets it and optional table entry to non nil value.  -> (value: any): value: any  
+<p>
+--:: core.state(table: {:}?, key: ":"?) -> Returns closure over closure variable -> closing  
+<p>
+--:# Table Utilities: merging tables and finding common items in a pair of tables  
+<p>
+--:: core.merge(...: {:}) -> Merge any number of flat tables into one, allowing repeats. -> {:}  
+<p>
+--:: core.match(tableA: any[], tableB: any[]) -> Find first matching item in pair of item tables. -> nil | any  
+<p>
+--:# Making Strings: both instantiable strings and simple single quoted strings for printing  
+<p>
+--:: core.serialize(input: any) -> Executable string to instantiate input. -> "return "..":" &!  
+<p>
+--:: core.string(...: any) -> Makes string from any inputs, simplifies single entry tables. -> ":"  
+<p>
+--:: core.xyzf(:xyzf:) -> Returns specially formatted string for xyzf. -> ":"  
+<p>
+--:> xyzf: Position and facing as table -> [x: #:, y: #:, z: #:, facing: ":"?]  
+<p>
+--:# Handling errors and reporting operations  
+<p>
+--:: core.pass(ok: ^:, ...: any) -> Pass input but report string if not ok. -> ok: true|false, result: ...|":", any?  
+<p>
+--:: core.trace(err: any) -> Reports traceback for xpcalls. -> err: any  
+<p>
+--:: core.where() -> GPS location if available. -> x: #:|false, y: #:|false, z: #:|false  
+<p>
+--:# Logging and Quit Control Globals  
+<p>
+--:- quit message -> Set quit flag to message; next core.status throws error to abort operations.  
+<p>
+--:> core.log: Closure variable -> {level: closing, file: closing, handle: closing}  
+<p>
+--:: core.status(level: #:, ...: any) -> If level less than (elimination) threshold, then report rest as string. -> nil    
+--:+ If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol.    
+--:+ If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.  
+<p>
+--:: core.report(level: #:, ...: any) -> If level less than status threshold, report rest as string. -> nil  
+<p>
+--:: core.logging(arguments: {level: #:, filename: ":"}) -> Set threshold level [and local log file] for status reports -> nil  
+<p>
+--:: core.record(message: ":") -> Appends (status) message to log file on player. -> nil & !  
+<p>
+--:# User interface utilities  
+<p>
+--:: core.completer(completions: {:}) -> Register command completions for shell -> ():  
+<p>
+--:: core.echo(...: any) -> For testing; just returns its arguments. -> ...: any  
+<p>
+--:- echo arguments ... -> For testing: just returns its arguments.  
+<p>
+--:: core.optionals(string: ":"?, number: #:?, ...: any) -> Optional number and/or string. -> string: ":"|false, number: #:|false, ...: any  
+<p>
+--:# Math utilities  
+<p>
+--:: core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?) -> Make plots. -> bounds[]    
+--:+ Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result.    
+--:+ The number n is the number of bounds in result where each bound is offset by addend from the prior bounds.    
+--:+ Optionally the partial bounds are included as the first bounds in the result.  
+<p>
+--:> bounds: Vector pair defining a rectangular solid -> [xyz, xyz]  
+<p>
+--:> xyz: Minecraft coordinates: +x: east, +y: up, +z: south -> [x: #:, y: #:, z: #:]  
+<p>
+--:: core.orient(vectors: xyzMap, face: ":"?, rotate: ":"??) -> Three dimensional rotation -> xyzMap    
+--:+ Turn from up north to face, default for no face is to rotate -90 degrees.  
+<p>
+--:> xyzMap: Table of vectors either an array or dictionary -> xyz[] | [core.faces]: xyz  
+<p>
+--:> core.faces: Key for composed function dictionary -> "north"|"south"|"east"|"west"|"up"|"down"|"rotate"  
+<p>
+--:: core.round(n: #:) -> Next integer down if below half fraction -> #:  
+<p>
+--:# Example iterator, restartable at index  
+<p>
+--:: core.inext(table: {:}, index: #:) -> Iterator over table beginning at index. -> ():, {:}, #:  
+<p>
+--:# Iterator for coroutine partials of permutations (adapted from Programming in Lua)  
+<p>
+--:: core.permute(array: any[]) -> Iterator for (factorial) permutations of array -> ():  
+<p>
+--:: core.map(op: ():, table: {:}) -> Create result by applying op function to elements of table -> {:}  
+<p>
+--:: core.reduce(op: ():, initial: any, table: {:}) -> Fold table to produce result by applying op to table -> any  
+<p>
+--:# An adapted implementation of compose   
+<p>
+--:: core.sleep(#:?) -> Mocks sleep as null operation out of game. -> nil  
+<p>
+--:: core.getComputerID(id: #:?) -> Out of game returns id; id ignored in game. -> id: #:  
+<p>
+--:: core.getComputerLabel(label: ":"?) -> Out of game returns label; label ignored in game. -> label: ":"  
+<p>
+--:: core.setComputerLabel(label: ":") -> Sets (out-of game global) label -> label: ":"  
+<p>
+<p>
 <p>
   </body> 
 </html>

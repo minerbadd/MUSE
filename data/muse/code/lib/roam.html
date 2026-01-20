@@ -7,13 +7,15 @@
 <body>
 <script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
 
+---@diagnostic disable: duplicate-set-field
 <h2>Commands <code>go</code>, <code>to</code>, <code>trace</code>, <code>come</code> <code>tail</code> : lib/roam</h2>
 <pre><code class="language-markdown">
 --:! {roam: [":"]: ():} <- <b>Command Line Library for Turtle Movement</b> -> muse/docs/lib/roam.md  
 --:| roam: <i>Server (turtle) side support for</i> <code>come</code> <i>and</i> <code>tail</code>, <i>as well as chained</i> <code>go</code> <i>commands, motion</i> <code>to</code> <i>or</i> <code>trace</code>. -> roam
 </code></pre>
 <pre><code class="language-lua">
-local roam = {}; roam.hints = {} ---@module "signs.roam" -- for functions exported from library
+local roams = require("signs.roam"); roams.roam = {}; local roam = roams.roam ---@module "signs.roam" 
+roam.hints = {} ---@module "signs.roam" -- for functions exported from library
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
@@ -80,12 +82,15 @@ roam.tail = roam.come; roam.hints["tail"] = {["?rate"] = {}} -- separate but equ
 </code></pre>
 <a id="to"></a> 
 <h3>Coordinate Movement: <code>to</code> a <code>place</code> or a `position</h3>
-The <code>to</code> function is used in order to move to a <code>position</code> (with <code>move.to</code>) or a <code>place</code> (with <code>moves.to</code>). Tries all permutations
+The <code>to</code> function is used in order to move to a <code>position</code> (with <code>move.to</code>) or a <code>place</code> (with <code>moves.to</code>). Tries all permutations.
+<p>
+There's also some mysterious stuff around <code>roam.hints</code>. The stuff populates a table used by <a href="core.html#UI" target = "_blank"><code>core.completion</code> to provide shell completions in ComputerCraft's CraftOS in the format that it expects.
 <pre><code class="language-lua">
 local function to(arguments) 
   --:- to place | x y z face?-> <i>To named place or position and face. Retry permutation for different first direction.</i> 
   local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
   local toPlace = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
+---@diagnostic disable-next-line: param-type-mismatch
   local ttx, tty, ttz = table.unpack(toPlace); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- <b>do it!</b>
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
 </code></pre>

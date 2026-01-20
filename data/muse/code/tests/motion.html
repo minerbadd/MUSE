@@ -30,7 +30,6 @@ local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind <code>testName</code> as 
 local text = "Beginning "..testName..".lua test at "..move.ats()
 local test = check.open(testName, text, regression) --:# Create the test object for this test
 
-
 turtle.blocking(false) 
 
 --:# <b>Test simple <code>move</code> motions</b>

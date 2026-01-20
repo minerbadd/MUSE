@@ -22,7 +22,6 @@ local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind `testName` as the last wo
 local text = "Beginning "..testName..".lua test at "..move.ats()
 local test = check.open(testName, text, regression) --:# Create the test object for this test
 
-
 turtle.blocking(false) 
 
 --:# **Test simple `move` motions**

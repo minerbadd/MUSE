@@ -33,7 +33,7 @@
 
 --:# **Function References**  
 
---:: turtle.find -- `core.findItems` gets mocked turtle if not in-game(targets: ":"[]) -> _Selects found slot._ -> `detail?`, #:?, ^:?  
+--:: turtle.find -- `move.findItems` gets mocked turtle if not in-game(targets: ":"[]) -> _Selects found slot._ -> `detail?`, #:?, ^:?  
 
 --:# **Item name and turtle status utilities** (don't exist in-game so not mocked)  
 
