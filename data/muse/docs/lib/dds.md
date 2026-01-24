@@ -11,7 +11,7 @@
 
 --:: dds.roleID(role: ":") -> _ID for a Muse role_ -> `ID: #:`   
 
---:: dds.role(ID: ":") ->  _Label for a Muse role_ -> `role: ":"`  
+--:: dds.role(ID: #:) ->  _Label for a Muse role_ -> `role: ":"`  
 
 --:: dds.hosts() -> _Populates players IDs and labels using a MQ rednet protocol._ -> `IDs, roles`  
 

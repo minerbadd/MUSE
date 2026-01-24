@@ -47,7 +47,7 @@ _G.Muse.roles = _G.Muse.roles or -- for out-game
 local IDs, roles, landed = _G.Muse.IDs, _G.Muse.roles, _G.Muse.landed
 
 function dds.roleID(role) return IDs[role] end --:: dds.roleID(role: ":") -> <i>ID for a Muse role</i> -> <code>ID: #:</code> 
-function dds.role(ID) return roles[ID] end --:: dds.role(ID: ":") ->  <i>Label for a Muse role</i> -> <code>role: ":"</code>
+function dds.role(ID) return roles[ID] end --:: dds.role(ID: #:) ->  <i>Label for a Muse role</i> -> <code>role: ":"</code>
 </code></pre>
 <a id="request"></a> 
 The player sends a <code>request</code> for MUSE roles (as ComputerCraft labels) to all computers registered as `MQ protocol hosts and gets a count of them. 

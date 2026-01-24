@@ -25,9 +25,9 @@ function dds.roleID() end
 
 
 -- Label for a Muse role
--- dds.role(ID: ":"):  `role: ":"` <-
+-- dds.role(ID: #:):  `role: ":"` <-
 
----@type fun( ID: string):   role: string 
+---@type fun( ID: number):   role: string 
 function dds.role() end
 
 -- Populates players IDs and labels using a MQ rednet protocol.

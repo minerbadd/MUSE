@@ -843,9 +843,9 @@ CLL to align MUSE location with Minecraft coordinates and activate a range as a 
 }
 ,
   ["_dds.role:_"] = {
-  ["line"] = "function dds.role(ID) return roles[ID] end --:: dds.role(ID: \":\") ->  _Label for a Muse role_ -> `role: \":\"`",
+  ["line"] = "function dds.role(ID) return roles[ID] end --:: dds.role(ID: #:) ->  _Label for a Muse role_ -> `role: \":\"`",
   ["kind"] = "face",
-  ["sign"] = "dds.role(ID: \":\")  ",
+  ["sign"] = "dds.role(ID: #:)  ",
   ["out"] = " `role: \":\"`",
   ["text"] = "Label for a Muse role",
 }
@@ -2078,7 +2078,7 @@ ComputerCraft label as MUSE role",
   ["role"] = {
   ["returns"] = " `role: \":\"` <-\
 ",
-  ["args"] = "ID: \":\"",
+  ["args"] = "ID: #:",
   ["type"] = "function",
   ["name"] = "dds.role",
   ["description"] = "\

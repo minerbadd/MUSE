@@ -40,7 +40,7 @@ _G.Muse.roles = _G.Muse.roles or -- for out-game
 local IDs, roles, landed = _G.Muse.IDs, _G.Muse.roles, _G.Muse.landed
 
 function dds.roleID(role) return IDs[role] end --:: dds.roleID(role: ":") -> _ID for a Muse role_ -> `ID: #:` 
-function dds.role(ID) return roles[ID] end --:: dds.role(ID: ":") ->  _Label for a Muse role_ -> `role: ":"`
+function dds.role(ID) return roles[ID] end --:: dds.role(ID: #:) ->  _Label for a Muse role_ -> `role: ":"`
 --[[
 ```
 <a id="request"></a> 
