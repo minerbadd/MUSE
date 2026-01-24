@@ -11,12 +11,18 @@
 
 --:# turtle.item(slot: #:?) ->  _Detail of specified or currently selected slot._ -> `nil | detail`  
 
---:# _Inspection shows dirt for down direction, otherwise nothing._  
+--:# turtle.refuel(): -> _Reset fuel level_ -> `^:`  
+
+--:# turtle.getFuelLevel(): -> _Return fuel level_ -> `#:`  
+
+--:# _Inspection by_ `turtle.inspect()` _shows dirt for down direction, coal for up, otherwise nothing._  
 
 --:# _Turns just report success, other motions decrement the simulated fuel and report success unless blocked._    
 --:+ _Only forward motion can be blocked in simulation._  
 
 --:# _Primitive turtle operations are mocked: attack, dig, place, detect, compare, drop, and suck._  
+
+--:# _Only_ `turtle.digDown()` _is blockable_  
 
 --:# _A few command computer operations are mocked: `getBlockPosition`, `getBlockInfo`, and `exec`._  
 

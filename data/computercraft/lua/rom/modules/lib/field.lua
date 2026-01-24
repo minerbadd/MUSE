@@ -134,7 +134,7 @@ function _field.execute(plans, levels, fieldings, planName)
   end; if plans.last then local ok, report = executePlan(plans.last, levels); 
     if not ok then error("field.execute: Last "..report) end 
   end-- finish with y-movement to position for fill (if any)
-  turtle.blocking(0) -- out-game testing: disable blocking for finish operations 
+  turtle.blocking(false) -- out-game testing: disable blocking for finish operations 
   return planName..": "..core.string(fieldings) 
 end
 --[[

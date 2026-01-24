@@ -78,8 +78,8 @@ Tasks",
 }
 ,
   ["_core.clone:_"] = {
-  ["line"] = "--:: core.clone(source: {:}|any) -> Deep copy source table or return source if not table. -> {:}|any  ",
-  ["out"] = " {:}|any  ",
+  ["line"] = "  --:: core.clone(source: {:}|any) -> _Deep copy source table or return source if not table._ -> `{:}|any`",
+  ["out"] = " `{:}|any`",
   ["sign"] = "core.clone(source: {:}|any)  ",
   ["kind"] = "face",
   ["text"] = "Deep copy source table or return source if not table.",
@@ -94,16 +94,16 @@ Tasks",
 }
 ,
   ["_core.sleep:_"] = {
-  ["line"] = "--:: core.sleep(#:?) -> Mocks sleep as null operation out of game. -> nil  ",
-  ["out"] = " nil  ",
+  ["line"] = "--:: core.sleep(#:?) -> _Mocks sleep as null operation out of game._ -> `nil`",
+  ["out"] = " `nil`",
   ["sign"] = "core.sleep(#:?)  ",
   ["kind"] = "face",
   ["text"] = "Mocks sleep as null operation out of game.",
 }
 ,
   ["_core.string:_"] = {
-  ["line"] = "--:: core.string(...: any) -> Makes string from any inputs, simplifies single entry tables. -> \":\"  ",
-  ["out"] = " \":\"  ",
+  ["line"] = "function core.string(...) --:: core.string(...: any) -> _Makes string from any inputs, simplifies single entry tables._ -> `\":\"`",
+  ["out"] = " `\":\"`",
   ["sign"] = "core.string(...: any)  ",
   ["kind"] = "face",
   ["text"] = "Makes string from any inputs, simplifies single entry tables.",
@@ -409,8 +409,8 @@ Iterator: first to next situation of place. If the named place is the head of a 
 }
 ,
   ["_core.permute:_"] = {
-  ["line"] = "--:: core.permute(array: any[]) -> Iterator for (factorial) permutations of array -> ():  ",
-  ["out"] = " ():  ",
+  ["line"] = "--:: core.permute(array: any[]) -> _Iterator for (factorial) permutations of array_ -> `():`",
+  ["out"] = " `():`",
   ["sign"] = "core.permute(array: any[])  ",
   ["kind"] = "face",
   ["text"] = "Iterator for (factorial) permutations of array",
@@ -456,11 +456,11 @@ Iterator: first to next situation of place. If the named place is the head of a 
 }
 ,
   ["_core.report:_"] = {
-  ["line"] = "--:: core.report(level: #:, ...: any) -> If level less than status threshold, report rest as string. -> nil  ",
-  ["out"] = " nil  ",
+  ["line"] = "  --:: core.report(level: #:, ...: any) -> _If level less than `status` threshold, report `rest` as string._ -> `nil`",
+  ["out"] = " `nil`",
   ["sign"] = "core.report(level: #:, ...: any)  ",
   ["kind"] = "face",
-  ["text"] = "If level less than status threshold, report rest as string.",
+  ["text"] = "If level less than `status` threshold, report `rest` as string.",
 }
 ,
   ["_quit_"] = {
@@ -744,8 +744,8 @@ CLL operates plan to manage mines: shaft, bore, move to posts (between and withi
 }
 ,
   ["_place.fix:_"] = {
-  ["line"] = "--:: place.fix(:xyzf:, track: ^:?) -> _Sets situation position, can start tracking for trail._ -> `xyzf`  ",
-  ["out"] = " `xyzf`  ",
+  ["line"] = "--:: place.fix(:xyzf:, track: ^:?) -> _Sets situation position, can start tracking for trail._ -> `xyzf` ",
+  ["out"] = " `xyzf` ",
   ["sign"] = "place.fix(:xyzf:, track: ^:?)  ",
   ["kind"] = "face",
   ["text"] = "Sets situation position, can start tracking for trail.",
@@ -767,8 +767,8 @@ CLL operates plan to manage mines: shaft, bore, move to posts (between and withi
 }
 ,
   ["_core.completer:_"] = {
-  ["line"] = "--:: core.completer(completions: {:}) -> Register command completions for shell -> ():  ",
-  ["out"] = " ():  ",
+  ["line"] = "function core.completer(completions) --:: core.completer(completions: {:}) -> _Register command completions for shell_ -> `():`",
+  ["out"] = " `():`",
   ["sign"] = "core.completer(completions: {:})  ",
   ["kind"] = "face",
   ["text"] = "Register command completions for shell",
@@ -820,16 +820,16 @@ CLL to align MUSE location with Minecraft coordinates and activate a range as a 
 }
 ,
   ["_core.round:_"] = {
-  ["line"] = "--:: core.round(n: #:) -> Next integer down if below half fraction -> #:  ",
-  ["out"] = " #:  ",
+  ["line"] = "--:: core.round(n: #:) -> _Next integer down if below half fraction_ -> `#:`",
+  ["out"] = " `#:`",
   ["sign"] = "core.round(n: #:)  ",
   ["kind"] = "face",
   ["text"] = "Next integer down if below half fraction",
 }
 ,
   ["_core.state:_"] = {
-  ["line"] = "--:: core.state(table: {:}?, key: \":\"?) -> Returns closure over closure variable -> closing  ",
-  ["out"] = " closing  ",
+  ["line"] = "  --:: core.state(table: {:}?, key: \":\"?) -> _Returns closure over closure variable_ -> `closing`",
+  ["out"] = " `closing`",
   ["sign"] = "core.state(table: {:}?, key: \":\"?)  ",
   ["kind"] = "face",
   ["text"] = "Returns closure over closure variable",
@@ -1675,11 +1675,11 @@ Planting through blockages and in several directions. Putting item and replacing
 }
 ,
   ["_core.xyzf:_"] = {
-  ["line"] = "--:: core.xyzf(:xyzf:) -> Returns specially formatted string for xyzf. -> \":\"  ",
-  ["out"] = " \":\"  ",
+  ["line"] = "function core.xyzf(xyzf) --:: core.xyzf(:xyzf:) -> _Returns specially formatted string for `xyzf`._ -> `\":\"`",
+  ["out"] = " `\":\"`",
   ["sign"] = "core.xyzf(:xyzf:)  ",
   ["kind"] = "face",
-  ["text"] = "Returns specially formatted string for xyzf.",
+  ["text"] = "Returns specially formatted string for `xyzf`.",
 }
 ,
   ["_move.right:_"] = {
@@ -1885,8 +1885,8 @@ CLL for `book` and `port` commands assessing and clearing player inventory for s
 }
 ,
   ["_core.logging:_"] = {
-  ["line"] = "--:: core.logging(arguments: {level: #:, filename: \":\"}) -> Set threshold level [and local log file] for status reports -> nil  ",
-  ["out"] = " nil  ",
+  ["line"] = "  --:: core.logging(arguments: {level: #:, filename: \":\"}) -> _Set threshold level [and local log file] for status reports_ -> `nil`",
+  ["out"] = " `nil`",
   ["sign"] = "core.logging(arguments: {level: #:, filename: \":\"})  ",
   ["kind"] = "face",
   ["text"] = "Set threshold level [and local log file] for status reports",
@@ -2009,8 +2009,8 @@ Go to marker and bore Use shaft plans and bore plans to navigate to marker, bore
 }
 ,
   ["_core.pass:_"] = {
-  ["line"] = "--:: core.pass(ok: ^:, ...: any) -> Pass input but report string if not ok. -> ok: true|false, result: ...|\":\", any?  ",
-  ["out"] = " ok: true|false, result: ...|\":\", any?  ",
+  ["line"] = "  --:: core.pass(ok: ^:, ...: any) -> _Pass input but report string if not ok._ -> ok: `true|false, result: ...|\":\", any?`",
+  ["out"] = " ok: `true|false, result: ...|\":\", any?`",
   ["sign"] = "core.pass(ok: ^:, ...: any)  ",
   ["kind"] = "face",
   ["text"] = "Pass input but report string if not ok.",
@@ -2134,8 +2134,8 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["_core.serialize:_"] = {
-  ["line"] = "--:: core.serialize(input: any) -> Executable string to instantiate input. -> \"return \"..\":\" &!  ",
-  ["out"] = " \"return \"..\":\" &!  ",
+  ["line"] = "--:: core.serialize(input: any) -> _Executable string to instantiate input._ -> `\"return \"..\":\" &!`",
+  ["out"] = " `\"return \"..\":\" &!`",
   ["sign"] = "core.serialize(input: any)  ",
   ["kind"] = "face",
   ["text"] = "Executable string to instantiate input.",
@@ -2158,11 +2158,11 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["_core.map:_"] = {
-  ["line"] = "--:: core.map(op: ():, table: {:}) -> Create result by applying op function to elements of table -> {:}  ",
-  ["out"] = " {:}  ",
+  ["line"] = "  --:: core.map(op: ():, table: {:}) -> _Create_ `result` _by applying_ `op` _function to elements of_ `table` -> `{:}`",
+  ["out"] = " `{:}`",
   ["sign"] = "core.map(op: ():, table: {:})  ",
   ["kind"] = "face",
-  ["text"] = "Create result by applying op function to elements of table",
+  ["text"] = "Create `result` _by applying_ `op` _function to elements of_ `table",
 }
 ,
   ["__field.fillTill:_"] = {
@@ -2182,8 +2182,8 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["_core.getComputerID:_"] = {
-  ["line"] = "--:: core.getComputerID(id: #:?) -> Out of game returns id; id ignored in game. -> id: #:  ",
-  ["out"] = " id: #:  ",
+  ["line"] = "--:: core.getComputerID(id: #:?) -> _Out of game returns id; id ignored in game._ -> `id: #:`",
+  ["out"] = " `id: #:`",
   ["sign"] = "core.getComputerID(id: #:?)  ",
   ["kind"] = "face",
   ["text"] = "Out of game returns id; id ignored in game.",
@@ -2237,8 +2237,8 @@ Associates computer IDs with labels (as Muse roles) using Muse Query (MQ) rednet
 }
 ,
   ["_core.merge:_"] = {
-  ["line"] = "--:: core.merge(...: {:}) -> Merge any number of flat tables into one, allowing repeats. -> {:}  ",
-  ["out"] = " {:}  ",
+  ["line"] = "function core.merge(...) --:: core.merge(...: {:}) -> _Merge any number of flat tables into one, allowing repeats._ -> `{:}`",
+  ["out"] = " `{:}`",
   ["sign"] = "core.merge(...: {:})  ",
   ["kind"] = "face",
   ["text"] = "Merge any number of flat tables into one, allowing repeats.",
@@ -2888,7 +2888,7 @@ Looks up index in name [defaults to current situation].",
 }
 ,
   ["fix"] = {
-  ["returns"] = " `xyzf`   <-\
+  ["returns"] = " `xyzf`  <-\
 ",
   ["args"] = ":xyzf:, track: ^:?",
   ["type"] = "function",
@@ -3062,8 +3062,8 @@ Work functions boring, navigating, and mining ore in a grid of tunnels._ -> grid
 }
 ,
   ["_core.trace:_"] = {
-  ["line"] = "--:: core.trace(err: any) -> Reports traceback for xpcalls. -> err: any  ",
-  ["out"] = " err: any  ",
+  ["line"] = "--:: core.trace(err: any) -> _Reports traceback for xpcalls._ -> `err: any`",
+  ["out"] = " `err: any`",
   ["sign"] = "core.trace(err: any)  ",
   ["kind"] = "face",
   ["text"] = "Reports traceback for xpcalls.",
@@ -3150,8 +3150,8 @@ Command Line Library providing turtle operations used by remote library (effecti
 }
 ,
   ["_core.status:_"] = {
-  ["line"] = "--:: core.status(level: #:, ...: any) -> If level less than (elimination) threshold, then report rest as string. -> nil    ",
-  ["out"] = " nil    ",
+  ["line"] = "  --:: core.status(level: #:, ...: any) -> _If level less than (elimination) threshold, then report rest as string._ -> `nil`",
+  ["out"] = " `nil`",
   ["sign"] = "core.status(level: #:, ...: any)  ",
   ["kind"] = "face",
   ["text"] = "If level less than (elimination) threshold, then report rest as string.",
@@ -3213,11 +3213,11 @@ Command Line Library providing turtle operations used by remote library (effecti
 }
 ,
   ["_core.reduce:_"] = {
-  ["line"] = "--:: core.reduce(op: ():, initial: any, table: {:}) -> Fold table to produce result by applying op to table -> any  ",
-  ["out"] = " any  ",
+  ["line"] = "  --:: core.reduce(op: ():, initial: any, table: {:}) -> _Fold_ `table` _to produce_ `result` _by applying_ `op` _to_ `table` -> `any`",
+  ["out"] = " `any`",
   ["sign"] = "core.reduce(op: ():, initial: any, table: {:})  ",
   ["kind"] = "face",
-  ["text"] = "Fold table to produce result by applying op to table",
+  ["text"] = "Fold `table` _to produce_ `result` _by applying_ `op` _to_ `table",
 }
 ,
   ["_shaft_"] = {
@@ -3298,8 +3298,8 @@ Command Line Library providing turtle operations used by remote library (effecti
 }
 ,
   ["_core.inext:_"] = {
-  ["line"] = "--:: core.inext(table: {:}, index: #:) -> Iterator over table beginning at index. -> ():, {:}, #:  ",
-  ["out"] = " ():, {:}, #:  ",
+  ["line"] = "--:: core.inext(table: {:}, index: #:) -> _Iterator over table beginning at index._ -> `():, {:}, #:`",
+  ["out"] = " `():, {:}, #:`",
   ["sign"] = "core.inext(table: {:}, index: #:)  ",
   ["kind"] = "face",
   ["text"] = "Iterator over table beginning at index.",
@@ -3362,8 +3362,8 @@ Command Line Library providing turtle operations used by remote library (effecti
 }
 ,
   ["_core.vectorPairs:_"] = {
-  ["line"] = "--:: core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?) -> Make plots. -> bounds[]    ",
-  ["out"] = " bounds[]    ",
+  ["line"] = "  --:: core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?) -> _Make plots._ -> `bounds[]`",
+  ["out"] = " `bounds[]`",
   ["sign"] = "core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?)  ",
   ["kind"] = "face",
   ["text"] = "Make plots.",
@@ -3414,8 +3414,8 @@ Move from first to second situation of place. If the named place is the head of 
 }
 ,
   ["_core.match:_"] = {
-  ["line"] = "--:: core.match(tableA: any[], tableB: any[]) -> Find first matching item in pair of item tables. -> nil | any  ",
-  ["out"] = " nil | any  ",
+  ["line"] = "  --:: core.match(tableA: any[], tableB: any[]) -> _Find first matching item in pair of item tables._ -> `nil` | `any`",
+  ["out"] = " `nil` | `any`",
   ["sign"] = "core.match(tableA: any[], tableB: any[])  ",
   ["kind"] = "face",
   ["text"] = "Find first matching item in pair of item tables.",
@@ -3506,8 +3506,8 @@ Move from first to second situation of place. If the named place is the head of 
 }
 ,
   ["_core.echo:_"] = {
-  ["line"] = "--:: core.echo(...: any) -> For testing; just returns its arguments. -> ...: any  ",
-  ["out"] = " ...: any  ",
+  ["line"] = "--:: core.echo(...: any) -> _For testing; just returns its arguments._ -> ...: `any`",
+  ["out"] = " ...: `any`",
   ["sign"] = "core.echo(...: any)  ",
   ["kind"] = "face",
   ["text"] = "For testing; just returns its arguments.",
@@ -3524,7 +3524,7 @@ Move from first to second situation of place. If the named place is the head of 
   ["core"] = {
   ["childs"] = {
   ["merge"] = {
-  ["returns"] = " {:}   <-\
+  ["returns"] = " `{:}` <-\
 ",
   ["args"] = "...: {:}",
   ["type"] = "function",
@@ -3534,7 +3534,7 @@ Merge any number of flat tables into one, allowing repeats.",
 }
 ,
   ["serialize"] = {
-  ["returns"] = " \"return \"..\":\" &!   <-\
+  ["returns"] = " `\"return \"..\":\" &!` <-\
 ",
   ["args"] = "input: any",
   ["type"] = "function",
@@ -3544,35 +3544,35 @@ Executable string to instantiate input.",
 }
 ,
   ["xyzf"] = {
-  ["returns"] = " \":\"   <-\
+  ["returns"] = " `\":\"` <-\
 ",
   ["args"] = ":xyzf:",
   ["type"] = "function",
   ["name"] = "core.xyzf",
   ["description"] = "\
-Returns specially formatted string for xyzf.",
+Returns specially formatted string for `xyzf`.",
 }
 ,
-  ["round"] = {
-  ["returns"] = " #:   <-\
+  ["match"] = {
+  ["returns"] = " `nil` | `any` <-\
 ",
-  ["args"] = "n: #:",
+  ["args"] = "tableA: any[], tableB: any[]",
   ["type"] = "function",
-  ["name"] = "core.round",
+  ["name"] = "core.match",
   ["description"] = "\
-Next integer down if below half fraction",
+Find first matching item in pair of item tables.",
 }
 ,
   [":bounds"] = {
   ["type"] = "value",
-  ["returns"] = " [xyz, xyz]  ",
+  ["returns"] = " `[xyz, xyz]`",
   ["name"] = "bounds",
   ["description"] = "\
 Vector pair defining a rectangular solid",
 }
 ,
   ["optionals"] = {
-  ["returns"] = " string: \":\"|false, number: #:|false, ...: any   <-\
+  ["returns"] = " `string: \":\"|false, number: #:|false, ...: any` <-\
 ",
   ["args"] = "string: \":\"?, number: #:?, ...: any",
   ["type"] = "function",
@@ -3581,8 +3581,18 @@ Vector pair defining a rectangular solid",
 Optional number and/or string.",
 }
 ,
+  ["compose"] = {
+  ["returns"] = " (): <-\
+",
+  ["args"] = "...: ():",
+  ["type"] = "function",
+  ["name"] = "core.compose",
+  ["description"] = "\
+Produce function equivqlent to sucessive application of argument functions",
+}
+,
   ["record"] = {
-  ["returns"] = " nil & !   <-\
+  ["returns"] = " `nil & !` <-\
 ",
   ["args"] = "message: \":\"",
   ["type"] = "function",
@@ -3592,7 +3602,7 @@ Appends (status) message to log file on player.",
 }
 ,
   ["setComputerLabel"] = {
-  ["returns"] = " label: \":\"   <-\
+  ["returns"] = " `label: \":\"` <-\
 ",
   ["args"] = "label: \":\"",
   ["type"] = "function",
@@ -3602,7 +3612,7 @@ Sets (out-of game global) label",
 }
 ,
   ["orient"] = {
-  ["returns"] = " xyzMap     <-\
+  ["returns"] = " `xyzMap` <-\
 ",
   ["args"] = "vectors: xyzMap, face: \":\"?, rotate: \":\"??",
   ["type"] = "function",
@@ -3612,17 +3622,17 @@ Three dimensional rotation Turn from up north to face, default for no face is to
 }
 ,
   ["reduce"] = {
-  ["returns"] = " any   <-\
+  ["returns"] = " `any` <-\
 ",
   ["args"] = "op: ():, initial: any, table: {:}",
   ["type"] = "function",
   ["name"] = "core.reduce",
   ["description"] = "\
-Fold table to produce result by applying op to table",
+Fold `table` _to produce_ `result` _by applying_ `op` _to_ `table",
 }
 ,
   ["trace"] = {
-  ["returns"] = " err: any   <-\
+  ["returns"] = " `err: any` <-\
 ",
   ["args"] = "err: any",
   ["type"] = "function",
@@ -3632,7 +3642,7 @@ Reports traceback for xpcalls.",
 }
 ,
   ["state"] = {
-  ["returns"] = " closing   <-\
+  ["returns"] = " `closing` <-\
 ",
   ["args"] = "table: {:}?, key: \":\"?",
   ["type"] = "function",
@@ -3642,7 +3652,7 @@ Returns closure over closure variable",
 }
 ,
   ["sleep"] = {
-  ["returns"] = " nil   <-\
+  ["returns"] = " `nil` <-\
 ",
   ["args"] = "#:?",
   ["type"] = "function",
@@ -3653,14 +3663,14 @@ Mocks sleep as null operation out of game.",
 ,
   [":xyzf"] = {
   ["type"] = "value",
-  ["returns"] = " [x: #:, y: #:, z: #:, facing: \":\"?]  ",
+  ["returns"] = " `[x: #:, y: #:, z: #:, facing: \":\"?]`",
   ["name"] = "xyzf",
   ["description"] = "\
 Position and facing as table",
 }
 ,
   ["getComputerID"] = {
-  ["returns"] = " id: #:   <-\
+  ["returns"] = " `id: #:` <-\
 ",
   ["args"] = "id: #:?",
   ["type"] = "function",
@@ -3671,43 +3681,43 @@ Out of game returns id; id ignored in game.",
 ,
   [":closing"] = {
   ["type"] = "value",
-  ["returns"] = " (value: any): value: any  ",
+  ["returns"] = " `(value: any): value: any`",
   ["name"] = "closing",
   ["description"] = "\
-Returns value or sets it and optional table entry to non nil value.",
+Returns value or sets it and optional table entry to non `nil` `value`.",
 }
 ,
   ["report"] = {
-  ["returns"] = " nil   <-\
+  ["returns"] = " `nil` <-\
 ",
   ["args"] = "level: #:, ...: any",
   ["type"] = "function",
   ["name"] = "core.report",
   ["description"] = "\
-If level less than status threshold, report rest as string.",
+If level less than `status` threshold, report `rest` as string.",
 }
 ,
   [":xyz"] = {
   ["type"] = "value",
-  ["returns"] = " [x: #:, y: #:, z: #:]  ",
+  ["returns"] = " `[x: #:, y: #:, z: #:]`",
   ["name"] = "xyz",
   ["description"] = "\
 Minecraft coordinates: +x: east, +y: up, +z: south",
 }
 ,
-  ["pass"] = {
-  ["returns"] = " ok: true|false, result: ...|\":\", any?   <-\
+  ["logging"] = {
+  ["returns"] = " `nil` <-\
 ",
-  ["args"] = "ok: ^:, ...: any",
+  ["args"] = "arguments: {level: #:, filename: \":\"}",
   ["type"] = "function",
-  ["name"] = "core.pass",
+  ["name"] = "core.logging",
   ["description"] = "\
-Pass input but report string if not ok.",
+Set threshold level [and local log file] for status reports",
 }
 ,
   [":core.log"] = {
   ["type"] = "value",
-  ["returns"] = " {level: closing, file: closing, handle: closing}  ",
+  ["returns"] = " `{level: closing, file: closing, handle: closing}`",
   ["name"] = "core.log",
   ["description"] = "\
 Closure variable",
@@ -3715,14 +3725,14 @@ Closure variable",
 ,
   [":xyzMap"] = {
   ["type"] = "value",
-  ["returns"] = " xyz[] | [core.faces]: xyz  ",
+  ["returns"] = " `xyz[] | [core.faces]: xyz`",
   ["name"] = "xyzMap",
   ["description"] = "\
 Table of vectors either an array or dictionary",
 }
 ,
   ["vectorPairs"] = {
-  ["returns"] = " bounds[]     <-\
+  ["returns"] = " `bounds[]` <-\
 ",
   ["args"] = "start: bounds, addend: xyz, number: #:, partial: bounds?",
   ["type"] = "function",
@@ -3732,7 +3742,7 @@ Make plots. Addend is used to create a vector pair to be added cumulatively begi
 }
 ,
   ["clone"] = {
-  ["returns"] = " {:}|any   <-\
+  ["returns"] = " `{:}|any` <-\
 ",
   ["args"] = "source: {:}|any",
   ["type"] = "function",
@@ -3742,7 +3752,7 @@ Deep copy source table or return source if not table.",
 }
 ,
   ["status"] = {
-  ["returns"] = " nil     <-\
+  ["returns"] = " `nil` <-\
 ",
   ["args"] = "level: #:, ...: any",
   ["type"] = "function",
@@ -3752,7 +3762,7 @@ If level less than (elimination) threshold, then report rest as string. If playe
 }
 ,
   ["completer"] = {
-  ["returns"] = " ():   <-\
+  ["returns"] = " `():` <-\
 ",
   ["args"] = "completions: {:}",
   ["type"] = "function",
@@ -3761,38 +3771,28 @@ If level less than (elimination) threshold, then report rest as string. If playe
 Register command completions for shell",
 }
 ,
-  ["match"] = {
-  ["returns"] = " nil | any   <-\
+  ["round"] = {
+  ["returns"] = " `#:` <-\
 ",
-  ["args"] = "tableA: any[], tableB: any[]",
+  ["args"] = "n: #:",
   ["type"] = "function",
-  ["name"] = "core.match",
+  ["name"] = "core.round",
   ["description"] = "\
-Find first matching item in pair of item tables.",
+Next integer down if below half fraction",
 }
 ,
-  ["getComputerLabel"] = {
-  ["returns"] = " label: \":\"   <-\
+  ["pass"] = {
+  ["returns"] = " ok: `true|false, result: ...|\":\", any?` <-\
 ",
-  ["args"] = "label: \":\"?",
+  ["args"] = "ok: ^:, ...: any",
   ["type"] = "function",
-  ["name"] = "core.getComputerLabel",
+  ["name"] = "core.pass",
   ["description"] = "\
-Out of game returns label; label ignored in game.",
-}
-,
-  ["map"] = {
-  ["returns"] = " {:}   <-\
-",
-  ["args"] = "op: ():, table: {:}",
-  ["type"] = "function",
-  ["name"] = "core.map",
-  ["description"] = "\
-Create result by applying op function to elements of table",
+Pass input but report string if not ok.",
 }
 ,
   ["string"] = {
-  ["returns"] = " \":\"   <-\
+  ["returns"] = " `\":\"` <-\
 ",
   ["args"] = "...: any",
   ["type"] = "function",
@@ -3801,26 +3801,36 @@ Create result by applying op function to elements of table",
 Makes string from any inputs, simplifies single entry tables.",
 }
 ,
-  ["inext"] = {
-  ["returns"] = " ():, {:}, #:   <-\
+  ["map"] = {
+  ["returns"] = " `{:}` <-\
 ",
-  ["args"] = "table: {:}, index: #:",
+  ["args"] = "op: ():, table: {:}",
   ["type"] = "function",
-  ["name"] = "core.inext",
+  ["name"] = "core.map",
   ["description"] = "\
-Iterator over table beginning at index.",
+Create `result` _by applying_ `op` _function to elements of_ `table",
+}
+,
+  ["getComputerLabel"] = {
+  ["returns"] = " `label: \":\"` <-\
+",
+  ["args"] = "label: \":\"?",
+  ["type"] = "function",
+  ["name"] = "core.getComputerLabel",
+  ["description"] = "\
+Out of game returns label; label ignored in game.",
 }
 ,
   [":core.faces"] = {
   ["type"] = "value",
-  ["returns"] = " \"north\"|\"south\"|\"east\"|\"west\"|\"up\"|\"down\"|\"rotate\"  ",
+  ["returns"] = " \"north\"|\"south\"|\"east\"|\"west\"|\"up\"|\"down\"|\"rotate\"",
   ["name"] = "core.faces",
   ["description"] = "\
 Key for composed function dictionary",
 }
 ,
   ["permute"] = {
-  ["returns"] = " ():   <-\
+  ["returns"] = " `():` <-\
 ",
   ["args"] = "array: any[]",
   ["type"] = "function",
@@ -3829,8 +3839,18 @@ Key for composed function dictionary",
 Iterator for (factorial) permutations of array",
 }
 ,
+  ["inext"] = {
+  ["returns"] = " `():, {:}, #:` <-\
+",
+  ["args"] = "table: {:}, index: #:",
+  ["type"] = "function",
+  ["name"] = "core.inext",
+  ["description"] = "\
+Iterator over table beginning at index.",
+}
+,
   ["where"] = {
-  ["returns"] = " x: #:|false, y: #:|false, z: #:|false   <-\
+  ["returns"] = " `x: #:|false, y: #:|false, z: #:|false` <-\
 ",
   ["args"] = "",
   ["type"] = "function",
@@ -3839,18 +3859,8 @@ Iterator for (factorial) permutations of array",
 GPS location if available.",
 }
 ,
-  ["logging"] = {
-  ["returns"] = " nil   <-\
-",
-  ["args"] = "arguments: {level: #:, filename: \":\"}",
-  ["type"] = "function",
-  ["name"] = "core.logging",
-  ["description"] = "\
-Set threshold level [and local log file] for status reports",
-}
-,
   ["echo"] = {
-  ["returns"] = " ...: any   <-\
+  ["returns"] = " ...: `any` <-\
 ",
   ["args"] = "...: any",
   ["type"] = "function",
@@ -3866,7 +3876,7 @@ For testing; just returns its arguments.",
   ["type"] = "lib",
   ["name"] = "core",
   ["description"] = "\
-Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support. -> core",
+Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support._ -> core",
 }
 ,
   ["check"] = {
@@ -4088,8 +4098,8 @@ Given a_ `plan`, _create a table of operations to be performed by_ `worker.execu
 }
 ,
   ["_core.setComputerLabel:_"] = {
-  ["line"] = "--:: core.setComputerLabel(label: \":\") -> Sets (out-of game global) label -> label: \":\"  ",
-  ["out"] = " label: \":\"  ",
+  ["line"] = "--:: core.setComputerLabel(label: \":\") -> _Sets (out-of game global) label_ -> `label: \":\"`",
+  ["out"] = " `label: \":\"`",
   ["sign"] = "core.setComputerLabel(label: \":\")  ",
   ["kind"] = "face",
   ["text"] = "Sets (out-of game global) label",
@@ -4205,8 +4215,8 @@ Serialize server request.",
 }
 ,
   ["_core.optionals:_"] = {
-  ["line"] = "--:: core.optionals(string: \":\"?, number: #:?, ...: any) -> Optional number and/or string. -> string: \":\"|false, number: #:|false, ...: any  ",
-  ["out"] = " string: \":\"|false, number: #:|false, ...: any  ",
+  ["line"] = "  --:: core.optionals(string: \":\"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: \":\"|false, number: #:|false, ...: any`",
+  ["out"] = " `string: \":\"|false, number: #:|false, ...: any`",
   ["sign"] = "core.optionals(string: \":\"?, number: #:?, ...: any)  ",
   ["kind"] = "face",
   ["text"] = "Optional number and/or string.",
@@ -4236,8 +4246,8 @@ Serialize server request.",
 }
 ,
   ["_core.getComputerLabel:_"] = {
-  ["line"] = "--:: core.getComputerLabel(label: \":\"?) -> Out of game returns label; label ignored in game. -> label: \":\"  ",
-  ["out"] = " label: \":\"  ",
+  ["line"] = "--:: core.getComputerLabel(label: \":\"?) -> _Out of game returns label; label ignored in game._ -> `label: \":\"`",
+  ["out"] = " `label: \":\"`",
   ["sign"] = "core.getComputerLabel(label: \":\"?)  ",
   ["kind"] = "face",
   ["text"] = "Out of game returns label; label ignored in game.",
@@ -4501,8 +4511,8 @@ Replaces game definitions, unifies operations to all directions: north, east, so
 }
 ,
   ["_core.where:_"] = {
-  ["line"] = "--:: core.where() -> GPS location if available. -> x: #:|false, y: #:|false, z: #:|false  ",
-  ["out"] = " x: #:|false, y: #:|false, z: #:|false  ",
+  ["line"] = "function core.where() --:: core.where() -> _GPS location if available._ -> `x: #:|false, y: #:|false, z: #:|false`",
+  ["out"] = " `x: #:|false, y: #:|false, z: #:|false`",
   ["sign"] = "core.where()  ",
   ["kind"] = "face",
   ["text"] = "GPS location if available.",
@@ -4599,16 +4609,16 @@ Replaces game definitions, unifies operations to all directions: north, east, so
 }
 ,
   ["_core.record:_"] = {
-  ["line"] = "--:: core.record(message: \":\") -> Appends (status) message to log file on player. -> nil & !  ",
-  ["out"] = " nil & !  ",
+  ["line"] = "  --:: core.record(message: \":\") -> _Appends (status) message to log file on player._ -> `nil & !`",
+  ["out"] = " `nil & !`",
   ["sign"] = "core.record(message: \":\")  ",
   ["kind"] = "face",
   ["text"] = "Appends (status) message to log file on player.",
 }
 ,
   ["_core.orient:_"] = {
-  ["line"] = "--:: core.orient(vectors: xyzMap, face: \":\"?, rotate: \":\"??) -> Three dimensional rotation -> xyzMap    ",
-  ["out"] = " xyzMap    ",
+  ["line"] = "  --:: core.orient(vectors: xyzMap, face: \":\"?, rotate: \":\"??) -> _Three dimensional rotation_ -> `xyzMap`",
+  ["out"] = " `xyzMap`",
   ["sign"] = "core.orient(vectors: xyzMap, face: \":\"?, rotate: \":\"??)  ",
   ["kind"] = "face",
   ["text"] = "Three dimensional rotation",

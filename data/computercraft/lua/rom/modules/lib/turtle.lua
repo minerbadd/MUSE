@@ -89,7 +89,7 @@ local slots = _G.turtle and _G.Muse.slots or #mock.slots -- test environment not
 
 function turtle.inventory()  
   --:: turtle.inventory() -> _Returns currrent turtle inventory as turtle detail table_. -> `detail[]`
-  local inventoryTable = {}; for i = 1, slots do local detail = turtle.getItemDetail(i)
+  local inventoryTable = {}; for i = 1, slots do local detail = mock.getItemDetail(i)
     if detail then inventoryTable[#inventoryTable + 1] = {detail.name, detail.count, detail.damage} end
   end; return inventoryTable 
 end;
@@ -146,7 +146,7 @@ function turtle.fuel() --:- fueling -> _Returns energy available in turtle slots
   --:: turtle.fuel() -> _Total energy actually available in turtle slots plus turtle fuel level._ -> `fuelTotal: #:`
   local fuelTotal =  0; for i = 1, slots do local detail = mock.getItemDetail(i) -- from turtle if in game
     if detail then local energy = fuelEnergy[detail.name] or 0; fuelTotal = fuelTotal + (energy * detail.count) end
-  end; return fuelTotal + turtle.getFuelLevel()
+  end; return fuelTotal + mock.getFuelLevel()
 end; 
 --[[
 ```
@@ -214,9 +214,14 @@ end
 --:# For testing; `blocked` is a boolean or a number counted down to end blocking (of course, not used in-game)
 local blocked = false
 
-local function setBlocked() _G.Muse.blocked = type(blocked) == "number" and blocked > 0 or blocked; return _G.Muse.blocked end 
 local function ab(value) return type(value) == "number" and math.abs(value) or value end
 local function less(value) return type(value) == "number" and (value > 0 and value - 1 or value) or value end
+
+local function setBlocked() 
+  if (type(blocked) == "number" and blocked <= 0) then blocked = false end
+  _G.Muse.blocked = type(blocked) == "number" and blocked > 0 or blocked; 
+  return _G.Muse.blocked 
+end 
 
 --:# turtle.block(blocker: #:?) -> _Counts down if number, reports or sets_ `blocked` _status for debug_ -> blocked: `^:`
 function turtle.blocking(blocker) -- doesn't exist in game so not mockable

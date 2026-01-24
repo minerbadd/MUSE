@@ -5,7 +5,7 @@
 The first chunk of code using ComputerCraft that we'll look at is the `lib/motion` module. Of course, it's about moving turtles. Each <a href="https://en.wikipedia.org/wiki/Library_(computing)" target="_blank">
 _library_</a>, in the module is a collection of code elements for moving turtles in some way. Libraries often build upon each other. That's the case for MUSE and since `lib/motion` is fundamental in that build, it's where we'll start our exploration. 
 
-It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Spoonful of sugar time I'm afraid. Without the sugar. Buckle up.
+It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Not much consoolation, but a number of the other modules read more simply. Spoonful of sugar time I'm afraid. Without the sugar. Buckle up.
 
 We'll use this module to illustrate how functions, a fundamental part of Lua, are used to implement our libraries. We'll also use it to introduce some ideas for managing the <a href="https://en.wikipedia.org/wiki/State_(computer_science)" target="_blank">
 _state_</a> of a turtle and handling the history of that state.
@@ -32,7 +32,7 @@ We load `signs.motion` to allow <a href="https://luals.github.io/wiki/type-check
 --]]
 local motion = require("signs.motion"); motion.move, motion.step = {}, {} ---@module "signs.motion" 
 local move, step = motion.move, motion.step
- --[[
+--[[
 ```
 As mentioned, the exported APIs for these libraries is provided in two tables of functions: `move` and `step`.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the module with<a href="https://www.lua.org/pil/8.1.html" target="_blank"> `require` </a> returns these tables. Just below we'll see that done for libraries that `lib/motion` depends on. 
 
@@ -163,7 +163,7 @@ The local function global mutators are collected together here as well. (Yes, th
 --]]
 local function situation(setting) _G.Muse.situation = setting or _G.Muse.situation; return _G.Muse.situation end
 local function situations(setting) _G.Muse.situations = setting or _G.Muse.situations; return _G.Muse.situations end
-local function situationsUpdate(update) _G.Muse.situations[#_G.Muse.situations+ 1] = update; return _G.Muse.situations end
+local function situationsUpdate(update)_G.Muse.situations[#_G.Muse.situations+ 1] = update; return _G.Muse.situations end
 --[[
 ```
 There's a design decision in foregoing the introduction of 

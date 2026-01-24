@@ -16,7 +16,7 @@ local motion = require("motion"); local move, step = motion.move, motion.step --
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle" -- just for blocking
 
 local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
-core.log.level(regression and 0 or 5) --:# Set log level default. Set lower to report less, higher to report more
+core.log.level(regression and 0 or 3) --:# Set log level default. Set lower to report less, higher to report more
 
 local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind `testName` as the last word (without extension) in the execution path
 local text = "Beginning "..testName..".lua test at "..move.ats()
@@ -72,7 +72,7 @@ test.part("steps 1 forward 3", more, move.ats())
 test.part("steps 2 forward 3", more, move.ats())
 test.part("steps 3 forward 3", more, move.ats())
 test.part("steps 4 forward 3", more, move.ats()) 
---]]
+
 --:# Check "step.to 105 156 207 west")
 for code, remaining, at, direction, all in step.to({105, 156, 207}) do 
   test.part(move.ats(), check.echo, code, remaining, core.string(at), direction, all)
@@ -80,18 +80,18 @@ end;
 
 test.part("stepped to", check.echo, core.ats())
 
-local function blockedStep(stepping, target) 
+local function blockedStep(target) -- so `step.to` is protected in `test.part` `pcall`
   for code, remaining, at, direction, all in step.to(target) do 
-    test.part(stepping, move.ats(), check.echo, code, remaining, at, direction, all)
+    test.part(move.ats(), check.echo, code, remaining, at, direction, all)
   end 
 end
 
 --:# Check blocked step operations
 turtle.blocking(true) -- blocked in lib/motion xyzMotion
-test.part("blocked step", blockedStep, 28, {106, 157, 208})
+test.part("blocked step", blockedStep, {106, 157, 208})
 turtle.blocking(false) -- unblocked in lib/motion xyzMotion
 
---:# Check tracking
+--:# Test tracking
 test.part("start tracking", move.tracking, true)
 move.forward(5); move.up(5); move.back(5); move.down(5)
 test.part("situations", move.situations)

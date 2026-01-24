@@ -51,7 +51,7 @@
 
 --:# **Support for trails (names and labels for sequences of situations)**  
 
---:: place.fix(:xyzf:, track: ^:?) -> _Sets situation position, can start tracking for trail._ -> `xyzf`    
+--:: place.fix(:xyzf:, track: ^:?) -> _Sets situation position, can start tracking for trail._ -> `xyzf`   
 
 --:: place.trail(headName: ":", tailName: ":", label: ":") -> _Makes two places._ -> `headSerial: ":", tailSerial: ":", count: #:`    
 --:+ _Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.  

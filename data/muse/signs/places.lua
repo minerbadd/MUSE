@@ -87,9 +87,9 @@ function place.qualify() end
 function place.site() end
 
 -- Sets situation position, can start tracking for trail.
--- place.fix(:xyzf:, track: ^:?):  `xyzf`   <-
+-- place.fix(:xyzf:, track: ^:?):  `xyzf`  <-
 
----@type fun( xyzf: xyzf,  track: boolean?):   xyzf   
+---@type fun( xyzf: xyzf,  track: boolean?):   xyzf  
 function place.fix() end
 
 -- Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return order of situation in global places and the serialized situation including its features.

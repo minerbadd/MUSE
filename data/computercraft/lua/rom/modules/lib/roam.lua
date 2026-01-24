@@ -31,8 +31,11 @@ local function toAxes(change, currentAxes, targetAxes)
     for _, axis in ipairs(change) do -- set up to try `move.to`
       currentAxes[axis] = targets[axis] or currentAxes[axis] 
     end; -- if failure, get another permutation; otherwise, try the next axis of the permutation
-    core.status(5, "roam axes", change, currentAxes, targetAxes)
-    if move.to({currentAxes.x, currentAxes.y, currentAxes.z, "north"}) ~= "done" then return end
+    core.status(5, "roam axes", change, currentAxes, targetAxes) -- protected call: `move.to` throws errors
+    local ok, _, recovery = core.pass(pcall(move.to, {currentAxes.x, currentAxes.y, currentAxes.z, "north"}))
+    if not ok then local _, code = table.unpack(recovery)
+      if code == "blocked" then turtle.blocking(); return end
+    end
   end; return "done" -- success! (`move.to` worked for movement along each axis)
 end
 
@@ -59,7 +62,7 @@ end
 local function moving(tx, ty, tz, ttx, tty, ttz, op) -- `op` is `roam.come` or `to`
   local fuelOK, message = fueling(tx, ty, tz, ttx, tty, ttz); if not fuelOK then return "empty", message end
   local code, at = moveHere(tx, ty, tz, ttx, tty, ttz), move.ats()
-  return code == "done" and "At "..at.." "..message or op..code.." at "..at -- failure report
+  return code == "done" and "at "..at.." "..message or op..code.." at "..at -- failure report
 end
 
 --:: roam.come(:xyz:) -> _Server (turtle) side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come. -> `":" &:`
@@ -166,7 +169,7 @@ end
 function roam.op(arguments) --:: roam.op(arguments: ":"[]) -> _Move turtle:_ -> `":" &:`
   local from = here() -- as a defensive move, check dead reckoning
   local roamOK, message = core.pass(pcall(ops[arguments[1]], arguments))
-  return roamOK and message.." "..from or "Roam failed to "..arguments[1].." in "..core.string(arguments).." because "..message
+  return roamOK and message.." from "..from or "roam failed "..arguments[1].." in "..core.string(arguments).." because "..message
 end
 
 return {roam = roam}

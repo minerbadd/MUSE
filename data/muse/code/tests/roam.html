@@ -9,7 +9,7 @@
 
 <h2>Test: <code>tests/roam</code> for the turtle movement command library: <code>go</code>, <code>to</code>, <code>trace</code>, <code>come</code> <code>tail</code> </h2>
 <pre><code class="language-markdown">
---:? muse/docs/tests/roaam.txt <- <b>Test <code>lib/roam</code></b> -> muse/docs/tests/roam.md 
+--:? muse/docs/tests/roam.txt <- <b>Test <code>lib/roam</code></b> -> muse/docs/tests/roam.md 
 </code></pre>
 <pre><code class="language-lua">
 local check = require("check").check --:# Set configuration globals for tests by loading <code>lib/check</code>
@@ -27,26 +27,24 @@ local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind <code>testName</code> as 
 local text = "Beginning "..testName..".lua test at "..move.ats()
 
 local test = check.open(testName, text, regression) --:# Create the test object for this test
-
+--
 turtle.blocking(false); place.site("TR")
 
 --:# Setup place and trail names for tests
 place.fix({10,25,35,"west"}); place.name("test2", "label2")
-place.fix({10,20,30,"east", true}); place.name("test1", "label1"); moves.to("test2") -- situations from from test1 to test2
+place.fix({10,20,30,"east"}, true); place.name("test1", "label1"); moves.to("test2") -- situations from from test1 to test2
 place.trail("head1", "tail2", "trail12") -- head1: from test1 to test2; tail2: from test2 back to test1
-
 --:# Test commands: <code>go</code>, <code>to</code>, <code>trace</code>, <code>come</code>
 test.part("go and return", roam.op, {"go", "e", "4", "w", "4", "d", "u"})
 test.part("to test1", roam.op, {"to", "test1"}) -- to 10,20,30,"east"
 test.part("to {20,30,40,'east'}", roam.op, {"to", "20", "30", "40", "east"})
 test.part("trace head1", roam.op, {"trace", "head1"}) -- to 10, 20, 30
-test.message("From "..core.string(place.xyzf()).." to near "..core.string{15,25,35})
+test.message("come from "..core.string(place.xyzf()).."to near "..core.string{15,25,35})
 test.part("come {15,25,35}", roam.come, {15,25,35})
 
 --:# Test "empty" (too far for fuel)
 local fuel, at = turtle.fuel(), move.at(); local atx, aty, atz = table.unpack(at)
 test.part("to too far", roam.op, {"to", atx + fuel + 1, aty, atz})
-
 --:# Test successful and failing permutation retry
 roam.op({"to", "test1"}); turtle.blocking(3)
 test.part("retry ok", roam.op, {"to", "test2"})

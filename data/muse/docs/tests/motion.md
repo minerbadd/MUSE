@@ -24,6 +24,6 @@
 
 --:# Check blocked step operations  
 
---:# Check tracking  
+--:# Test tracking  
 
 --:# Close test object, report completion if we got here without errors  

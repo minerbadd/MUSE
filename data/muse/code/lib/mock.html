@@ -55,9 +55,11 @@ function turtle.getItemDetail(i) return turtle.slots[i or selected] end
 --:# turtle.item(slot: #:?) ->  <i>Detail of specified or currently selected slot.</i> -> <code>nil | detail</code>
 
 function turtle.refuel() _G.Muse.fuel = refuelLevel; return _G.Muse.fuel > 0 end
+--:# turtle.refuel(): -> <i>Reset fuel level</i> -> <code>^:</code>
 function turtle.getFuelLevel() return _G.Muse.fuel end
+--:# turtle.getFuelLevel(): -> <i>Return fuel level</i> -> <code>#:</code>
 
---:# <i>Inspection shows dirt for down direction, otherwise nothing.</i>
+--:# <i>Inspection by</i> <code>turtle.inspect()</code> <i>shows dirt for down direction, coal for up, otherwise nothing.</i>
 function turtle.inspect() return false, "nothing here" end
 function turtle.inspectUp() return  true, {name="minecraft:coal"} end
 function turtle.inspectDown() return true, {name="minecraft:dirt"}  end
@@ -71,18 +73,19 @@ function turtle.back() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.up() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.down() _G.Muse.fuel = _G.Muse.fuel - 1; return success end
 function turtle.forward() 
-  if _G.Muse.blocked then return false end
-  _G.Muse.fuel = _G.Muse.fuel - 1; return success 
+  if not _G.Muse.blocked then _G.Muse.fuel = _G.Muse.fuel - 1; return success end 
+  return false 
 end 
 
 --:# <i>Primitive turtle operations are mocked: attack, dig, place, detect, compare, drop, and suck.</i>
+--:# <i>Only</i> <code>turtle.digDown()</code> <i>is blockable</i>
 function turtle.attack() return true end
 function turtle.attackUp() return true end
 function turtle.attackDown() return true end
 
 function turtle.dig() return true end
 function turtle.digUp() return true end
-function turtle.digDown() return turtle.blocking() and true or false end
+function turtle.digDown() return _G.Muse.blocked and true or false end
 
 function turtle.place() return true end
 function turtle.placeUp() return true end

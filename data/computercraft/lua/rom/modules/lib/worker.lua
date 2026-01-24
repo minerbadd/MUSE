@@ -39,7 +39,7 @@ local function blocked(plan, pathOperations, index, direction, remaining, at, mo
   core.status(3, "worker", "blocked so unblocking at", at, "for", plan.name,  movement, motion) 
   turtle.unblock(direction); move[direction](0) -- unblocking failure raises error, `operate` if unblocked
   -- turned in original direction, work not done, continue current operation for remaining blocks
-  turtle.blocking(0) -- for out-game operation, imagine that the blockage has been removed
+  turtle.blocking(false) -- for out-game operation, imagine that the blockage has been removed
   return operate(plan, pathOperations, index, remaining) -- plan, pathOperations, index, more; 
 end 
 --[[

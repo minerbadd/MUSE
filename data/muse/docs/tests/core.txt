@@ -1,0 +1,34 @@
+
+Managing state: clone table, generate closure for session (non-persistent) state, cache loads
+
+Table Utilities: merging tables and finding common items in a pair of tables
+
+Making Strings: both instantiable strings and simple single quoted strings for printing
+
+Handling errors and reporting operations
+
+Defensive programming: checking dead reckoning when logging or reporting status
+
+Logging and Quit Control Globals
+
+
+quit message
+ 
+Set quit flag to message; next core.status throws error to abort operations. If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol. If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.
+
+User interface utilities
+
+
+echo arguments ...
+ 
+For testing: just returns its arguments.
+
+Math utilities Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result. The number n is the number of bounds in result where each bound is offset by addend from the prior bounds. Optionally the partial bounds are included as the first bounds in the result. Turn from up north to face, default for no face is to rotate -90 degrees.
+
+Example iterator, restartable at index
+
+Iterator for coroutine partials of permutations (adapted from Programming in Lua)
+
+Abstracting over actions: reference implementations of some higher order functions
+
+When there's no OS, mock it

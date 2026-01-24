@@ -177,13 +177,13 @@ function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing
 --:+ _If a `cardinals` function is supplied, the eight point cardinal direction is also included._
   local reference = type(xyzf) ~= "table" and move.at() or xyzf; local x,_,z = table.unpack(reference); 
   cardinals = type(xyzf) == "function" and xyzf or (cardinals or function(_, _) return "" end) -- dx, dz
-  
+
   local namedPlaces = {}; for name, label, pxyz in place.near() do 
     local px, py, pz = table.unpack(pxyz); local distance = place.distance(pxyz, xyzf); 
     local position, cardinal = core.xyzf({core.round(px), core.round(py), core.round(pz)}), cardinals(px - x, pz - z)
     namedPlaces[#namedPlaces + 1] = {distance, name, label, cardinal, position}
   end; table.sort(namedPlaces, function(a,b) return a[1] < b[1] end) -- on `distance`
-  
+
   return namedPlaces
 end
 --[[
@@ -194,7 +194,8 @@ We've spoken about tracking when we looked at the implementation of <a href="mot
 --]]
 --:# **Support for trails (names and labels for sequences of situations)**
 function place.fix(xyzf, track) -- set position, possibly for trailhead if tracking
---:: place.fix(:xyzf:, track: ^:?) -> _Sets situation position, can start tracking for trail._ -> `xyzf`  
+--:: place.fix(:xyzf:, track: ^:?) -> _Sets situation position, can start tracking for trail._ -> `xyzf` 
+  assert(#xyzf == 3 or (#xyzf == 4 and type(xyzf[4] == "string")), "place.fix: bad arguments "..core.string(xyzf)) -- LLS miss
   move.set(table.unpack(xyzf)); move.tracking(track) -- enable tracking, set first situation in trail
   return xyzf
 end
@@ -232,8 +233,8 @@ function moves.along(name) -- move along trail
 --:: moves.along(name: ":") -> _Move from first to second situation of place._ -> `code: ":", remaining: #:, xyzf: ":" &!recovery`
 --:+ _If the named place is the head of a trail, go from there to its tail. If it's a tail of a trail, go to its head._
   local _, _, situations = place.track(name); -- existing trail?
-    if not situations then error("moves.along: can't find "..name) end
-    if #situations == 0 then return "done", 0, move.ats() end -- note `{} ~= nil` however `#{} == 0`
+  if not situations then error("moves.along: can't find "..name) end
+  if #situations == 0 then return "done", 0, move.ats() end -- note `{} ~= nil` however `#{} == 0`
   for _, situation in ipairs(situations) do local xyzf = xyzfSituation(situation); move.to(xyzf)
   end; return "done", 0, move.ats()
 end
@@ -244,7 +245,7 @@ function steps.along(name) -- step from each situation to the next beginning wit
   local _, _, situations = place.track(name); local iterators = {}; 
   local clonedSituations = core.clone(situations); -- deep copy because there's a mutation coming next
   table.insert(clonedSituations, 1, move.situation()) -- push a copy of the current situation onto the cloned table
-  
+
   for index = 2, #clonedSituations do 
     local current, prior = clonedSituations[index], clonedSituations[index - 1]
     local xyzf = xyzfSituation(current) -- get xyzf from each what will be "current" situation 
