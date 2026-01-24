@@ -107,6 +107,9 @@ It often helps to define utility functions used in the module toward the beginni
 function move.get(situation) 
 --:: move.get(:situation:?) -> <i>Default current situation.</i> -> `x: #:?, y: #:?, z: #:?, facing: ":", fuel: #:, level: ":"
   local s = situation or _G.Muse.situation; local p = s.position
+  if not p then
+    print (999)
+    end
   local x, y, z = tonumber(p.x) or 0, tonumber(p.y) or 0, tonumber(p.z) or 0 -- force numbers for LLS
   return x, y, z, s.facing, s.fuel, s.level
 end

@@ -34,16 +34,16 @@ local test = check.open(testName, text, regression) --:# Create the test object 
 
 --:# Test simple operations: look, attack, find, drop, suck, compare
 test.part("look east", task.op, {"look", "east"})
-test.part("look up for air", task.op, {"look", "up"})
+test.part("look up", task.op, {"look", "up"})
 test.part("attack", task.op, {"attack", "east"})
 test.part("find coal", task.op, {"find", "coal"})
 test.part("find fuel", task.op, {"find", "fuel"})
-test.part("find all", task.op {"find", })
+test.part("find all", task.op, {"find", })
 test.part("drop east 1", task.op, {"drop", "coal", "east", "1"})
 test.part("drop east", task.op, {"drop", "coal", "east"})
 test.part("suck", task.op, {"suck", "east"})
-test.part("compare up", task.op, {"compare", "up"})
-test.part("compare down", task.op, {"compare", "down"})
+test.part("compare up", task.op, {"compare", "coal", "up", "east"})
+test.part("compare down", task.op, {"compare", "ores", "down"})
 
 --:# Test dig, put, change with directions and distance
 test.part("dig up", task.op, {"dig", "up", "6", "up"})
@@ -53,7 +53,7 @@ test.part("change sand dirt w 10 e d", task.op, {"change", "sand", "dirt", "w", 
 test.part("put dirt here d", task.op, {"put", "dirt", "here", "d", "e"})
 
 --:# Test dig, put, and change <code>along</code>
-place.fix({10, 120, 230}); move.to({15, 125, 235}); move.to({20, 130, 240})
+place.fix({10, 120, 230}, true); move.to({15, 125, 235}); move.to({20, 130, 240})
 place.trail("start", "end", "test"); move.to {5, 115, 225}
 test.part("dig along start", task.op, {"dig", "along", "start"})
 test.part("put dirt along end", task.op, {"put", "dirt", "along", "end"}) 

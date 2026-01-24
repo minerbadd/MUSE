@@ -90,6 +90,7 @@ local slots = _G.turtle and _G.Muse.slots or #mock.slots -- test environment not
 function turtle.inventory()  
   --:: turtle.inventory() -> _Returns currrent turtle inventory as turtle detail table_. -> `detail[]`
   local inventoryTable = {}; for i = 1, slots do local detail = mock.getItemDetail(i)
+---@diagnostic disable-next-line: undefined-field
     if detail then inventoryTable[#inventoryTable + 1] = {detail.name, detail.count, detail.damage} end
   end; return inventoryTable 
 end;

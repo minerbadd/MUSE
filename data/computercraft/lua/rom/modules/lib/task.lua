@@ -68,12 +68,12 @@ end; task.hints["compare"] = {["?item "] = {["?direction..."] = {}}}
 local function drop(...) --:- drop item direction quantity? -> _Drop quantity of selected items [or all]._ 
   local item, direction, quantity = ...; local found = find(item); if not found then return "Found no "..item end
   local released = turtle.drops[getDirection(direction)](tonumber(quantity))
-  return released and core.string(turtle.item()) or "Release "..direction.." failed"
+  return released and core.string(turtle.items()) or "Release "..direction.." failed"
 end; task.hints["drop"] = {["?item "] = {["?direction "] = {["??count"] = {}}}}
 
 local function suck(...) --:- suck direction quantity? -> _Suck quantity items [or all] into available slot._ 
   local direction, quantity = ...; local sucked = turtle.sucks[getDirection(direction)](quantity)
-  return sucked and core.string(turtle.item()) or "Suck "..direction.." failed"
+  return sucked and core.string(turtle.items()) or "Suck "..direction.." failed"
 end; task.hints["suck"] = {["?direction "] = {["?count"] = {}}}
 --[[
 ```

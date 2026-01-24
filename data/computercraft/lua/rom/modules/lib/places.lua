@@ -210,6 +210,7 @@ function place.trail(headName, tailName, label) -- places for trail end and head
 --:: place.trail(headName: ":", tailName: ":", label: ":") -> _Makes two places._ -> `headSerial: ":", tailSerial: ":", count: #:`
 --:+ _Trail places share a label and represent trails from head to tail and tail to head; head set by_ `place.fix`.
   local situations = move.situations() -- deep copy the track produced by `lib/motion`
+  assert(#situations > 0, "place trail: trail needs starting situation")
   local headString = place.name(headName, label, situations) -- head place and end place share a label
   local tailString = place.name(tailName, label, reverseTrail(situations))
   local _, count = move.tracking(false) -- return #situations in trail; clean up and disable tracking, 
