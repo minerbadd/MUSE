@@ -19,17 +19,28 @@ And there's a deeper reason. It has to do with the overall design of what you're
 
 _Mining MUSE_ is based on the idea of exploration. Just as software development is actually practiced, there's a lot of exploration to do when trying to understand and fix or extend someone else's code (including the mess made by that AI cowboy). What follows in these chapters is an overview of that exploration. But the overview is only the root of a very branchy tree. The interesting stuff is generally found somewhere near the leaves. Where exactly depends on you, your interests, your motivation, your experience. Go as far as seems useful. Go back and look further when that seems right. It's up to you. 
 
-As you explore, after some looking at some fundamental ideas for maintainable code and the design of a code base, you can use      MUSE to look at some broader design choices: 
-- choosing the right abstractions for your design, 
-- dealing cleanly with the inevitable changes to the user interface, 
-- considering the issues with persistence over time, 
-- making available and managing concurrency, 
-- handling errors on a computer in a network far, far away, 
-- providing distributed service discovery, 
-- establishing remote procedure calls and remote command interfaces, 
-- looking at the role of 'little languages" in declarative programming, and finally, 
-- deciding whether frameworks (an inversion of control) would be helpful (or not).
+As you explore, after some looking at some fundamental ideas for maintainable code and the design of a code base, you can use      MUSE to look at some broader design choices:
+<div  style="text-align:center; width: 600px; margin: 5%;  font-weight: bold; font-style: italic; background-color: lightgoldenrodyellow"> 
 
+choosing the right abstractions for your design, 
+
+dealing cleanly with the inevitable changes to the user interface,
+
+considering the issues with persistence over time, 
+
+making concurrency available and managing it,
+
+handling errors on a computer in a network far, far away, 
+
+providing distributed service discovery, 
+
+establishing remote procedure calls and remote command interfaces, 
+
+looking at the role of 'little languages" in declarative programming, and finally, 
+
+deciding whether frameworks (an inversion of control) would be helpful (or not).
+</div>
+</br>
 
 The (HTML) <a href="#links"> links </a> to places in the branchy tree throughout MUSE are a way into the exploration. The materials in the tree describe working examples with, yes, more links, drawings, pictures, and extensively documented code.<a id="links"> <IMG SRC="drawings/01Tree.png" hspace ="10" ALIGN="left"/> </a> There's probably as much explanatory text as executable code in the examples. This leads to the usual tension between the ideas of <a href="https://en.wikipedia.org/wiki/Literate_programming" target="_blank"> _literate programming_ </a> and the, all too correct, understanding that <a href="https://www.linkedin.com/posts/johncrickett_code-never-lies-comments-sometimes-do-activity-7307389003735924736--ugV" target="_blank"> &ldquo;comments (sometimes) lie&rdquo;</a>. If you need to extensively comment code, as we do to meet our goals here, you're taking on an extra burden to keep the comments true to the code (which never lies). There is a benefit though of doing the work of extensive commenting: you're explaining the code (especially the _whys_ of the code) to a virtual partner when a real life one, quite possibly the you from another planet, is not available. Often enough while explaining, you'll see something you might otherwise have missed.
 
