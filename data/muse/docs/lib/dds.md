@@ -15,6 +15,6 @@
 
 --:: dds.hosts() -> _Populates players IDs and labels using a MQ rednet protocol._ -> `IDs, roles`  
 
---:: dds.join(role: ":", id: #:?) -> _Fix ID role association for next startup, id given by player._ -> `sitedLabel: ":"`  
+--:: dds.join(role: ":", idGiven: #:?) -> _Fix ID role association for next startup, id given by player._ -> `sitedLabel: ":"`  
 
 --:: dds.map() -> _Returns associations from Muse roles to ComputerCraft IDs_ -> `IDs`  

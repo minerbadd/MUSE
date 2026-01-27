@@ -37,9 +37,9 @@ function dds.role() end
 function dds.hosts() end
 
 -- Fix ID role association for next startup, id given by player.
--- dds.join(role: ":", id: #:?):  `sitedLabel: ":"` <-
+-- dds.join(role: ":", idGiven: #:?):  `sitedLabel: ":"` <-
 
----@type fun( role: string,  id: number?):   sitedLabel: string 
+---@type fun( role: string,  idGiven: number?):   sitedLabel: string 
 function dds.join() end
 
 -- Returns associations from Muse roles to ComputerCraft IDs

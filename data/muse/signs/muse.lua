@@ -171,7 +171,7 @@ Server side: move turtle (close to) player's GPS_ `xyz` (_from_ `remote.tail)",
   ["type"] = "lib",
   ["name"] = "roam",
   ["description"] = "\
-Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go` _commands, motion_ `to` _or_ `trace`. -> roam",
+Server (turtle) side_ `come` _and_ `tail`, _chained_ `go` _commands, motion_ `to` _and_ `trace`. -> roam",
 }
 ,
   ["map"] = {
@@ -1117,7 +1117,7 @@ For tracking",
   ["type"] = "lib",
   ["name"] = "motion",
   ["description"] = "\
-Libraries to move turtles and move turtles by steps allowing operations at each step._ -> motion, move, step move: **Position setting, tracking, and reporting by dead reckoning checked by fuel consumption. step: **Iterators (closures) for moving block by block, potentially doing operations at each block.",
+Libraries to move turtles and move turtles by steps allowing operations at each step._ -> motion, move, step move: _Position setting, tracking, and reporting by dead reckoning checked by fuel consumption. step: _Iterators (closures) for moving block by block, potentially doing operations at each block.",
 }
 ,
   ["__remote.prepareCall:_"] = {
@@ -2024,11 +2024,11 @@ Go to marker and bore Use shaft plans and bore plans to navigate to marker, bore
 }
 ,
   ["_turtle.unblock:_"] = {
-  ["line"] = "  --:: turtle.unblock(direction: \":\", limit: #:?) -> _Retrys (default `_G.Muse.attempts`) dig to limit or bedrock._ -> `\"done\", nil|\"undug\" &!` ",
+  ["line"] = "  --:: turtle.unblock(direction: \":\", limit: #:?) -> _Retrys dig to limit or bedrock._ -> `\"done\", nil|\"undug\" &!` ",
   ["out"] = " `\"done\", nil|\"undug\" &!` ",
   ["sign"] = "turtle.unblock(direction: \":\", limit: #:?)  ",
   ["kind"] = "face",
-  ["text"] = "Retrys (default `_G.Muse.attempts`) dig to limit or bedrock.",
+  ["text"] = "Retrys dig to limit or bedrock.",
 }
 ,
   ["dds"] = {
@@ -2098,7 +2098,7 @@ Populates players IDs and labels using a MQ rednet protocol.",
   ["join"] = {
   ["returns"] = " `sitedLabel: \":\"` <-\
 ",
-  ["args"] = "role: \":\", id: #:?",
+  ["args"] = "role: \":\", idGiven: #:?",
   ["type"] = "function",
   ["name"] = "dds.join",
   ["description"] = "\
@@ -3314,9 +3314,9 @@ Command Line Library providing turtle operations used by remote library (effecti
 }
 ,
   ["_dds.join:_"] = {
-  ["line"] = "  --:: dds.join(role: \":\", id: #:?) -> _Fix ID role association for next startup, id given by player._ -> `sitedLabel: \":\"`",
+  ["line"] = "  --:: dds.join(role: \":\", idGiven: #:?) -> _Fix ID role association for next startup, id given by player._ -> `sitedLabel: \":\"`",
   ["kind"] = "face",
-  ["sign"] = "dds.join(role: \":\", id: #:?)  ",
+  ["sign"] = "dds.join(role: \":\", idGiven: #:?)  ",
   ["out"] = " `sitedLabel: \":\"`",
   ["text"] = "Fix ID role association for next startup, id given by player.",
 }
@@ -3876,7 +3876,7 @@ For testing; just returns its arguments.",
   ["type"] = "lib",
   ["name"] = "core",
   ["description"] = "\
-Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support._ -> core",
+Strings, session state, cloning, error handling, reporting, UI, math, iterators, out-of-game debug support._ -> core",
 }
 ,
   ["check"] = {
@@ -4334,7 +4334,7 @@ Check block in direction has the same ID as selected slot",
   ["type"] = "function",
   ["name"] = "turtle.unblock",
   ["description"] = "\
-Retrys (default `_G.Muse.attempts`) dig to limit or bedrock.",
+Retrys dig to limit or bedrock.",
 }
 ,
   [":turtle.sucks"] = {
@@ -4446,7 +4446,7 @@ If true, get detail block information in direction.",
   ["type"] = "function",
   ["name"] = "turtle.fuel",
   ["description"] = "\
-Total energy actually available in turtle slots plus turtle fuel level. Returns \"done, \"undug\" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.",
+Total energy actually available in turtle slots plus turtle fuel level. Returns \"done, \"undug\" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached. Arbitrary 0.5 second waits and default _G.Muse.attempts retrys for gravel; attacks",
 }
 ,
   ["digTo"] = {

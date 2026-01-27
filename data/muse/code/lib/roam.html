@@ -11,8 +11,11 @@
 <h2>Commands <code>go</code>, <code>to</code>, <code>trace</code>, <code>come</code> <code>tail</code> : lib/roam</h2>
 <pre><code class="language-markdown">
 --:! {roam: [":"]: ():} <- <b>Command Line Library for Turtle Movement</b> -> muse/docs/lib/roam.md  
---:| roam: <i>Server (turtle) side support for</i> <code>come</code> <i>and</i> <code>tail</code>, <i>as well as chained</i> <code>go</code> <i>commands, motion</i> <code>to</code> <i>or</i> <code>trace</code>. -> roam
+--:| roam: <i>Server (turtle) side</i> <code>come</code> <i>and</i> <code>tail</code>, <i>chained</i> <code>go</code> <i>commands, motion</i> <code>to</code> <i>and</i> <code>trace</code>. -> roam
 </code></pre>
+There are a few new things. Firstly, the <code>roam</code> library is a <code>CLL</code>, a command line library, a supporting library for a CLI, command line interface. Hints are provided as <a href="core.html#UI" target="_blank"> shell completions </a> for CLI command entry to indicate what's expected for the command. These are accumulated in the <code>roam.hints</code> table, each hint provided near the function that supports a particular command. The idea is that as function definitions change during the evolution of a module, the CLI hint is more likely to get an appropriate update if it's near the supporting function.
+<p>
+With that said, the introduction should look like something you've seen before. We'll come to <code>_G.Muse.permutations</code> shortly.
 <pre><code class="language-lua">
 local roams = require("signs.roam"); roams.roam = {}; local roam = roams.roam ---@module "signs.roam" 
 roam.hints = {} ---@module "signs.roam" -- for functions exported from library
@@ -25,23 +28,21 @@ local places = require("places") local place, moves = places.place, places.moves
 local axes = _G.Muse.permutations
 </code></pre>
 <a id="come"></a>
-<h3>Directed Movement: <code>come</code> (and<code>tail</code>) to follow the player</h3>
-After the usual library introduction, there are functions to attempt movement toward a target trying all the permutations in turn along the x, y, and z axes to deal with any blockages. Attempted movements return a message indicating eventual success or failure.
+<h3>Directed Movement: <code>come</code> (and <code>tail</code>) to follow the player</h3>
+After the usual library introduction above, there are functions supporting attempted movement toward a target trying all the permutations in turn along the x, y, and z axes to deal with any blockages. Attempted movements return a message indicating eventual success or failure. There's a global reference, <code>_G.Muse.permutations</code> set up in <a href="_start.html" target="_blank"> startup</a> for the game. It establishes the first set of axes to move along to get to a place.
 <pre><code class="language-lua">
 -- :# <b>Movement along each axis in turn. The sequence is set by the permutation</b>.
 -- :# {"y", "z", "x"} -> z x y, x z y, x y z, y x z, z y x, y z x
 
 local function toAxes(change, currentAxes, targetAxes) 
-  local targets = {}; 
+  local targets = {}; -- set up to try <code>move.to</code>; movement along each axis established by <code>permuting</code>
   for i in ipairs(change) do targets[change[i]] =  targetAxes[change[i]] 
-    for _, axis in ipairs(change) do -- set up to try <code>move.to</code>
-      currentAxes[axis] = targets[axis] or currentAxes[axis] 
-    end; -- if failure, get another permutation; otherwise, try the next axis of the permutation
+    for _, axis in ipairs(change) do currentAxes[axis] = targets[axis] or currentAxes[axis] end
     core.status(5, "roam axes", change, currentAxes, targetAxes) -- protected call: <code>move.to</code> throws errors
     local ok, _, recovery = core.pass(pcall(move.to, {currentAxes.x, currentAxes.y, currentAxes.z, "north"}))
-    if not ok then local _, code = table.unpack(recovery)
-      if code == "blocked" then turtle.blocking(); return end
-    end
+    if not ok then local _, code = table.unpack(recovery) 
+      if code == "blocked" then turtle.blocking(); return end -- update mock turtle block status for testing
+    end -- <code>move.to</code> failed, return <code>nil</code> to get another permutation; 
   end; return "done" -- success! (<code>move.to</code> worked for movement along each axis)
 end
 
@@ -51,10 +52,12 @@ local function permuting(currentAxes, targetAxes)
     if code == "done" then return "done" end -- successful movement; else try another permutation
   end -- tried all permutations but not at target; if any movement, try permutations from new position
   local mx, my, mz = move.get(); local distance = math.abs(x - mx) + math.abs(y - my) + math.abs(z - mz)
-  core.status(3, "roam retry", distance, mx, my, mz)
+  core.status(3, "roam retry", distance, mx, my, mz) -- if no movement, just return failure, else recur
   return distance == 0 and code or permuting({x = mx, y = my, z = mz}, targetAxes)
 end
-
+</code></pre>
+That was the hard part. The rest is straight forward.
+<pre><code class="language-lua">
 local function moveHere(tx, ty, tz, ttx, tty, ttz)
   return permuting({x = tx, y = ty, z = tz}, {x = ttx, y= tty, z = ttz}) -- currentAxes, targetAxes
 end
@@ -70,7 +73,9 @@ local function moving(tx, ty, tz, ttx, tty, ttz, op) -- <code>op</code> is <code
   local code, at = moveHere(tx, ty, tz, ttx, tty, ttz), move.ats()
   return code == "done" and "at "..at.." "..message or op..code.." at "..at -- failure report
 end
-
+</code></pre>
+And now for something not so different. Here's the actual function for the command.
+<pre><code class="language-lua">
 --:: roam.come(:xyz:) -> <i>Server (turtle) side: move turtle (close to) player's GPS</i> <code>xyz</code> <i>from</i> <code>remote.come. -> </code>":" &:`
 function roam.come(xyz) -- <b>needs GPS for {xyz} in game</b>, lib/remote RPC "come" dispatched by lib/net 
   local px, py, pz = table.unpack(xyz); local txyz = assert(place.xyzf(), "roam come: no turtle situation??")
@@ -85,14 +90,14 @@ roam.tail = roam.come; roam.hints["tail"] = {["?rate"] = {}} -- separate but equ
 </code></pre>
 <a id="to"></a> 
 <h3>Coordinate Movement: <code>to</code> a <code>place</code> or a `position</h3>
-The <code>to</code> function is used in order to move to a <code>position</code> (with <code>move.to</code>) or a <code>place</code> (with <code>moves.to</code>). Tries all permutations.
+The <code>to</code> function is used in order to move to a <code>position</code> (with <code>move.to</code>) or a <code>place</code> (with <code>moves.to</code>). Tries all permutations using the common routines above.
 <p>
-There's also some mysterious stuff around <code>roam.hints</code>. The stuff populates a table used by <a href="core.html#UI" target = "_blank"><code>core.completion</code> to provide shell completions in ComputerCraft's CraftOS in the format that it expects.
+There's also that mysterious stuff around <code>roam.hints</code>. As said, the stuff populates a table used by <a href="core.html#UI" target = "_blank"><code>core.completion</code> </a> to provide shell completions in ComputerCraft's CraftOS in the format that it expects.
 <pre><code class="language-lua">
 local function to(arguments) 
   --:- to place | x y z face?-> <i>To named place or position and face. Retry permutation for different first direction.</i> 
   local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
-  local toPlace = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
+  local toPlace = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x: named place
 ---@diagnostic disable-next-line: param-type-mismatch
   local ttx, tty, ttz = table.unpack(toPlace); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- <b>do it!</b>
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
@@ -154,7 +159,8 @@ end; roam.hints["go"] = {["?chain n e s w u p r l f b"] = {}}
 </code></pre>
 <a id="op"></a> 
 <h3>Dispatch and Done</h3>
-Just a simple dispatch, some error handling, and our work here is done. Look at what goes before to see how.
+Just a simple dispatch, some error handling, and our work here is done.  As mentioned, this is the first CLL we've run across. 
+The design pattern is worth looking at. All the interesting stuff is done here in the library so that the CLI itself, the command program, is dead simple. Look at what goes before to see how.
 <pre><code class="language-lua">
 local ops = {go = go, to = to, trace = trace, } 
 

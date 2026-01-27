@@ -1,5 +1,5 @@
 --:! {core:[":"]: ():} <- **Core Functions Library** -> muse/docs/lib/core.md    
---:| core: _Strings, session state, cloning, error handling, reporting, UI, math, iterators, lowest level turtle support._ -> core  
+--:| core: _Strings, session state, cloning, error handling, reporting, UI, math, iterators, out-of-game debug support._ -> core  
 
 --:# **Managing state: clone table, generate closure for session (non-persistent) state, cache loads**  
 

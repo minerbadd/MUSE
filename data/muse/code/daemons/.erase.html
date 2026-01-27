@@ -24,7 +24,9 @@ local maps = require("map"); local map = maps.map ---@module "signs.map"
 
 local function erase()
   while true do local id, name = rednet.receive("MX"); 
+    assert(id and name, ".erase protocol MX no message recieved")
     core.status(3, ".erase", "MX", name, " from ", dds.role(id))
+---@diagnostic disable-next-line: param-type-mismatch
     map.erase(name); -- erase pocket/turtle/command local storage for place name
   end
 end

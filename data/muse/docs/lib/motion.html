@@ -8,11 +8,11 @@
 
 --:! {move: [":"]: ():, step: [":"]: ():} <- <b>Move and Step Function Libraries</b> -> muse/docs/lib/motion.md      
 --:| motion: <i>Libraries to move turtles and move turtles by steps allowing operations at each step.</i> -> motion, move, step    
---:+ move: <b>Position setting, tracking, and reporting by dead reckoning checked by fuel consumption.</b>      
---:+ step: <b>Iterators (closures) for moving block by block, potentially doing operations at each block.</b>  
+--:+ move: <i>Position setting, tracking, and reporting by dead reckoning checked by fuel consumption.</i>     
+--:+ step: <i>Iterators (closures) for moving block by block, potentially doing operations at each block.</i>  
 
 --:# <i>Provide fuel level check to validate a dead reckoning move, can track movement for retracing move as a trail.</i>      
---:+ <i>Report error conditions <code>"blocked"</code>, <code>"lost"</code> (for apparent but invalid movement), <code>"empty"</code> (for no fuel).</i>      
+--:+ <i>Report error conditions <code>"blocked"</code>, <code>"lost"</code> (apparent but invalid movement), <code>"empty"</code> (no fuel).</i>      
 --:+ <i>Throw some errors as tables rather than strings to allow for attempted recovery operations.</i>   
 
 --:# <b>State variables for turtle motion:</b> (maintained across programs within session, not persistent beyond that).  

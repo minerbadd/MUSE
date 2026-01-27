@@ -10,17 +10,15 @@ To review, they are named (and labelled) `situations` created by `tracking` in t
 
 To ease understanding, the module introduction for `map` shown below is organized in much the same way as described for <a href="motion.html"> `lib/motion`</a>. 
 
-There are a few new things. Firstly, the `map` library is a `CLL`, a command line library, a supporting library for a CLI, command line interface. Hints are provided as <a href="core.html#UI" target="_blank"> shell completions </a> for CLI command entry to indicate what's expected for the command. These are accumulated in the `map.hints` table, each hint provided near the function that supports a particular command. The idea is that as function definitions change during maintenance, the CLI hint is more likely to get an appropriate update if it's near the supporting function. 
-
-As mentioned, this is the first CLL we've run across. The design pattern is worth looking at. All the interesting stuff is done here in the library so that the CLI itself, the command program, is dead simple. There's a bunch of <a href="#programs" target="_blank"> programs </a> that provide the command line user interface. Look at one or two of them briefly to see that there's so very little there there.
-
-Finally, what's new in `lib/map` are network operations and the use of 
+What's new in `lib/map` are network operations and the use of 
 <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
 _daemons_</a> to deal with network events. You may have already run across the 
 <a href="code/daemons/.status.html" target="_blank"> `.status` </a> daemon handling the `MS` (MUSE Statue) rednet protocol. The 
 <a href="code/daemons/.update.html" target="_blank"> `.update` </a> daemon handling the `MU` (MUSE Update) rednet protocol, and the
 <a href="code/daemons/.erase.html" target="_blank"> `.erase` </a> daemon handling the `MX` (MUSE eXcise) rednet protocol look
 much the same, easing testing by quickly passing control to a library to do the real work. There'll be more of this throughout our discussions of how MUSE programs are implemented.
+
+There's a bunch of <a href="#programs" target="_blank"> programs </a> that provide the command line user interface. Look at one or two of them briefly to see that there's so very little there there.
 
 ```Lua
 --]]
@@ -88,7 +86,7 @@ end
 --[[
 ```
 <a id="sited"></a> 
-For when the player or an unlanded turtle (not tied to a site) is in a new and far far better place.
+For when the player or an unlanded turtle, one not ever to be tied to a site, is in a new and far far better place.
 ```Lua
 --]]
 local function sited(site) 
@@ -106,18 +104,18 @@ local function store(site) -- used in `.start` to persist `site` and load clean 
   local places = map.read(map.map()); map.write(map.map());
   return site..": "..places.." places"
 end; map.hints["store"] = {["?site"] = {} } 
-
-local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
---:- join site role -> _Set site and join landed turtle to it with specified role._
- map.hints["join"] = {["?site "] = {["?role"] = {} }} 
 --[[
 ```
 <a id="update"></a> 
-Calling the local `update` function does the update locally and broadcasts it on the `MU` protocol to the `player`, the `porter` and all turtles registered by `join`. The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> `.update`</a>
+Calling the local `update` function does the update locally and broadcasts it on the `MU` protocol to the `player`, the `porter` and all turtles registered by `join`, a command issued by the player to site a landed turtle that has not yet been landed. (We'll get to the implementation of `dds.join` when we discuss `lib/remote`.) The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> `.update`</a>
 daemon. The <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
 _daemon_</a> responds to received network messages by calling `map.place` (above) to update the local memory and `map.update` (below) to update local storage. 
 ```Lua
 --]]
+local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
+--:- join site role -> _Set site and join landed turtle to it with specified role._
+ map.hints["join"] = {["?site "] = {["?role"] = {} }} 
+ 
 local function update(serial) -- update locally, broadcasts to others (not self)
   map.update(serial); if rednet then rednet.broadcast(serial, "MU") end -- rednet only available in-game
 end
@@ -134,7 +132,7 @@ end
 ```
 <a id="sync"></a> 
 Using the <a href="places.html#near" target="_blank"> `place.near`</a>
-iterator, the local `sync` function `MU` broadcasts all the all the places known by the local computer to all `MQ` registered computers. The function yields control between each broadcast to allow each broadcast to complete.
+iterator, the local `sync` function `MU` broadcasts all the places known by the local computer to all `MQ` registered computers. The function yields control between each broadcast to allow each broadcast to complete.
 ```Lua
 --]]
 --:# **Map File Operations**
@@ -164,7 +162,7 @@ function map.erase(name) local remaining = place.erase(name); map.write(); retur
 ```
 <a id="get"></a>  
 Places include a <a href="places.html#name" target="_blank"> dictionary of name-value pairs</a> we've called features. 
-This is a technique to allow other libraries to add attributes to places without needing to make changes to the implementation of `lib/places`. This sort of thing helps maintenance as the code base evolves to deal with new requirements. That's especially important for a network of computers each having their own version of persistent data structures. That said, names of features (feature keys) are unrestricted. There's no explicit protection against unintended clashes. Rope provided. Invent some naming protocol and use with care. 
+This is a way to allow other libraries to add attributes to places without needing to make changes to the implementation of `lib/places`. This sort of thing helps maintenance as the code base evolves to deal with new requirements. That's especially important for a network of computers each having their own version of persistent data structures. That said, names of features (feature keys) are unrestricted. There's no explicit protection against unintended clashes. Rope provided. Invent some naming protocol and use with care. 
 ```Lua
 --]]
 function map.get(name, key) --:: map.get(name: ":", key: ":") -> _Get named place local feature value for key._ -> `value: any? &!`
@@ -534,7 +532,7 @@ end
 return {map = map}
 --[[
 ```
-<a id="commands"></a> 
+<a id="programs"></a> 
 Players can use 
 <a href="../programs/erase.html" target="_blank"> `erase`</a>, 
 <a href="../programs/sync.html" target="_blank"> `sync`</a>, 

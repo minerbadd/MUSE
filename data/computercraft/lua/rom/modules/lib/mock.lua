@@ -1,5 +1,5 @@
 --[[
-## Mock Turtle and Command Computer Simulation for Out-of-Game Debug: `lib/mock` 
+## Mock Turtle and Command Computer Simulation for Debug: `lib/mock` 
 ```md
 --:! {turtle: [":"]: ():, commands: [":"]: ():} <- **Mock Functions Library** (for out-of-game test) -> muse/docs//lib/mock.md 
 --:| mock: _Libraries to provide a limited simulation of turtle and command computer in-game operations._ -> mock

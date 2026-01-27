@@ -18,17 +18,15 @@ To review, they are named (and labelled) <code>situations</code> created by <cod
 <p>
 To ease understanding, the module introduction for <code>map</code> shown below is organized in much the same way as described for <a href="motion.html"> <code>lib/motion</code></a>. 
 <p>
-There are a few new things. Firstly, the <code>map</code> library is a <code>CLL</code>, a command line library, a supporting library for a CLI, command line interface. Hints are provided as <a href="core.html#UI" target="_blank"> shell completions </a> for CLI command entry to indicate what's expected for the command. These are accumulated in the <code>map.hints</code> table, each hint provided near the function that supports a particular command. The idea is that as function definitions change during maintenance, the CLI hint is more likely to get an appropriate update if it's near the supporting function. 
-<p>
-As mentioned, this is the first CLL we've run across. The design pattern is worth looking at. All the interesting stuff is done here in the library so that the CLI itself, the command program, is dead simple. There's a bunch of <a href="#programs" target="_blank"> programs </a> that provide the command line user interface. Look at one or two of them briefly to see that there's so very little there there.
-<p>
-Finally, what's new in <code>lib/map</code> are network operations and the use of 
+What's new in <code>lib/map</code> are network operations and the use of 
 <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
 <i>daemons</i></a> to deal with network events. You may have already run across the 
 <a href="code/daemons/.status.html" target="_blank"> <code>.status</code> </a> daemon handling the <code>MS</code> (MUSE Statue) rednet protocol. The 
 <a href="code/daemons/.update.html" target="_blank"> <code>.update</code> </a> daemon handling the <code>MU</code> (MUSE Update) rednet protocol, and the
 <a href="code/daemons/.erase.html" target="_blank"> <code>.erase</code> </a> daemon handling the <code>MX</code> (MUSE eXcise) rednet protocol look
 much the same, easing testing by quickly passing control to a library to do the real work. There'll be more of this throughout our discussions of how MUSE programs are implemented.
+<p>
+There's a bunch of <a href="#programs" target="_blank"> programs </a> that provide the command line user interface. Look at one or two of them briefly to see that there's so very little there there.
 <p>
 <pre><code class="language-lua">
 local map = {}; map.hints = {} ---@module "signs.map" -- for functions exported from library
@@ -90,7 +88,7 @@ function map.write(thisMap) --:: map.write(thisMap: ":"?) -> <i>Delete old, writ
 end
 </code></pre>
 <a id="sited"></a> 
-For when the player or an unlanded turtle (not tied to a site) is in a new and far far better place.
+For when the player or an unlanded turtle, one not ever to be tied to a site, is in a new and far far better place.
 <pre><code class="language-lua">
 local function sited(site) 
   --:- site name? -> <i>Remote operation to report or change site (persistently) after, e.g., porting <code>rover</code>.</i>
@@ -107,16 +105,16 @@ local function store(site) -- used in <code>.start</code> to persist <code>site<
   local places = map.read(map.map()); map.write(map.map());
   return site..": "..places.." places"
 end; map.hints["store"] = {["?site"] = {} } 
-
-local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
---:- join site role -> <i>Set site and join landed turtle to it with specified role.</i>
- map.hints["join"] = {["?site "] = {["?role"] = {} }} 
 </code></pre>
 <a id="update"></a> 
-Calling the local <code>update</code> function does the update locally and broadcasts it on the <code>MU</code> protocol to the <code>player</code>, the <code>porter</code> and all turtles registered by <code>join</code>. The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> <code>.update</code></a>
+Calling the local <code>update</code> function does the update locally and broadcasts it on the <code>MU</code> protocol to the <code>player</code>, the <code>porter</code> and all turtles registered by <code>join</code>, a command issued by the player to site a landed turtle that has not yet been landed. (We'll get to the implementation of <code>dds.join</code> when we discuss <code>lib/remote</code>.) The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> <code>.update</code></a>
 daemon. The <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
 <i>daemon</i></a> responds to received network messages by calling <code>map.place</code> (above) to update the local memory and <code>map.update</code> (below) to update local storage. 
 <pre><code class="language-lua">
+local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
+--:- join site role -> <i>Set site and join landed turtle to it with specified role.</i>
+ map.hints["join"] = {["?site "] = {["?role"] = {} }} 
+ 
 local function update(serial) -- update locally, broadcasts to others (not self)
   map.update(serial); if rednet then rednet.broadcast(serial, "MU") end -- rednet only available in-game
 end
@@ -132,7 +130,7 @@ end
 </code></pre>
 <a id="sync"></a> 
 Using the <a href="places.html#near" target="_blank"> <code>place.near</code></a>
-iterator, the local <code>sync</code> function <code>MU</code> broadcasts all the all the places known by the local computer to all <code>MQ</code> registered computers. The function yields control between each broadcast to allow each broadcast to complete.
+iterator, the local <code>sync</code> function <code>MU</code> broadcasts all the places known by the local computer to all <code>MQ</code> registered computers. The function yields control between each broadcast to allow each broadcast to complete.
 <pre><code class="language-lua">
 --:# <b>Map File Operations</b>
 local function sync() --:- sync -> <i>Muse Update (MU) broadcast local map to (MQ) registered units.</i>
@@ -158,7 +156,7 @@ function map.erase(name) local remaining = place.erase(name); map.write(); retur
 </code></pre>
 <a id="get"></a>  
 Places include a <a href="places.html#name" target="_blank"> dictionary of name-value pairs</a> we've called features. 
-This is a technique to allow other libraries to add attributes to places without needing to make changes to the implementation of <code>lib/places</code>. This sort of thing helps maintenance as the code base evolves to deal with new requirements. That's especially important for a network of computers each having their own version of persistent data structures. That said, names of features (feature keys) are unrestricted. There's no explicit protection against unintended clashes. Rope provided. Invent some naming protocol and use with care. 
+This is a way to allow other libraries to add attributes to places without needing to make changes to the implementation of <code>lib/places</code>. This sort of thing helps maintenance as the code base evolves to deal with new requirements. That's especially important for a network of computers each having their own version of persistent data structures. That said, names of features (feature keys) are unrestricted. There's no explicit protection against unintended clashes. Rope provided. Invent some naming protocol and use with care. 
 <pre><code class="language-lua">
 function map.get(name, key) --:: map.get(name: ":", key: ":") -> <i>Get named place local feature value for key.</i> -> <code>value: any? &!</code>
   local index, namedPlace = place.match(name); if not index then return nil end
@@ -172,6 +170,7 @@ map.gets = map.get --:: map.gets(name: ":", key: ":") -> <i>Less generic retriev
 function map.put(name, key, value)  
   --:: map.put(name: ":", key: ":", value: any?) -> <i>Set named place feature, send MU.</i> ->  <code>key: ":"?, value: any|true|nil &!</code>
   local index, namedPlace = place.match(name); if not index then return nil end
+---@diagnostic disable-next-line: param-type-mismatch
   local _, label, situations, features = table.unpack(namedPlace); features[key] = value or true;
   local serial = place.name(name, label, situations, features); update(serial) -- all MU correspondents
   core.status(4, "map put", place.qualify(name), key, value); return key, value or true
@@ -327,6 +326,7 @@ local function range(name, label, nameA, nameB, key, value) -- -> "report", inde
   local _, _, situationsA = table.unpack(placeA); local situationA = situationsA[1] -- trails not relevant
   local _, _, situationsB = table.unpack(placeB); local situationB = situationsB[1]
   place.name(name, label, situationA); local _, rangePlace = place.match(name)
+---@diagnostic disable-next-line: param-type-mismatch
   local _, _, _, features = table.unpack(rangePlace); if key then features[key] = value or true end
   local serial, index = place.add(name, situationB) -- range had everything but second place
   core.status(5, "map range: "..place.qualify(name).." from "..place.qualify(nameA).." to "..place.qualify(nameB))
@@ -342,8 +342,8 @@ local function chart(chartName, ...)
   --:+ <i>The function generated by loading the file is applied to the ... parameters following the chart file name.</i>
   --:+ <i>This chart file function is expected to create ranges establishing the <code>chart</code> and a way to reference those ranges.</i>
   --:+ <i>There is nothing to enforce this expectation. The chart file could do (oh, my) pretty much anything.</i> 
-  local chartFile = map.charts()..chartName..".lua"; local charting = loadfile(chartFile) -- get the field function 
-  local  results = {core.pass(pcall(charting, ...))} -- <b>run chart file, put multiple returns in table</b> 
+  local chartFile = map.charts()..chartName..".lua"; local charting, message = loadfile(chartFile) -- get the field function 
+  assert(charting, message); local results = {core.pass(pcall(charting, ...))} -- <b>run chart file, put multiple returns in table</b> 
   local ok, report = table.unpack(results); if not ok then return "map.chart: failed "..report end
   return core.string(table.unpack(results, 2)) -- pack a table with unpacked multiple return (all except <code>ok</code>)
 end; map.hints["chart"] = {["?chartFileName "] = {["?..."] = {}}}
@@ -400,7 +400,8 @@ Yet more (straight forward) support for the <code>map</code> CLI built on <code>
 local function toNamedPlace(namedPlace, xyz) -- distance and direction to named place
   local x, _, z = table.unpack(xyz) 
   local _, match = place.match(namedPlace); if not match then return "unknown" end
-  local _, _, situations = table.unpack(match); local xPlace, yPlace, zPlace = move.get(situations[1]); 
+  local _, _, situations = table.unpack(match); local xPlace, yPlace, zPlace = move.get(situations[1]);
+  assert(xPlace and yPlace and zPlace, "map toNamedPlace situations "..namedPlace.." coordinates missing")
   local xyzPlace = {core.round(xPlace), core.round(yPlace), core.round(zPlace)}
   local distance = core.round(place.distance(xyzPlace, xyz)) 
   return namedPlace.." "..distance.." "..cardinal(xPlace - x, zPlace - z).." "..core.xyzf(xyzPlace).."\n"
@@ -411,6 +412,7 @@ local linesLimit = 3 ; -- arbitrary limit on default number of <code>nearby</cod
 local function toNearby(xyz, count) -- sorted distance and direction to limited list of nearby points
   local parts = {}; local sorted = place.nearby(xyz, cardinal) -- sorted
   for index, place in ipairs(sorted) do 
+---@diagnostic disable-next-line: param-type-mismatch
     if index <= count or index <= linesLimit then local distance, name, _, cardinal = table.unpack(place)
       parts[#parts + 1] = name.." "..core.round(distance).." "..cardinal
     end
@@ -421,6 +423,7 @@ _G.Muse.xyzPrior = _G.Muse.xyzPrior or {}; local prior = _G.Muse.xyzPrior -- sur
 
 local function where(namedPlace, count, tx, ty, tz)  -- t* for testing -> report: ":"
   --:- where place? count?? -> <i>Report movement direction, distance to named place (or all) three (or count) closest places.</i> 
+---@diagnostic disable-next-line: param-type-mismatch
   namedPlace, count, tx, ty, tz = core.optionals(namedPlace, count, tx, ty, tz)
   local x, y, z, _, ok = move.where(tx, ty, tz); local xyz = {x, y, z}; if not ok then return "no GPS" end
   local cardinalString = (prior.hx and prior.hz) and cardinal(x - prior.hx, z - prior.hz) or "--"
@@ -493,7 +496,7 @@ end
 
 return {map = map}
 </code></pre>
-<a id="commands"></a> 
+<a id="programs"></a> 
 Players can use 
 <a href="../programs/erase.html" target="_blank"> <code>erase</code></a>, 
 <a href="../programs/sync.html" target="_blank"> <code>sync</code></a>, 

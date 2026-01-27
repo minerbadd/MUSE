@@ -50,15 +50,15 @@ local nets = require("net"); local net = nets.net ---@module "signs.net"
 local level, file = 5, "status"; core.logging({level, file})
 
 if not rednet then return end -- **enough for test environment**
-
-local site = place.site() or place.site(_G.Muse.defaultSite); 
-print("\nsite: "..place.site() or "?"..", `site` to change")
 --[[
 ```
 <a id="host"></a> 
 #Register turtles and computers that run this script as Muse Query (`MQ`) hosts for discovery service.
 ```Lua
 --]]
+local site = place.site() or place.site(_G.Muse.defaultSite); 
+print("\nsite: "..place.site() or "?"..", `site` to change")
+
 local function identity() -- temporary label as computer ID if needed for MQ registration
   local label = core.getComputerLabel(); local labelled = not tonumber(label)
   local role = labelled and label or (player and "player" or (command and "porter"))

@@ -107,7 +107,7 @@ function dds.hosts()
 end
 
 function dds.join(role, idGiven) -- on player
-  --:: dds.join(role: ":", id: #:?) -> _Fix ID role association for next startup, id given by player._ -> `sitedLabel: ":"`
+  --:: dds.join(role: ":", idGiven: #:?) -> _Fix ID role association for next startup, id given by player._ -> `sitedLabel: ":"`
   local sitedLabel = landed[role] and place.qualify(role) or role; core.setComputerLabel(sitedLabel); -- qualify landed
   local id = idGiven or core.getComputerID(); IDs[sitedLabel] = id; roles[id] = sitedLabel 
   return sitedLabel.." joined ID "..tostring(id)

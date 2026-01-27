@@ -182,7 +182,7 @@ In MUSE, all the simulated computers do share a ROM image but this is, by defini
 
 If there's one design idea for maintainable code in all the above, it's to seek to keep it simple. Design goals for a project may not allow the simple approach just described for run time organization. There might be tools to mitigate risks inherent in more complicated organizations. They might work. But perhaps you can find a way to isolate complexity in the design so that most of what is developed can rely on simple assumptions about what happens at run time.
 
-<a href="code/lib/map.html" target="_blank"><IMG SRC="drawings/04Tree.jpg" hspace="10" ALIGN="left"/></a> <IMG SRC="drawings/04Persistence.png" ALIGN="right" hspace="10"> </a> 
+<a href="code/lib/map.html" target="_blank"><IMG SRC="drawings/04Tree.jpg" hspace="10" ALIGN="left"/></a> <a href="drawings/04Persistence.pdf" target="_blank"><IMG SRC="drawings/04Persistence.png" ALIGN="right" hspace="10"></a> 
 A design handling persistence, management of distributed state, and remote error handling is demonstrated by the <a href="code/lib/map.html" target="_blank"> implementation </a> and <a href="docs/lib/map.html" target="_blank"> interface </a> of the `lib/map` library.  
 
 The library is built on the <a href="code/lib/motion.html" target="_blank"> `lib/motion` </a> and <a href="code/lib/places.html" target="_blank"> `lib/places` </a> libraries we've already looked at. Here's the <a href="docs/lib/motion.html" target="_blank"> interface </a> for `lib/motion`, the <a href="docs/lib/places.html" target="_blank"> interface </a> for `lib/places`, and a <a href="drawings/04Persistence.pdf" target="_blank"> drawing </a>showing how these libraries form the foundation for MUSE. We'll add more libraries to this drawing as we continue our explorations.
@@ -449,7 +449,7 @@ If you've gone along on this ride, you've been with me on an exploration into so
 
 <a href="drawings/08LibrariesAll.pdf" target="_blank"> <IMG SRC="drawings/08LibrariesAll.png" ALIGN="right" vspace = "10" hspace="10"/></a>
 
-Together we've looked at mindfully managing state because there, there be dragons. We've seen how structuring code in libraries can isolate dependencies and create layers of abstraction. All this so design, testing, and maintenance can focus on what's changed when dealing with changes. We looked especially at factoring the code to anticipate (the inevitable) changes to the user interface. 
+It's been a tour. Together we've looked at mindfully managing state because there, there be dragons. We've seen how structuring code in libraries can isolate dependencies and create layers of abstraction. All this so design, testing, and maintenance can focus on what's changed when dealing with changes. We looked especially at factoring the code to anticipate (the inevitable) changes to the user interface. 
 
 We (or at least I) have had fun with functions. We've dealt with state distributed across a network and persisting over time. Distributing state across a network led us into the issues of concurrency, service discovery, and remote procedure calls (that need to deal with error conditions).  
 

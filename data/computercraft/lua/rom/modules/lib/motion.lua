@@ -1,42 +1,42 @@
 ---@diagnostic disable: duplicate-set-field
 --[[
 ## Functions, State, and History: `lib/motion` for Turtle Motion
-```md
+```
 The first chunk of code using ComputerCraft that we'll look at is the `lib/motion` module. Of course, it's about moving turtles. Each <a href="https://en.wikipedia.org/wiki/Library_(computing)" target="_blank">
 _library_</a>, in the module is a collection of code elements for moving turtles in some way. Libraries often build upon each other. That's the case for MUSE and since `lib/motion` is fundamental in that build, it's where we'll start our exploration. 
 
-It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Not much consoolation, but a number of the other modules read more simply. Spoonful of sugar time I'm afraid. Without the sugar. Buckle up.
+It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Not much consolation, but a number of the other modules read more simply. Spoonful of sugar time I'm afraid. Without the sugar. Buckle up.
 
 We'll use this module to illustrate how functions, a fundamental part of Lua, are used to implement our libraries. We'll also use it to introduce some ideas for managing the <a href="https://en.wikipedia.org/wiki/State_(computer_science)" target="_blank">
 _state_</a> of a turtle and handling the history of that state.
 
 #Introduction and Exports: the overview
 To help readers and maintainers understand a module, it's useful to organize it by leading it off with an introductory section. We can look at the introduction of this module to get an overall understanding of what it does, its <a href="https://en.wikipedia.org/wiki/Global_variable" target="_blank">
-_global_</a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The `motion` module includes two libraries, `move`, and `step` as noted in the CodeMark <a href="https://en.wikipedia.org/wiki/API" target="_blank"> application programming interface</a> (API) <a href = "https://minerbadd.github.io/CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following this filemark, the `LIB` <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. The exported interfaces of each library along with annotated type declarations not particular to either library are collected together in the API repository file for the entire project. The latter are saved in a <a href="https://en.wikibooks.org/wiki/A-level_Computing/AQA/Paper_1/Fundamentals_of_data_structures/Dictionaries" target="_blank"> dictionary</a> with the module name. The ZeroBrane Studio <a href="https://en.wikipedia.org/wiki/Integrated_development_environment" target="_blank">
+_global_</a> references to elements outside the module, and its local constants. As shown below, a MUSE module starts off with a description of the module, the first part of the introduction. The `motion` module includes two libraries, `move`, and `step` as noted in the CodeMark <a href="https://en.wikipedia.org/wiki/API" target="_blank"> application programming interface</a> (API) <a href = "https://minerbadd.github.io/CodeMark/Annotations.html#file-marks " target = "_blank"> file mark</a>. Following this filemark, the `LIB` <a href = "../CodeMark/Annotations.html#reference-marks " target = "_blank"> reference mark</a> lists the module and libraries included in the module. The exported interfaces of each library along with annotated type declarations not particular to either library are collected together in the API repository file for the entire project. The latter are saved in a <a href="https://en.wikibooks.org/wiki/A-level_Computing/AQA/Paper_1/Fundamentals_of_data_structures/Dictionaries" target="_blank"> dictionary</a> referenced by the module name. The ZeroBrane Studio <a href="https://en.wikipedia.org/wiki/Integrated_development_environment" target="_blank">
 _IDE_</a>, an integrated development environment, can make use of this file for code completion and other API documentation when it it most needed: when you're coding a call to an API. None of this is executable code; it's just documentation.
-
+```md
 --:! {move: [":"]: ():, step: [":"]: ():} <- **Move and Step Function Libraries** -> muse/docs/lib/motion.md  
 --:| motion: _Libraries to move turtles and move turtles by steps allowing operations at each step._ -> motion, move, step
---:+ move: **Position setting, tracking, and reporting by dead reckoning checked by fuel consumption.**  
---:+ step: **Iterators (closures) for moving block by block, potentially doing operations at each block.**
+--:+ move: _Position setting, tracking, and reporting by dead reckoning checked by fuel consumption._ 
+--:+ step: _Iterators (closures) for moving block by block, potentially doing operations at each block._
 
 --:# _Provide fuel level check to validate a dead reckoning move, can track movement for retracing move as a trail._  
---:+ _Report error conditions `"blocked"`, `"lost"` (for apparent but invalid movement), `"empty"` (for no fuel)._  
+--:+ _Report error conditions `"blocked"`, `"lost"` (apparent but invalid movement), `"empty"` (no fuel)._  
 --:+ _Throw some errors as tables rather than strings to allow for attempted recovery operations._ 
 ```
 The first line of the introduction above sets the stage. It tells us that moving turtles is implemented using tables (as dictionaries) of `move` functions and of something we've called `step` functions (producing <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="_blank">
 _closures_ </a> which we'll talk about a bit further on). It exports these as libraries exporting functions whose <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">_Markdown_</a> and HTML documentation, `muse/docs/lib/motion.md` and `muse/docs/lib/motion.html`, is found in the `docs` sub-directory of the `muse` project directory (for when you might want to look at them later). Below are those tables of exported functions, `motion.move`, and `motion.step`. We'll fill them in (referenced by `move` and `step`) as we go. 
 
-We load `signs.motion` to allow <a href="https://luals.github.io/wiki/type-checking/" target="_blank"> type checking </a> in the module by <a href="https://luals.github.io/wiki/" target="_blank">LLS</a>, the Lua Language Server.
+We load `signs.motion` to allow <a href="https://luals.github.io/wiki/type-checking/" target="_blank"> type checking </a> in the module by <a href="https://luals.github.io/wiki/" target="_blank">LLS</a>, the Lua Language Server in the way that LLS needs.
 ```Lua
 --]]
 local motion = require("signs.motion"); motion.move, motion.step = {}, {} ---@module "signs.motion" 
 local move, step = motion.move, motion.step
 --[[
 ```
-As mentioned, the exported APIs for these libraries is provided in two tables of functions: `move` and `step`.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the module with<a href="https://www.lua.org/pil/8.1.html" target="_blank"> `require` </a> returns these tables. Just below we'll see that done for libraries that `lib/motion` depends on. 
+As mentioned, export of the APIs for these libraries is provided in two tables of functions: `move` and `step`.  We populate these tables with function definitions as we go through the implementation. Doing this will make clear that the function is visible outside the library. Loading the module with<a href="https://www.lua.org/pil/8.1.html" target="_blank"> `require` </a> returns these tables. Just below we'll see that done for libraries that `lib/motion` depends on. 
 
-Finally, the `@module` <a href="https://www.geeksforgeeks.org/software-testing/best-practices-for-using-annotations/" target="_blank"> annotation </a> indicates where to find the <a `signs`, the API signatures for each of the functions exported by the module. The Lua Laguage Server type checking </a> facility uses these signatures to check references to those functions by other modules. (The particular way the external references are made local to this module seemed to be how LLS needed them.) 
+Finally, the `@module` <a href="https://www.geeksforgeeks.org/software-testing/best-practices-for-using-annotations/" target="_blank"> annotation </a> indicates where to find the <a `signs`, the API signatures for each of the functions exported by the module. The Lua Laguage Server type checking </a> facility uses these signatures to check references to those functions by other modules. The particular way the external references are made local to this module seemed to be how LLS needed them. (The `@diagnostic` annotation tells LLS that really, we know what we're about, it's ok not to see something as a problem.)
 
 Here's what all that looks like for these libraries:
 ```Lua
@@ -46,17 +46,15 @@ local cores = require("core"); local core = cores.core ---@module "signs.core"
 local turtles = require("mock"); local turtle = _G.turtle or turtles.turtle ---@module "signs.mock"
 --[[
 ```  
-The `_G.turtle` variable is a ComputerCraft global used to determine whether execution is in the game or in a test environment we'll discuss in just a bit: it is bound to `nil` unless running in the game environment.
+The `_G.turtle` table includes references to the ComputerCraft turtle API functions in-game. However, it turns out to be very helpful to do development in an IDE, outside the ComputerCraft game. To do so we need mock ups of the most critical `turtle` functions. These are in the <a href="mock.html" target="_blank"> `lib/mock` </a> library file. The `turtle` table provides references to functions from ComputerCraft when running in the game environment. It provides references to corresponding mock turtle functions when running in the IDE (for testing and debugging).
 
 Each ComputerCraft computer including turtles and pocket computers have their own set of globals. These globals are not persistent. They don't stick around after server shutdown, that is, between <a href="https://en.wikipedia.org/wiki/Session_(computer_science)" target="_blank">_sessions_</a>.  
 However, they do stick around between program executions within a session; they survive <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)" target="_blank">
 _garbage collection_</a>. Except for the MUSE and ComputerCraft globals, each program stands on its own, loading just those libraries it needs. (Later we'll look at the programs available in the MUSE environment.) 
 
-The `lib/motion` libraries are quite low level.  A number of other libraries are built upon the functions exported here. As indicated however, they do use some functions exported from `lib/core`, a collection of generally useful routines for MUSE libraries and programs. We'll get to those as we come across them. The functions are made available to these libraries in a table generated by applying the `require` function on the `lib/core` library file. 
+The `lib/motion` libraries are quite low level.  A number of other libraries are built upon the functions exported here. As indicated however, they do use some functions exported from `lib/core`, a collection of generally useful routines for MUSE libraries and programs. We'll get to those as we come across them. The functions are made available to these libraries in a table generated by applying the `require` function to the `lib/core` library file. 
 
-The `_G.turtle` table includes references to the ComputerCraft turtle API functions in-game. However, it turns out to be very helpful to do development in an IDE, outside the ComputerCraft game. To do so we need mock ups of the most critical `turtle` functions. These are in the `lib/mock` library file. The `turtle` table provides references to functions from ComputerCraft when running in the game environment. It provides references to corresponding mock turtle functions when running in the IDE (for testing and debugging).
-
-MUSE also has global variables. As you'll see, we aim to be obsessively careful about how global values get changed. Additionally, all the MUSE globals are collected as above in a single global table, `_G.Muse`, to avoid litter. The table is initialized <a href="../.start.html" target="_blank"> at startup</a> to the empty table if it doesn't yet exist.
+MUSE also has global variables. As you'll see, we aim to be obsessively careful about how global values get changed. Additionally, all the MUSE globals are collected as above in a single global table, `_G.Muse`, to avoid litter. The table is initialized <a href="_start.html" target="_blank"> at startup</a> to the empty table if it doesn't yet exist.
 
 The library checks to see that fuel is consumed for all turtle movements that are supposed to have consumed fuel. <a href="https://en.wikipedia.org/wiki/Dead_reckoning" target="_blank">
 _Dead reckoning_</a> 

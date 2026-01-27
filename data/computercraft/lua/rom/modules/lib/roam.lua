@@ -3,7 +3,11 @@
 ##Commands `go`, `to`, `trace`, `come` `tail` : lib/roam
 ```md
 --:! {roam: [":"]: ():} <- **Command Line Library for Turtle Movement** -> muse/docs/lib/roam.md  
---:| roam: _Server (turtle) side support for_ `come` _and_ `tail`, _as well as chained_ `go` _commands, motion_ `to` _or_ `trace`. -> roam
+--:| roam: _Server (turtle) side_ `come` _and_ `tail`, _chained_ `go` _commands, motion_ `to` _and_ `trace`. -> roam
+```
+There are a few new things. Firstly, the `roam` library is a `CLL`, a command line library, a supporting library for a CLI, command line interface. Hints are provided as <a href="core.html#UI" target="_blank"> shell completions </a> for CLI command entry to indicate what's expected for the command. These are accumulated in the `roam.hints` table, each hint provided near the function that supports a particular command. The idea is that as function definitions change during the evolution of a module, the CLI hint is more likely to get an appropriate update if it's near the supporting function.
+
+With that said, the introduction should look like something you've seen before. We'll come to `_G.Muse.permutations` shortly.
 ```Lua
 --]]
 local roams = require("signs.roam"); roams.roam = {}; local roam = roams.roam ---@module "signs.roam" 
@@ -18,24 +22,22 @@ local axes = _G.Muse.permutations
 --[[
 ```
 <a id="come"></a>
-#Directed Movement: `come` (and`tail`) to follow the player
-After the usual library introduction, there are functions to attempt movement toward a target trying all the permutations in turn along the x, y, and z axes to deal with any blockages. Attempted movements return a message indicating eventual success or failure.
+#Directed Movement: `come` (and `tail`) to follow the player
+After the usual library introduction above, there are functions supporting attempted movement toward a target trying all the permutations in turn along the x, y, and z axes to deal with any blockages. Attempted movements return a message indicating eventual success or failure. There's a global reference, `_G.Muse.permutations` set up in <a href="_start.html" target="_blank"> startup</a> for the game. It establishes the first set of axes to move along to get to a place.
 ```Lua
 --]]
 -- :# **Movement along each axis in turn. The sequence is set by the permutation**.
 -- :# {"y", "z", "x"} -> z x y, x z y, x y z, y x z, z y x, y z x
 
 local function toAxes(change, currentAxes, targetAxes) 
-  local targets = {}; 
+  local targets = {}; -- set up to try `move.to`; movement along each axis established by `permuting`
   for i in ipairs(change) do targets[change[i]] =  targetAxes[change[i]] 
-    for _, axis in ipairs(change) do -- set up to try `move.to`
-      currentAxes[axis] = targets[axis] or currentAxes[axis] 
-    end; -- if failure, get another permutation; otherwise, try the next axis of the permutation
+    for _, axis in ipairs(change) do currentAxes[axis] = targets[axis] or currentAxes[axis] end
     core.status(5, "roam axes", change, currentAxes, targetAxes) -- protected call: `move.to` throws errors
     local ok, _, recovery = core.pass(pcall(move.to, {currentAxes.x, currentAxes.y, currentAxes.z, "north"}))
-    if not ok then local _, code = table.unpack(recovery)
-      if code == "blocked" then turtle.blocking(); return end
-    end
+    if not ok then local _, code = table.unpack(recovery) 
+      if code == "blocked" then turtle.blocking(); return end -- update mock turtle block status for testing
+    end -- `move.to` failed, return `nil` to get another permutation; 
   end; return "done" -- success! (`move.to` worked for movement along each axis)
 end
 
@@ -45,10 +47,14 @@ local function permuting(currentAxes, targetAxes)
     if code == "done" then return "done" end -- successful movement; else try another permutation
   end -- tried all permutations but not at target; if any movement, try permutations from new position
   local mx, my, mz = move.get(); local distance = math.abs(x - mx) + math.abs(y - my) + math.abs(z - mz)
-  core.status(3, "roam retry", distance, mx, my, mz)
+  core.status(3, "roam retry", distance, mx, my, mz) -- if no movement, just return failure, else recur
   return distance == 0 and code or permuting({x = mx, y = my, z = mz}, targetAxes)
 end
-
+--[[
+```
+That was the hard part. The rest is straight forward.
+```Lua
+--]]
 local function moveHere(tx, ty, tz, ttx, tty, ttz)
   return permuting({x = tx, y = ty, z = tz}, {x = ttx, y= tty, z = ttz}) -- currentAxes, targetAxes
 end
@@ -64,7 +70,11 @@ local function moving(tx, ty, tz, ttx, tty, ttz, op) -- `op` is `roam.come` or `
   local code, at = moveHere(tx, ty, tz, ttx, tty, ttz), move.ats()
   return code == "done" and "at "..at.." "..message or op..code.." at "..at -- failure report
 end
-
+--[[
+```
+And now for something not so different. Here's the actual function for the command.
+```Lua
+--]]
 --:: roam.come(:xyz:) -> _Server (turtle) side: move turtle (close to) player's GPS_ `xyz` _from_ `remote.come. -> `":" &:`
 function roam.come(xyz) -- **needs GPS for {xyz} in game**, lib/remote RPC "come" dispatched by lib/net 
   local px, py, pz = table.unpack(xyz); local txyz = assert(place.xyzf(), "roam come: no turtle situation??")
@@ -80,15 +90,15 @@ roam.tail = roam.come; roam.hints["tail"] = {["?rate"] = {}} -- separate but equ
 ```
 <a id="to"></a> 
 #Coordinate Movement: `to` a `place` or a `position
-The `to` function is used in order to move to a `position` (with `move.to`) or a `place` (with `moves.to`). Tries all permutations.
+The `to` function is used in order to move to a `position` (with `move.to`) or a `place` (with `moves.to`). Tries all permutations using the common routines above.
 
-There's also some mysterious stuff around `roam.hints`. The stuff populates a table used by <a href="core.html#UI" target = "_blank">`core.completion` to provide shell completions in ComputerCraft's CraftOS in the format that it expects.
+There's also that mysterious stuff around `roam.hints`. As said, the stuff populates a table used by <a href="core.html#UI" target = "_blank">`core.completion` </a> to provide shell completions in ComputerCraft's CraftOS in the format that it expects.
 ```Lua
 --]]
 local function to(arguments) 
   --:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._ 
   local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
-  local toPlace = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x is named place
+  local toPlace = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x: named place
 ---@diagnostic disable-next-line: param-type-mismatch
   local ttx, tty, ttz = table.unpack(toPlace); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- **do it!**
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
@@ -155,7 +165,8 @@ end; roam.hints["go"] = {["?chain n e s w u p r l f b"] = {}}
 ```
 <a id="op"></a> 
 #Dispatch and Done
-Just a simple dispatch, some error handling, and our work here is done. Look at what goes before to see how.
+Just a simple dispatch, some error handling, and our work here is done.  As mentioned, this is the first CLL we've run across. 
+The design pattern is worth looking at. All the interesting stuff is done here in the library so that the CLI itself, the command program, is dead simple. Look at what goes before to see how.
 ```Lua
 --]]
 local ops = {go = go, to = to, trace = trace, } 

@@ -62,9 +62,10 @@
 --:- fueling -> _Returns energy available in turtle slots._  
 
 --:: turtle.fuel() -> _Total energy actually available in turtle slots plus turtle fuel level._ -> `fuelTotal: #:`    
---:+ _Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached._  
+--:+ _Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached._    
+--:+ _Arbitrary 0.5 second waits and default _G.Muse.attempts retrys for gravel; attacks_  
 
---:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys (default `_G.Muse.attempts`) dig to limit or bedrock._ -> `"done", nil|"undug" &!`   
+--:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys dig to limit or bedrock._ -> `"done", nil|"undug" &!`   
 
 --:: turtle.digTo(:xyzf:, limit: #:?) -> _Unblocking move._ -> `done: ":" &: &!`     
 --:+ _Try to move to position, dig to unblock if needed, catch (table) and raise error(string) for "lost" or "empty"._    

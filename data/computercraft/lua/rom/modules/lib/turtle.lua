@@ -6,7 +6,7 @@
 --:| turtle: _Replaces game definitions, unifies operations to all directions: north, east, south, west, up, down._ -> turtle
 --:+ _Provides low level item finding, naming and turtle inventory utilities; out-of-game simulated blocking._  
 ```
-The MUSE `turtle` module introduction is much like any other. One thing is notable, like the `situation` state variable in `lib/motion`, there's a <a href="https://minerbadd.github.io/CodeMark/Annotations.html" target="_blank"> CodeMark </a> `VALUE` mark, describing `direction` as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by the game (or, out-of-game, those provided by `lib/mock`) are accessed in the `mock` table.
+The MUSE `turtle` module introduction below is much like any other. One thing is notable, like the `situation` state variable in `lib/motion`, there's a <a href="https://minerbadd.github.io/CodeMark/Annotations.html" target="_blank"> CodeMark </a> `VALUE` mark, describing `direction` as a unification of the four cardinal and two vertical directions.   Providing this abstraction on a broader scale is more or less the whole point of this library. The turtle operations defined by `_G.turtle` in the game (or, out-of-game, those provided by `lib/mock`) are accessed in the `mock` table.
 ```Lua
 --]]
 local turtles = require("signs.turtle"); turtles.turtle = {}; local turtle = turtles.turtle ---@module "signs.turtle" 
@@ -20,7 +20,7 @@ local mocks = require("mock"); local mock = _G.turtle or mocks.turtle ---@module
 --[[
 ```
 <a id="operations"></a>
-Each appropriate `turtle` operation is redefined to support the new abstraction as a table of functions for that operation in the six possible directions and `forward`. When the library is loaded, `makeOperations` makes entries in the table that the `turtle` library exports. Generating functions for the `turtle` library with `makeOperations(operations, turtle)` lets us specify the suite of turtle operations concisely with a table. (The `mock` functions are real Computercraft `turtle` functions in-game.)
+Each appropriate `turtle` operation is redefined to support the new abstraction as a table of functions for that operation in the six possible directions and `forward`. When the library is loaded, `makeOperations` makes entries in the table that the `turtle` library exports. Generating functions for the `turtle` library with `makeOperations(operations, turtle)` lets us specify the suite of turtle operations concisely with a table. (The `mock` functions are real Computercraft `turtle` functions in-game.) We'll talk about `turtle.hints` when we get to `lib/net`.
 ```Lua
 --]]
 --:# **Turtle operations north, east, south, west, up, down**
@@ -83,7 +83,6 @@ More abstractions: categories of items and the detail of which slot of turtle in
 ```Lua
 --]]
 --:# **Item name and turtle status utilities** (don't exist in-game so not mocked)
-
 ---@diagnostic disable-next-line: undefined-field
 local slots = _G.turtle and _G.Muse.slots or #mock.slots -- test environment not limited to in-game slots
 
@@ -103,7 +102,6 @@ function turtle.check(targets, detail) -- item inspected by turtle is in targets
 end
 
 --:# _Categories provide names for sets of minecraft items._
-
 local fuels = {"minecraft:coal", "minecraft:coal_block", "minecraft:charcoal", "minecraft:lava"} 
 
 local ores = {"minecraft:coal_ore", "minecraft:iron_ore", "minecraft:lapis_ore", "minecraft:gold_ore",
@@ -155,9 +153,9 @@ end;
 Abstracting away the difficulties in moving and digging is also a kind of information hiding.
 ```Lua
 --]]
-local undug = {"minecraft:water", "minecraft:lava"} -- cant'dig the undug
+local undug = {"minecraft:water", "minecraft:lava"} -- can't dig the undug
 
-local function attemptDig(direction) -- "done if air or the undug, else attack (mob); then return dig success (or not)
+local function attemptDig(direction) -- "done" if air or the undug, else attack (mob); then return dig success (or not)
   local inspectOK, found = turtle.inspects[direction](); if found and found.name == "minecraft:bedrock" then 
     error("turtle.attemptDig: Bedrock at "..move.ats().." "..direction) -- no recovery
   end; local untarget = turtle.check(undug, found); -- water or lava?
@@ -168,23 +166,27 @@ end
 
 local function unblock(direction, limit, attempts) -- returns "done" or raises an error
   --:+ _Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached._
-  limit = limit or _G.Muse.attempts; -- arbitrary waits, default retrys for gravel; attacks
+  --:+ _Arbitrary 0.5 second waits and default _G.Muse.attempts retrys for gravel; attacks_
   if attempts > limit then error("turtle.unblock: Failed at "..move.ats().." "..direction)
   end; -- failed: not air, water, lava, bedrock, sand, gravel (or succesful attack of mobs)
-  local done, report = attemptDig(direction); if done then return done, report end -- **dig succeeded**
+  local done, report = attemptDig(direction); if done == "done" then return done, report end -- **dig succeeded**
   core.status(2, "turtle", "Unblocking", direction, attempts) -- report blockage
   core.sleep(0.5); -- wait for gravel or sand to finish falling... and then try again
-  return turtle.unblock(direction, limit) -- try again, dig failure or the undug?
-end
-
-function turtle.unblock(direction, limit)
-  --:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys (default `_G.Muse.attempts`) dig to limit or bedrock._ -> `"done", nil|"undug" &!` 
-  return unblock(direction, limit, 1)
+  return unblock(direction, limit, attempts + 1) -- try again, dig failure or the undug?
 end
 
 local function continue(direction, xyzf, limit)
   turtle.unblock(direction, limit); return turtle.digTo(xyzf, limit)
 -- if unblock didn't suceed, it raised error and won't return here
+end
+--[[
+```
+And the actual library interfaces mostly deal with error conditions and reports.
+```Lua
+--]]
+function turtle.unblock(direction, limit)
+  --:: turtle.unblock(direction: ":", limit: #:?) -> _Retrys dig to limit or bedrock._ -> `"done", nil|"undug" &!` 
+  return unblock(direction, limit or _G.Muse.attempts, 1)
 end
 
 function turtle.digTo(xyzf, limit)
@@ -199,7 +201,7 @@ function turtle.digTo(xyzf, limit)
   if fail ~= "blocked" then error("turtle.digTo: Unblock "..remaining.." failed because "..report) end
   if not direction then error("turtle.digTo: no direction for unblock "..from.." "..report) end
   core.status(3, "turtle", "Unblocking move", direction, "to", xyzf)
-  return continue(direction, xyzf, limit)  -- returns true or raises error (and a report for bedrock) 
+  return continue(direction, xyzf, limit)  -- returns true or an error is raised (and a report for bedrock) 
 end
 
 function turtle.digAround(orientation, diggings, name)
@@ -209,9 +211,13 @@ function turtle.digAround(orientation, diggings, name)
     local ok, fail = core.pass(pcall(turtle.unblock, digging)); if not ok then -- restore initial orientation
       move[orientation](0); error("turtle.digAround: "..name or "".." "..digging.." failed, "..fail..", refacing "..orientation)
     end
-  end; return "done"
+  end; return "done" -- all the diggings done got done
 end
-
+--[[
+```
+Finally, support for simulating blockage conditions out-of-game.
+```Lua
+--]]
 --:# For testing; `blocked` is a boolean or a number counted down to end blocking (of course, not used in-game)
 local blocked = false
 
@@ -229,12 +235,12 @@ function turtle.blocking(blocker) -- doesn't exist in game so not mockable
   if blocker == nil then blocked = less(blocked); return setBlocked() end
   blocked = ab(blocker); return setBlocked()
 end
-
-return {turtle = turtle}
 --[[
 ```
 Look at <a href="../tests/turtle.html" target = "_blank"> `tests/turtle` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module.
 
 And now we're done making the new and improved `turtle`. No more the old. Go to <a href="../../MiningMUSE.html#roam"> MiningMUSE</a> 
 to see how these functions are used to roam around a Minecraft world.
+```Lua
 --]]
+return {turtle = turtle}

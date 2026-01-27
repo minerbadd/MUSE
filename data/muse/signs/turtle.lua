@@ -31,7 +31,7 @@ function turtle.category() end
 ---@alias turtle.compares { [direction]:fun():  same: boolean } # Check block in direction has the same ID as selected slot
 
 
--- Retrys (default `_G.Muse.attempts`) dig to limit or bedrock.
+-- Retrys dig to limit or bedrock.
 -- turtle.unblock(direction: ":", limit: #:?):  `"done", nil|"undug" &!`  <-
 
 ---@type fun( direction: string,  limit: number?):   "done",  nil | "undug" 
@@ -91,7 +91,7 @@ function turtle.digAround() end
 ---@type fun( xyzf: xyzf,  limit: number?):   done: string 
 function turtle.digTo() end
 
--- Total energy actually available in turtle slots plus turtle fuel level. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached.
+-- Total energy actually available in turtle slots plus turtle fuel level. Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached. Arbitrary 0.5 second waits and default _G.Muse.attempts retrys for gravel; attacks
 -- turtle.fuel():  `fuelTotal: #:` <-
 
 ---@type fun():  fuelTotal: number 
