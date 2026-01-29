@@ -16,7 +16,7 @@ As we've indicated, these libraries depend on `lib/motion`. Keeping its <a href=
 
 The implementations of these libraries are fairly straight forward. There are fewer ways to go wrong and fewer ways to specify what's to be done. So thankfully, there's not much new beyond what's been discussed for <a href="motion.html" target="_blank"> `lib/motion` </a>. There won't be much to discuss about the code. One thing to note though is that the `place` type (in serialized form) will be sent around the network and persist on disk storage. Because of that there's value in keeping it both simple and flexible. If all of this were in the real world, changing it if it weren't simple and flexible would be difficult to manage. There'd be all those (now incompatible) `place` data structures hanging about on disks spread all over the network. This motivates the incorporation of `features`, which we'll come to in a bit.
 
-All that said, here's the introduction and utilities for the module. As in `lib/motion`, we provide for type checking in the module by LLS by loading `signs.places` and referencing what's loaded.
+All that said, here's the introduction and utilities for the module. As in `lib/motion`, we provide for type checking in the module by LLS by loading `signs.places` and referencing what's loaded. To help with that, `place.matched` is defined as an alias of table.unpack with an annotation to specify what's unpacked.
 ```Lua
 --]]
 local placings = require("signs.places"); placings.places, placings.place, placings.moves, placings.steps = {}, {}, {}, {}
@@ -25,16 +25,18 @@ local _, place, moves, steps = placings.places, placings.place, placings.moves, 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
 
-_G.Muse.places = _G.Muse.places or {}; local placePlaces = _G.Muse.places -- **global across programs in session, not persistent**
+_G.Muse.places = _G.Muse.places or {} -- **global across programs in session, not persistent**
 
 --:# **Type definitions that will be serialized for network transport and disk storage**
 --:> place: _A point, trail, or range_ -> `[name: ":", label: ":", :situations:, :features:]`
 --:> features: _Dictionary of string key, any value pairs_ -> `[key: ":"]: any`
 
+place.matched = table.unpack --:: place.matched(:place:) -> _Unpack place_ -> `name: ":"`, `label: ":"`, `:situations:`, `:features:?`
+
 --:# **Utilities for places (points, trails, and ranges)**
-function place.reset() placePlaces = {} end
+function place.reset() _G.Muse.places = {} end
 --:: place.reset() -> _Resets places to the empty table._ -> `nil`
-function place.count() return #placePlaces end
+function place.count() return #_G.Muse.places end
 --:: place.count() -> _Returns number of places._ -> `#:`
 function place.site(value) if value then _G.Muse.site = value end; return _G.Muse.site end -- isolate global
 --:: place.site(value: ":"?) -> _Set or return local `site` (isolates global)._ -> `":"`
@@ -51,15 +53,15 @@ local function xyzfSituation(situation, index) return move.at(situation), index 
 --[[
 ```
 <a id="match"></a>
-The following is an unassuming little function, `place.match`, right at the heart of `places`. It finds a `place`. The places in the `placePlaces` table shadow the global `_G.Muse.places`. Note that the lookup is of a `site` qualified name. A qualified name is a place name specific to a site. 
+The following is an unassuming little function, `place.match`, right at the heart of `places`. It finds a `place`.  Note that the lookup is of a `site` qualified name. A qualified name is a place name specific to a site. 
 
 After `place.match` is a function, `place.xyzf`, to report the coordinates and orientations associated with a `place`. There may be several as needed for a `trail` or a `range` named by the `place`.
 ```Lua
 --]]
 function place.match(name) 
   --:: place.match(name: ":") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `order: #:?, place: place?`
-  local qualified = place.qualify(name); for order, placed in ipairs(placePlaces) do 
-    if qualified == table.unpack(placed) then return order, placed end 
+  local qualified = place.qualify(name); for order, placed in ipairs(_G.Muse.places) do 
+    if qualified == place.matched(placed) then return order, placed end 
   end
 end
 
@@ -67,7 +69,7 @@ function place.xyzf(target, index) -- target place (with index for situations) o
   --:: place.xyzf(name: ":"?, index: #:?) -> _Looks up index in name [defaults to current situation]._ -> `xyzf?, order: #:?`
   if not target then return xyzfSituation() end -- current position of this turtle
   local order, placed = place.match(target); if not (order and placed) then return nil end
-  local _, _, situations = table.unpack(placed); -- trails and ranges have mre than one
+  local _, _, situations = place.matched(placed); -- trails and ranges have mre than one
   index = index or 1; assert(index <= #situations, "places.xyzf: has less than "..index.." situations")
   return xyzfSituation(situations[index], order) -- place situation 
 end
@@ -88,11 +90,11 @@ function place.name(name, label, supplied, features) -- newSituation(s) is from 
 
   local order, matched = place.match(name); -- look for pre-existing
   local matching = matched or {"", "", {}, {}} -- initial structure for a place
-  local _, _, _, matchedfeatures = table.unpack(matching); -- pre-existing
+  local _, _, _, matchedfeatures = place.matched(matching); -- pre-existing
   for key, value in pairs(features) do matchedfeatures[key] = value end -- overwrite or new
 
   local candidate = {place.qualify(name), label, situations, matchedfeatures} 
-  local indexed = order or #placePlaces + 1; placePlaces[indexed] = candidate -- replace or new place
+  local indexed = order or #_G.Muse.places + 1; _G.Muse.places[indexed] = candidate -- replace or new place
   core.report(4, "places", "name ", indexed, candidate)
   return core.serialize(candidate), indexed -- serialized for disk or net 
 end
@@ -105,15 +107,15 @@ function place.add(name, situation)
 --:: place.add(name: ":", :situation:) -> _Add situation to situations of an existing place._ -> `serialized: ":"?, order: #:?`
 ---@diagnostic disable-next-line: missing-return-value
   local order, matched = place.match(name); if not matched then return end
-  local _, _, situations = table.unpack(matched); situations[#situations + 1] = situation
+  local _, _, situations = place.matched(matched); situations[#situations + 1] = situation
   return core.serialize(matched), order
 end 
 
 function place.erase(name) -- remove place if found
 --::place.erase(name: ":") -> _Removes named place from array of places._ -> `#:, order: #:?`
 --:+ _Return new length of places table and the (previous) order of the removed place._
-  local order = place.match(name); if order then table.remove(placePlaces, order) end
-  return #placePlaces, order -- leaves sparse array
+  local order = place.match(name); if order then table.remove(_G.Muse.places, order) end
+  return #_G.Muse.places, order -- leaves sparse array
 end
 --[[
 ```
@@ -123,9 +125,8 @@ Implementing support for the "where" of things is straightforward. But look at `
 --]]
 --:# **Answering "where?"**
 local function placeSituation(name) -- situation for named place;
-  local order, matched = place.match(name); if not order then return nil end
----@diagnostic disable-next-line: param-type-mismatch
-  local _, label, situations = table.unpack(matched); return situations[1], label
+  local order, matched = place.match(name); if not (order and matched) then return nil end
+  local _, label, situations = place.matched(matched); return situations[1], label
 end
 --[[
 ```
@@ -140,17 +141,17 @@ function  place.near(span, reference) -- iterator: places in span distance of cu
 --:+ _If neither is specified return each of the named places. In any case, iterator returns include serialized places._
   local situation = type(reference) == "string" and placeSituation(reference) or _G.Muse.situation
   local x, y, z = move.get(situation); local xyzReference = type(reference) == "table" and reference or {x, y, z}
-  local order = 0; local count = #placePlaces;  -- upvalues for returned closure
+  local order = 0; local count = #_G.Muse.places;  -- upvalues for returned closure
 
   return function() -- the iterator; 
     -- **note:** `for order = 1, count do` .... **would reset** `order` **every time the closure is invoked**
     while order < count do order = order + 1
-      local namePlace, labelPlace, situations = table.unpack(placePlaces[order])
+      local namePlace, labelPlace, situations = place.matched(_G.Muse.places[order])
       local positionPlace = situations[1].position; -- trails and ranges have more than one
       local xyzPlace = {positionPlace.x, positionPlace.y, positionPlace.z}
       local distance = place.distance(xyzPlace, xyzReference); 
       if not span or distance <= span then 
-        return namePlace, labelPlace, xyzPlace, distance, situations, core.serialize(placePlaces[order]) 
+        return namePlace, labelPlace, xyzPlace, distance, situations, core.serialize(_G.Muse.places[order]) 
       end
     end
   end -- end closure
@@ -170,7 +171,7 @@ _anonymous function_</a> that specifies how the sort is to be done.</li>
 ```Lua
 --]]
 function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing cardinals argument
---:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]`
+--:: place.nearby(:xyzf:?, :cardinals:?) -> _Sorted_ -> `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:][]`
 --:> cardinals: _Function to get one of the eight cardinal points of the compass_ -> (dx: #:, dz: #:): cardinal: ":"
 --:+ _Nearest places to specified xyzf coordinates or current position (as default)._ 
 --:+ _Returned table is sorted by distances and includes the name, label, and xyzf position of each place._
@@ -180,7 +181,7 @@ function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing
 
   local namedPlaces = {}; for name, label, pxyz in place.near() do 
     local px, py, pz = table.unpack(pxyz); local distance = place.distance(pxyz, xyzf); 
-    local position, cardinal = core.xyzf({core.round(px), core.round(py), core.round(pz)}), cardinals(px - x, pz - z)
+    local position, cardinal = core.xyzfs({core.round(px), core.round(py), core.round(pz)}), cardinals(px - x, pz - z)
     namedPlaces[#namedPlaces + 1] = {distance, name, label, cardinal, position}
   end; table.sort(namedPlaces, function(a,b) return a[1] < b[1] end) -- on `distance`
 
@@ -220,9 +221,8 @@ end
 function place.track(name) -- return track elements of trail if trail exists
   --:: place.track(name: ":") -> _Returns trail_ -> `name: ":"?, label: ":"?, :situations:?`
   assert(name, "places: Need a name for trail")
-  local order, matched = place.match(name); if not order then return nil end
----@diagnostic disable-next-line: redundant-return-value, param-type-mismatch
-  return table.unpack(matched) -- name, label, situations
+  local order, matched = place.match(name); if not (order and matched) then return nil end
+  return place.matched(matched) -- name, label, situations
 end
 --[[
 ```

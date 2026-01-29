@@ -10,8 +10,7 @@ There are a few new things. Firstly, the `roam` library is a `CLL`, a command li
 With that said, the introduction should look like something you've seen before. We'll come to `_G.Muse.permutations` shortly.
 ```Lua
 --]]
-local roams = require("signs.roam"); roams.roam = {}; local roam = roams.roam ---@module "signs.roam" 
-roam.hints = {} ---@module "signs.roam" -- for functions exported from library
+local roams = require("signs.roam"); roams.roam = {}; local roam = roams.roam; roam.hints = {} ---@module "signs.roam" 
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
@@ -99,8 +98,8 @@ local function to(arguments)
   --:- to place | x y z face?-> _To named place or position and face. Retry permutation for different first direction._ 
   local _, x, y, z, facing = table.unpack(arguments); local tx, ty, tz = table.unpack(move.at()) -- from
   local toPlace = tonumber(x) and {tonumber(x), tonumber(y), tonumber(z), facing or "south"} or place.xyzf(x) -- x: named place
----@diagnostic disable-next-line: param-type-mismatch
-  local ttx, tty, ttz = table.unpack(toPlace); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- **do it!**
+  assert(toPlace, "roam.to: Can't go to a place unknown "..x)
+  local ttx, tty, ttz = core.xyzf(toPlace); return moving(tx, ty, tz, ttx, tty, ttz, "rome.to ") -- **do it!**
 end; roam.hints["to"] = {["?name | ?x y z "] = {["??face"] = {}}}
 --[[
 ```
@@ -130,7 +129,7 @@ local movements = {
   e = function(count) return move.east(tonumber(count)) end,
   s = function(count) return move.south(tonumber(count)) end,
   w = function(count) return move.west(tonumber(count)) end,
-  r = function(count) return move.right(tonumber(count)) end,
+   r = function(count) return move.right(tonumber(count)) end,
   l = function(count) return move.left(tonumber(count)) end,
   f = function(count) return move.forward(tonumber(count)) end,
   b = function(count) return move.back(tonumber(count)) end,

@@ -8,6 +8,8 @@ The `map` library continues the development of `place`, introduced by <a href="p
 It's MUSE's other major representation of state (after `situations`). A `place` can be a `point`, a `range`, or a `trail`, all built on by `lib/map` using `place` data structures. We've come across trails before in <a href="places.html#trail" target="_blank"> `lib/places`</a>. 
 To review, they are named (and labelled) `situations` created by `tracking` in the <a href="motion.html#tracking" target="_blank"> `lib/motion` </a>library. A `range` is a named (and labeled) `point` pair delimiting a rectangular solid. A `point` is a named (and labelled) single entry table whose single element is a `situation`. The names of places are used for lookup. The labels are just user supplied supplementary information. 
 
+Additionally it seemed useful to add the idea of `locations` a set of related points sharing a label, each xyz offset from each other.
+
 To ease understanding, the module introduction for `map` shown below is organized in much the same way as described for <a href="motion.html"> `lib/motion`</a>. 
 
 What's new in `lib/map` are network operations and the use of 
@@ -18,11 +20,12 @@ _daemons_</a> to deal with network events. You may have already run across the
 <a href="code/daemons/.erase.html" target="_blank"> `.erase` </a> daemon handling the `MX` (MUSE eXcise) rednet protocol look
 much the same, easing testing by quickly passing control to a library to do the real work. There'll be more of this throughout our discussions of how MUSE programs are implemented.
 
-There's a bunch of <a href="#programs" target="_blank"> programs </a> that provide the command line user interface. Look at one or two of them briefly to see that there's so very little there there.
-
+There's a bigish bunch of <a href="#programs" target="_blank"> programs </a> that provide the command line user interface. Look at one or two of them briefly to see that there's so very little there there. The action is here in `lib/ma`.p
 ```Lua
 --]]
-local map = {}; map.hints = {} ---@module "signs.map" -- for functions exported from library
+---@diagnostic disable: duplicate-set-field
+
+local maps = require("signs.map"); maps.map = {}; local map = maps.map; map.hints = {} ---@module "signs.map"
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
@@ -45,7 +48,7 @@ The `map.place` function deserializes a place from a <a href="core.html#serializ
 --]]
 --:# **File and Broadcast Operations for points, trails, and ranges (including features)**
 function map.place(placeString) -- restores place using string from serialization
-  --:: map.place(placeString: ":") -> _Instantiate string as named place, include in named places._ -> `serial: ":", index: #: &!`
+  --:: map.place(placeString: ":") -> _Instantiate string as named place, include in named places._ -> `serial: ":"?, index: #:? &!`
   local restorePlace, fail = load(placeString); -- try to restore if place not `nil` or empty
   if fail or not restorePlace then error("map.place: "..placeString.." failed") end
   local thisPlace = restorePlace(); if thisPlace and #thisPlace > 0 then 
@@ -60,7 +63,7 @@ The `map.read` and `map.write` functions do the actual disk operations. There's 
 ```Lua
 --]]
 function map.read(thisMap) -- reinstantiate places; if no map file, create an empty one
-  --:: map.read(thisMap: ":") -> _Reinstantiate places from map file._ -> `serial: ":", index: #: &!`
+  --:: map.read(thisMap: ":") -> _Reinstantiate places from map file._ -> `index: #: &!`
   if not io.open(thisMap, "r") then io.open(thisMap, "w"):close(); assert(io.open(thisMap, "r")) end
   place.reset(); for line in io.lines(thisMap) do map.place(line) end    
   return place.count() 
@@ -99,10 +102,10 @@ end; map.hints["site"] = {["?name"] = {} }
 
 local function store(site) -- used in `.start` to persist `site` and load clean map
   -- :: store(site: ":") -> _Persists `site` in local store and loads local map._ -> `report: ":"`
-  local siteFile = io.open(siteFile, "r"); if not siteFile then sited(site) end
+  local siteFileHandle = io.open(siteFile, "r"); if not siteFileHandle then sited(site) end
   if not map.map() then map.map(_G.Muse.map) end
-  local places = map.read(map.map()); map.write(map.map());
-  return site..": "..places.." places"
+  local mapped = map.read(map.map()); map.write(map.map());
+  return site..": "..mapped.." places"
 end; map.hints["store"] = {["?site"] = {} } 
 --[[
 ```
@@ -139,7 +142,7 @@ iterator, the local `sync` function `MU` broadcasts all the places known by the 
 local function sync() --:- sync -> _Muse Update (MU) broadcast local map to (MQ) registered units._
   if rednet then for name, _, _, index, situations, serial in place.near() do 
     core.status(4, "map", "sync", name, #situations, index)
-    rednet.broadcast(serial, "MU"); os.sleep(0) -- need to yield for each broadcast!
+    rednet.broadcast(serial, "MU"); core.sleep(0) -- need to yield for each broadcast!
   end; return tostring(place.count()).." places" end 
 end
 --[[
@@ -176,9 +179,8 @@ map.gets = map.get --:: map.gets(name: ":", key: ":") -> _Less generic retrieval
 
 function map.put(name, key, value)  
   --:: map.put(name: ":", key: ":", value: any?) -> _Set named place feature, send MU._ ->  `key: ":"?, value: any|true|nil &!`
-  local index, namedPlace = place.match(name); if not index then return nil end
----@diagnostic disable-next-line: param-type-mismatch
-  local _, label, situations, features = table.unpack(namedPlace); features[key] = value or true;
+  local index, namedPlace = place.match(name); if not (index and namedPlace) then return nil end
+  local _, label, situations, features = place.matched(namedPlace); features[key] = value or true;
   local serial = place.name(name, label, situations, features); update(serial) -- all MU correspondents
   core.status(4, "map put", place.qualify(name), key, value); return key, value or true
 end
@@ -250,7 +252,7 @@ end
 --[[
 ```
 <a id="fix"></a> 
-All the turtle movement we've just spoken of is in support of establishing a known position and orientation (a `fix`) to anchor future dead reckoning of turtle position and orientation. The `fix` function also fixes the beginning of a `trail`.
+All the turtle movement we've just spoken of is in support of establishing a known position and orientation (a `fix`) to anchor future dead reckoning of turtle position and orientation. The `fix` function also )optionally) fixes the beginning of a `trail`.
 ```Lua
 --]]
 _G.Muse.trailhead = _G.Muse.trailhead or {}; 
@@ -270,26 +272,25 @@ end map.hints["fix"] = {["??trailname"] = {} }
 --[[
 ```
 <a id="point"></a> 
-The constructors for points, trails, and ranges will be made available to the `map` CLI. It all starts with points..
+The constructors for points, trails, locations, and ranges will be made available to the `map` CLI. It all starts with points..
 ```Lua
 --]]
 --:< **Places - Points, Locations, Trails, and Ranges of Maps**
-local function point(name, label, trail, tx, ty, tz, tf) -- t* for no gps; tf for player; -> "done", serial: ":", index: #: 
+local function point(name, label, trail, tx, ty, tz, tf) --> "done", serial: ":", index: #: 
   --:- point name label trail? -> _Add named labeled point, can start trail, MU updated map. (Player situation needs GPS.)_ 
   --:+ _Optional `trail` starts turtle movement `track` ended by call to `trail` limited by `Muse.tracking.limit`._
-  assert(name and label, "map.point: Please provide name and label")
-  local x, y, z, f = move.where(tx, ty, tz, tf);
-  if trail then fix(trail, x, y, z, f or "north") end -- dance and track in `fix` if trail
+  assert(name and label, "map.point: Please provide name and label"); local x, y, z, f = move.where();
+  if trail then fix(trail, tx or x, ty or y, tz or z, tf or f or "north") end -- dance and track in `fix` if trail
   local serial, index = place.name(name, label); update(serial) -- append 
   return place.qualify(name)..", "..label.." ("..index..")", index
 end; map.hints["point"] = {["?name "] = {["?label "] = {["??trailname"] = {}}} }
 
 function map.set(name, label, x, y, z, f) return point(name, label, false, x, y, z, f) end
---:: map.set(name: ":", label: ":", x: #:, y: #:, z: #:, f: ":") -> _Set turtle at created point -> ":"
+--:: map.set(name: ":", label: ":", x: #:, y: #:, z: #:, f: ":") -> _Set turtle at created point_ -> ":", #:
 
 function map.point(name, label, xyzf) 
   --:: map.point(name: ":", label: ":", :xyzf:) -> _Create, send point update._ -> `nil & !`
-  core.status(2, "map.point:", place.qualify(name), core.xyzf(xyzf))
+  core.status(2, "map.point:", place.qualify(name), core.xyzfs(xyzf))
   local x, y, z, f = table.unpack(xyzf) 
   local situations = { {position = {x = x, y = y, z = z}, facing = f} }
   update(place.name(name, label, situations)) 
@@ -297,7 +298,7 @@ end
 --[[
 ```
 <a id="locations"></a> 
-Locations are a set of related points sharing a label, each xyz offset from each other.
+As we've said, locations are a set of related points sharing a label, each xyz offset from each other.
 ```Lua
 --]]
 local function addBase(template, xBase, yBase, zBase, top)
@@ -335,7 +336,7 @@ end; map.hints["trail"] = {["?name "] = {["?label"] = {}} }
 --[[
 ```
 <a id="range"></a> 
-A range defines a rectangular volume established by a pair of points.
+A range defines a rectangular volume established by a pair of points. The `borders` of a range are the coordinates at the boundary of the range. Ranges can have `features`.
 ```Lua
 --]]
 local function range(name, label, nameA, nameB, key, value) -- -> "report", index: #:
@@ -347,16 +348,32 @@ local function range(name, label, nameA, nameB, key, value) -- -> "report", inde
   local _, _, situationsA = table.unpack(placeA); local situationA = situationsA[1] -- trails not relevant
   local _, _, situationsB = table.unpack(placeB); local situationB = situationsB[1]
   place.name(name, label, situationA); local _, rangePlace = place.match(name)
----@diagnostic disable-next-line: param-type-mismatch
-  local _, _, _, features = table.unpack(rangePlace); if key then features[key] = value or true end
+  assert(rangePlace, "map range: unknown range "..rangePlace)
+  local _, _, _, features = place.matched(rangePlace); if key then features[key] = value or true end
   local serial, index = place.add(name, situationB) -- range had everything but second place
   core.status(5, "map range: "..place.qualify(name).." from "..place.qualify(nameA).." to "..place.qualify(nameB))
   update(serial); return "Range "..place.qualify(name).." at "..index.. " in places", index -- append serialized range;
 end; map.hints["range"] = {["?name "] = {["?label "] = {["?from "] = {["?to "] = {["??key "] = {["???value"] = {}}}}}}}
+
+function map.borders(target) 
+  --:: map.borders(target: ":") -> _Get range elements_ -> `borders, features, position, position &!`
+  --:> borders: _Range boundarires_ -> {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
+  local _, matched = place.match(target); assert(matched, "map.borders: range "..range.." not found")
+  local _, _, situations, features = place.matched(matched); local borders = {}; 
+  assert(features, "map.borders: missing features in "..target)
+  local x1, y1, z1 = move.get(situations[1]); local x2, y2, z2 = move.get(situations[2]) 
+  assert(x1 and y1 and z1 and x2 and y2 and z2, "map.borders: "..range.." badly formed")
+  borders.east, borders.west = x1 > x2 and x1 or x2, x1 > x2 and x2 or x1
+  borders.south, borders.north = z1 > z2 and z1 or z2, z1 > z2 and z2 or z1
+  borders.top, borders.bottom = y1 > y2 and y1 or y2, y1 > y2 and y2 or y1
+  return borders, features, situations[1].position, situations[2].position
+end
 --[[
 ```
 <a id="chart"></a> 
-A chart defines a point together with a set of ranges accessed by the `features` of that point.
+A chart defines a point together with a set of ranges accessed by the `features` of that point. 
+
+_(Do you remember what your parents told you about this sort of thing?)_
 ```Lua
 --]]
 local function chart(chartName, ...)
@@ -370,19 +387,6 @@ local function chart(chartName, ...)
   local ok, report = table.unpack(results); if not ok then return "map.chart: failed "..report end
   return core.string(table.unpack(results, 2)) -- pack a table with unpacked multiple return (all except `ok`)
 end; map.hints["chart"] = {["?chartFileName "] = {["?..."] = {}}}
-
-function map.borders(range) 
-  --:: map.borders(range: place) -> _Get range elements_ -> `borders, features, position, position &!`
-  --:> borders: _Range boundarires_ -> {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
-  local _, matched = place.match(range); assert(matched, "map.borders: range "..range.." not found")
-  local _, _, situations, features = table.unpack(matched); local borders = {}; 
-  local x1, y1, z1 = move.get(situations[1]); local x2, y2, z2 = move.get(situations[2]) 
-  assert(x1 and y1 and z1 and x2 and y2 and z2, "map.borders: "..range.." badly formed")
-  borders.east, borders.west = x1 > x2 and x1 or x2, x1 > x2 and x2 or x1
-  borders.south, borders.north = z1 > z2 and z1 or z2, z1 > z2 and z2 or z1
-  borders.top, borders.bottom = y1 > y2 and y1 or y2, y1 > y2 and y2 or y1
-  return borders, features, situations[1].position, situations[2] and situations[2].position
-end
 --[[
 ```
 <a id="at"></a> 
@@ -393,7 +397,7 @@ The rest of the support for the `map` CLI is built on the `lib/motion` and `lib/
 local function at() -- gps for player, dead reckoning for turtle -> `"xyzf"`
   --:- at -> _Report current (dead reckoning) turtle position and facing or player GPS position._ 
   if player then local x, y, z, _, ok = move.where(); 
-    return ok and core.xyzf({core.round(x), core.round(y), core.round(z)}) or "No GPS"
+    return ok and core.xyzfs({core.round(x), core.round(y), core.round(z)}) or "No GPS"
   end; return move.ats() -- report turtle's current situation position and face
 end 
 
@@ -433,17 +437,16 @@ local function toNamedPlace(namedPlace, xyz) -- distance and direction to named 
   assert(xPlace and yPlace and zPlace, "map toNamedPlace situations "..namedPlace.." coordinates missing")
   local xyzPlace = {core.round(xPlace), core.round(yPlace), core.round(zPlace)}
   local distance = core.round(place.distance(xyzPlace, xyz)) 
-  return namedPlace.." "..distance.." "..cardinal(xPlace - x, zPlace - z).." "..core.xyzf(xyzPlace).."\n"
+  return namedPlace.." "..distance.." "..cardinal(xPlace - x, zPlace - z).." "..core.xyzfs(xyzPlace).."\n"
 end
 
 local linesLimit = 3 ; -- arbitrary limit on default number of `nearby` lines printed
 
 local function toNearby(xyz, count) -- sorted distance and direction to limited list of nearby points
   local parts = {}; local sorted = place.nearby(xyz, cardinal) -- sorted
-  for index, place in ipairs(sorted) do 
----@diagnostic disable-next-line: param-type-mismatch
-    if index <= count or index <= linesLimit then local distance, name, _, cardinal = table.unpack(place)
-      parts[#parts + 1] = name.." "..core.round(distance).." "..cardinal
+  for index, placed in ipairs(sorted) do 
+    if index <= count or index <= linesLimit then local distance, name, _, cardinalPlaced = table.unpack(placed)
+      parts[#parts + 1] = name.." "..core.round(distance).." "..cardinalPlaced
     end
   end; return table.concat(parts, "\n")  
 end
@@ -483,7 +486,7 @@ local function near(placeName, span) -- list places near span (or all) near plac
   local spanned = tonumber(placeName) and placeName or tonumber(span)-- consider span as placeName
   
   for namepoint, labelpoint, xyzfpoint, distance, situations in place.near(spanned, placeName or position) do 
-    itemCount = itemCount +1; local x, y, z = table.unpack(xyzfpoint); local xyzfString = core.xyzf({x, y, z})
+    itemCount = itemCount +1; local x, y, z = table.unpack(xyzfpoint); local xyzfString = core.xyzfs({x, y, z})
     report[#report + 1] = {core.round(distance), " "..namepoint..": "..xyzfString.." "..labelpoint.." ["..#situations.."]"}
   end; table.sort(report, function(a,b) return a[1] < b[1] end) -- anonymous sort function on `distance`
   
@@ -499,9 +502,10 @@ local function view(target)
   local name, label, situations, features = table.unpack(placed)
   
   local situationStrings = {} for _, situation in ipairs(situations) do 
-    situationStrings[#situationStrings + 1] = core.xyzf({move.get(situation)})
+    situationStrings[#situationStrings + 1] = core.xyzfs({move.get(situation)})
   end; local situationList = table.concat(situationStrings, "\n")
   return name..": "..(label or "_").." ("..index..")\n"..core.string(features).."\n"..situationList
+  
 end; map.hints["view"] = {["?place"] = {}}
 --[[
 ```
@@ -519,7 +523,7 @@ local ops = { --:# **Command Line Interface**
 --[[
 ```
 <a id="op"></a> 
-As we'll see in a future chapter, the CLI can be operated remotely. Catching all the errors thrown (recursively) by callers (of callers of callers....) allows continued operation at the remote computer after an error. 
+As we'll see in a future chapter, the CLI can be operated remotely to operate on turtles. Catching all the errors thrown (recursively) by callers (of callers of callers....) allows continued operation at the remote computer after an error. 
 ```Lua
 --]]
 function map.op(commands) 
@@ -550,7 +554,6 @@ Players can use
 Follow the links just provided to see their (fairly trivial and boringly similar) implementations. It's easy to fiddle with this layer. That's good because experience with a UI usually suggests changes to it.
 
 Look at <a href="../tests/map.html" target = "_blank"> `tests/map` </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module.
-
 
 That's it for `lib/map`. Follow the <a href="../../MiningMUSE.html#Chapter5"> link</a> to return to _MiningMUSE_.
 --]]

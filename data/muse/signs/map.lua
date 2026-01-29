@@ -21,15 +21,15 @@ function map.locations() end
 function map.write() end
 
 -- Set turtle at created point
--- map.set(name: ":", label: ":", x: #:, y: #:, z: #:, f: ":"):  ":" <-
+-- map.set(name: ":", label: ":", x: #:, y: #:, z: #:, f: ":"):  ":", #: <-
 
----@type fun( name: string,  label: string,  x: number,  y: number,  z: number,  f: string):   string 
+---@type fun( name: string,  label: string,  x: number,  y: number,  z: number,  f: string):   string,  number 
 function map.set() end
 
 -- Reinstantiate places from map file.
--- map.read(thisMap: ":"):  `serial: ":", index: #: &!` <-
+-- map.read(thisMap: ":"):  `index: #: &!` <-
 
----@type fun( thisMap: string):   serial: string,  index: number 
+---@type fun( thisMap: string):   index: number 
 function map.read() end
 
 -- Create, send point update.
@@ -45,9 +45,9 @@ function map.point() end
 function map.put() end
 
 -- Instantiate string as named place, include in named places.
--- map.place(placeString: ":"):  `serial: ":", index: #: &!` <-
+-- map.place(placeString: ":"):  `serial: ":"?, index: #:? &!` <-
 
----@type fun( placeString: string):   serial: string,  index: number 
+---@type fun( placeString: string):   serial: string?,  index: number? 
 function map.place() end
 
 -- Command Line Interface
@@ -75,9 +75,9 @@ function map.gets() end
 function map.puts() end
 
 -- Get range elements
--- map.borders(range: place):  `borders, features, position, position &!` <-
+-- map.borders(target: ":"):  `borders, features, position, position &!` <-
 
----@type fun( range: place):   borders,  features,  position,  position 
+---@type fun( target: string):   borders,  features,  position,  position 
 function map.borders() end
 
 -- borders:  {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}

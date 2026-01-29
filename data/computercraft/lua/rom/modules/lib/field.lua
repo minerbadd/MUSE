@@ -97,7 +97,7 @@ function field.plan(planName, fielding, offset) -- `fieldsOp` calls `field.plan`
   local sx, sy, sz = table.unpack(bound[1]); local fx, fy, fz = table.unpack(bound[2]); -- s*: start, f*: finish
   local ox, oy, oz = table.unpack(offset or {0, 0, 0}) -- offset is optional
   local start, finish = {sx + ox, sy + oy, sz + oz}, {fx + ox, fy + oy, fz + oz}
-  local xyzfstart, xyzfFinish = core.xyzf(start), core.xyzf(finish) 
+  local xyzfstart, xyzfFinish = core.xyzfs(start), core.xyzfs(finish) 
   core.status(4, "field", "plan", planName, xyzfstart, "to", xyzfFinish)
   local moveOK, moveReport = core.pass(pcall(move.to, start, "y")) 
   if not moveOK then core.status(2, "field", "plan move.to", moveReport); return moveReport end

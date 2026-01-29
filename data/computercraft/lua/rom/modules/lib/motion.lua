@@ -5,7 +5,7 @@
 The first chunk of code using ComputerCraft that we'll look at is the `lib/motion` module. Of course, it's about moving turtles. Each <a href="https://en.wikipedia.org/wiki/Library_(computing)" target="_blank">
 _library_</a>, in the module is a collection of code elements for moving turtles in some way. Libraries often build upon each other. That's the case for MUSE and since `lib/motion` is fundamental in that build, it's where we'll start our exploration. 
 
-It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Not much consolation, but a number of the other modules read more simply. Spoonful of sugar time I'm afraid. Without the sugar. Buckle up.
+It's the first module we'll look at so we'll be thrashing through some basic code organization and code fundamentals pretty hard. It likely does not look anything like the first chunk of code you ever got running. The design is intended to be a solid, pretty complete foundation for all that will be built upon it. Further, it is designed to fit into a code analysis and documentation system. Not much consolation, but a number of the other modules read more simply. And there's a lot of narrative to help. Even so, spoonful of sugar time I'm afraid. Without the sugar. Buckle up.
 
 We'll use this module to illustrate how functions, a fundamental part of Lua, are used to implement our libraries. We'll also use it to introduce some ideas for managing the <a href="https://en.wikipedia.org/wiki/State_(computer_science)" target="_blank">
 _state_</a> of a turtle and handling the history of that state.
@@ -104,9 +104,6 @@ It often helps to define utility functions used in the module toward the beginni
 function move.get(situation) 
 --:: move.get(:situation:?) -> _Default current situation._ -> `x: #:?, y: #:?, z: #:?, facing: ":", fuel: #:, level: ":"
   local s = situation or _G.Muse.situation; local p = s.position
-  if not p then
-    print (999)
-    end
   local x, y, z = tonumber(p.x) or 0, tonumber(p.y) or 0, tonumber(p.z) or 0 -- force numbers for LLS
   return x, y, z, s.facing, s.fuel, s.level
 end

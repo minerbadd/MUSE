@@ -10,6 +10,8 @@
 
 --:> features: _Dictionary of string key, any value pairs_ -> `[key: ":"]: any`  
 
+--:: place.matched(:place:) -> _Unpack place_ -> `name: ":"`, `label: ":"`, `:situations:`, `:features:?`  
+
 --:# **Utilities for places (points, trails, and ranges)**  
 
 --:: place.reset() -> _Resets places to the empty table._ -> `nil`  
@@ -42,7 +44,7 @@
 --:+ _If only the span is specified, return places within a span of blocks of the current situation or player position._    
 --:+ _If neither is specified return each of the named places. In any case, iterator returns include serialized places._  
 
---:: place.nearby(:xyzf:?, :cardinals:) -> _Sorted_ -> `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]`  
+--:: place.nearby(:xyzf:?, :cardinals:?) -> _Sorted_ -> `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:][]`  
 
 --:> cardinals: _Function to get one of the eight cardinal points of the compass_ -> (dx: #:, dz: #:): cardinal: ":"    
 --:+ _Nearest places to specified xyzf coordinates or current position (as default)._     

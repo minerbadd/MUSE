@@ -21,9 +21,11 @@
 
 --:: core.string(...: any) -> _Makes string from any inputs, simplifies single entry tables._ -> `":"`  
 
---:: core.xyzf(:xyzf:) -> _Returns specially formatted string for `xyzf`._ -> `":"`  
-
 --:> xyzf: _Position and facing as table_ -> `[x: #:, y: #:, z: #:, facing: ":"?]`  
+
+--:: core.xyzf(:xyzf:) -> _Unpack position and facing_ ->`x: #:`, `y: #:`, `z: #:`, `facing: ":"?`  
+
+--:: core.xyzfs(:xyzf:) -> _Returns specially formatted string for `xyzf`._ -> `":"`  
 
 --:# **Handling errors and reporting operations**  
 

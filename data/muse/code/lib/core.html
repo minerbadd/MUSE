@@ -15,8 +15,8 @@
 </code></pre>
 <pre><code class="language-lua">
 ---@diagnostic disable-next-line: undefined-field
-local cores = require("signs.core"); cores.core = {}; local core = cores.core ---@module "signs.core"  
-local rednet = _G.rednet; core.hints = {};
+local cores = require("signs.core"); cores.core = {}; local core = cores.core; core.hints = {} ---@module "signs.core"  
+local rednet = _G.rednet; 
 </code></pre>
 <a id="clone"></a>
 <h3>Deep Copy</h3>
@@ -107,8 +107,10 @@ function core.string(...) --:: core.string(...: any) -> <i>Makes string from any
   end; return table.concat(strings, " ")
 end
 
-function core.xyzf(xyzf) --:: core.xyzf(:xyzf:) -> <i>Returns specially formatted string for <code>xyzf</code>.</i> -> <code>":"</code>
-  --:> xyzf: <i>Position and facing as table</i> -> <code>[x: #:, y: #:, z: #:, facing: ":"?]</code>
+--:> xyzf: <i>Position and facing as table</i> -> <code>[x: #:, y: #:, z: #:, facing: ":"?]</code>
+core.xyzf = table.unpack --:: core.xyzf(:xyzf:) -> <i>Unpack position and facing</i> -><code>x: #:</code>, <code>y: #:</code>, <code>z: #:</code>, <code>facing: ":"?</code>
+
+function core.xyzfs(xyzf) --:: core.xyzfs(:xyzf:) -> <i>Returns specially formatted string for <code>xyzf</code>.</i> -> <code>":"</code>
   assert(xyzf and type(xyzf == "table"), "core: Need xyzf as table for string")
   local x, y, z, f = table.unpack(xyzf); f = f or ""
   return "{" .. core.round(x) .. ", " .. core.round(y) .. ", " .. core.round(z) .. "} " .. f

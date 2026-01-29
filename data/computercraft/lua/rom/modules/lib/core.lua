@@ -7,8 +7,8 @@
 ```Lua
 --]]
 ---@diagnostic disable-next-line: undefined-field
-local cores = require("signs.core"); cores.core = {}; local core = cores.core ---@module "signs.core"  
-local rednet = _G.rednet; core.hints = {};
+local cores = require("signs.core"); cores.core = {}; local core = cores.core; core.hints = {} ---@module "signs.core"  
+local rednet = _G.rednet; 
 --[[
 ```
 <a id="clone"></a>
@@ -109,8 +109,10 @@ function core.string(...) --:: core.string(...: any) -> _Makes string from any i
   end; return table.concat(strings, " ")
 end
 
-function core.xyzf(xyzf) --:: core.xyzf(:xyzf:) -> _Returns specially formatted string for `xyzf`._ -> `":"`
-  --:> xyzf: _Position and facing as table_ -> `[x: #:, y: #:, z: #:, facing: ":"?]`
+--:> xyzf: _Position and facing as table_ -> `[x: #:, y: #:, z: #:, facing: ":"?]`
+core.xyzf = table.unpack --:: core.xyzf(:xyzf:) -> _Unpack position and facing_ ->`x: #:`, `y: #:`, `z: #:`, `facing: ":"?`
+
+function core.xyzfs(xyzf) --:: core.xyzfs(:xyzf:) -> _Returns specially formatted string for `xyzf`._ -> `":"`
   assert(xyzf and type(xyzf == "table"), "core: Need xyzf as table for string")
   local x, y, z, f = table.unpack(xyzf); f = f or ""
   return "{" .. core.round(x) .. ", " .. core.round(y) .. ", " .. core.round(z) .. "} " .. f

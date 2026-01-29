@@ -135,7 +135,7 @@ function _gps.launch(commands) -- use `locate` to give a `place` a `location`
   local xyzLocation = place.xyzf(location); yD = yD or 255; local positions = makePositions(xyzLocation, yD)
   
   for _, direction in ipairs(order) do local position = positions[direction]; 
-    core.report(2, "GPS "..direction.." host to "..core.xyzf(position)) 
+    core.report(2, "GPS "..direction.." host to "..core.xyzfs(position)) 
     move.to(position); _gps.equip(direction); install(position); _gps.actuate({"actuate", direction}) -- **do the work**
   end; core.report(2, "Returning to launch location"); move.to(xyzLocation)
   

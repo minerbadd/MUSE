@@ -24,7 +24,7 @@ As we've indicated, these libraries depend on <code>lib/motion</code>. Keeping i
 <p>
 The implementations of these libraries are fairly straight forward. There are fewer ways to go wrong and fewer ways to specify what's to be done. So thankfully, there's not much new beyond what's been discussed for <a href="motion.html" target="_blank"> <code>lib/motion</code> </a>. There won't be much to discuss about the code. One thing to note though is that the <code>place</code> type (in serialized form) will be sent around the network and persist on disk storage. Because of that there's value in keeping it both simple and flexible. If all of this were in the real world, changing it if it weren't simple and flexible would be difficult to manage. There'd be all those (now incompatible) <code>place</code> data structures hanging about on disks spread all over the network. This motivates the incorporation of <code>features</code>, which we'll come to in a bit.
 <p>
-All that said, here's the introduction and utilities for the module. As in <code>lib/motion</code>, we provide for type checking in the module by LLS by loading <code>signs.places</code> and referencing what's loaded.
+All that said, here's the introduction and utilities for the module. As in <code>lib/motion</code>, we provide for type checking in the module by LLS by loading <code>signs.places</code> and referencing what's loaded. To help with that, <code>place.matched</code> is defined as an alias of table.unpack with an annotation to specify what's unpacked.
 <pre><code class="language-lua">
 local placings = require("signs.places"); placings.places, placings.place, placings.moves, placings.steps = {}, {}, {}, {}
 local _, place, moves, steps = placings.places, placings.place, placings.moves, placings.steps ---@module "signs.places"
@@ -32,16 +32,18 @@ local _, place, moves, steps = placings.places, placings.place, placings.moves, 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move, step = motion.move, motion.step ---@module "signs.motion"
 
-_G.Muse.places = _G.Muse.places or {}; local placePlaces = _G.Muse.places -- <b>global across programs in session, not persistent</b>
+_G.Muse.places = _G.Muse.places or {} -- <b>global across programs in session, not persistent</b>
 
 --:# <b>Type definitions that will be serialized for network transport and disk storage</b>
 --:> place: <i>A point, trail, or range</i> -> <code>[name: ":", label: ":", :situations:, :features:]</code>
 --:> features: <i>Dictionary of string key, any value pairs</i> -> <code>[key: ":"]: any</code>
 
+place.matched = table.unpack --:: place.matched(:place:) -> <i>Unpack place</i> -> <code>name: ":"</code>, <code>label: ":"</code>, <code>:situations:</code>, <code>:features:?</code>
+
 --:# <b>Utilities for places (points, trails, and ranges)</b>
-function place.reset() placePlaces = {} end
+function place.reset() _G.Muse.places = {} end
 --:: place.reset() -> <i>Resets places to the empty table.</i> -> <code>nil</code>
-function place.count() return #placePlaces end
+function place.count() return #_G.Muse.places end
 --:: place.count() -> <i>Returns number of places.</i> -> <code>#:</code>
 function place.site(value) if value then _G.Muse.site = value end; return _G.Muse.site end -- isolate global
 --:: place.site(value: ":"?) -> <i>Set or return local <code>site</code> (isolates global).</i> -> <code>":"</code>
@@ -57,14 +59,14 @@ local function xyzfSituation(situation, index) return move.at(situation), index 
 -- : xyzfSituation(:situation:, index: #:) -> <i>Faced position, default current situation</i> -> <code>xyzf, index: #:</code>
 </code></pre>
 <a id="match"></a>
-The following is an unassuming little function, <code>place.match</code>, right at the heart of <code>places</code>. It finds a <code>place</code>. The places in the <code>placePlaces</code> table shadow the global <code>_G.Muse.places</code>. Note that the lookup is of a <code>site</code> qualified name. A qualified name is a place name specific to a site. 
+The following is an unassuming little function, <code>place.match</code>, right at the heart of <code>places</code>. It finds a <code>place</code>.  Note that the lookup is of a <code>site</code> qualified name. A qualified name is a place name specific to a site. 
 <p>
 After <code>place.match</code> is a function, <code>place.xyzf</code>, to report the coordinates and orientations associated with a <code>place</code>. There may be several as needed for a <code>trail</code> or a <code>range</code> named by the <code>place</code>.
 <pre><code class="language-lua">
 function place.match(name) 
   --:: place.match(name: ":") -> <i>Lookup place qualified by site, return</i> <code>nil</code> <i>if not found.</i> -> <code>order: #:?, place: place?</code>
-  local qualified = place.qualify(name); for order, placed in ipairs(placePlaces) do 
-    if qualified == table.unpack(placed) then return order, placed end 
+  local qualified = place.qualify(name); for order, placed in ipairs(_G.Muse.places) do 
+    if qualified == place.matched(placed) then return order, placed end 
   end
 end
 
@@ -72,7 +74,7 @@ function place.xyzf(target, index) -- target place (with index for situations) o
   --:: place.xyzf(name: ":"?, index: #:?) -> <i>Looks up index in name [defaults to current situation].</i> -> <code>xyzf?, order: #:?</code>
   if not target then return xyzfSituation() end -- current position of this turtle
   local order, placed = place.match(target); if not (order and placed) then return nil end
-  local _, _, situations = table.unpack(placed); -- trails and ranges have mre than one
+  local _, _, situations = place.matched(placed); -- trails and ranges have mre than one
   index = index or 1; assert(index <= #situations, "places.xyzf: has less than "..index.." situations")
   return xyzfSituation(situations[index], order) -- place situation 
 end
@@ -91,11 +93,11 @@ function place.name(name, label, supplied, features) -- newSituation(s) is from 
 
   local order, matched = place.match(name); -- look for pre-existing
   local matching = matched or {"", "", {}, {}} -- initial structure for a place
-  local _, _, _, matchedfeatures = table.unpack(matching); -- pre-existing
+  local _, _, _, matchedfeatures = place.matched(matching); -- pre-existing
   for key, value in pairs(features) do matchedfeatures[key] = value end -- overwrite or new
 
   local candidate = {place.qualify(name), label, situations, matchedfeatures} 
-  local indexed = order or #placePlaces + 1; placePlaces[indexed] = candidate -- replace or new place
+  local indexed = order or #_G.Muse.places + 1; _G.Muse.places[indexed] = candidate -- replace or new place
   core.report(4, "places", "name ", indexed, candidate)
   return core.serialize(candidate), indexed -- serialized for disk or net 
 end
@@ -106,15 +108,15 @@ function place.add(name, situation)
 --:: place.add(name: ":", :situation:) -> <i>Add situation to situations of an existing place.</i> -> <code>serialized: ":"?, order: #:?</code>
 ---@diagnostic disable-next-line: missing-return-value
   local order, matched = place.match(name); if not matched then return end
-  local _, _, situations = table.unpack(matched); situations[#situations + 1] = situation
+  local _, _, situations = place.matched(matched); situations[#situations + 1] = situation
   return core.serialize(matched), order
 end 
 
 function place.erase(name) -- remove place if found
 --::place.erase(name: ":") -> <i>Removes named place from array of places.</i> -> <code>#:, order: #:?</code>
 --:+ <i>Return new length of places table and the (previous) order of the removed place.</i>
-  local order = place.match(name); if order then table.remove(placePlaces, order) end
-  return #placePlaces, order -- leaves sparse array
+  local order = place.match(name); if order then table.remove(_G.Muse.places, order) end
+  return #_G.Muse.places, order -- leaves sparse array
 end
 </code></pre>
 <a id="where"></a> 
@@ -122,9 +124,8 @@ Implementing support for the "where" of things is straightforward. But look at <
 <pre><code class="language-lua">
 --:# <b>Answering "where?"</b>
 local function placeSituation(name) -- situation for named place;
-  local order, matched = place.match(name); if not order then return nil end
----@diagnostic disable-next-line: param-type-mismatch
-  local _, label, situations = table.unpack(matched); return situations[1], label
+  local order, matched = place.match(name); if not (order and matched) then return nil end
+  local _, label, situations = place.matched(matched); return situations[1], label
 end
 </code></pre>
 <a id="near"></a>
@@ -137,17 +138,17 @@ function  place.near(span, reference) -- iterator: places in span distance of cu
 --:+ <i>If neither is specified return each of the named places. In any case, iterator returns include serialized places.</i>
   local situation = type(reference) == "string" and placeSituation(reference) or _G.Muse.situation
   local x, y, z = move.get(situation); local xyzReference = type(reference) == "table" and reference or {x, y, z}
-  local order = 0; local count = #placePlaces;  -- upvalues for returned closure
+  local order = 0; local count = #_G.Muse.places;  -- upvalues for returned closure
 
   return function() -- the iterator; 
     -- <b>note:</b> <code>for order = 1, count do</code> .... <b>would reset</b> <code>order</code> <b>every time the closure is invoked</b>
     while order < count do order = order + 1
-      local namePlace, labelPlace, situations = table.unpack(placePlaces[order])
+      local namePlace, labelPlace, situations = place.matched(_G.Muse.places[order])
       local positionPlace = situations[1].position; -- trails and ranges have more than one
       local xyzPlace = {positionPlace.x, positionPlace.y, positionPlace.z}
       local distance = place.distance(xyzPlace, xyzReference); 
       if not span or distance <= span then 
-        return namePlace, labelPlace, xyzPlace, distance, situations, core.serialize(placePlaces[order]) 
+        return namePlace, labelPlace, xyzPlace, distance, situations, core.serialize(_G.Muse.places[order]) 
       end
     end
   end -- end closure
@@ -165,7 +166,7 @@ The <code>place.nearby</code> function demonstrates some potentially useful tech
 </ul></br>
 <pre><code class="language-lua">
 function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing cardinals argument
---:: place.nearby(:xyzf:?, :cardinals:) -> <i>Sorted</i> -> <code>[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:]</code>
+--:: place.nearby(:xyzf:?, :cardinals:?) -> <i>Sorted</i> -> <code>[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:][]</code>
 --:> cardinals: <i>Function to get one of the eight cardinal points of the compass</i> -> (dx: #:, dz: #:): cardinal: ":"
 --:+ <i>Nearest places to specified xyzf coordinates or current position (as default).</i> 
 --:+ <i>Returned table is sorted by distances and includes the name, label, and xyzf position of each place.</i>
@@ -175,7 +176,7 @@ function place.nearby(xyzf, cardinals) -- dummy function is supplied for missing
 
   local namedPlaces = {}; for name, label, pxyz in place.near() do 
     local px, py, pz = table.unpack(pxyz); local distance = place.distance(pxyz, xyzf); 
-    local position, cardinal = core.xyzf({core.round(px), core.round(py), core.round(pz)}), cardinals(px - x, pz - z)
+    local position, cardinal = core.xyzfs({core.round(px), core.round(py), core.round(pz)}), cardinals(px - x, pz - z)
     namedPlaces[#namedPlaces + 1] = {distance, name, label, cardinal, position}
   end; table.sort(namedPlaces, function(a,b) return a[1] < b[1] end) -- on <code>distance</code>
 
@@ -213,9 +214,8 @@ end
 function place.track(name) -- return track elements of trail if trail exists
   --:: place.track(name: ":") -> <i>Returns trail</i> -> <code>name: ":"?, label: ":"?, :situations:?</code>
   assert(name, "places: Need a name for trail")
-  local order, matched = place.match(name); if not order then return nil end
----@diagnostic disable-next-line: redundant-return-value, param-type-mismatch
-  return table.unpack(matched) -- name, label, situations
+  local order, matched = place.match(name); if not (order and matched) then return nil end
+  return place.matched(matched) -- name, label, situations
 end
 </code></pre>
 Mostly just placing a naming layer on <code>move</code> and <code>step</code> but look at how iterators are handled in <code>steps.along</code>.
