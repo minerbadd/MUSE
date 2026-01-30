@@ -1,40 +1,58 @@
---:? muse/docs/tests/map.txt <- **Run Regression Test for Muse** -> muse/docs/tests/map.md  
--- **Tests for lib/map** interfaces
+--[[
+##Test: `tests/map` for `place` Persistence and Command
+```md
+--:? muse/docs/tests/map.txt <- **Test `lib/map`** -> muse/docs/tests/map.md 
+--:# Test 
+```Lua
+--]]
+local check = require("check").check --:# Set configuration globals for tests by loading `lib/check`
 
-dofile(arg[0]:match('.*[/\\]').."/_preface.lua");  -- set test environment using `preface` in execution path
+local cores = require("core"); local core = cores.core ---@module "signs.core" 
+local motion = require("motion"); local move = motion.move ---@module "signs.motion"
+local places = require("places"); local place = places.place ---@module "signs.place"
+local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle" -- just for blocking
+local tasks = require("task"); local task = tasks.task ---@module "signs.roam"
+
+local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
+core.log.level(regression and 0 or 3) --:# Set log level default. Set lower to report less, higher to report more
+
+local testName = arg[0]:match("(%w-)%.%w-$") --:# Bind `testName` as the last word (without extension) in the execution path
+local text = "Beginning "..testName..".lua test at "..move.ats()
+
+turtle.blocking(false); place.site("TM")
+
+local test = check.open(testName, text, regression) --:# Create the test object for this test
 
 local core, move, place = require("core").core, require("motion").move, require("places").place
 local map, turtle = require("map").map, require("turtle").turtle
+
 local path = _G.Muse.path.."tests/"
+map.map(path.."maps/TM.map"); map.charts(path.."charts/")
+core.log.level(3); core.setComputerLabel("tester")
 
-map.map(path.."maps/TM.map"); place.site("TM"); map.charts(path.."charts/")
-core.log.level(4); turtle.blocking(false); core.setComputerLabel("tester")
-local function test(number, ...) print(".."..number, ...) end
-
-test(0, map.op({"test", "test0", "label0", "199", "66", "262", "east"}))
-local x, y, z, f = move.where(10, 20, 30, "east"); test(0.1, x, y, z, f)
+test.part("test setup", map.op, {"test", "test0", "label0", "199", "66", "262", "east"})
+test .part("", move.where, 10, 20, 30, "east")
 -- face (dx, dz, ew, we, ns, sn) -- face(dx, dz, "east", "west", "south", "north") -> 
-local facing = map.testFacing(0, -10, {"east", "west", "south", "north"})
-test(0.2, facing, "expect north")
-do local xyzf = place.fix({10, 20, 30,"east"});test(0.3,core.string(xyzf)) end
+test.part("facing north", map.testFacing, 0, -10, {"east", "west", "south", "north"})
 
-test(1, core.string(map.op {"point", "test1", "label1"} ))
-do local xyzf = place.fix({10, 20, 40,"east"}); test(1.1, core.string(xyzf)) end
-test(1.2, core.string(map.op {"point","test2", "label2"} ))
-test(1.3, core.string(map.op {"test", "rome", "home", "15", "25", "35", "east"}))
-test(1.4, core.string(map.op {"test", "test3", "label3", "10", "20", "30", "east"}))
+test.part("fix 10, 20, 30, east", place.fix, 10, 20, 30,"east"})
+test.part("point test1", map.op {"point", "test1", "label1"})
+test.part("fix 10, 20 40, east", place.fix, {10, 20, 40,"east"})
+test.part("point test2", map.op, {"point","test2", "label2"})
+test.part("test rome", map.op, {"test", "rome", "home", "15", "25", "35", "east"})
+test.part("test test3", map.op {"test", "test3", "label3", "10", "20", "30", "east"})
 
-test(2, core.string(map.op {"near"}))
-test(2.1, core.string(map.op {"near", "10"})) -- span as placeName
-test(2.2, core.string(map.op {"near", "test1"}))
-test(2.3, core.string(map.op {"near", "test1", "10"}))
---[[
+test.part("near", map.op, {"near"})
+
+test.part("near 10", map.op, {"near", "10"})) -- span as placeName
+test.part("near test1", map.op, {"near", "test1"}))
+test.part("near test1 10", map.op, {"near", "test1", "10"}))
+
 test(3, core.string(map.op {"where", nil, 10, 20, 20}))
 test(3.1, core.string(map.op {"where", nil, 2, 10, 20, 20}))
 test(3.2, core.string(map.op {"where", nil, nil, 15, 20, 25}))
 test(3.3, core.string(map.op {"where","test1", nil, 15, 20, 25}))
 test(3.4, core.string(map.op {"where", "test1", "2", "15", "20", "25"}))
---]]
 test(3, core.string(map.op {"where", "10", "20", "20"}))
 test(3.1, core.string(map.op {"where", 2, 10, 20, 20}))
 test(3.2, core.string(map.op {"where", nil, nil, 15, 20, 25}))

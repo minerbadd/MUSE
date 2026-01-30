@@ -408,21 +408,21 @@ end
 #Support for out-of-game (debugging) ComputerCraft `os` operations.
 ```Lua
 --]]
---:# **When there's no OS, mock it**
+--:# **When there's no OS, mock it** 
 --:: core.sleep(#:?) -> _Mocks sleep as null operation out of game._ -> `nil`
 ---@diagnostic disable-next-line: undefined-field
-core.sleep = os.sleep or function() return nil end -- mock out-of-game
+core.sleep = os.sleep or function() return nil end  -- luacheck: globals os 
 
 --:: core.getComputerID(id: #:?) -> _Out of game returns id; id ignored in game._ -> `id: #:`
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerID = os.computerID or function(id) return id end -- mock out-of-game
+core.getComputerID = os.computerID or function(id) return id end -- luacheck: globals os 
 
 --:: core.getComputerLabel(label: ":"?) -> _Out of game returns label; label ignored in game._ -> `label: ":"`
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerLabel = os.computerLabel or function(label) return label or _G.Muse.label end -- mock out-of-game
+core.getComputerLabel = os.computerLabel or function(label) return label or _G.Muse.label end -- luacheck: globals os 
 
 --:: core.setComputerLabel(label: ":") -> _Sets (out-of game global) label_ -> `label: ":"`
----@diagnostic disable-next-line: undefined-field
-core.setComputerLabel = os.setComputerLabel or function(label) _G.Muse.label = label end
+---@diagnostic disable-next-line: undefined-field 
+core.setComputerLabel = os.setComputerLabel or function(label) _G.Muse.label = label end  -- luacheck: globals os
 
-return { core = core }
+return {core = core}

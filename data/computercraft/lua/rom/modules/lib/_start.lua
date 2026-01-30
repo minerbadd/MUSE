@@ -1,7 +1,7 @@
 --[[
 ##Startup Operations for MUSE Computers; Set Configuration Variables
 ```md
---:~ parallel.waitForAny(remote.wait) <- **MUSE start: Restore Places, DDS, Turtles Wait** -> muse/docs/lib/.start.md  
+--:~ parallel.waitForAny(remote.wait) <- **MUSE start: Restore Places, DDS, Turtles Wait** -> muse/docs/lib/_start.md  
 --:+ _Autorun daemon by `startup.lua` for all MUSE (not GPS) computers (pocket and command computers, turtles)._  
 --:+ `startup.lua` for MUSE computers is `shell.run('rom/modules/lib/.start.lua')`  
 ``` 
@@ -21,7 +21,7 @@ local player = _G.pocket; -- only the player has a pocket computer
 ---@diagnostic disable-next-line: undefined-field
 local turtle = _G.turtle; -- GPS computers and the command computer are not turtles
 ---@diagnostic disable-next-line: undefined-field
-local command = _G.commands -- table or nil (if not a command computer)
+local commands = _G.commands -- table or nil (if not a command computer)
 
 --:# _Set Configuration Variables: landed turtles, default site, tracking, delays, turtle `data` directory_
 _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
@@ -61,7 +61,7 @@ print("\nsite: "..place.site() or "?"..", `site` to change")
 
 local function identity() -- temporary label as computer ID if needed for MQ registration
   local label = core.getComputerLabel(); local labelled = not tonumber(label)
-  local role = labelled and label or (player and "player" or (command and "porter"))
+  local role = labelled and label or (player and "player" or (commands and "porter"))
   local id = tostring(core.getComputerID()); -- for temporary label
   core.setComputerLabel(role or id) -- if role nil, set temporary label
   return core.getComputerLabel()
@@ -69,7 +69,7 @@ end
 --:# **Get ready to run: turn on modems, setup for turtle registration**
 peripheral.find("modem", rednet.open)
 
-if player or turtle or command then -- not for GPS computers
+if player or turtle or commands then -- not for GPS computers
   shell.openTab(path..".update.lua"); shell.openTab(path..".erase.lua"); 
   shell.openTab(path..".status.lua"); shell.openTab("bg") -- TODO: too many shells?
 end
@@ -95,7 +95,7 @@ end; complete(net.hints)
 --:# _Setup `dds` IDs and labels. Needed for remote calls (which can report errors back to player)_
 if rednet then -- TODO: Are all these delays needed?
 ---@diagnostic disable-next-line: undefined-field
-  os.sleep(_G.Muse.delays.dds); dds.hosts(); os.sleep(_G.Muse.delays.map); os.sleep(0) --  -- need os.sleep(0) for gps!
+  core.sleep(_G.Muse.delays.dds); dds.hosts(); core.sleep(_G.Muse.delays.map); core.sleep(0) -- need core.sleep(0) for gps!
 end
 --[[
 ```
@@ -113,7 +113,7 @@ if player then
   end
 end
 ---@diagnostic disable-next-line: undefined-field
-os.getComputerLabel() -- to show turtle nameplate
+core.getComputerLabel() -- to show turtle nameplate
 --[[
 ```
 <a id="wait"></a> 
