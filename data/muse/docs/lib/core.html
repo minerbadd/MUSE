@@ -69,7 +69,7 @@
 
 --:- echo arguments ... -> <i>For testing: just returns its arguments.</i>  
 
---:: core.optionals(string: ":"?, number: #:?, ...: any) -> <i>Optional number and/or string.</i> -> <code>string: ":"|false, number: #:|false, ...: any</code>  
+--:: core.optionals(string: ":"?, number: #:?, ...: any) -> <i>Optional number and/or string.</i> -> <code>string: ":"?, number: #:?, ...: any</code>  
 
 --:# <b>Math utilities</b>  
 
@@ -107,7 +107,7 @@
 
 --:: core.compose(...: ():): -> <i>Produce function equivqlent to sucessive application of argument functions</i> -> ():  
 
---:# <b>When there's no OS, mock it</b>  
+--:# <b>When there's no OS, mock it</b>   
 
 --:: core.sleep(#:?) -> <i>Mocks sleep as null operation out of game.</i> -> <code>nil</code>  
 

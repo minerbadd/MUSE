@@ -3601,7 +3601,7 @@ Vector pair defining a rectangular solid",
 }
 ,
   ["optionals"] = {
-  ["returns"] = " `string: \":\"|false, number: #:|false, ...: any` <-\
+  ["returns"] = " `string: \":\"?, number: #:?, ...: any` <-\
 ",
   ["args"] = "string: \":\"?, number: #:?, ...: any",
   ["type"] = "function",
@@ -4434,8 +4434,8 @@ Serialize server request.",
 }
 ,
   ["_core.optionals:_"] = {
-  ["line"] = "  --:: core.optionals(string: \":\"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: \":\"|false, number: #:|false, ...: any`",
-  ["out"] = " `string: \":\"|false, number: #:|false, ...: any`",
+  ["line"] = "  --:: core.optionals(string: \":\"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: \":\"?, number: #:?, ...: any`",
+  ["out"] = " `string: \":\"?, number: #:?, ...: any`",
   ["sign"] = "core.optionals(string: \":\"?, number: #:?, ...: any)  ",
   ["kind"] = "face",
   ["text"] = "Optional number and/or string.",

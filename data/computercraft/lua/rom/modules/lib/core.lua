@@ -284,8 +284,8 @@ end
 function core.echo(...) return ... end --:- echo arguments ... -> _For testing: just returns its arguments._
 
 function core.optionals(string, number, ...)
-  --:: core.optionals(string: ":"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: ":"|false, number: #:|false, ...: any`
-  local stringIsNumber = tonumber(string); string = not stringIsNumber and string;
+  --:: core.optionals(string: ":"?, number: #:?, ...: any) -> _Optional number and/or string._ -> `string: ":"?, number: #:?, ...: any`
+  local stringIsNumber = tonumber(string); string = type(stringIsNumber) == "nil" and string or nil --to force ":"? (no boolean)
   number = stringIsNumber or number; return string, number, ...
 end
 --[[

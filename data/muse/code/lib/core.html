@@ -272,8 +272,8 @@ end
 function core.echo(...) return ... end --:- echo arguments ... -> <i>For testing: just returns its arguments.</i>
 
 function core.optionals(string, number, ...)
-  --:: core.optionals(string: ":"?, number: #:?, ...: any) -> <i>Optional number and/or string.</i> -> <code>string: ":"|false, number: #:|false, ...: any</code>
-  local stringIsNumber = tonumber(string); string = not stringIsNumber and string;
+  --:: core.optionals(string: ":"?, number: #:?, ...: any) -> <i>Optional number and/or string.</i> -> <code>string: ":"?, number: #:?, ...: any</code>
+  local stringIsNumber = tonumber(string); string = type(stringIsNumber) == "nil" and string or nil --to force ":"? (no boolean)
   number = stringIsNumber or number; return string, number, ...
 end
 </code></pre>
@@ -384,24 +384,24 @@ end
 <a id="outgame"></a>
 <h3>Support for out-of-game (debugging) ComputerCraft <code>os</code> operations.</h3>
 <pre><code class="language-lua">
---:# <b>When there's no OS, mock it</b>
+--:# <b>When there's no OS, mock it</b> 
 --:: core.sleep(#:?) -> <i>Mocks sleep as null operation out of game.</i> -> <code>nil</code>
 ---@diagnostic disable-next-line: undefined-field
-core.sleep = os.sleep or function() return nil end -- mock out-of-game
+core.sleep = os.sleep or function() return nil end  -- luacheck: globals os 
 
 --:: core.getComputerID(id: #:?) -> <i>Out of game returns id; id ignored in game.</i> -> <code>id: #:</code>
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerID = os.computerID or function(id) return id end -- mock out-of-game
+core.getComputerID = os.computerID or function(id) return id end -- luacheck: globals os 
 
 --:: core.getComputerLabel(label: ":"?) -> <i>Out of game returns label; label ignored in game.</i> -> <code>label: ":"</code>
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerLabel = os.computerLabel or function(label) return label or _G.Muse.label end -- mock out-of-game
+core.getComputerLabel = os.computerLabel or function(label) return label or _G.Muse.label end -- luacheck: globals os 
 
 --:: core.setComputerLabel(label: ":") -> <i>Sets (out-of game global) label</i> -> <code>label: ":"</code>
----@diagnostic disable-next-line: undefined-field
-core.setComputerLabel = os.setComputerLabel or function(label) _G.Muse.label = label end
+---@diagnostic disable-next-line: undefined-field 
+core.setComputerLabel = os.setComputerLabel or function(label) _G.Muse.label = label end  -- luacheck: globals os
 
-return { core = core }
+return {core = core}
 
   </body> 
 </html>

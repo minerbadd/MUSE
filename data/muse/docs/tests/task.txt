@@ -1,0 +1,20 @@
+
+Test attack, change, find, look, drop, suck, dig, put, and compare commands
+
+Set configuration globals for tests by loading `lib/check
+
+Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil
+
+Set log level default. Set lower to report less, higher to report more
+
+Bind `testName` as the last word (without extension) in the execution path
+
+Create the test object for this test
+
+Test simple operations: look, attack, find, drop, suck, compare
+
+Test dig, put, change with directions and distance
+
+Test dig, put, and change `along
+
+Close test object, report completion if we got here without errors

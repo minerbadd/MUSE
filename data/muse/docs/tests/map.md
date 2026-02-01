@@ -1,3 +1,15 @@
---:? muse/docs/tests/map.txt <- **Run Regression Test for Muse** -> muse/docs/tests/map.md    
+--:? muse/docs/tests/map.txt <- **Test `lib/map`** -> muse/docs/tests/map.md   
 
---:- erase name -> _Remove named place and broadcast Muse eXcise (MX) to units._   
+--:# Test   
+
+--:# Set configuration globals for tests by loading `lib/check`  
+
+--:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `false`  
+
+--:# Set log level default. Set lower to report less, higher to report more  
+
+--:# Bind `testName` as the last word (without extension) in the execution path  
+
+--:# Create the test object for this test  
+
+--:# Close test object, report completion if we got here without errors  

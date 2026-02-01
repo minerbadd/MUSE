@@ -6,9 +6,21 @@
 <body>
 <pre>
 
---:? muse/docs/tests/map.txt <- <b>Run Regression Test for Muse</b> -> muse/docs/tests/map.md    
+--:? muse/docs/tests/map.txt <- <b>Test <code>lib/map</code></b> -> muse/docs/tests/map.md   
 
---:- erase name -> <i>Remove named place and broadcast Muse eXcise (MX) to units.</i>   
+--:# Test   
+
+--:# Set configuration globals for tests by loading <code>lib/check</code>  
+
+--:# Bind <code>regression</code> parameter <code>true</code> from call by <code>check.regression</code> in <code>lib/check</code>; otherwise <code>false</code>  
+
+--:# Set log level default. Set lower to report less, higher to report more  
+
+--:# Bind <code>testName</code> as the last word (without extension) in the execution path  
+
+--:# Create the test object for this test  
+
+--:# Close test object, report completion if we got here without errors  
 
     </pre>
   </body> 

@@ -9,7 +9,7 @@
 
 <h2>Test: <code>tests/task</code> for the turtle operation command library </h2>
 <pre><code class="language-markdown">
---:? muse/docs/tests/roaam.txt <- <b>Test <code>lib/roam</code></b> -> muse/docs/tests/roam.md 
+--:? muse/docs/tests/task.txt <- <b>Test <code>lib/task</code></b> -> muse/docs/tests/task.md 
 --:# Test attack, change, find, look, drop, suck, dig, put, and compare commands
 
 </code></pre>
@@ -20,7 +20,7 @@ local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local places = require("places"); local place = places.place ---@module "signs.place"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle" -- just for blocking
-local tasks = require("task"); local task = tasks.task ---@module "signs.roam"
+local tasks = require("task"); local task = tasks.task ---@module "signs.task"
 
 local regression = ... --:# Bind <code>regression</code> parameter <code>true</code> from call by <code>check.regression</code> in <code>lib/check</code>; otherwise <code>nil</code>
 core.log.level(regression and 0 or 3) --:# Set log level default. Set lower to report less, higher to report more

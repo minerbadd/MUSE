@@ -1,5 +1,14 @@
 
+Test
 
-erase name
- 
-Remove named place and broadcast Muse eXcise (MX) to units.
+Set configuration globals for tests by loading `lib/check
+
+Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `false
+
+Set log level default. Set lower to report less, higher to report more
+
+Bind `testName` as the last word (without extension) in the execution path
+
+Create the test object for this test
+
+Close test object, report completion if we got here without errors

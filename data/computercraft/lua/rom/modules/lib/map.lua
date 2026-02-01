@@ -75,7 +75,7 @@ function map.write(thisMap) --:: map.write(thisMap: ":"?) -> _Delete old, write 
   if not removeMap then error("map.write: Can't remove obsolete "..thisMap.."because"..removeReport) end
   local createMap, createReport = io.open(thisMap, "a") --write places file cleaned by read
   if not createMap then error("map.write: Can't create new "..thisMap.."because"..createReport) end
-  
+
   -- TODO: alternatively collect entries in a table and write the table as "w" in one go
   for _, _, _, _, _, placeString in place.near() do -- write out all named places
     local appendMap, appendReport = createMap:write(placeString, "\n") 
@@ -117,8 +117,8 @@ _daemon_</a> responds to received network messages by calling `map.place` (above
 --]]
 local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
 --:- join site role -> _Set site and join landed turtle to it with specified role._
- map.hints["join"] = {["?site "] = {["?role"] = {} }} 
- 
+map.hints["join"] = {["?site "] = {["?role"] = {} }} 
+
 local function update(serial) -- update locally, broadcasts to others (not self)
   map.update(serial); if rednet then rednet.broadcast(serial, "MU") end -- rednet only available in-game
 end
@@ -454,16 +454,15 @@ end
 _G.Muse.xyzPrior = _G.Muse.xyzPrior or {}; local prior = _G.Muse.xyzPrior -- survives command
 
 local function where(namedPlace, count, tx, ty, tz)  -- t* for testing -> report: ":"
-  --:- where place? count?? -> _Report movement direction, distance to named place (or all) three (or count) closest places._ 
----@diagnostic disable-next-line: param-type-mismatch
+--:- where place? count?? -> _Report movement direction, distance to named place (or all) three (or count) closest places._ 
   namedPlace, count, tx, ty, tz = core.optionals(namedPlace, count, tx, ty, tz)
-  local x, y, z, _, ok = move.where(tx, ty, tz); local xyz = {x, y, z}; if not ok then return "no GPS" end
+  local x, y, z, _, ok = move.where(tx, ty, tz); if not ok then return "no GPS" end
   local cardinalString = (prior.hx and prior.hz) and cardinal(x - prior.hx, z - prior.hz) or "--"
+  prior.hx, prior.hy, prior.hz = x, y, z --reset reference
   local xyzString = "{"..core.round(x)..", "..core.round(y)..", "..core.round(z).."}"; 
   local head = "->: ".. cardinalString.." "..xyzString.."\n"; 
-  prior.hx, prior.hy, prior.hz = x, y, z --reset reference
-  local forNamedPlace = namedPlace and toNamedPlace(namedPlace, xyz) or ""
-  local nearby = count and "Nearby:\n"..toNearby(xyz, tonumber(count)) or ""
+  local forNamedPlace = namedPlace and toNamedPlace(namedPlace, {x, y, z}) or ""
+  local nearby = count and "Nearby:\n"..toNearby({x, y, z}, tonumber(count)) or ""
   return head .. forNamedPlace .. nearby
 end; map.hints["where"] =  {["?place "] = {["??count"] = {}}} 
 
@@ -484,14 +483,14 @@ local function near(placeName, span) -- list places near span (or all) near plac
   local itemCount, report, position = 0, {}, player and {core.where()}
   if position and #position == 0 then error("map.near: GPS failure "..core.string(position)) end
   local spanned = tonumber(placeName) and placeName or tonumber(span)-- consider span as placeName
-  
+
   for namepoint, labelpoint, xyzfpoint, distance, situations in place.near(spanned, placeName or position) do 
     itemCount = itemCount +1; local x, y, z = table.unpack(xyzfpoint); local xyzfString = core.xyzfs({x, y, z})
     report[#report + 1] = {core.round(distance), " "..namepoint..": "..xyzfString.." "..labelpoint.." ["..#situations.."]"}
   end; table.sort(report, function(a,b) return a[1] < b[1] end) -- anonymous sort function on `distance`
-  
+
   for i = 1, #report do local distance, text = table.unpack(report[i]); report[i] = tostring(distance)..text end
-  
+
   local result= "Found "..itemCount.." near\n"..table.concat(report, "\n"); core.status(4, "map.near", result); return result
 end; map.hints["near"] = {["?place "] = {["??span"] = {}}}
 
@@ -500,12 +499,12 @@ local function view(target)
   local index, placed = place.match(assert(target, "map: need place to view")); 
   assert(placed, "map value: no match for "..place.qualify(target))
   local name, label, situations, features = table.unpack(placed)
-  
+
   local situationStrings = {} for _, situation in ipairs(situations) do 
     situationStrings[#situationStrings + 1] = core.xyzfs({move.get(situation)})
   end; local situationList = table.concat(situationStrings, "\n")
   return name..": "..(label or "_").." ("..index..")\n"..core.string(features).."\n"..situationList
-  
+
 end; map.hints["view"] = {["?place"] = {}}
 --[[
 ```

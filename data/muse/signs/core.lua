@@ -31,9 +31,9 @@ function core.round() end
 
 
 -- Optional number and/or string.
--- core.optionals(string: ":"?, number: #:?, ...: any):  `string: ":"|false, number: #:|false, ...: any` <-
+-- core.optionals(string: ":"?, number: #:?, ...: any):  `string: ":"?, number: #:?, ...: any` <-
 
----@type fun( string: string?,  number: number?,  ...: any):   string: string | false,  number: number | false,  ...: any 
+---@type fun( string: string?,  number: number?,  ...: any):   string: string?,  number: number?,  ...: any 
 function core.optionals() end
 
 -- Produce function equivqlent to sucessive application of argument functions

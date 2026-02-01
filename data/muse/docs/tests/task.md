@@ -1,4 +1,6 @@
---:? muse/docs/tests/roam.txt <- **Test `lib/roam`** -> muse/docs/tests/roam.md   
+--:? muse/docs/tests/task.txt <- **Test `lib/task`** -> muse/docs/tests/task.md   
+
+--:# Test attack, change, find, look, drop, suck, dig, put, and compare commands  
 
 --:# Set configuration globals for tests by loading `lib/check`  
 
@@ -10,12 +12,10 @@
 
 --:# Create the test object for this test  
 
---:# Setup place and trail names for tests  
+--:# Test simple operations: look, attack, find, drop, suck, compare  
 
---:# Test commands: `go`, `to`, `trace`, `come`  
+--:# Test dig, put, change with directions and distance  
 
---:# Test "empty" (too far for fuel)  
-
---:# Test successful and failing permutation retry  
+--:# Test dig, put, and change `along`  
 
 --:# Close test object, report completion if we got here without errors  

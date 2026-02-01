@@ -126,11 +126,11 @@ function _task.doTask(arguments, op, clear, fill, targets)
   --:> `_task.puts: _Common arguments_ -> `[direction: ":", distance: #:, puttings: ":"[] ]`
   local direction, distance = table.unpack(arguments); local puttings = {table.unpack(arguments, 3)} -- puttings: ":"[]
   if direction == "along" then return doAlong(distance, puttings, op, clear, fill, targets) end -- `distance` alias `trail`
----@diagnostic disable-next-line: cast-local-type, param-type-mismatch
-  direction, distance = core.optionals(direction, distance) -- 
-  local toward = getDirection(direction, true) -- supress error for bogus directions like "here"
-  if toward then return doMany(distance, toward, puttings, op, clear, fill, targets) end -- `doMany` checks no distance
-  table.insert(puttings, 1, distance); return doOnce(puttings, op, fill, targets) -- `here`, `distance` alias `direction`
+  local directionq, distanceq = core.optionals(direction, distance) -- fuss with LLS nil checks
+  assert(directionq and distanceq, "task doTask: need distance and direction ")
+  local toward = getDirection(directionq, true) -- supress error for bogus directions like "here"
+  if toward then return doMany(distanceq, toward, puttings, op, clear, fill, targets) end -- `doMany` checks no distance
+  table.insert(puttings, 1, distanceq); return doOnce(puttings, op, fill, targets) -- `here`, `distance` alias `direction`
 end
 --[[
 ```

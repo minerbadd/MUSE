@@ -12,7 +12,7 @@ local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
 local places = require("places"); local place = places.place ---@module "signs.place"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle" -- just for blocking
-local tasks = require("task"); local task = tasks.task ---@module "signs.roam"
+local tasks = require("task"); local task = tasks.task ---@module "signs.task"
 
 local regression = ... --:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`
 core.log.level(regression and 0 or 3) --:# Set log level default. Set lower to report less, higher to report more

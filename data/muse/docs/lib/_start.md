@@ -1,0 +1,17 @@
+--:~ parallel.waitForAny(remote.wait) <- **MUSE start: Restore Places, DDS, Turtles Wait** -> muse/docs/lib/_start.md      
+--:+ _Autorun daemon by `startup.lua` for all MUSE (not GPS) computers (pocket and command computers, turtles)._      
+--:+ `startup.lua` for MUSE computers is `shell.run('rom/modules/lib/.start.lua')`    
+
+--:# _Set Configuration Variables: landed turtles, default site, tracking, delays, turtle `data` directory_  
+
+--:# _Set status and logging control parameters_  
+
+--:# **Get ready to run: turn on modems, setup for turtle registration**  
+
+--:# _Register completions for local and remote commands_  
+
+--:# _Setup `dds` IDs and labels. Needed for remote calls (which can report errors back to player)_  
+
+--:# _Report turtle situations and number of places in map; persist site in site file and places in map (reporting errors)_  
+
+--:# **Turtles and Command Computer wait for remote command from player**  
