@@ -64,7 +64,7 @@ All computers other than the player's pocket computer wait to `respond`. If a re
 --]]
 local function respond()  
   local id, playerSite = rednet.receive("MQ"); dds.playerID(id) -- set global on remote responder
-  local label, sitedFile = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") -- no file if recently joined
+  local label, sitedFile = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") -- ?? no file if recently joined
   local site = sitedFile and sitedFile:read(); place.site(site or playerSite) -- player's site if not already established
   local newFile = not sitedFile and io.open(_G.Muse.data.."site.txt", "w"); 
   print("dds.respond: ", id, playerSite, label, sitedFile, site, newFile) -- **TODO: remove**

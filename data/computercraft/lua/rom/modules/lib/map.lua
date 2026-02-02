@@ -8,11 +8,11 @@ The `map` library continues the development of `place`, introduced by <a href="p
 It's MUSE's other major representation of state (after `situations`). A `place` can be a `point`, a `range`, or a `trail`, all built on by `lib/map` using `place` data structures. We've come across trails before in <a href="places.html#trail" target="_blank"> `lib/places`</a>. 
 To review, they are named (and labelled) `situations` created by `tracking` in the <a href="motion.html#tracking" target="_blank"> `lib/motion` </a>library. A `range` is a named (and labeled) `point` pair delimiting a rectangular solid. A `point` is a named (and labelled) single entry table whose single element is a `situation`. The names of places are used for lookup. The labels are just user supplied supplementary information. 
 
-Additionally it seemed useful to add the idea of `locations` a set of related points sharing a label, each xyz offset from each other.
+Additionally it turned out to be useful to add the idea of `locations` a set of related points sharing a label, each xyz offset from each other.
 
 To ease understanding, the module introduction for `map` shown below is organized in much the same way as described for <a href="motion.html"> `lib/motion`</a>. 
 
-What's new in `lib/map` are network operations and the use of 
+What's new in `lib/map` are operations on (persistent) storage and network operations and the use of 
 <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
 _daemons_</a> to deal with network events. You may have already run across the 
 <a href="code/daemons/.status.html" target="_blank"> `.status` </a> daemon handling the `MS` (MUSE Statue) rednet protocol. The 
@@ -34,14 +34,12 @@ local places = require("places"); local place = places.place ---@module "signs.p
 
 local rednet, player, turtle = _G.rednet, _G.pocket, _G.turtle -- references to ComputerCraft libraries
 
-local siteFile = _G.Muse.data.."site.txt" -- The `_G.Muse.data` directory is local to each ComputerCraft computer.
-
 function map.map(value) _G.Muse.map = value or _G.Muse.map; return  _G.Muse.map end -- isolate global
 function map.charts(value) _G.Muse.charts = value or _G.Muse.charts return _G.Muse.charts end -- isolate global
 --[[
 ```
 <a id="place"></a> 
-Places are persistent: saved to disk storage and deserialized for each session from that storage. The player's and each turtle's places are stored on that player's or turtle's local storage as independent, distributed copies. 
+Places are made persistent: seriaized and saved to disk storage and then deserialized for each session from that storage. The player's and each turtle's places are stored on that player's or turtle's local storage as independent, distributed copies. 
 
 The `map.place` function deserializes a place from a <a href="core.html#serialize" target="_blank"> serialized </a> representation of the table. It calls <a href="places.html#name" target="_blank"> `place.name`</a> to include the deserialized place in the table of known places and to return the serialized representation together with an index into the table of know places. Lua does most of the work. All that's left to do is to look for errors.
 ```Lua
@@ -88,41 +86,12 @@ function map.write(thisMap) --:: map.write(thisMap: ":"?) -> _Delete old, write 
 end
 --[[
 ```
-<a id="sited"></a> 
-For when the player or an unlanded turtle, one not ever to be tied to a site, is in a new and far far better place.
-```Lua
---]]
-local function sited(site) 
-  --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., porting `rover`._
-  if not site then return place.site() end -- just report
-  local siteFileHandle = assert(io.open(siteFile, "w"), "map.sited: can't write "..siteFile)
-  siteFileHandle:write(place.site(site).."\n"); siteFileHandle:close()
-  return place.site(site) 
-end; map.hints["site"] = {["?name"] = {} }
-
-local function store(site) -- used in `.start` to persist `site` and load clean map
-  -- :: store(site: ":") -> _Persists `site` in local store and loads local map._ -> `report: ":"`
-  local siteFileHandle = io.open(siteFile, "r"); if not siteFileHandle then sited(site) end
-  if not map.map() then map.map(_G.Muse.map) end
-  local mapped = map.read(map.map()); map.write(map.map());
-  return site..": "..mapped.." places"
-end; map.hints["store"] = {["?site"] = {} } 
---[[
-```
 <a id="update"></a> 
-Calling the local `update` function does the update locally and broadcasts it on the `MU` protocol to the `player`, the `porter` and all turtles registered by `join`, a command issued by the player to site a landed turtle that has not yet been landed. (We'll get to the implementation of `dds.join` when we discuss `lib/remote`.) The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> `.update`</a>
+Calling the local `update` function does the update locally and broadcasts it on the `MU` protocol The network broadcast is used to keep distributed memory and distributed storage in sync across the network using the <a href="../daemons/.update.html" target="_blank"> `.update`</a>
 daemon. The <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank">
 _daemon_</a> responds to received network messages by calling `map.place` (above) to update the local memory and `map.update` (below) to update local storage. 
 ```Lua
 --]]
-local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
---:- join site role -> _Set site and join landed turtle to it with specified role._
-map.hints["join"] = {["?site "] = {["?role"] = {} }} 
-
-local function update(serial) -- update locally, broadcasts to others (not self)
-  map.update(serial); if rednet then rednet.broadcast(serial, "MU") end -- rednet only available in-game
-end
-
 function map.update(serial) --:: map.update(serial: ":") -> _Append received instantiated MU to local map file_. -> `nil &!`
   local thisMap = map.map(); if not thisMap then error("map.update: No map file established") 
   end; local file, openReport = io.open(thisMap, "a") -- map exists, open for append
@@ -131,6 +100,90 @@ function map.update(serial) --:: map.update(serial: ":") -> _Append received ins
   core.status(4, "map update:", place.count(), "places") 
   if not appendOK then error("map.update: Failed for "..thisMap.." "..appendReport) end
 end
+
+local function update(serial) -- update locally, broadcasts to others (not self)
+  map.update(serial); if rednet then rednet.broadcast(serial, "MU") end -- rednet only available in-game
+end
+
+function map.erase(name) local remaining = place.erase(name); map.write(); return remaining end -- handle local erase
+--:: map.erase(name: ":") -> _Remove named place, overwrite local map file_ -> `remaining: #:`
+--[[
+```
+<a id="get"></a>  
+Places include a <a href="places.html#name" target="_blank"> dictionary of name-value pairs</a> we've called features. 
+This is a way to allow other libraries to add attributes to places without needing to make changes to the implementation of `lib/places`. This sort of thing helps maintenance as the code base evolves to deal with new requirements. That's especially important for a network of computers each having their own version of persistent data structures. That said, names of features (feature keys) are unrestricted. There's no explicit protection against unintended clashes. Rope provided. Invent some naming protocol and use with care. 
+
+The `map.gets` and `map.puts` interfaces below (defined for code analysis) share implementations with their more generic interfaces. If that's wanted.
+```Lua
+--]]
+function map.get(name, key) --:: map.get(name: ":", key: ":") -> _Get named place local feature value for key._ -> `value: any? &!`
+  local index, namedPlace = place.match(name); if not index then return nil end
+  assert(namedPlace, "map.get: can't get features for unknown place "..name) 
+  local _, _, _, features = table.unpack(namedPlace); assert(features, "map.get: no features for "..name)
+  return features[key]
+end
+
+map.gets = map.get --:: map.gets(name: ":", key: ":") -> _Less generic retrieval interface: gets string feature value._ -> `":"?`
+
+function map.put(name, key, value)  
+  --:: map.put(name: ":", key: ":", value: any?) -> _Set named place feature, send MU._ ->  `key: ":"?, value: any|true|nil &!`
+  local index, namedPlace = place.match(name); if not (index and namedPlace) then return nil end
+  local _, label, situations, features = place.matched(namedPlace); features[key] = value or true;
+  local serial = place.name(name, label, situations, features); update(serial) -- all MU correspondents
+  core.status(4, "map put", place.qualify(name), key, value); return key, value or true
+end
+
+map.puts = map.put 
+--:: map.puts(name: ":", key: ":", value: ":"?) -> _Set string feature value, send MU._ -> `key: ":", value: ":"|true &!`
+
+function map.borders(target) 
+  --:: map.borders(target: ":") -> _Get situation pair elements_ -> `borders, features, position, position &!`
+  --:> borders: _Situation pair boundaries_ -> {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
+  local _, matched = place.match(target); assert(matched, "map.borders: "..target.." not found")
+  local _, _, situations, features = place.matched(matched); local borders = {}; 
+  assert(features, "map.borders: missing features in "..target)
+  local x1, y1, z1 = move.get(situations[1]); local x2, y2, z2 = move.get(situations[2]) 
+  assert(x1 and y1 and z1 and x2 and y2 and z2, "map.borders: "..target.." badly formed")
+  borders.east, borders.west = x1 > x2 and x1 or x2, x1 > x2 and x2 or x1
+  borders.south, borders.north = z1 > z2 and z1 or z2, z1 > z2 and z2 or z1
+  borders.top, borders.bottom = y1 > y2 and y1 or y2, y1 > y2 and y2 or y1
+  return borders, features, situations[1].position, situations[2].position
+end
+
+function map.test(name, label, trail, x, y, z, facing, key, value) -- makes named place for coordinates, sets turtle position
+  --:- test name, label, x, y, z, facing, key?, value??} -> _Force mapped position, optionally feature and value for `point`._
+  core.status(4, "map", "test", place.qualify(name), label, x, y, z, facing, key, value)
+  assert(name and label and tonumber(x) and tonumber(y) and tonumber(z) and facing, "map.test: bad arguments for test")
+  local _, index = map.op {"point", name, label, trail, x, y, z, facing}; if key then map.put(name, key, value) end 
+  return "As "..place.qualify(name).." "..move.ats().." ("..index..")"
+end; 
+--[[
+```
+<a id="sited"></a> 
+
+The `site` operation is for when the `player` or the `rover` is moved to a different site. The `join` operation ties a landed turtle (`farmer`, `miner`, or `logger`) to a site. (We'll get to the implementation of `dds.join` when we discuss `lib/remote`.) The `store` operation is used by `_start` to persist the `site` and load a clean map remotely.
+```Lua
+--]]
+
+local function sited(site) 
+  --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.
+  if not site then return place.site() end -- just report
+  local siteFile = _G.Muse.data.."site.txt" -- The `_G.Muse.data` directory is local to each ComputerCraft computer.
+  local siteFileHandle = assert(io.open(siteFile, "w"), "map.sited: can't write "..siteFile)
+  siteFileHandle:write(place.site(site).."\n"); siteFileHandle:close()
+  return place.site(site) 
+end; map.hints["site"] = {["?name"] = {} }
+
+local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
+--:- join site role -> _Set site and join landed turtle to it with specified role._
+map.hints["join"] = {["?site "] = {["?role"] = {} }} 
+
+local function store(site) 
+  --:- store site? -> _Persists `site` in local store and loads local map._ -> `report: ":"`
+  local siting = sited(site); if not map.map() then map.map(_G.Muse.map) end
+  local mapped = map.read(map.map()); map.write(map.map());
+  return siting..": "..mapped.." places"
+end; map.hints["store"] = {["?site"] = {} } 
 --[[
 ```
 <a id="sync"></a> 
@@ -154,44 +207,14 @@ The `erase` operation works much like `update`. The daemon for erase is, not sur
 local function erase(name) --:- erase name -> _Remove named place, broadcast Muse eXcise (MX)._
   --:# **Referenced through `map.op` for CLI dispatch**
   if not name then error("map.erase: Missing place name") end
-  local placesRemaining = map.erase(name) -- handle local erase (below)
+  local placesRemaining = map.erase(name) -- handle local erase
   if rednet then rednet.broadcast(name, "MX") end -- to erase distributed copies
   return tostring(placesRemaining).." remaining places."
 end; map.hints["erase"] = {["?placename"] = {}} 
-
-function map.erase(name) local remaining = place.erase(name); map.write(); return remaining end -- handle local erase
---:: map.erase(name: ":") -> _Remove named place, overwrite local map file_ -> `remaining: #:`
 --[[
 ```
-<a id="get"></a>  
-Places include a <a href="places.html#name" target="_blank"> dictionary of name-value pairs</a> we've called features. 
-This is a way to allow other libraries to add attributes to places without needing to make changes to the implementation of `lib/places`. This sort of thing helps maintenance as the code base evolves to deal with new requirements. That's especially important for a network of computers each having their own version of persistent data structures. That said, names of features (feature keys) are unrestricted. There's no explicit protection against unintended clashes. Rope provided. Invent some naming protocol and use with care. 
-```Lua
---]]
-function map.get(name, key) --:: map.get(name: ":", key: ":") -> _Get named place local feature value for key._ -> `value: any? &!`
-  local index, namedPlace = place.match(name); if not index then return nil end
-  assert(namedPlace, "map.get: can't get features for unknown place "..name) 
-  local _, _, _, features = table.unpack(namedPlace); assert(features, "map.get: no features for "..name)
-  return features[key]
-end
-
-map.gets = map.get --:: map.gets(name: ":", key: ":") -> _Less generic retrieval interface: gets string feature value._ -> `":"?`
-
-function map.put(name, key, value)  
-  --:: map.put(name: ":", key: ":", value: any?) -> _Set named place feature, send MU._ ->  `key: ":"?, value: any|true|nil &!`
-  local index, namedPlace = place.match(name); if not (index and namedPlace) then return nil end
-  local _, label, situations, features = place.matched(namedPlace); features[key] = value or true;
-  local serial = place.name(name, label, situations, features); update(serial) -- all MU correspondents
-  core.status(4, "map put", place.qualify(name), key, value); return key, value or true
-end
-map.puts = map.put 
---:: map.puts(name: ":", key: ":", value: ":"?) -> _Set string feature value, send MU._ -> `key: ":", value: ":"|true &!`
---[[
-```
-The `map.gets` and `map.puts` interfaces above (defined for code analysis) share implementations with their more generic interfaces. If that's wanted.
-
 <a id="facing"> </a> 
-The `getFacing` function finds the direction the turtle is facing by looking for changes in its GPS location after moving it forward or backward in the `x` or `z` coordinates. There's an extended ternary operator construction to sort this out. The `backward` `movement` table has reversed directions so the same function can be used for both forward and backward movement.
+The `fix` operation needs to know thw way a turtle is facing. The `getFacing` function finds the direction the turtle is facing by looking for changes in its GPS location after moving it forward or backward in the `x` or `z` coordinates. There's an extended ternary operator construction to sort this out. The `backward` `movement` table has reversed directions so the same function can be used for both forward and backward movement.
 
 Exporting `map.testFacing` provides a testing interface that does not depend on GPS or networking.
 ```Lua
@@ -284,17 +307,6 @@ local function point(name, label, trail, tx, ty, tz, tf) --> "done", serial: ":"
   local serial, index = place.name(name, label); update(serial) -- append 
   return place.qualify(name)..", "..label.." ("..index..")", index
 end; map.hints["point"] = {["?name "] = {["?label "] = {["??trailname"] = {}}} }
-
-function map.set(name, label, x, y, z, f) return point(name, label, false, x, y, z, f) end
---:: map.set(name: ":", label: ":", x: #:, y: #:, z: #:, f: ":") -> _Set turtle at created point_ -> ":", #:
-
-function map.point(name, label, xyzf) 
-  --:: map.point(name: ":", label: ":", :xyzf:) -> _Create, send point update._ -> `nil & !`
-  core.status(2, "map.point:", place.qualify(name), core.xyzfs(xyzf))
-  local x, y, z, f = table.unpack(xyzf) 
-  local situations = { {position = {x = x, y = y, z = z}, facing = f} }
-  update(place.name(name, label, situations)) 
-end
 --[[
 ```
 <a id="locations"></a> 
@@ -354,20 +366,6 @@ local function range(name, label, nameA, nameB, key, value) -- -> "report", inde
   core.status(5, "map range: "..place.qualify(name).." from "..place.qualify(nameA).." to "..place.qualify(nameB))
   update(serial); return "Range "..place.qualify(name).." at "..index.. " in places", index -- append serialized range;
 end; map.hints["range"] = {["?name "] = {["?label "] = {["?from "] = {["?to "] = {["??key "] = {["???value"] = {}}}}}}}
-
-function map.borders(target) 
-  --:: map.borders(target: ":") -> _Get range elements_ -> `borders, features, position, position &!`
-  --:> borders: _Range boundarires_ -> {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
-  local _, matched = place.match(target); assert(matched, "map.borders: range "..range.." not found")
-  local _, _, situations, features = place.matched(matched); local borders = {}; 
-  assert(features, "map.borders: missing features in "..target)
-  local x1, y1, z1 = move.get(situations[1]); local x2, y2, z2 = move.get(situations[2]) 
-  assert(x1 and y1 and z1 and x2 and y2 and z2, "map.borders: "..range.." badly formed")
-  borders.east, borders.west = x1 > x2 and x1 or x2, x1 > x2 and x2 or x1
-  borders.south, borders.north = z1 > z2 and z1 or z2, z1 > z2 and z2 or z1
-  borders.top, borders.bottom = y1 > y2 and y1 or y2, y1 > y2 and y2 or y1
-  return borders, features, situations[1].position, situations[2].position
-end
 --[[
 ```
 <a id="chart"></a> 
@@ -400,14 +398,6 @@ local function at() -- gps for player, dead reckoning for turtle -> `"xyzf"`
     return ok and core.xyzfs({core.round(x), core.round(y), core.round(z)}) or "No GPS"
   end; return move.ats() -- report turtle's current situation position and face
 end 
-
-local function test(name, label, x, y, z, facing, key, value) -- makes named place for coordinates, sets turtle position there
-  --:- test name, label, x, y, z, facing, key?, value??} -> _Force mapped position, optionally feature and value for `point`._
-  core.status(4, "map", "test", place.qualify(name), label, x, y, z, facing, key, value)
-  assert(name and label and tonumber(x) and tonumber(y) and tonumber(z) and facing, "map.test: bad arguments for test")
-  local _, index = point(name, label, name, x, y, z, facing); if key then map.put(name, key, value) end -- test: name = trailhead
-  return "As "..place.qualify(name).." "..move.ats().." ("..index..")"
-end; 
 --[[
 ```
 <a id="cardinal"></a> 
@@ -517,7 +507,6 @@ local ops = { --:# **Command Line Interface**
   view = view, site = sited, chart = chart, join = join, -- for all
   near = near, at = at, where = where, headings = headings, -- position relative to places for players and turtles
   fix = fix, trail = trail,  -- just for turtles
-  test = test, -- just to set test conditions
 }
 --[[
 ```

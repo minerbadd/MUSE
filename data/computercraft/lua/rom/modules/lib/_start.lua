@@ -25,7 +25,7 @@ local commands = _G.commands -- table or nil (if not a command computer)
 
 --:# _Set Configuration Variables: landed turtles, default site, tracking, delays, turtle `data` directory_
 _G.Muse.landed = {farmer = true, logger = true, miner = true,} -- roles of turtles local to each site
-_G.Muse.IDs, _G.Muse.roles, _G.Muse.defaultSite = {}, {}, "base" -- with `site` program
+_G.Muse.IDs, _G.Muse.roles, _G.Muse.defaultSite = {}, {}, "base" -- change with `site` program
 _G.Muse.tracking = {limit = 500, enabled = false}
 _G.Muse.delays = {gps = 1, dds = 3, map = 5} -- for game setup before running dds
 _G.Muse.slots = 16 -- in turtle inventory (just to avoid a magic number in libraries)
@@ -93,7 +93,7 @@ end; complete(net.hints)
 ```Lua
 --]]
 --:# _Setup `dds` IDs and labels. Needed for remote calls (which can report errors back to player)_
-if rednet then -- TODO: Are all these delays needed?
+if rednet then -- TODO: Are all these delays needed?sit
 ---@diagnostic disable-next-line: undefined-field
   core.sleep(_G.Muse.delays.dds); dds.hosts(); core.sleep(_G.Muse.delays.map); core.sleep(0) -- need core.sleep(0) for gps!
 end

@@ -120,6 +120,8 @@ test(31, "porter", "locate", {"gantry", "located", 100, 200, 300, {nbt = {Label 
 --:- activate range -> _Add bounds from west and north to east and south of range for forceload._
 test(32, "porter", "activate", {"excursion"})
 --]]
+
+---use map.test instead
 map.point("fromPlace", "from", {100, 200, 300, "east"}); map.point("toPlace", "to", {600, 300, 700, "north"}) 
 port.available({iron = 200, gold = 50, redstone = 100, coal = 400})
 

@@ -36,7 +36,7 @@ local function locate(name, label, tx, ty, tz, blockAboveTest) -- `t*` (x, y, z 
   if not blockAbove then return "Nothing above" end       -- Aligned for dead reckoning but no `launch` turtle
   local state = assert(blockAbove.state, "exec.locate: no state above")
   local facing = assert(state.facing, "exec.locate: no face above")
-  map.set(name, label or "locate", x, y + 1, z, facing)
+  map.op {"point", name, label or "locate", false, x, y + 1, z, facing}
   local nbt = assert(blockAbove.nbt, "exec.locate: no nbt above")
   local museRole = assert(nbt.Label, "exec.locate: no role above")
   return museRole .. " at " .. place.qualify(name) .. " facing " .. facing

@@ -81,9 +81,9 @@
 
 --:- sync -> _Muse Update (MU) broadcast local map to (MQ) registered units._  
 
---:- site name? -> _Remote operation to report or change site (persistently) after, e.g., porting `rover`._  
+--:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
 
---:- site name? -> _Remote operation to report or change site (persistently) after, e.g., porting `rover`._  
+--:- store site? -> _Persists `site` in local store and loads local map._ -> `report: ":"`  
 
 --:- join site role -> _Set site and join landed turtle to it with specified role._  
 

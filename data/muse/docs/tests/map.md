@@ -10,6 +10,32 @@
 
 --:# Bind `testName` as the last word (without extension) in the execution path  
 
+--:# `turtle.blocking false`; `place.site TM`; `maps/TM.map`; `charts`; `core.setComputerLabel("tester")`  
+
 --:# Create the test object for this test  
+
+--:# **Check turtle dance for facing witout dancing**  
+
+--:# **Populate map**  
+
+--:# **Look for what's near**  
+
+--:# **Look at where**  
+
+--:# **Check range and view**  
+
+--:# **Test maps for trails**  
+
+--:# **View trails**  
+
+--:# **Test borders**  
+
+--:# **Test features**  
+
+--:# **Try erase**  
+
+--:# **Test store operation (reads and writes map**  
+
+--:# **Check chart**  
 
 --:# Close test object, report completion if we got here without errors  

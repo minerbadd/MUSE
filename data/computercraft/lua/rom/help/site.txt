@@ -2,4 +2,4 @@
 
 site name?
  
-Remote operation to report or change site (persistently) after, e.g., porting `rover`.
+Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.

@@ -17,7 +17,7 @@ local orderC = {"redstone", "gold", "iron", "coal"}
 test(1, core.string(port.inventory(10000, orderA, inventory01))) 
 test(2, core.string(port.inventory(8000, orderB, inventory01)))  
 test(3, core.string(port.inventory(8000, orderC, inventory01)))
-
+-- use map text instead
 map.point("fromPlace", "from", {100, 200, 300, "east"}); map.point("toPlace", "to", {600, 300, 700, "north"}) 
 
 port.available(inventory01)

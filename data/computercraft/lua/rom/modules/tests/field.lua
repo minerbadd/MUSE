@@ -65,7 +65,7 @@ print(12.1, field.make {"layer", "tara:canes", "2", "2"})
 print(12.2, field.make {"cover", "tara:canes", "2", "2"})
 print(12.3, field.make {"finish", "tara:canes", "2", "2"})
 print(12.4, field.make {"harvest", "tara:canes", "2", "2"})
-
+-- use map test instead
 --[[
 map.point: TF.treesNW {121, 64, 312}  {100, 20, 300}, north
 map.point: TF.treesSE {138, 64, 317}  {100, 20, 300}, north
