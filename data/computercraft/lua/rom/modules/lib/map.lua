@@ -30,6 +30,7 @@ local maps = require("signs.map"); maps.map = {}; local map = maps.map; map.hint
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
 local places = require("places"); local place = places.place ---@module "signs.places"
+local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 
 local rednet, player, turtle = _G.rednet, _G.pocket, _G.turtle -- references to ComputerCraft libraries
 
@@ -195,13 +196,12 @@ The `site` operation is for when the `player` or the `rover` is moved to a diffe
 ```Lua
 --]]
 
-local function sited(site) 
+local function siting(site) 
   --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.
   if not site then return place.site() end -- just report
   -- use dds to change qualified role for landed turtle
-  local siteFile = _G.Muse.data.."site.txt" -- The `_G.Muse.data` directory is local to each ComputerCraft computer.
-  local siteFileHandle = assert(io.open(siteFile, "w"), "map.sited: can't write "..siteFile)
-  siteFileHandle:write(place.site(site).."\n"); siteFileHandle:close()
+  local role = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$")
+  dds.site(site); local qualified = dds.join(role, core.getComputerID())
   return place.site(site) 
 end; map.hints["site"] = {["?name"] = {} }
 
@@ -318,6 +318,13 @@ local function fix(trail, tx, ty, tz, tf) -- just for turtles in-game , t* for t
   if trail then trailhead.name = place.qualify(trail) end -- use trailhead.name in call to `trail`
   return move.ats().." "..(trailhead.name or ""); 
 end map.hints["fix"] = {["??trailname"] = {} }
+
+local function join(qualified, id, siting) -- on turtle
+  core.setComputerLabel(qualified)
+  local site = dds.site(siting); place.site(site)
+  local position = fix()
+  return qualified..":"..id.." at "..site..": "..position
+end
 --[[
 ```
 <a id="point"></a> 
@@ -511,7 +518,7 @@ Just a big dispatch table, easily amended and extended. The CLI is just a thin l
 --]]
 local ops = { --:# **Command Line Interface** 
   erase = erase, store = store, sync = sync, point = point, range = range, -- for all
-  view = view, site = sited, chart = chart,  -- for all
+  view = view, site = site, chart = chart, join - join, -- for all
   near = near, at = at, where = where, headings = headings, -- position relative to places for players and turtles
   fix = fix, trail = trail,  -- just for turtles
 }
