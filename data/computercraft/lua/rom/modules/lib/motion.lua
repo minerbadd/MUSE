@@ -209,7 +209,7 @@ Back to simple stuff, here are some utilty functions to provide turtle position 
 function move.at(theSituation) local x, y, z, f = move.get(theSituation); return {x, y, z, f} end
 --:: move.at(theSituation:situation?) -> _(Current) situation xyzf._ -> `xyzf`
 function move.ats(theSituation)
---:: move.ats(theSituation:situation?) -> _(Current) situation position and facing string (`""` in game if not turtle)._ -> `xyzf: ":"`
+--:: move.ats(theSituation:situation?) -> _(Current) position and facing string (`""` in game if not turtle)._ -> `xyzf: ":"`
   local x, y, z, f = move.get(theSituation); return turtle and ("{"..x..", "..y..", "..z.."}, "..(f or "")) or ""
 end
 --[[

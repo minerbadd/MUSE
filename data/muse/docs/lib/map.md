@@ -27,6 +27,9 @@
 
 --:- test name, label, x, y, z, facing, key?, value??} -> _Force mapped position, optionally feature and value for `point`._  
 
+--:: map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:) -> _Add points offset from base._ -> `nil`    
+--:+ _Add labelled points using template names and offsets from named base point or top for y-axis._  
+
 --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
 
 --:- join site role -> _Set site and join landed turtle to it with specified role._  
@@ -52,8 +55,7 @@
 --:- point name label trail? -> _Add named labeled point, can start trail, MU updated map. (Player situation needs GPS.)_     
 --:+ _Optional `trail` starts turtle movement `track` ended by call to `trail` limited by `Muse.tracking.limit`._  
 
---:: map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:) -> _Add points offset from base._ -> `nil`    
---:+ _Add labelled points using template names and offsets from named base point or top for y-axis._  
+--:: map.point(name: ":", label":", trail: ":"|^:, tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> `map.op ("point", ...)` -> `":"`  
 
 --:- trail name label -> _Include named point at head and (current situation) tail of a new trail, update map._     
 --:+ _Call to `trail` establishes a trail of tracked turtle movements from the head of the trail named and started by `point`._    

@@ -153,12 +153,33 @@ function map.test(name, label, trail, x, y, z, facing, key, value) -- makes name
   --:- test name, label, x, y, z, facing, key?, value??} -> <i>Force mapped position, optionally feature and value for <code>point</code>.</i>
   core.status(4, "map", "test", place.qualify(name), label, x, y, z, facing, key, value)
   assert(name and label and tonumber(x) and tonumber(y) and tonumber(z) and facing, "map.test: bad arguments for test")
-  local _, index = map.op {"point", name, label, trail, x, y, z, facing}; if key then map.put(name, key, value) end 
+  local _, index = map.point(name, label, trail, x, y, z, facing); if key then map.put(name, key, value) end 
   return "As "..place.qualify(name).." "..move.ats().." ("..index..")"
-end; 
+end;
 </code></pre>
-<a id="sited"></a> 
+<a id="locations"></a> 
+As we've said, locations are a set of related points sharing a label, each xyz offset from each other.
+<pre><code class="language-lua">
+local function addBase(template, xBase, yBase, zBase, top)
+  local points = {}; for name, offset in pairs(template) do 
+    local xOffset, yOffset, zOffset = table.unpack(offset)
+    local yPoint = tonumber(yOffset) and (yBase + yOffset) or top
+    points[name] = {xBase + xOffset, yPoint, zBase + zOffset, ""}
+  end; return points
+end
+
+function map.locations(template, base, label, top)
+--:: map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:) -> <i>Add points offset from base.</i> -> <code>nil</code>
+--:+ <i>Add labelled points using template names and offsets from named base point or top for y-axis.</i>
+  local basePlace = assert(place.xyzf(base), "map: locations unknown base")
+  local xBase, yBase, zBase = table.unpack(basePlace) 
+  local points = addBase(template, xBase, yBase, zBase, tonumber(top))
+  for name, xyzf in pairs(points) do map.point(name, label, false, table.unpack(xyzf)) end
+end
+</code></pre>
+The remainder of the <code>map</code> module implements the operations supporting the user interface.
 <p>
+<a id="sited"></a> 
 The <code>site</code> operation is for when the <code>player</code> or the <code>rover</code> is moved to a different site. The <code>join</code> operation ties a landed turtle (<code>farmer</code>, <code>miner</code>, or <code>logger</code>) to a site. (We'll get to the implementation of <code>dds.join</code> when we discuss <code>lib/remote</code>.) The <code>store</code> operation is used by <code>_start</code> to persist the <code>site</code> and load a clean map remotely.
 <pre><code class="language-lua">
 
@@ -292,26 +313,9 @@ local function point(name, label, trail, tx, ty, tz, tf) --> "done", serial: ":"
   local serial, index = place.name(name, label); update(serial) -- append 
   return place.qualify(name)..", "..label.." ("..index..")", index
 end; map.hints["point"] = {["?name "] = {["?label "] = {["??trailname"] = {}}} }
-</code></pre>
-<a id="locations"></a> 
-As we've said, locations are a set of related points sharing a label, each xyz offset from each other.
-<pre><code class="language-lua">
-local function addBase(template, xBase, yBase, zBase, top)
-  local points = {}; for name, offset in pairs(template) do 
-    local xOffset, yOffset, zOffset = table.unpack(offset)
-    local yPoint = tonumber(yOffset) and (yBase + yOffset) or top
-    points[name] = {xBase + xOffset, yPoint, zBase + zOffset, ""}
-  end; return points
-end
 
-function map.locations(template, base, label, top)
---:: map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:) -> <i>Add points offset from base.</i> -> <code>nil</code>
---:+ <i>Add labelled points using template names and offsets from named base point or top for y-axis.</i>
-  local basePlace = assert(place.xyzf(base), "map: locations unknown base")
-  local xBase, yBase, zBase = table.unpack(basePlace) 
-  local points = addBase(template, xBase, yBase, zBase, tonumber(top))
-  for name, xyzf in pairs(points) do map.point(name, label, xyzf) end
-end; 
+map.point = point
+--:: map.point(name: ":", label":", trail: ":"|^:, tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <code>map.op ("point", ...)</code> -> <code>":"</code>
 </code></pre>
 <a id="trail"></a> 
 Trails are a sequence of points travelled by a turtle moving forward; then paired with that sequence in reverse.

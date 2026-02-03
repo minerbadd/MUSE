@@ -24,6 +24,12 @@ function map.write() end
 ---@type fun( thisMap: string):   index: number 
 function map.read() end
 
+-- map.op ("point", ...)
+-- map.point(name: ":", label":", trail: ":"|^:, tx: #:?, ty: #:?, tz: #:?, tf: ":"?):  `":"` <-
+
+---@type fun( name: string,  labelstring,  trail: string | boolean,  tx: number?,  ty: number?,  tz: number?,  tf: string?):   string 
+function map.point() end
+
 -- Set named place feature, send MU.
 -- map.put(name: ":", key: ":", value: any?):   `key: ":"?, value: any|true|nil &!` <-
 

@@ -28,7 +28,7 @@ local path = _G.Muse.path.."tests/"map.map(path.."maps/TM.map"); map.charts(path
 core.log.level(3); core.setComputerLabel("tester")
 
 --:# **Check turtle dance for facing witout dancing**
-test.part("test setup", map.op, {"test", "test0", "label0", "199", "66", "262", "east"})
+test.part("test setup", map.point, "test0", "label0", "199", "66", "262", "east"})
 test.part("move to 10, 20, 30, east", move.where, 10, 20, 30, "east")
 -- face (dx, dz, ew, we, ns, sn) -- face(dx, dz, "east", "west", "south", "north") -> 
 test.part("facing north", map.testFacing, 0, -10, {"east", "west", "south", "north"})

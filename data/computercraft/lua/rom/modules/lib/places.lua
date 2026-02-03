@@ -1,4 +1,3 @@
----@diagnostic disable: duplicate-set-field
 --[[
 ## Serialization, Feature Lists, and Using Iterators: `lib/places` to Name Positions
 ```md
@@ -19,6 +18,7 @@ The implementations of these libraries are fairly straight forward. There are fe
 All that said, here's the introduction and utilities for the module. As in `lib/motion`, we provide for type checking in the module by LLS by loading `signs.places` and referencing what's loaded. To help with that, `place.matched` is defined as an alias of table.unpack with an annotation to specify what's unpacked.
 ```Lua
 --]]
+---@diagnostic disable: duplicate-set-field
 local placings = require("signs.places"); placings.places, placings.place, placings.moves, placings.steps = {}, {}, {}, {}
 local _, place, moves, steps = placings.places, placings.place, placings.moves, placings.steps ---@module "signs.places"
 
@@ -66,7 +66,7 @@ function place.match(name)
 end
 
 function place.xyzf(target, index) -- target place (with index for situations) or current situation position 
-  --:: place.xyzf(name: ":"?, index: #:?) -> _Looks up index in name [defaults to current situation]._ -> `xyzf?, order: #:?`
+  --:: place.xyzf(name: ":"?, index: #:?) -> _Finds indexed situation in name [defaults to current situation]._ -> `xyzf?, order: #:?`
   if not target then return xyzfSituation() end -- current position of this turtle
   local order, placed = place.match(target); if not (order and placed) then return nil end
   local _, _, situations = place.matched(placed); -- trails and ranges have mre than one

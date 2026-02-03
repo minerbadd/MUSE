@@ -41,6 +41,13 @@ local IDs, roles, landed = _G.Muse.IDs, _G.Muse.roles, _G.Muse.landed
 
 function dds.roleID(role) return IDs[role] end --:: dds.roleID(role: ":") -> _ID for a Muse role_ -> `ID: #:` 
 function dds.role(ID) return roles[ID] end --:: dds.role(ID: #:) ->  _Label for a Muse role_ -> `role: ":"`
+
+function dds.join(role, id) -- on player
+  --:: dds.join(role: ":", id: #:?) -> _Qualify ID role association (label), id given by player._ -> `name: ":"`
+  local name = landed[role] and place.qualify(role) or role; core.setComputerLabel(name); -- qualify landed
+  local id = id;  IDs[name] = id; roles[id] = name   -- each site can have its own landed turtles
+  return name 
+end  
 --[[
 ```
 <a id="request"></a> 
@@ -62,16 +69,21 @@ end
 All computers other than the player's pocket computer wait to `respond`. If a responding turtle is a `landed` turtle that is as yet, unsited, it attaches itself to the player's `site`. In any case, it sends back a message that provides information for mapping between its computer ID and its label (its MUSE role).
 ```Lua
 --]]
+local function newSite(playerSite)
+  local newFileHandle = assert(io.open(_G.Muse.data.."site.txt", "w"), "dds site: can't write site.txt")
+  local site = place.site() or playerSite; newFileHandle:write(site.."\n"); newFileHandle:close()
+  return place.site(site)
+end
+
+local function site(id, playerSite)
+  local label, sitedFileHandle = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") 
+  local site = not sitedFileHandle and newSite(playerSite) or sitedFileHandle:read() or playerSite
+  local _, sitedLabel = dds.site() return sitedLabel 
+end
+
 local function respond()  
   local id, playerSite = rednet.receive("MQ"); dds.playerID(id) -- set global on remote responder
-  local label, sitedFile = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") -- ?? no file if recently joined
-  local site = sitedFile and sitedFile:read(); place.site(site or playerSite) -- player's site if not already established
-  local newFile = not sitedFile and io.open(_G.Muse.data.."site.txt", "w"); 
-  print("dds.respond: ", id, playerSite, label, sitedFile, site, newFile) -- **TODO: remove**
-  assert(newFile or sitedFile, "dds.respond: can't write site.txt")
-  if newFile then newFile:write(place.site()) end -- new (player's) site
-  local sitedLabel = landed[label] and place.qualify(label) or label; 
-  core.setComputerLabel(sitedLabel); -- landed turtles in their place
+  local sitedLabel = site(id, playerSite)
   core.report(1, "MQT "..id.." "..sitedLabel); -- DDS Turtle now sited
   rednet.send(id, sitedLabel, "MQ") -- need to send `count` messages 
 end
@@ -104,13 +116,6 @@ function dds.hosts()
     parallel.waitForAny(function() receive(count) end) -- wait to get all MQ host responses
     --IDs[core.getComputerLabel("player")] = core.getComputerID(0) -- the player has a label: "player" 
   end; 
-end
-
-function dds.join(role, idGiven) -- on player
-  --:: dds.join(role: ":", idGiven: #:?) -> _Fix ID role association for next startup, id given by player._ -> `sitedLabel: ":"`
-  local sitedLabel = landed[role] and place.qualify(role) or role; core.setComputerLabel(sitedLabel); -- qualify landed
-  local id = idGiven or core.getComputerID(); IDs[sitedLabel] = id; roles[id] = sitedLabel 
-  return sitedLabel.." joined ID "..tostring(id)
 end
 --[[
 ```

@@ -8,7 +8,7 @@ The `map` library continues the development of `place`, introduced by <a href="p
 It's MUSE's other major representation of state (after `situations`). A `place` can be a `point`, a `range`, or a `trail`, all built on by `lib/map` using `place` data structures. We've come across trails before in <a href="places.html#trail" target="_blank"> `lib/places`</a>. 
 To review, they are named (and labelled) `situations` created by `tracking` in the <a href="motion.html#tracking" target="_blank"> `lib/motion` </a>library. A `range` is a named (and labeled) `point` pair delimiting a rectangular solid. A `point` is a named (and labelled) single entry table whose single element is a `situation`. The names of places are used for lookup. The labels are just user supplied supplementary information. 
 
-Additionally it turned out to be useful to add the idea of `locations` a set of related points sharing a label, each xyz offset from each other.
+Additionally, it turned out to be useful to add the idea of `locations` a set of related points sharing a label, each xyz offset from each other.
 
 To ease understanding, the module introduction for `map` shown below is organized in much the same way as described for <a href="motion.html"> `lib/motion`</a>. 
 
@@ -29,7 +29,6 @@ local maps = require("signs.map"); maps.map = {}; local map = maps.map; map.hint
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
-local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local places = require("places"); local place = places.place ---@module "signs.places"
 
 local rednet, player, turtle = _G.rednet, _G.pocket, _G.turtle -- references to ComputerCraft libraries
@@ -135,7 +134,11 @@ end
 
 map.puts = map.put 
 --:: map.puts(name: ":", key: ":", value: ":"?) -> _Set string feature value, send MU._ -> `key: ":", value: ":"|true &!`
-
+--[[
+```
+The `borders` of the region on the cardinal and vertical axes are delimited by a pair of situation (which could be a `range`).
+```Lua
+--]]
 function map.borders(target) 
   --:: map.borders(target: ":") -> _Get situation pair elements_ -> `borders, features, position, position &!`
   --:> borders: _Situation pair boundaries_ -> {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
@@ -149,18 +152,45 @@ function map.borders(target)
   borders.top, borders.bottom = y1 > y2 and y1 or y2, y1 > y2 and y2 or y1
   return borders, features, situations[1].position, situations[2].position
 end
+--[[
+```
+<a id="locations"></a> 
+As we've said, locations are a set of related points sharing a label, each xyz offset from each other.
+```Lua
+--]]
+local function addBase(template, xBase, yBase, zBase, top)
+  local points = {}; for name, offset in pairs(template) do 
+    local xOffset, yOffset, zOffset = table.unpack(offset)
+    local yPoint = tonumber(yOffset) and (yBase + yOffset) or top
+    points[name] = {xBase + xOffset, yPoint, zBase + zOffset, ""}
+  end; return points
+end
 
+function map.locations(template, base, label, top)
+--:: map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:) -> _Add points offset from base._ -> `nil`
+--:+ _Add labelled points using template names and offsets from named base point or top for y-axis._
+  local basePlace = assert(place.xyzf(base), "map: locations unknown base")
+  local xBase, yBase, zBase = table.unpack(basePlace) 
+  local points = addBase(template, xBase, yBase, zBase, tonumber(top))
+  for name, xyzf in pairs(points) do map.point(name, label, false, table.unpack(xyzf)) end
+end
+--[[
+```
+To ease testing, there's a function to make a point and 
+```Lua
+--]]
 function map.test(name, label, trail, x, y, z, facing, key, value) -- makes named place for coordinates, sets turtle position
   --:- test name, label, x, y, z, facing, key?, value??} -> _Force mapped position, optionally feature and value for `point`._
   core.status(4, "map", "test", place.qualify(name), label, x, y, z, facing, key, value)
   assert(name and label and tonumber(x) and tonumber(y) and tonumber(z) and facing, "map.test: bad arguments for test")
-  local _, index = map.op {"point", name, label, trail, x, y, z, facing}; if key then map.put(name, key, value) end 
+  local _, index = map.point(name, label, trail, x, y, z, facing); if key then map.put(name, key, value) end 
   return "As "..place.qualify(name).." "..move.ats().." ("..index..")"
-end; 
+end;
 --[[
 ```
-<a id="sited"></a> 
+The remainder of the `map` module implements the operations supporting the user interface.
 
+<a id="sited"></a> 
 The `site` operation is for when the `player` or the `rover` is moved to a different site. The `join` operation ties a landed turtle (`farmer`, `miner`, or `logger`) to a site. (We'll get to the implementation of `dds.join` when we discuss `lib/remote`.) The `store` operation is used by `_start` to persist the `site` and load a clean map remotely.
 ```Lua
 --]]
@@ -168,15 +198,12 @@ The `site` operation is for when the `player` or the `rover` is moved to a diffe
 local function sited(site) 
   --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.
   if not site then return place.site() end -- just report
+  -- use dds to change qualified role for landed turtle
   local siteFile = _G.Muse.data.."site.txt" -- The `_G.Muse.data` directory is local to each ComputerCraft computer.
   local siteFileHandle = assert(io.open(siteFile, "w"), "map.sited: can't write "..siteFile)
   siteFileHandle:write(place.site(site).."\n"); siteFileHandle:close()
   return place.site(site) 
 end; map.hints["site"] = {["?name"] = {} }
-
-local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
---:- join site role -> _Set site and join landed turtle to it with specified role._
-map.hints["join"] = {["?site "] = {["?role"] = {} }} 
 
 local function store(site) 
   --:- store site? -> _Persists `site` in local store and loads local map._ -> `report: ":"`
@@ -275,7 +302,7 @@ end
 --[[
 ```
 <a id="fix"></a> 
-All the turtle movement we've just spoken of is in support of establishing a known position and orientation (a `fix`) to anchor future dead reckoning of turtle position and orientation. The `fix` function also )optionally) fixes the beginning of a `trail`.
+All the turtle movement we've spoken of is in support of establishing a known position and orientation (a `fix`) to anchor future dead reckoning of turtle position and orientation. The `fix` function also (optionally) fixes the beginning of a `trail`.
 ```Lua
 --]]
 _G.Muse.trailhead = _G.Muse.trailhead or {}; 
@@ -286,11 +313,10 @@ local function fix(trail, tx, ty, tz, tf) -- just for turtles in-game , t* for t
   --:- fix trail? -> _Set and report GPS turtle position for dead reckoning. Optionally begin named trailhead._
   if not turtle and not tf then return "Not a turtle" end -- in-game for turtles, not for player or other computers
   local x, y, z, _, ok = move.where(tx, ty, tz, tf); if not ok then return "(No GPS)" end
-  local facing = tf or changes(x, y, z) -- if no tf **turtle dance to find orientation**
-  local fixed = place.fix({x, y, z, facing}, trail) -- set position and start a track if starting a trail
+  local facing = tf or changes(x, y, z) -- if no tf, **turtle dance to find orientation**
+  place.fix({x, y, z, facing}, trail) -- set position and start a track if starting a trail
   if trail then trailhead.name = place.qualify(trail) end -- use trailhead.name in call to `trail`
-  local xf, yf, zf = table.unpack(fixed); local fixes = core.round(xf)..", "..core.round(yf)..", "..core.round(zf)
-  return "{"..fixes.."} "..trailhead.name; 
+  return move.ats().." "..(trailhead.name or ""); 
 end map.hints["fix"] = {["??trailname"] = {} }
 --[[
 ```
@@ -307,28 +333,9 @@ local function point(name, label, trail, tx, ty, tz, tf) --> "done", serial: ":"
   local serial, index = place.name(name, label); update(serial) -- append 
   return place.qualify(name)..", "..label.." ("..index..")", index
 end; map.hints["point"] = {["?name "] = {["?label "] = {["??trailname"] = {}}} }
---[[
-```
-<a id="locations"></a> 
-As we've said, locations are a set of related points sharing a label, each xyz offset from each other.
-```Lua
---]]
-local function addBase(template, xBase, yBase, zBase, top)
-  local points = {}; for name, offset in pairs(template) do 
-    local xOffset, yOffset, zOffset = table.unpack(offset)
-    local yPoint = tonumber(yOffset) and (yBase + yOffset) or top
-    points[name] = {xBase + xOffset, yPoint, zBase + zOffset, ""}
-  end; return points
-end
 
-function map.locations(template, base, label, top)
---:: map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:) -> _Add points offset from base._ -> `nil`
---:+ _Add labelled points using template names and offsets from named base point or top for y-axis._
-  local basePlace = assert(place.xyzf(base), "map: locations unknown base")
-  local xBase, yBase, zBase = table.unpack(basePlace) 
-  local points = addBase(template, xBase, yBase, zBase, tonumber(top))
-  for name, xyzf in pairs(points) do map.point(name, label, xyzf) end
-end; 
+map.point = point
+--:: map.point(name: ":", label":", trail: ":"|^:, tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> `map.op ("point", ...)` -> `":"`
 --[[
 ```
 <a id="trail"></a> 
@@ -504,7 +511,7 @@ Just a big dispatch table, easily amended and extended. The CLI is just a thin l
 --]]
 local ops = { --:# **Command Line Interface** 
   erase = erase, store = store, sync = sync, point = point, range = range, -- for all
-  view = view, site = sited, chart = chart, join = join, -- for all
+  view = view, site = sited, chart = chart,  -- for all
   near = near, at = at, where = where, headings = headings, -- position relative to places for players and turtles
   fix = fix, trail = trail,  -- just for turtles
 }
