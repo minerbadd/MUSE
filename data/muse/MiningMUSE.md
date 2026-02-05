@@ -203,7 +203,7 @@ As a convenience some commands assume a role (and so, a target). For the `rover`
 
 Astonishingly it's taken us till now to build up MUSE capability to the point where it would be useful to actually explore operating MUSE in the Minecraft/Computercraft environment. If it seems good for you to do that now, here's a link to guide you through the needed <a href="#appendix-musecraft---running-muse" target="_blank"> `setup`</a>. 
 
-All those remote computers we've been looking at have storage facilities, things like disks. It'd be really useful, for example, to use that storage to keep `places` so they'd be available, that is _persist_ to the next time you play the game. As you might guess, doing this brings up some issues. We'll explore those in the next chapter.
+All those remote computers we've been looking at have storage facilities, things like disks. It'd be really useful, for example, to use that storage to keep `places` so they'd be available, that is _persist_ to the next time you play the game. As you might guess, doing this brings up some issues. We'll see in the next chapter, how to establish state that persists across <a href="https://en.wikipedia.org/wiki/Session_(computer_science)" target="_blank"> _sessions_</a>, how to deal with state distributed over a network, and how error handling works in network environments.
 
 <a id="Chapter5"></a>
 ## Chapter 5 - Persistence, Concurrency, Remote Errors 
@@ -241,8 +241,19 @@ There's an operation in `lib/map` that needs noting. It's there for a reason we'
 
 Now, to be sure, here be no nuclear reactors. More to the point, as someone creating the code for these computers, you've already been empowered to do anything with a ComputerCraft computer that it can do. Nonetheless, if you're tempted to do what I did and do it in the real world, rather than what I said you shouldn't, think again. It might be appropriate. Or not.
 
-With parental warnings duly noted (and  forgotten), we'll see in the next chapter, how to establish state that persists across <a href="https://en.wikipedia.org/wiki/Session_(computer_science)" target="_blank"> _sessions_</a>, how to deal with state distributed over a network, and how error handling works in network environments
+With parental warnings duly noted (and  forgotten), 
 <br/>
+
+There's a role we haven't mentioned till now, the `porter`. It's associated with a very lonely command computer, just the one of them in the whole MUSE environment. While, for generality, it's possible to send the `porter` a <a href="code/programs/porter.html" target="_blank"> CLI command </a> prefaced by its role just like the others, actually only a very few of them are useful. It's not a turtle.
+
+A library, <a href="code/lib/exec.html" target="_blank"> `lib/exec`</a> uses the `porter` to provide support for setting up MUSE operations. The <a href="code/lib/exec.html" target="_blank"> `lib/exec`</a> library helps aligning Minecraft coordinates with turtle dead reckoning for ComputerCraft GPS deployment with <a href="code/lib/gps.html" target="_blank"> `lib/gps` </a>. This is done by the <a href="code/programs/locate.html" target="_blank"> `locate` </a> command, implemented by <a href="code/lib/exec.html#locate" target="_blank"> `exec.locate`</a>. The library also supports supplying a named MUSE `range` for the Minecraft's <a href="https://www.digminecraft.com/game_commands/forceload_command.php" target="_blank"> `/forceload add`</a> operation. The command is <a href="code/programs/activate.html" target="_blank"> `activate` </a> implemented by <a href="code/lib/exec.html#activate" target="_blank"> `exec.activate`</a>.
+
+<a href="drawings/05CommandIntegration.pdf" target="_blank">
+<IMG SRC="drawings/05CommandIntegration.png" ALIGN="right" hspace ="10"/></a>
+
+Since we've gone ahead and used a command computer, we've already demonstrated a shameful lack of constraint. Another command computer indulgence, the <a href="code/lib/port.html" target="_blank"> `lib/port` </a> library, provides an integration with `map.places` and the Minecraft `teleport` command. The   <a href="drawings/05CommandIntegration.pdf" target="_blank"> drawing </a> shows the library in the overall context of MUSE. 
+
+There's a bit of application design involved in adding a `teleport` facility to MUSE. The design approach was to make (rough) parallels with real world trips. There's advance booking a trip from somewhere to somewhere else. That generally involves figuring out what the trip costs. Doing the trip with baggage increases the costs. When all that's settled, actually taking the trip makes use of the booking and incurs the cost. Look at <a href="code/lib/port.html" target="_blank"> `lib/port` </a> to see how that's all worked out in a Minecraft context.
 
 In the following chapter we'll look at the MUSE libraries that create and make use of what you might think of as a (very simple) <a href="https://en.wikipedia.org/wiki/Declarative_programming" target="_blank"> declarative language </a>. They allow us to describe turtle operations by _what_ is to be done rather than _how_ it is to be done. In some ways, it's another kind of abstraction with the goal of increased maintainability: hiding the detail of _how_ while exposing the main point: _what_.
 
