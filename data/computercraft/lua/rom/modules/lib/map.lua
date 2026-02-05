@@ -196,18 +196,18 @@ The `site` operation is for when the `player` or the `rover` is moved to a diffe
 ```Lua
 --]]
 
-local function siting(site) 
+local function site(name) 
   --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.
-  if not site then return place.site() end -- just report
+  if not name then return place.site() end -- just report
   -- use dds to change qualified role for landed turtle
   local role = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$")
-  dds.site(site); local qualified = dds.join(role, core.getComputerID())
-  return place.site(site) 
+  dds.site(name); dds.join(role, core.getComputerID())
+  return place.site(name) 
 end; map.hints["site"] = {["?name"] = {} }
 
-local function store(site) 
-  --:- store site? -> _Persists `site` in local store and loads local map._ -> `report: ":"`
-  local siting = sited(site); if not map.map() then map.map(_G.Muse.map) end
+local function store(name) 
+  --:- store name? -> _Persists site `name` in local store and loads local map._ -> `report: ":"`
+  local siting = site(name); if not map.map() then map.map(_G.Muse.map) end
   local mapped = map.read(map.map()); map.write(map.map());
   return siting..": "..mapped.." places"
 end; map.hints["store"] = {["?site"] = {} } 
@@ -321,9 +321,9 @@ end map.hints["fix"] = {["??trailname"] = {} }
 
 local function join(qualified, id, siting) -- on turtle
   core.setComputerLabel(qualified)
-  local site = dds.site(siting); place.site(site)
+  local sited = dds.site(siting); place.site(site)
   local position = fix()
-  return qualified..":"..id.." at "..site..": "..position
+  return qualified..":"..id.." at "..sited..": "..position
 end
 --[[
 ```

@@ -55,6 +55,12 @@ function dds.site(site) -- on turtle (or player)
   local sited = site or place.site(); handle:write(sited.."\n"); handle:close()
   return sited
 end
+
+function dds.qualify(site)
+  local role, handle = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") 
+  local sited = not handle and dds.site(site) or handle:read()
+  place.site(sited); return place.qualify(role) 
+end
 --[[
 ```
 <a id="request"></a> 
@@ -76,15 +82,9 @@ end
 All computers other than the player's pocket computer wait to `respond`. If a responding turtle is a `landed` turtle that is as yet, unsited, it attaches itself to the player's `site`. In any case, it sends back a message that provides information for mapping between its computer ID and its label (its MUSE role).
 ```Lua
 --]]
-local function siting(site)
-  local role, handle = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") 
-  local sited = not handle and dds.site(site) or handle:read() or site
-  place.site(sited); return place.qualify(role) 
-end
-
 local function respond()  
   local id, playerSite = rednet.receive("MQ"); dds.playerID(id) -- set global on remote responder
-  local qualified = siting(playerSite)
+  local qualified = dds.qualify(playerSite)
   core.report(1, "MQT "..id.." "..qualified); -- DDS Turtle now sited
   rednet.send(id, qualified, "MQ") -- need to send `count` messages 
 end
