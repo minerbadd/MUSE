@@ -159,51 +159,62 @@ If all you're looking for right now is how these libraries fit into the overall 
 <a id="Chapter4"></a>
 ## Chapter 4 - Distributed Service Discovery, Remote Procedure Calls and CLIs 
 
-This chapter is less about how to write code in general. We've pretty much finished flogging that particular horse. So instead, what we'll be about here (and what follows) is how to provide some important mechanisms. They're the ones that you may need to design (or understand how someone else did). 
+This chapter is less about how to write code in general. We've pretty much finished flogging that particular horse. So instead, what we'll be about here (and in what follows) is how to provide some important mechanisms. They're the ones that you may need to design (or understand how someone else did). 
 
-In particular, we'll now explore systems with distributed operations on distributed state. The principle mechanisms we'll consider are distributed name servers to discover providers of available services and remote procedure calls (RPCs) to make use of those services.
+In particular, in this chapter we'll explore systems with distributed operations on distributed state. The principle mechanisms we'll consider are distributed name servers to discover providers of available services and remote procedure calls (RPCs) to make use of those services.
 
-An RPC in a <a href="https://en.wikipedia.org/wiki/Client%E2%80%93server_model" target="_blank"> _client-server model_  </a> lets (ahem) clients get services from, well, servers. For MUSE, the client is generally the player's pocket computer. The servers are turtles perhaps with specific roles for farming, mining, or logging.  The roles are established by ComputerCraft computer labels in an area: `farmer`, `miner`, and `logger`. 
+An RPC in a <a href="https://en.wikipedia.org/wiki/Client%E2%80%93server_model" target="_blank"> _client-server model_  </a> lets (ahem) clients get services from, well, servers. For MUSE, the client is generally the player's pocket computer. The servers are turtles perhaps with specific roles for farming, mining, or logging.  The roles are established by ComputerCraft computer labels in an area, for example, `farmer`, `miner`, and `logger`. 
 
-There's also `rover`, a general purpose worker acting as something like a Sancho Panza, the squire of the `player` going wherever the player goes. (That would be you.) The other turtles, specialized `landed` workers, generally stay in the place they work, a `site`. Their names are _qualified_ by their landed site as _sited roles_. The `player` may establish other sites with other sets of landed workers. The landed worker turtles are equipped with tools appropriate to their specific role. 
+There's also `rover`, a general purpose worker acting as something like a Sancho Panza, the squire of the `player` going wherever the player goes. (That would be you.) The other turtles (`farmer`, `miner`, and `logger`), specialized `landed` workers, generally stay in the place they work, a `site`. Their names are _qualified_ by their landed site as _sited roles_. The `player` may establish other sites with other sets of landed workers. The landed worker turtles are equipped with tools appropriate to their specific role. 
 
 RPCs are directed to turtles as specified by their role. ComputerCraft, of course, has no notion of roles: all it knows are computer IDs (numbers) and computer labels (strings). Its networking is tied to numbers, sequentially assigned as computers are brought into the game. If MUSE operations were based on these numbers, they would be subject to a dependency that's unwieldy to manage and therefore fragile in practice. (Stuff would break.) We need names, not numbers, for the computers in our network that have roles. 
 
-As we've said, roles are tied to labels. What's left for us is to find a way to discover which names as roles are associated with which numbers. <IMG SRC="drawings/04Farmer.png" ALIGN="left" hspace ="10" vspace="5" />This could be done by a task done whenever a player brings a new computer into the game. There could be a table associating names and numbers updated by such a task and kept consistent (and persistent) for all computers. We've already seen with `lib/places` how keeping names for new things (like `places`) consistent and persistent throughout the network might be done. Systems have been built this way. MUSE assumes a single player. Nothing happens to turtles "in the meantime" without that player having directed it to happen so, strictly speaking, this approach, based on consistent and persistent mappings could work. (Turtles are really hard for hostile mobs to destroy.)
+As we've said, roles are tied to labels. What's left for us is to find a way to discover which names as roles are associated with which numbers. <IMG SRC="drawings/04Farmer.png" ALIGN="left" hspace ="10" vspace="5" />This could be done by a task done whenever a player brings a new computer into the game. There could be a table associating names and numbers updated by such a task and kept consistent (and persistent) for all computers across the network. Systems have been built this way. MUSE assumes a single player. Nothing happens to turtles "in the meantime" without that player having directed it to happen so, strictly speaking, this approach, based on consistent and persistent mappings could work. (Turtles are really hard for hostile mobs to destroy.)
 
 Because it's useful to consider, MUSE implements a a different approach that does not count on managing distributed persistent mappings. Associations between names (roles at a site) and numbers (computer IDs) are discovered by a distributed discovery service, `DDS`, during system startup to reflect the state of the system however it's been changed. 
 
-Here's how it works. Roles and sites are established when Computercraft starts up a simulation. When that happens, <a href="code/daemons/.start.html#dds" target="_blank">`.start` </a>, run at startup, executes <a href="code/lib/dds.html#hosts" target="_blank">`dds.hosts`</a>. This gets the computer `ID` for each sited role (saved by Computercraft as a computer `label`) and sends the pair to each computer that has run `dds.hosts`.
+Here's how it works. Roles and sites are established when Computercraft starts up a simulation. When that happens, <a href="code/daemons/.start.html#dds" target="_blank">`.start` </a>, run at startup, executes <a href="code/lib/dds.html#hosts" target="_blank">`dds.hosts`</a>. This gets the computer `ID` for each role. (Roles are site qualified for landed turtles). This is saved by Computercraft as a computer `label`. The role and ID number pair for each computer is sent to each computer that has run `dds.hosts`.
 
 <i>At some earlier time, MUSE turtles and the player's pocket computer were assigned roles at their site (as computer labels). We'll look at the `join` and `site` commands that do this when we get to `lib/map` in the next chapter.</i>
 
+So the first thing that needs to be done is to resolve the server's identity. We know servers by their names. Computercraft knows servers by their numbers. We need to get the server's number. For convenience we often refer to servers by their unqualified names, that is without reference to any site at which they may be landed. For landed turtles then, we need to qualify the name. There may be, for instance a `miner` turtle at a number of sites. The assumption is that an unqualified name for a landed turtle can be qualified by the current, that is, the player's, site.
+
 We need to note that name servers come in different flavors with different capabilities. The MUSE distributed discovery service, `DDS`, is only a distant cousin of one real world system, the <a href="https://en.wikipedia.org/wiki/Domain_Name_System" target="_blank"> Domain Name System (DNS)</a>. DNS also basically associates names with numbers. But it deals with millions of computers managed with the barest minimum of coordination over the entire world. Our little DDS does not begin to consider such scale or distribution of control. However it does model approaches to the sort of <a href="https://en.wikipedia.org/wiki/Service_discovery" target="_blank"> service discovery </a> provided for small scale home or local office networks.
 
-Given a way to associate names wth numbers with `DDS`, we can provide a way to get a service request from a client to a server. The other part of what is needed is a way to actually provide the service. That's a job for Remote Procedure Call, an action hero you may (or may not) have heard of. 
-
+<a href="code/lib/dds.html" target="_blank">
+<IMG SRC="drawings/04ATree.jpg" ALIGN="left" hspace ="10"/></a>
+Given a way to associate names wth numbers with <a href="code/lib/dds.html" target="_blank">lib/dds</a>, we can provide a way to get a service request from a client to a server. The other part of what is needed is a way to actually provide the service. That's a job for Remote Procedure Call, an action hero you may (or may not) have heard of. 
+</br></br>
 The design of the MUSE RPC makes use of MUSE <a href="code/lib/core.html#serialize" target="_blank"> serialization </a> and Lua's `load` facilities to package and unpackage procedure arguments for network transmission and reception. As a development exercise, this could be generalized to use language independent formatting such as <a href="https://en.wikipedia.org/wiki/JSON" target="_blank"> JSON </a>. There are a number of such <a href="https://www.google.com/search?q=json+lua" target="_blank"> implementations</a>.  
-
+</br></br>
 But that seemed to be a distraction from our goals. Even so, supporting our goals, the design is more general than is strictly needed. As we'll see, it is built to handle environments that could be bothered by unfriendly, rogue actors. This is not MUSE but it seemed useful to explore. 
-
+</br></br>
 It is also designed to be testable outside its intended deployment. This kind of design certainly _is_ relevant to MUSE and might be important in more than just the MUSE environment. In addition to the debugging benefit, working in a development sandbox means that getting errors when trying stuff has limited consequences.
 
 <a href="drawings/04RemoteProcedures.pdf" target="_blank">
 <IMG SRC="drawings/04RemoteProcedures.png" ALIGN="right" hspace ="10"/></a>
-
-The <a href="docs/lib/remote.html" target="_blank"> `lib/remote`</a>, <a href="docs/lib/dds.html" target="_blank"> `lib/dds`</a>, and <a href="docs/lib/net.html" target="_blank"> `lib/net` </a> libraries provide the interfaces for the facilities we've been discussing. The drawing shows <a href="drawings/04RemoteProcedures.pdf" target="_blank"> how they fit </a> in the overall context of MUSE. 
+</br>
+The <a href="docs/lib/remote.html" target="_blank"> lib/remote</a>, <a href="docs/lib/dds.html" target="_blank"> `lib/dds`</a>, and <a href="docs/lib/net.html" target="_blank"> lib/net </a> libraries provide the interfaces for the facilities we've been discussing. The drawing shows <a href="drawings/04RemoteProcedures.pdf" target="_blank"> how they fit </a> in the overall context of MUSE. 
 
 <a href="code/lib/remote.html" target="_blank">
-<IMG SRC="drawings/04Tree.jpg" ALIGN="left" hspace ="10"/></a>
+<IMG SRC="drawings/04Tree.jpg" ALIGN="left" hspace ="10">
+</a> 
 
-Look first at <a href="code/lib/remote.html" target="_blank"> `lib/remote` </a> to see how RPCs work. Review of its code will lead into excursions of <a href="code/lib/dds.html" target="_blank"> `lib/dds` </a> and more. Then look at how <a href="code/lib/net.html" target="_blank"> `lib/net` </a>  actually creates (and documents) the remote CLI we said this chapter would discuss. The generated documentation for the remote CLI is <a href="docs/lib/net.html" target="_blank">here</a>. The information in libraries, kept close to the implementation, was all that was needed to generate it. Note that `lib/net` calls on the same dispatch operations in the targeted libraries as used by local commands.
+Look first at <a href="code/lib/remote.html" target="_blank"> lib/remote </a> to see how RPCs work. 
+Then look at how <a href="code/lib/net.html" target="_blank"> lib/net </a>  actually creates (and documents) the remote CLI we said this chapter would discuss. 
+</br>
+</br>
+The generated documentation for the remote CLI is <a href="docs/lib/net.html" target="_blank">here</a>. The information in libraries, kept close to the implementation, was all that was needed to generate it. Note that `lib/net` calls on the same dispatch operations in the targeted libraries as used by local commands.
+</br>
+</br>
+Most of the remote CLI commands are prefaced by a role (`farmer`, `miner`, `logger`, or `rover`) to target a given turtle at the current site. A CLI command prefaced by a role needs a dispatch to the `lib/remote` handler for that command. As you've likely come to expect, there's not much to these. They're boringly (and helpfully) similar: <a href="code/programs/farmer.html" target="_blank"> farmer</a>, <a href="code/programs/miner.html" target="_blank"> miner</a>, <a href="code/programs/logger.html" target="_blank"> logger</a>, <a href="code/programs/roamer.html" target="_blank"> roamer</a>.
 
-Most of the remote CLI commands are prefaced by a role (`farmer`, `miner`, `logger`, or `rover`) to target a given turtle at the current site. A CLI command prefaced by a role needs a dispatch to the `lib/remote` handler for that command. As you've likely come to expect, there's not much to these. They're boringly (and helpfully) similar: <a href="code/programs/farmer.html" target="_blank"> `farmer`</a>, <a href="code/programs/miner.html" target="_blank"> `miner`</a>, <a href="code/programs/logger.html" target="_blank"> `logger`</a>, <a href="code/programs/roamer.html" target="_blank"> `roamer`</a>.
 
 As a convenience some commands assume a role (and so, a target). For the `rover`, these are <a href="code/programs/come.html" target="_blank"> `come` </a> and <a href="code/programs/tail.html" target="_blank"> `tail` </a>. You may have looked at turtle part of their implementations in <a href="code/lib/roam.html#come" target="_blank"> `lib/roam`</a>. The other part of their implementations is in <a href="code/lib/remote.html#come" target="_blank"> `lib/remote`</a>.
-
+</br></br>
 Astonishingly it's taken us till now to build up MUSE capability to the point where it would be useful to actually explore operating MUSE in the Minecraft/Computercraft environment. If it seems good for you to do that now, here's a link to guide you through the needed <a href="#appendix-musecraft---running-muse" target="_blank"> `setup`</a>. 
-
-All those remote computers we've been looking at have storage facilities, things like disks. It'd be really useful, for example, to use that storage to keep `places` so they'd be available, that is _persist_ to the next time you play the game. As you might guess, doing this brings up some issues. We'll see in the next chapter, how to establish state that persists across <a href="https://en.wikipedia.org/wiki/Session_(computer_science)" target="_blank"> _sessions_</a>, how to deal with state distributed over a network, and how error handling works in network environments.
+</br></br>
+We'll be adding to MUSE capabilities, of course, in the following chapters. (Otherwise, why woukd they be there?) So what's available now is limited. In particular, all those remote computers we've been looking at have storage facilities, things like disks. It'd be really useful, for example, to use that storage to keep `places` so they'd be available, that is _persist_ to the next time you play the game. As you might guess, doing this brings up some issues. We'll see in the next chapter, how to establish state that persists across <a href="https://en.wikipedia.org/wiki/Session_(computer_science)" target="_blank"> _sessions_</a>, how to deal with state distributed over a network, and how error handling might work in network environments.
 
 <a id="Chapter5"></a>
 ## Chapter 5 - Persistence, Concurrency, Remote Errors 
@@ -230,10 +241,10 @@ In MUSE, all the simulated computers do share a ROM image but this is, by defini
 
 If there's one design idea for maintainable code in all the above, it's to seek to keep it simple. Design goals for a project may not allow the simple approach just described for run time organization. There might be tools to mitigate risks inherent in more complicated organizations. They might work. But perhaps you can find a way to isolate complexity in the design so that most of what is developed can rely on simple assumptions about what happens at run time.
 
-<a href="code/lib/map.html" target="_blank"><IMG SRC="drawings/04Tree.jpg" hspace="10" ALIGN="left"/></a> <a href="drawings/04Persistence.pdf" target="_blank"><IMG SRC="drawings/04Persistence.png" ALIGN="right" hspace="10"></a> 
+<a href="code/lib/map.html" target="_blank"><IMG SRC="drawings/05Tree.jpg" hspace="10" ALIGN="left"/></a> <a href="drawings/05Persistence.pdf" target="_blank"><IMG SRC="drawings/05Persistence.png" ALIGN="right" hspace="10"></a> 
 A design handling persistence, management of distributed state, and remote error handling is demonstrated by the <a href="code/lib/map.html" target="_blank"> implementation </a> and <a href="docs/lib/map.html" target="_blank"> interface </a> of the `lib/map` library.  
 
-The library is built on the <a href="code/lib/motion.html" target="_blank"> `lib/motion` </a> and <a href="code/lib/places.html" target="_blank"> `lib/places` </a> libraries we've already looked at. Here's the <a href="docs/lib/motion.html" target="_blank"> interface </a> for `lib/motion`, the <a href="docs/lib/places.html" target="_blank"> interface </a> for `lib/places`, and a <a href="drawings/04Persistence.pdf" target="_blank"> drawing </a>showing how these libraries form the foundation for MUSE. We'll add more libraries to this drawing as we continue our explorations.
+The library is built on the <a href="code/lib/motion.html" target="_blank"> `lib/motion` </a> and <a href="code/lib/places.html" target="_blank"> `lib/places` </a> libraries we've already looked at. Here's the <a href="docs/lib/motion.html" target="_blank"> interface </a> for `lib/motion`, the <a href="docs/lib/places.html" target="_blank"> interface </a> for `lib/places`, and a <a href="drawings/05Persistence.pdf" target="_blank"> drawing </a>showing how these libraries form the foundation for MUSE. We'll add more libraries to this drawing as we continue our explorations.
 
 We pointed to `join` and `site` commands earlier. Theyre implemented by `lib/map` working with `lib/dds`. This is done by running the <a href="code/programs/join.html" target="_blank"> `join`</a> command which invokes <a href="code/lib/dds.html#join" target="_blank"> `dds.join`</a>. The current site is established by the <a href="code/programs/site.html" target="_blank"> site </a> command implemented by <a href="code/lib/map.html#sited"> `map.site`</a>.
 
@@ -241,7 +252,7 @@ There's an operation in `lib/map` that needs noting. It's there for a reason we'
 
 Now, to be sure, here be no nuclear reactors. More to the point, as someone creating the code for these computers, you've already been empowered to do anything with a ComputerCraft computer that it can do. Nonetheless, if you're tempted to do what I did and do it in the real world, rather than what I said you shouldn't, think again. It might be appropriate. Or not.
 
-With parental warnings duly noted (and  forgotten), 
+With parental warnings duly noted (and  forgotten), we can move on to some of the libraries that are built on `lib/map` and a library, we haven't mentioned, <a href="code/lib/launch.html" target="_blank">`lib/launch`</a> whuh gets us navigation beyond dead reckoning. It supports launch of satellite computers that provide a <a href="https://en.wikipedia.org/wiki/Global_Positioning_System" target="_blank">GPS</a> facility. This is a more reliable foundation for `places` in a map.
 <br/>
 
 There's a role we haven't mentioned till now, the `porter`. It's associated with a very lonely command computer, just the one of them in the whole MUSE environment. While, for generality, it's possible to send the `porter` a <a href="code/programs/porter.html" target="_blank"> CLI command </a> prefaced by its role just like the others, actually only a very few of them are useful. It's not a turtle.

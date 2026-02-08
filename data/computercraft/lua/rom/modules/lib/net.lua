@@ -31,7 +31,7 @@ The `net` table dispatches commands for each `remote.call` into server libraries
 --]]
 local cores = require("core"); local core = cores.core  ---@module "signs/core"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
-local gpss = require("gps"); local gps = gpss.gps ---@module "signs.gps"
+local launchs = require("launch"); local launch = launchs.launch ---@module "signs.launch"
 local maps = require("map"); local map = maps.map ---@module "signs.map"
 local mines = require("mine"); local mine = mines.mine ---@module "signs.mine"
 local roams = require("roam"); local roam = roams.roam ---@module "signs.roam"
@@ -121,7 +121,7 @@ net["store"] = op(map.op, "store"); as["store "] = map.hints["store"]; hints[pat
 net["join"] = op(map.op, "join"); as["join "] = map.hints["join"]; hints[path.."join.lua"] = map.hints["join"] --:= join:
 
 --:# **GPS Launch Command** (e.g., `rover launch gantry ....`)
-net["launch"] = op(gps.op, "launch"); as["launch "] = gps.hints["launch "] --:= launch:
+net["launch"] = op(launch.op, "launch"); as["launch "] = gps.hints["launch "] --:= launch:
 --<a id="mine"></a>
 --:# **Remote Mining Operation Commands** (e.g. `miner shaft ....`)
 net["shaft"] = op(mine.op, "shaft"); as["shaft "] = mine.hints["shaft"] --:= shaft:

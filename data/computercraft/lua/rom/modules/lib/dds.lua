@@ -10,11 +10,11 @@ Some MUSE roles are native to a MUSE `site`. Unsited turtles in these `landed` r
 
 The library provides the DDS facilities needed for remote calls. Remote calls allow errors to be reported back to the player. Otherwise, errors would only be visible locally so this library's file operation errors, for example, wouldn't be seen by player.
 
-The so-called DDS facilities only work in-game. The ComputerCraft network interfaces are not mocked. However, the library exports a default mapping.
+The so-called DDS facilities only work in-game. The ComputerCraft network interfaces are not mocked. However, the library exports a default mapping and provides test points available out-of-game.
 ```Lua
 --]]
 
-local dds = {} ---@module "signs.dds" -- for functions exported from library
+local ddss = require("signs.dds"); ddss.dds = {}; local dds = ddss.dds ---@module "signs.dds"
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local places = require("places"); local place = places.place ---@module "signs.places"
@@ -39,7 +39,11 @@ _G.Muse.roles = _G.Muse.roles or -- for out-game
 
 local IDs, roles, landed = _G.Muse.IDs, _G.Muse.roles, _G.Muse.landed
 
-function dds.roleID(role) return IDs[role] end --:: dds.roleID(role: ":") -> _ID for a Muse role_ -> `ID: #:` 
+function dds.roleID(role) --:: dds.roleID(role: ":") -> _Qualified ID for a Muse role_ -> `ID: #:` 
+  local qualified = landed[role] and place.qualify(role) or role
+  return IDs[qualified]
+end
+
 function dds.role(ID) return roles[ID] end --:: dds.role(ID: #:) ->  _Label for a Muse role_ -> `role: ":"`
 
 function dds.join(role, id) -- on player (or turtle)

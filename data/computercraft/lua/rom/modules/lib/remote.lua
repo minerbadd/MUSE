@@ -3,17 +3,18 @@
 ```md
 --:! {remote: [":"]: ():} <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md  
 --:| remote: _Client and server side support for RPCs and client (player) side support for_ `come` _and_ `tail`. -> remote, _remote
---:+ **Test functions are provided for out-of-game, no network operation.**
+--:+ **Test functions are provided for out-of-game operations without a network.**
 
 ```
 The library for MUSE support of remote procedure calls (RPC) is `lib/remote`. To do an RPC there are a bunch of steps choreographed between the `client`, generally the player's pocket computer, and the `server`, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff. They ran their own startup files not `.start`. ) 
 
-At the dance waiting to be asked, all but the player's pocket computer (and the GPS computers) are running `remote.wait` finishing up their execution of the `.start` file. They'll wait to receive a `rednet` MUSE Call (`MC`) protocol message. After doing the work requested by the call, they'll answer the call with a `rednet` MUSE Response (`MR`) protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
+At the dance waiting to be asked, all but the player's pocket computer (and the GPS computers) are running `remote.wait` which finishes up their execution of the `.start` file. They'll wait to receive a `rednet` MUSE Call (`MC`) protocol message. After doing the work requested by the call, they'll answer the call with a `rednet` MUSE Response (`MR`) protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
 
 We'll get to more about the dancing in a bit but first, the expected library introduction. Loading `lib/net` generates a dispatch table with references to the libraries that actually do the work of the remote call. 
   ```Lua
 --]]
-local remote, _remote = {}, {} ---@module "signs.remote" -- exports, internal for analysis
+local remotes = require("signs.remote"); remotes.remote, remotes._remote = {}, {}; local remote, _remote = remotes.remote, remotes._remote
+---@module "signs.remote" -- exports and _internal for analysis
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
