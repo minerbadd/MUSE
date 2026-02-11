@@ -1,5 +1,12 @@
 
 
-join role id
+join id role ?site
  
-Temporarily set mapping for next startup, id from turtle nameplate.
+Join nameplate id'd turtle to network with specified role and site.
+
+
+join
+ 
+Set network mapping with id from turtle nameplate, update turtle
+
+lib/map` **call over network persists site on turtle then makes turtle dance and sets its situation using gps

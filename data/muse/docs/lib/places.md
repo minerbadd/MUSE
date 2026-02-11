@@ -26,7 +26,7 @@
 
 --:: place.match(name: ":") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `order: #:?, place: place?`  
 
---:: place.xyzf(name: ":"?, index: #:?) -> _Looks up index in name [defaults to current situation]._ -> `xyzf?, order: #:?`  
+--:: place.xyzf(name: ":"?, index: #:?) -> _Finds indexed situation in name [defaults to current situation]._ -> `xyzf?, order: #:?`  
 
 --:: place.name(name: ":", label: ":", supplied: situation?, :features:??) -> _Make or update place._ -> `":", #:`    
 --:+ _Include current situation or optionally supplied situation in places. Optionally update features with key = value._    

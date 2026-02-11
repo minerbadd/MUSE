@@ -13,19 +13,26 @@
 
 --:> ID: <i>ComputerCraft computer ID</i> -> <code>#:</code>  
 
---:> roles: <i> Sparse array of Computercraft labels for MUSE roles indexed by Computercraft IDs</i> -> <code>role[]</code>  
+--:> roles: <i>Sparse array of Computercraft labels for MUSE roles indexed by Computercraft IDs</i> -> <code>role[]</code>  
 
---:> role: <i>ComputerCraft label as MUSE role</i> -> <code>":"</code>  
+--:> role: <i>ComputerCraft label as MUSE role (may be qualified by</i> <code>site</code> <i>for landed turtles)</i> -> <code>":"</code>  
 
---:: dds.roleID(role: ":") -> <i>ID for a Muse role</i> -> <code>ID: #:</code>   
+--:: dds.roleID(role: ":") -> <i>ID for a Muse role (qualified if need be)</i> -> <code>ID: #:</code>   
 
---:: dds.role(ID: #:) ->  <i>Label for a Muse role</i> -> <code>role: ":"</code>  
+--:: dds.role(ID: #:) ->  <i>Muse role (label) for a computer ID</i> -> <code>role: ":"</code>  
 
---:: dds.hosts() -> <i>Populates players IDs and labels using a MQ rednet protocol.</i> -> <code>IDs, roles</code>  
+--:: dds.join(role: ":", id: #:) -> <i>Qualify ID role association (label), id given by player.</i> -> <code>name: ":"</code>    
+--:+ <i>On player to join a turtle to network and give it a role (and then over network through</i> <code>lib/map</code> <i>to turtle)</i>  
 
---:: dds.join(role: ":", idGiven: #:?) -> <i>Fix ID role association for next startup, id given by player.</i> -> <code>sitedLabel: ":"</code>  
+--:: dds.site(site: ":"?) -> <i>Write (new) site file, set site and return it</i> -> sited: ":"  
 
---:: dds.map() -> <i>Returns associations from Muse roles to ComputerCraft IDs</i> -> <code>IDs</code>  
+--:: dds.qualify(site: ":"?) -> <i>Create site file (default current site) if needed, set site, return role</i> -> <code>qualified: ":"</code>  
+
+--:: dds.playerID(id: #:?) -> <i>Isolate global</i> -> #:  
+
+--:: dds.hosts() -> <i>Populates players IDs and labels using a MQ rednet protocol.</i> -> <code>nil</code>  
+
+--:: dds.map() -> Iterator from Muse roles to ComputerCraft IDs_ -> <code>():</code>, <code>{:}, </code>nil`  
 
     </pre>
   </body> 

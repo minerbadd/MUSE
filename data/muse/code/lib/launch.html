@@ -1,13 +1,20 @@
---[[
-## Global Positioning System Launch: lib/gps
-```md
---:! {gps: [":"]():} <- **GPS Deployment Command Line Library** -> muse/docs/lib/gps.md 
---:| gps: _Assemble, launch, and startup GPS computers._ -> gps, _gps
-```
+<!DOCTYPE html>
+ <html>
+<head>
+<link href="https://minerbadd.github.io/CodeMark/assets/prism.css" rel="stylesheet" />
+<link href="https://minerbadd.github.io/CodeMark/assets/downmark.css" rel="stylesheet" />
+</head>
+<body>
+<script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
+
+<h2> Global Positioning System Launch: lib/launch</h2>
+<pre><code class="language-markdown">
+--:! {launch: [":"]():} <- <b>GPS Deployment Command Line Library</b> -> muse/docs/lib/launch.md 
+--:| launch: <i>Assemble, launch, and startup GPS computers.</i> -> launch, _launch
+</code></pre>
 The module introduction here is much like that for other MUSE modules but note the special handling for out-of-game testing.
-```Lua
---]]
-local gps, _gps = {}, {}; gps.hints = {} ---@module "signs.gps"-- exports, internals for analysis, and hints
+<pre><code class="language-lua">
+local launch, _launch = {}, {}; launch.hints = {} ---@module "signs.launch"-- exports, internals for analysis, and hints
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
@@ -19,14 +26,12 @@ local peripheral = _G.peripheral
 local installs = peripheral and "disk/install.lua" or _G.Muse.path.."tests/data/.gpsInstall.lua" --for out-game test
 local startup = peripheral and "disk/startup.lua" or _G.Muse.path.."tests/data/.gpsStartup.lua" --for out-game test
 
-local computer, modem = "computercraft:computer_advanced", "computercraft:wireless_modem_advanced" -- ender
+local computer, modem = "computercraft:computer<i>advanced", "computercraft:wireless</i>modem_advanced" -- ender
 local drive, floppy  = "computercraft:disk_drive", "computercraft:disk"
---[[
-```
+</code></pre>
 <a id="boot"></a> 
 Each short function below is intended to serve a clear, identifiable purpose. Further, it helps understanding to separate string constants out from code bodies. There's not much more to say, so without further comment.......
-```Lua
---]]
+<pre><code class="language-lua">
 
 -- common text of first boot: copies floppy to startup for reboot
 local copyBoot = [[ 
@@ -36,21 +41,21 @@ os.sleep(5);
 os.reboot(); 
 ]]
 
-function _gps.equip(direction) -- assembles computer, modem, drive, and floppy
-  --:: `_gps.equip(direction: facing)` -> _Assemble parts._ -> ":"
-  --:- equip direction -> _Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing)._
+function _launch.equip(direction) -- assembles computer, modem, drive, and floppy
+  --:: <code>_launch.equip(direction: facing)</code> -> <i>Assemble parts.</i> -> ":"
+  --:- equip direction -> <i>Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing).</i>
   core.report(2, "Equipping host at ", move.ats(), direction)
   move.back(1) -- because positions are computer positions
   core.report(2, "Equiping host "..direction)
-  assert(turtle.find({computer}), "gps: no computer") -- select computer
+  assert(turtle.find({computer}), "launch: no computer") -- select computer
   turtle.puts["front"]() -- place computer in front of turtle
   move.back(1) -- move back to place modem
-  assert(turtle.find({modem}), "gps: no modem") -- modem
+  assert(turtle.find({modem}), "launch: no modem") -- modem
   turtle.puts["front"]() -- place modem
   move.down(1); move.forward(1) -- move down below modem and forward to place drive below computer
-  assert(turtle.find({drive}), "gps: no drive") -- select drive
+  assert(turtle.find({drive}), "launch: no drive") -- select drive
   turtle.puts["front"]() -- place drive (facing drive)
-  assert(turtle.find({floppy}), "gps: no floppy") -- select floppy
+  assert(turtle.find({floppy}), "launch: no floppy") -- select floppy
   turtle.drops["front"]()-- drop into drive
   return "Equipped "..direction.." GPS host"
 end
@@ -71,10 +76,10 @@ local function install(position) -- persistent boot runs gps host
   file:write(open..tab); file:close()
 end
 
-function _gps.actuate(commands)
-  --:# _Testing interface, useful before committing to deployment._
-  --:- actuate direction -> _Move around to boot direction named GPS host and retrieve floppy (for testing)._ 
-  --:: `_gps.actuate(commands: [command: ":", direction: facing]) -> _Move to boot a GPS host and retrieve floppy._ -> ":"
+function _launch.actuate(commands)
+  --:# <i>Testing interface, useful before committing to deployment.</i>
+  --:- actuate direction -> <i>Move around to boot direction named GPS host and retrieve floppy (for testing).</i> 
+  --:: `_launch.actuate(commands: [command: ":", direction: facing]) -> <i>Move to boot a GPS host and retrieve floppy.</i> -> ":"
   local _, direction = table.unpack(commands); makeBoot(direction);  -- prepares boot files
   move.left(1)-- turn left and then forward to left and in plane in front of drive
   move.up(1) -- up to left of computer still facing away from computer in plane in front of drive
@@ -114,42 +119,46 @@ local function count(target)
 end
 
 local function check() -- make sure all required is available
-  local modems = assert(turtle.find({modem}), "gps: need ender modem") 
-  local disks = assert(turtle.find({drive}), "gps: need drive") -- select drive
-  assert(turtle.find({floppy}), "gps: need floppy") -- select floppy
-  assert(count(computer) >= 4, "gps: need 4 computers")
-  assert(modems.count >= 4, "gps: need 4 modems")
-  assert(disks.count >= 4, "gps: need 4 disks")
-  assert(turtle.find(turtle.category("fuel")), "gps: need fuel")
+  local modems = assert(turtle.find({modem}), "launch: need ender modem") 
+  local disks = assert(turtle.find({drive}), "launch: need drive") -- select drive
+  assert(turtle.find({floppy}), "launch: need floppy") -- select floppy
+  assert(count(computer) >= 4, "launch: need 4 computers")
+  assert(modems.count >= 4, "launch: need 4 modems")
+  assert(disks.count >= 4, "launch: need 4 disks")
+  assert(turtle.find(turtle.category("fuel")), "launch: need fuel")
 end
 
 local order = {"north", "south", "east", "west"} -- for efficient movement
 
-function _gps.launch(commands) -- use `locate` to give a `place` a `location`
-  --:: `_gps.launch(commands: [command: ":", location: ":", yD: #:?]) -> _Check before journey then launch._ -> ":"
-  --:# _launch deployment needs 4 advanced computers, 4 disk drives, 4 ender modems, a floppy, and fuel._
-  --:- launch place yD? -> _Deploy GPS launch yD or maximum y above place, report GPS at place._
+function _launch.launch(commands) -- use <code>locate</code> to give a <code>place</code> a <code>location</code>
+  --:: `_launch.launch(commands: [command: ":", location: ":", yD: #:?]) -> <i>Check before journey then launch.</i> -> ":"
+  --:# <i>launch deployment needs 4 advanced computers, 4 disk drives, 4 ender modems, a floppy, and fuel.</i>
+  --:- launch place yD? -> <i>Deploy GPS launch yD or maximum y above place, report GPS at place.</i>
   local _, location, yD = table.unpack(commands);  check() -- first, have everything?
-  assert(location, "gps.launch: need to specify launch location")
-  assert(place.match(location), "gps.launch: "..place.qualify(location).." not found")
+  assert(location, "launch.launch: need to specify launch location")
+  assert(place.match(location), "launch.launch: "..place.qualify(location).." not found")
   local xyzLocation = place.xyzf(location); yD = yD or 255; local positions = makePositions(xyzLocation, yD)
   
   for _, direction in ipairs(order) do local position = positions[direction]; 
     core.report(2, "GPS "..direction.." host to "..core.xyzfs(position)) 
-    move.to(position); _gps.equip(direction); install(position); _gps.actuate({"actuate", direction}) -- **do the work**
+    move.to(position); <i>launch.equip(direction); install(position); </i>launch.actuate({"actuate", direction}) -- <b>do the work</b>
   end; core.report(2, "Returning to launch location"); move.to(xyzLocation)
   
   local xb, yb, zb = table.unpack(xyzLocation); local x, y, z = move.where(); 
-  if not x then core.status(1, "gps", "GPS Locate Failed") end
+  if not x then core.status(1, "launch", "GPS Locate Failed") end
   return "GPS "..x..", "..y..", "..z.." for "..xb..", "..yb..", "..zb
-end gps.hints["launch "] = {["?location "] = {["??yDelta"] = {}}}
+end launch.hints["launch "] = {["?location "] = {["??yDelta"] = {}}}
 
-local ops = {launch = _gps.launch, equip = _gps.equip, actuate = _gps.actuate, check = check} 
+local ops = {launch = <i>launch.launch, equip = </i>launch.equip, actuate = _launch.actuate, check = check} 
 
-function gps.op(commands) 
-  --:: gps.op(commands: ":"[]) -> _Command Line Interface._ -> `report: ":"` &:
+function launch.op(commands) 
+  --:: launch.op(commands: ":"[]) -> <i>Command Line Interface.</i> -> <code>report: ":"</code> &:
   local ok, report = core.pass(pcall(ops[commands[1]], commands))
-  if ok then return report else return "gps: "..report end -- report failure for error
+  if ok then return report else return "launch: "..report end -- report failure for error
 end 
 
-return {gps = gps}
+return {launch = launch}
+
+  </body> 
+</html>
+

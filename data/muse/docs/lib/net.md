@@ -83,9 +83,9 @@
 
 --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
 
---:- store site? -> _Persists `site` in local store and loads local map._ -> `report: ":"`  
+--:- store name? -> _Persists site `name` in local store and loads local map._ -> `report: ":"`  
 
---:- join site role -> _Set site and join landed turtle to it with specified role._  
+--:- join  -> _Set network mapping with id from turtle nameplate, update turtle_  
 
 --:# **GPS Launch Command** (e.g., `rover launch gantry ....`)  
 

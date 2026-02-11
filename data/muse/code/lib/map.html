@@ -16,7 +16,7 @@ The <code>map</code> library continues the development of <code>place</code>, in
 It's MUSE's other major representation of state (after <code>situations</code>). A <code>place</code> can be a <code>point</code>, a <code>range</code>, or a <code>trail</code>, all built on by <code>lib/map</code> using <code>place</code> data structures. We've come across trails before in <a href="places.html#trail" target="_blank"> <code>lib/places</code></a>. 
 To review, they are named (and labelled) <code>situations</code> created by <code>tracking</code> in the <a href="motion.html#tracking" target="_blank"> <code>lib/motion</code> </a>library. A <code>range</code> is a named (and labeled) <code>point</code> pair delimiting a rectangular solid. A <code>point</code> is a named (and labelled) single entry table whose single element is a <code>situation</code>. The names of places are used for lookup. The labels are just user supplied supplementary information. 
 <p>
-Additionally it turned out to be useful to add the idea of <code>locations</code> a set of related points sharing a label, each xyz offset from each other.
+Additionally, it turned out to be useful to add the idea of <code>locations</code> a set of related points sharing a label, each xyz offset from each other.
 <p>
 To ease understanding, the module introduction for <code>map</code> shown below is organized in much the same way as described for <a href="motion.html"> <code>lib/motion</code></a>. 
 <p>
@@ -36,8 +36,8 @@ local maps = require("signs.map"); maps.map = {}; local map = maps.map; map.hint
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local moves = require("motion"); local move = moves.move ---@module "signs.motion"
-local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 local places = require("places"); local place = places.place ---@module "signs.places"
+local ddss = require("dds"); local dds = ddss.dds ---@module "signs.dds"
 
 local rednet, player, turtle = _G.rednet, _G.pocket, _G.turtle -- references to ComputerCraft libraries
 
@@ -134,7 +134,9 @@ end
 
 map.puts = map.put 
 --:: map.puts(name: ":", key: ":", value: ":"?) -> <i>Set string feature value, send MU.</i> -> <code>key: ":", value: ":"|true &!</code>
-
+</code></pre>
+The <code>borders</code> of the region on the cardinal and vertical axes are delimited by a pair of situation (which could be a <code>range</code>).
+<pre><code class="language-lua">
 function map.borders(target) 
   --:: map.borders(target: ":") -> <i>Get situation pair elements</i> -> <code>borders, features, position, position &!</code>
   --:> borders: <i>Situation pair boundaries</i> -> {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}
@@ -148,14 +150,6 @@ function map.borders(target)
   borders.top, borders.bottom = y1 > y2 and y1 or y2, y1 > y2 and y2 or y1
   return borders, features, situations[1].position, situations[2].position
 end
-
-function map.test(name, label, trail, x, y, z, facing, key, value) -- makes named place for coordinates, sets turtle position
-  --:- test name, label, x, y, z, facing, key?, value??} -> <i>Force mapped position, optionally feature and value for <code>point</code>.</i>
-  core.status(4, "map", "test", place.qualify(name), label, x, y, z, facing, key, value)
-  assert(name and label and tonumber(x) and tonumber(y) and tonumber(z) and facing, "map.test: bad arguments for test")
-  local _, index = map.point(name, label, trail, x, y, z, facing); if key then map.put(name, key, value) end 
-  return "As "..place.qualify(name).." "..move.ats().." ("..index..")"
-end;
 </code></pre>
 <a id="locations"></a> 
 As we've said, locations are a set of related points sharing a label, each xyz offset from each other.
@@ -177,32 +171,18 @@ function map.locations(template, base, label, top)
   for name, xyzf in pairs(points) do map.point(name, label, false, table.unpack(xyzf)) end
 end
 </code></pre>
-The remainder of the <code>map</code> module implements the operations supporting the user interface.
-<p>
-<a id="sited"></a> 
-The <code>site</code> operation is for when the <code>player</code> or the <code>rover</code> is moved to a different site. The <code>join</code> operation ties a landed turtle (<code>farmer</code>, <code>miner</code>, or <code>logger</code>) to a site. (We'll get to the implementation of <code>dds.join</code> when we discuss <code>lib/remote</code>.) The <code>store</code> operation is used by <code>_start</code> to persist the <code>site</code> and load a clean map remotely.
+To ease testing, there's a function to make a point and 
 <pre><code class="language-lua">
-
-local function sited(site) 
-  --:- site name? -> <i>Remote operation to report or change site (persistently) after, e.g., moving</i> <code>rover</code> <i>to a new site</i>.
-  if not site then return place.site() end -- just report
-  local siteFile = _G.Muse.data.."site.txt" -- The <code>_G.Muse.data</code> directory is local to each ComputerCraft computer.
-  local siteFileHandle = assert(io.open(siteFile, "w"), "map.sited: can't write "..siteFile)
-  siteFileHandle:write(place.site(site).."\n"); siteFileHandle:close()
-  return place.site(site) 
-end; map.hints["site"] = {["?name"] = {} }
-
-local function join(site, role) sited(site); return dds.join(role) end -- dds.join qualifies role for landed turtle
---:- join site role -> <i>Set site and join landed turtle to it with specified role.</i>
-map.hints["join"] = {["?site "] = {["?role"] = {} }} 
-
-local function store(site) 
-  --:- store site? -> <i>Persists <code>site</code> in local store and loads local map.</i> -> <code>report: ":"</code>
-  local siting = sited(site); if not map.map() then map.map(_G.Muse.map) end
-  local mapped = map.read(map.map()); map.write(map.map());
-  return siting..": "..mapped.." places"
-end; map.hints["store"] = {["?site"] = {} } 
+function map.test(name, label, trail, x, y, z, facing, key, value) -- makes named place for coordinates, sets turtle position
+  --:- test name, label, x, y, z, facing, key?, value??} -> <i>Force mapped position, optionally feature and value for <code>point</code>.</i>
+  core.status(4, "map", "test", place.qualify(name), label, x, y, z, facing, key, value)
+  assert(name and label and tonumber(x) and tonumber(y) and tonumber(z) and facing, "map.test: bad arguments for test")
+  local _, index = map.point(name, label, trail, x, y, z, facing); if key then map.put(name, key, value) end 
+  return "As "..place.qualify(name).." "..move.ats().." ("..index..")"
+end;
 </code></pre>
+The remainder of the <code>map</code> module implements the operations supporting the user interface.
+`
 <a id="sync"></a> 
 Using the <a href="places.html#near" target="_blank"> <code>place.near</code></a>
 iterator, the local <code>sync</code> function <code>MU</code> broadcasts all the places known by the local computer to all <code>MQ</code> registered computers. The function yields control between each broadcast to allow each broadcast to complete.
@@ -284,7 +264,7 @@ local function changes(x, y, z) -- get facing by moving turtle and see how x and
 end
 </code></pre>
 <a id="fix"></a> 
-All the turtle movement we've just spoken of is in support of establishing a known position and orientation (a <code>fix</code>) to anchor future dead reckoning of turtle position and orientation. The <code>fix</code> function also )optionally) fixes the beginning of a <code>trail</code>.
+All the turtle movement we've spoken of is in support of establishing a known position and orientation (a <code>fix</code>) to anchor future dead reckoning of turtle position and orientation. The <code>fix</code> function also (optionally) fixes the beginning of a <code>trail</code>.
 <pre><code class="language-lua">
 _G.Muse.trailhead = _G.Muse.trailhead or {}; 
 
@@ -294,12 +274,39 @@ local function fix(trail, tx, ty, tz, tf) -- just for turtles in-game , t* for t
   --:- fix trail? -> <i>Set and report GPS turtle position for dead reckoning. Optionally begin named trailhead.</i>
   if not turtle and not tf then return "Not a turtle" end -- in-game for turtles, not for player or other computers
   local x, y, z, _, ok = move.where(tx, ty, tz, tf); if not ok then return "(No GPS)" end
-  local facing = tf or changes(x, y, z) -- if no tf <b>turtle dance to find orientation</b>
-  local fixed = place.fix({x, y, z, facing}, trail) -- set position and start a track if starting a trail
+  local facing = tf or changes(x, y, z) -- if no tf, <b>turtle dance to find orientation</b>
+  place.fix({x, y, z, facing}, trail) -- set position and start a track if starting a trail
   if trail then trailhead.name = place.qualify(trail) end -- use trailhead.name in call to <code>trail</code>
-  local xf, yf, zf = table.unpack(fixed); local fixes = core.round(xf)..", "..core.round(yf)..", "..core.round(zf)
-  return "{"..fixes.."} "..trailhead.name; 
+  return move.ats().." "..(trailhead.name or ""); 
 end map.hints["fix"] = {["??trailname"] = {} }
+</code></pre>
+<a id="sited"></a> 
+The <code>site</code> operation is for when the <code>player</code> or the <code>rover</code> is moved to a different site. The <code>join</code> operation ties a landed turtle (<code>farmer</code>, <code>miner</code>, or <code>logger</code>) to a site. (We'll get to the implementation of <code>dds.join</code> when we discuss <code>lib/remote</code>.) The <code>store</code> operation is used by <code>_start</code> to persist the <code>site</code> and load a clean map remotely.
+<pre><code class="language-lua">
+
+local function site(name) 
+  --:- site name? -> <i>Remote operation to report or change site (persistently) after, e.g., moving</i> <code>rover</code> <i>to a new site</i>.
+  if not name then return place.site() end -- just report
+  -- use dds to change qualified role for landed turtle
+  local role = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$")
+  dds.site(name); dds.join(role, core.getComputerID())
+  return place.site(name) 
+end; map.hints["site"] = {["?name"] = {} }
+
+local function join(qualified, id, siteName) -- on turtle
+  --:# join: set qualified role as label, set local site as named and persist it, set dead reckoning position from GPS
+  core.setComputerLabel(qualified)
+  local sited = site(siteName); place.site(sited)
+  local position = fix()
+  return qualified..": "..id.." at "..sited..": "..position
+end
+
+local function store(name) 
+  --:- store name? -> <i>Persists site <code>name</code> in local store and loads local map.</i> -> <code>report: ":"</code>
+  local siting = site(name); if not map.map() then map.map(_G.Muse.map) end
+  local mapped = map.read(map.map()); map.write(map.map());
+  return siting..": "..mapped.." places"
+end; map.hints["store"] = {["?site"] = {} } 
 </code></pre>
 <a id="point"></a> 
 The constructors for points, trails, locations, and ranges will be made available to the <code>map</code> CLI. It all starts with points..
@@ -475,7 +482,7 @@ Just a big dispatch table, easily amended and extended. The CLI is just a thin l
 <pre><code class="language-lua">
 local ops = { --:# <b>Command Line Interface</b> 
   erase = erase, store = store, sync = sync, point = point, range = range, -- for all
-  view = view, site = sited, chart = chart, join = join, -- for all
+  view = view, site = site, chart = chart, join - join, -- for all
   near = near, at = at, where = where, headings = headings, -- position relative to places for players and turtles
   fix = fix, trail = trail,  -- just for turtles
 }

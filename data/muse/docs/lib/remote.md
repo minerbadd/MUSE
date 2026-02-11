@@ -1,6 +1,6 @@
 --:! {remote: [":"]: ():} <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md      
 --:| remote: _Client and server side support for RPCs and client (player) side support for_ `come` _and_ `tail`. -> remote, _remote    
---:+ **Test functions are provided for out-of-game, no network operation.**  
+--:+ **Test functions are provided for out-of-game operations without a network.**  
 
 --:# **Server Side Remote Call Operations: Protocols to Receive Muse Calls (MC), Send Muse Responses (MR)**  
 

@@ -25,16 +25,10 @@
 
 --:> borders: _Situation pair boundaries_ -> {east: #:, west: #:, north: #:, south: #:, top: #:, bottom: #:}  
 
---:- test name, label, x, y, z, facing, key?, value??} -> _Force mapped position, optionally feature and value for `point`._  
-
 --:: map.locations(template: {name: ":", offset: xyz}, base: ":", label: ":", top: #:) -> _Add points offset from base._ -> `nil`    
 --:+ _Add labelled points using template names and offsets from named base point or top for y-axis._  
 
---:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
-
---:- join site role -> _Set site and join landed turtle to it with specified role._  
-
---:- store site? -> _Persists `site` in local store and loads local map._ -> `report: ":"`  
+--:- test name, label, x, y, z, facing, key?, value??} -> _Force mapped position, optionally feature and value for `point`._  
 
 --:# **Map File Operations**  
 
@@ -49,6 +43,12 @@
 --:: map.testFacing(dx: #:, dz: #:) -> _Find orientation using position changes for non-zero movement._ -> `facing: ":" & !`  
 
 --:- fix trail? -> _Set and report GPS turtle position for dead reckoning. Optionally begin named trailhead._  
+
+--:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
+
+--:# join: set qualified role as label, set local site as named and persist it, set dead reckoning position from GPS  
+
+--:- store name? -> _Persists site `name` in local store and loads local map._ -> `report: ":"`  
 
 --:< **Places - Points, Locations, Trails, and Ranges of Maps**  
 

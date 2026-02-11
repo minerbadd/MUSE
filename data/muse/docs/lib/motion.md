@@ -47,7 +47,7 @@
 
 --:: move.at(theSituation:situation?) -> _(Current) situation xyzf._ -> `xyzf`  
 
---:: move.ats(theSituation:situation?) -> _(Current) situation position and facing string (`""` in game if not turtle)._ -> `xyzf: ":"`  
+--:: move.ats(theSituation:situation?) -> _(Current) position and facing string (`""` in game if not turtle)._ -> `xyzf: ":"`  
 
 --:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> _Returns GPS results if available._ -> `x: #:, y: #:, z: #:, facing: ":", ok: #:|^:`    
 --:+ _If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation._  

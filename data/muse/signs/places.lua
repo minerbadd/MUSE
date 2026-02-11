@@ -38,7 +38,7 @@ function place.near() end
 ---@type fun():  number 
 function place.count() end
 
--- Looks up index in name [defaults to current situation].
+-- Finds indexed situation in name [defaults to current situation].
 -- place.xyzf(name: ":"?, index: #:?):  `xyzf?, order: #:?` <-
 
 ---@type fun( name: string?,  index: number?):   xyzf?,  order: number? 

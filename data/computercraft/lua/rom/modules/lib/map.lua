@@ -190,29 +190,7 @@ end;
 --[[
 ```
 The remainder of the `map` module implements the operations supporting the user interface.
-
-<a id="sited"></a> 
-The `site` operation is for when the `player` or the `rover` is moved to a different site. The `join` operation ties a landed turtle (`farmer`, `miner`, or `logger`) to a site. (We'll get to the implementation of `dds.join` when we discuss `lib/remote`.) The `store` operation is used by `_start` to persist the `site` and load a clean map remotely.
-```Lua
---]]
-
-local function site(name) 
-  --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.
-  if not name then return place.site() end -- just report
-  -- use dds to change qualified role for landed turtle
-  local role = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$")
-  dds.site(name); dds.join(role, core.getComputerID())
-  return place.site(name) 
-end; map.hints["site"] = {["?name"] = {} }
-
-local function store(name) 
-  --:- store name? -> _Persists site `name` in local store and loads local map._ -> `report: ":"`
-  local siting = site(name); if not map.map() then map.map(_G.Muse.map) end
-  local mapped = map.read(map.map()); map.write(map.map());
-  return siting..": "..mapped.." places"
-end; map.hints["store"] = {["?site"] = {} } 
---[[
-```
+`
 <a id="sync"></a> 
 Using the <a href="places.html#near" target="_blank"> `place.near`</a>
 iterator, the local `sync` function `MU` broadcasts all the places known by the local computer to all `MQ` registered computers. The function yields control between each broadcast to allow each broadcast to complete.
@@ -318,13 +296,36 @@ local function fix(trail, tx, ty, tz, tf) -- just for turtles in-game , t* for t
   if trail then trailhead.name = place.qualify(trail) end -- use trailhead.name in call to `trail`
   return move.ats().." "..(trailhead.name or ""); 
 end map.hints["fix"] = {["??trailname"] = {} }
+--[[
+```
+<a id="sited"></a> 
+The `site` operation is for when the `player` or the `rover` is moved to a different site. The `join` operation ties a landed turtle (`farmer`, `miner`, or `logger`) to a site. (We'll get to the implementation of `dds.join` when we discuss `lib/remote`.) The `store` operation is used by `_start` to persist the `site` and load a clean map remotely.
+```Lua
+--]]
 
-local function join(qualified, id, siting) -- on turtle
+local function site(name) 
+  --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.
+  if not name then return place.site() end -- just report
+  -- use dds to change qualified role for landed turtle
+  local role = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$")
+  dds.site(name); dds.join(role, core.getComputerID())
+  return place.site(name) 
+end; map.hints["site"] = {["?name"] = {} }
+
+local function join(qualified, id, siteName) -- on turtle
+  --:# join: set qualified role as label, set local site as named and persist it, set dead reckoning position from GPS
   core.setComputerLabel(qualified)
-  local sited = dds.site(siting); place.site(site)
+  local sited = site(siteName); place.site(sited)
   local position = fix()
-  return qualified..":"..id.." at "..sited..": "..position
+  return qualified..": "..id.." at "..sited..": "..position
 end
+
+local function store(name) 
+  --:- store name? -> _Persists site `name` in local store and loads local map._ -> `report: ":"`
+  local siting = site(name); if not map.map() then map.map(_G.Muse.map) end
+  local mapped = map.read(map.map()); map.write(map.map());
+  return siting..": "..mapped.." places"
+end; map.hints["store"] = {["?site"] = {} } 
 --[[
 ```
 <a id="point"></a> 

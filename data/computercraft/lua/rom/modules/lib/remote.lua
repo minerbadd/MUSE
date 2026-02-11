@@ -145,7 +145,7 @@ function remote.call(server, command, arguments, callback) -- client command lin
   --:+ _Send request to server, wait for result, return call (default `remote.return`) callback function to result._
   callback = callback or remote.returns -- a default (see below) if no `callback` argument
   local serverID, request = _remote.prepareCall(server, command, arguments); local clientID = core.getComputerID(0)
-  if dds.roleID(server) ==  clientID then return localCall(clientID, serverID, request, callback) end -- short circuit
+  if dds.ID(server) ==  clientID then return localCall(clientID, serverID, request, callback) end -- short circuit
   local callOK, report = core.pass(pcall(clientSend, serverID, request, callback)) -- send and wait
   if not callOK then error("remote.call: Sending "..command.." request to "..server.." failed".." "..report) 
   end; return report

@@ -145,7 +145,7 @@ function move.west() end
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf: string,  direction 
 function move.east() end
 
--- (Current) situation position and facing string (`""` in game if not turtle).
+-- (Current) position and facing string (`""` in game if not turtle).
 -- move.ats(theSituation:situation?):  `xyzf: ":"` <-
 
 ---@type fun( theSituation:situation?):   xyzf: string 
