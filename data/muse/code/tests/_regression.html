@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+ <html>
+<head>
+<link href="https://minerbadd.github.io/CodeMark/assets/prism.css" rel="stylesheet" />
+<link href="https://minerbadd.github.io/CodeMark/assets/downmark.css" rel="stylesheet" />
+</head>
+<body>
+<script src="https://minerbadd.github.io/CodeMark/assets/prism.js"></script>
+
+--:? muse/docs/tests/.regression.txt <- <b>Run Ordered  Regression Test for Muse</b> -> muse/docs/tests/.regression.md  
+<p>
+local check = require("check").check --:# Program kept simple: all the interesting stuff is in <code>lib/check</code>
+--:# Regression test order: "motion", "places", "turtle", "roam", "task", "map", "remote", "exec", "port", "gps", "mine", "field" 
+check.regression({
+    "core", "motion", "places", "turtle", "roam", "task", "dds", "remote", "map", "launch", "port", "exec", "mine", "field",
+    })
+<p>
+<p>
+  </body> 
+</html>
+

@@ -1,0 +1,19 @@
+--:? muse/docs/tests/dds.txt <- **Test `lib/task`** -> muse/docs/tests/dds.md   
+
+--:# Test attack, change, find, look, drop, suck, dig, put, and compare commands  
+
+--:# Set configuration globals for tests by loading `lib/check`  
+
+--:# Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil`  
+
+--:# Set log level default. Set lower to report less, higher to report more  
+
+--:# Bind `testName` as the last word (without extension) in the execution path  
+
+--:# Create the test object for this test  
+
+--:# **Set** `place.site` **and lookup roles**  
+
+--:# **Join and lookup qualified roles for IDs**  
+
+--:# **Check site file writes and clean up**  

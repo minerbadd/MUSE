@@ -36,11 +36,11 @@ function map.point() end
 ---@type fun( name: string,  key: string,  value: any?):    key: string?,  value: any | true | nil 
 function map.put() end
 
--- Get named place local feature value for key.
--- map.get(name: ":", key: ":"):  `value: any? &!` <-
+-- Remove named place, overwrite local map file
+-- map.erase(name: ":"):  `remaining: #:` <-
 
----@type fun( name: string,  key: string):   value: any? 
-function map.get() end
+---@type fun( name: string):   remaining: number 
+function map.erase() end
 
 -- Command Line Interface
 -- map.op(commands: ":"[]):  `report: ":" &:` <-
@@ -60,11 +60,11 @@ function map.testFacing() end
 ---@type fun( placeString: string):   serial: string?,  index: number? 
 function map.place() end
 
--- Less generic retrieval interface: gets string feature value.
--- map.gets(name: ":", key: ":"):  `":"?` <-
+-- Set string feature value, send MU.
+-- map.puts(name: ":", key: ":", value: ":"?):  `key: ":", value: ":"|true &!` <-
 
----@type fun( name: string,  key: string):   string? 
-function map.gets() end
+---@type fun( name: string,  key: string,  value: string?):   key: string,  value: string | true 
+function map.puts() end
 
 -- Get situation pair elements
 -- map.borders(target: ":"):  `borders, features, position, position &!` <-
@@ -72,11 +72,11 @@ function map.gets() end
 ---@type fun( target: string):   borders,  features,  position,  position 
 function map.borders() end
 
--- Set string feature value, send MU.
--- map.puts(name: ":", key: ":", value: ":"?):  `key: ":", value: ":"|true &!` <-
+-- Less generic retrieval interface: gets string feature value.
+-- map.gets(name: ":", key: ":"):  `":"?` <-
 
----@type fun( name: string,  key: string,  value: string?):   key: string,  value: string | true 
-function map.puts() end
+---@type fun( name: string,  key: string):   string? 
+function map.gets() end
 
 -- Append received instantiated MU to local map file_.
 -- map.update(serial: ":"):  `nil &!` <-
@@ -84,9 +84,9 @@ function map.puts() end
 ---@type fun( serial: string):   nil 
 function map.update() end
 
--- Remove named place, overwrite local map file
--- map.erase(name: ":"):  `remaining: #:` <-
+-- Get named place local feature value for key.
+-- map.get(name: ":", key: ":"):  `value: any? &!` <-
 
----@type fun( name: string):   remaining: number 
-function map.erase() end
+---@type fun( name: string,  key: string):   value: any? 
+function map.get() end
 return { map =  map}

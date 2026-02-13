@@ -419,7 +419,7 @@ core.getComputerID = os.computerID or function(id) return id end -- luacheck: gl
 
 --:: core.getComputerLabel(label: ":"?) -> _Out of game returns label; label ignored in game._ -> `label: ":"`
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerLabel = os.computerLabel or function(label) return label or _G.Muse.label end -- luacheck: globals os 
+core.getComputerLabel = os.computerLabel or function(label) return label or _G.Muse.label or "unknown" end 
 
 --:: core.setComputerLabel(label: ":") -> _Sets (out-of game global) label_ -> `label: ":"`
 ---@diagnostic disable-next-line: undefined-field 

@@ -20,11 +20,11 @@ function core.xyzfs() end
 ---@type fun( xyzf: xyzf):  x: number,  y: number,  z: number,  facing: string? 
 function core.xyzf() end
 
--- Next integer down if below half fraction
--- core.round(n: #:):  `#:` <-
+-- Iterator over table beginning at index.
+-- core.inext(table: {:}, index: #:):  `():, {:}, #:` <-
 
----@type fun( n: number):   number 
-function core.round() end
+---@type fun( table: table,  index: number):  function,  table,  number 
+function core.inext() end
 
 -- bounds:  `[xyz, xyz]`
 ---@alias bounds [ xyz,  xyz] # Vector pair defining a rectangular solid
@@ -78,11 +78,11 @@ function core.trace() end
 ---@type fun( table: table?,  key: string?):   closing 
 function core.state() end
 
--- Create `result` _by applying_ `op` _function to elements of_ `table
--- core.map(op: ():, table: {:}):  `{:}` <-
+-- Mocks sleep as null operation out of game.
+-- core.sleep(#:?):  `nil` <-
 
----@type fun( op: function,  table: table):   table 
-function core.map() end
+---@type fun( number?):   nil 
+function core.sleep() end
 
 -- xyzf:  `[x: #:, y: #:, z: #:, facing: ":"?]`
 ---@alias xyzf [  number,   number,   number,   string?] # Position and facing as table
@@ -94,11 +94,9 @@ function core.map() end
 ---@type fun( id: number?):   id: number 
 function core.getComputerID() end
 
--- Out of game returns label; label ignored in game.
--- core.getComputerLabel(label: ":"?):  `label: ":"` <-
+-- closing:  `(value: any): value: any`
+---@alias closing fun( value: any):   value: any # Returns value or sets it and optional table entry to non `nil` `value`.
 
----@type fun( label: string?):   label: string 
-function core.getComputerLabel() end
 
 -- If level less than `status` threshold, report `rest` as string.
 -- core.report(level: #:, ...: any):  `nil` <-
@@ -125,17 +123,17 @@ function core.logging() end
 ---@alias xyzMap  xyz[] | { [core.faces]: xyz } # Table of vectors either an array or dictionary
 
 
--- For testing; just returns its arguments.
--- core.echo(...: any):  ...: `any` <-
+-- Make plots. Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result. The number n is the number of bounds in result where each bound is offset by addend from the prior bounds. Optionally the partial bounds are included as the first bounds in the result.
+-- core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?):  `bounds[]` <-
 
----@type fun( ...: any):   ...: any 
-function core.echo() end
+---@type fun( start: bounds,  addend: xyz,  number: number,  partial: bounds?):   bounds[]
+function core.vectorPairs() end
 
--- Find first matching item in pair of item tables.
--- core.match(tableA: any[], tableB: any[]):  `nil` | `any` <-
+-- GPS location if available.
+-- core.where():  `x: #:|false, y: #:|false, z: #:|false` <-
 
----@type fun( tableA: any[],  tableB: any[]):   nil  |  any 
-function core.match() end
+---@type fun():  x: number | false,  y: number | false,  z: number | false 
+function core.where() end
 
 -- Deep copy source table or return source if not table.
 -- core.clone(source: {:}|any):  `{:}|any` <-
@@ -155,17 +153,34 @@ function core.status() end
 ---@type fun( completions: table):  function
 function core.completer() end
 
--- Pass input but report string if not ok.
--- core.pass(ok: ^:, ...: any):  ok: `true|false, result: ...|":", any?` <-
+-- Executable string to instantiate input.
+-- core.serialize(input: any):  `"return "..":" &!` <-
 
----@type fun( ok: boolean,  ...: any):   ok: true | false,  result: ... | string,  any? 
-function core.pass() end
+---@type fun( input: any):   "return "..string 
+function core.serialize() end
 
--- Iterator over table beginning at index.
--- core.inext(table: {:}, index: #:):  `():, {:}, #:` <-
+-- Find first matching item in pair of item tables.
+-- core.match(tableA: any[], tableB: any[]):  `nil` | `any` <-
 
----@type fun( table: table,  index: number):  function,  table,  number 
-function core.inext() end
+---@type fun( tableA: any[],  tableB: any[]):   nil  |  any 
+function core.match() end
+
+-- core.faces:  "north"|"south"|"east"|"west"|"up"|"down"|"rotate"
+---@diagnostic disable-next-line: duplicate-doc-alias
+---@alias core.faces  "north" | "south" | "east" | "west" | "up" | "down" | "rotate" # Key for composed function dictionary
+
+
+-- Create `result` _by applying_ `op` _function to elements of_ `table
+-- core.map(op: ():, table: {:}):  `{:}` <-
+
+---@type fun( op: function,  table: table):   table 
+function core.map() end
+
+-- Out of game returns label; label ignored in game.
+-- core.getComputerLabel(label: ":"?):  `label: ":"` <-
+
+---@type fun( label: string?):   label: string 
+function core.getComputerLabel() end
 
 -- Makes string from any inputs, simplifies single entry tables.
 -- core.string(...: any):  `":"` <-
@@ -173,42 +188,27 @@ function core.inext() end
 ---@type fun( ...: any):   string 
 function core.string() end
 
--- Mocks sleep as null operation out of game.
--- core.sleep(#:?):  `nil` <-
-
----@type fun( number?):   nil 
-function core.sleep() end
-
--- closing:  `(value: any): value: any`
----@alias closing fun( value: any):   value: any # Returns value or sets it and optional table entry to non `nil` `value`.
-
-
--- core.faces:  "north"|"south"|"east"|"west"|"up"|"down"|"rotate"
----@diagnostic disable-next-line: duplicate-doc-alias
----@alias core.faces  "north" | "south" | "east" | "west" | "up" | "down" | "rotate" # Key for composed function dictionary
-
-
 -- Iterator for (factorial) permutations of array
 -- core.permute(array: any[]):  `():` <-
 
 ---@type fun( array: any[]):  function
 function core.permute() end
 
--- Executable string to instantiate input.
--- core.serialize(input: any):  `"return "..":" &!` <-
+-- Pass input but report string if not ok.
+-- core.pass(ok: ^:, ...: any):  ok: `true|false, result: ...|":", any?` <-
 
----@type fun( input: any):   "return "..string 
-function core.serialize() end
+---@type fun( ok: boolean,  ...: any):   ok: true | false,  result: ... | string,  any? 
+function core.pass() end
 
--- GPS location if available.
--- core.where():  `x: #:|false, y: #:|false, z: #:|false` <-
+-- Next integer down if below half fraction
+-- core.round(n: #:):  `#:` <-
 
----@type fun():  x: number | false,  y: number | false,  z: number | false 
-function core.where() end
+---@type fun( n: number):   number 
+function core.round() end
 
--- Make plots. Addend is used to create a vector pair to be added cumulatively beginning with start bounds for result. The number n is the number of bounds in result where each bound is offset by addend from the prior bounds. Optionally the partial bounds are included as the first bounds in the result.
--- core.vectorPairs(start: bounds, addend: xyz, number: #:, partial: bounds?):  `bounds[]` <-
+-- For testing; just returns its arguments.
+-- core.echo(...: any):  ...: `any` <-
 
----@type fun( start: bounds,  addend: xyz,  number: number,  partial: bounds?):   bounds[]
-function core.vectorPairs() end
+---@type fun( ...: any):   ...: any 
+function core.echo() end
 return { core =  core}

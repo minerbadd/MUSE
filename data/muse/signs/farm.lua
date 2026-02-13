@@ -12,11 +12,11 @@ local  farm = {}
 ---@type fun( putAim: direction,  item: string[] | string,  removables: string[]):  fun( any,  direction: direction):   string 
 function farm.replacer() end
 
--- Tills and plants found planting.
--- farm.plant(planting: ":"):  `report: ":" &!`  <-
+-- Logs down and sides, plants found seedlings.
+-- farm.logs(seedlings: ":"[], :direction:):  `report: ":" &!` <-
 
----@type fun( planting: string):   report: string 
-function farm.plant() end
+---@type fun( seedlings: string[],  direction: direction):   report: string 
+function farm.logs() end
 
 -- Puts found item in aimed direction.
 -- farm.put(putAim: direction, item: ":"[]|":"):   `report: ":" &!` <-
@@ -24,9 +24,9 @@ function farm.plant() end
 ---@type fun( putAim: direction,  item: string[] | string):    report: string 
 function farm.put() end
 
--- Logs down and sides, plants found seedlings.
--- farm.logs(seedlings: ":"[], :direction:):  `report: ":" &!` <-
+-- Tills and plants found planting.
+-- farm.plant(planting: ":"):  `report: ":" &!`  <-
 
----@type fun( seedlings: string[],  direction: direction):   report: string 
-function farm.logs() end
+---@type fun( planting: string):   report: string 
+function farm.plant() end
 return { farm =  farm}

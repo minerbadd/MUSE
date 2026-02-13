@@ -1,4 +1,3 @@
----@diagnostic disable: duplicate-set-field
 --[[
 ## MUSE Distributed Discovery Service: lib/dds
 ```md
@@ -12,7 +11,7 @@ Some MUSE roles are native to a MUSE `site`. Unsited turtles in these `landed` r
 The library provides the DDS facilities needed for remote calls. The DDS facilities only work in-game because the ComputerCraft network interfaces are not mocked. However, the library does export a default mapping and its support functions can be tested out-of-game.
 ```Lua
 --]]
-
+---@diagnostic disable: duplicate-set-field
 local ddss = require("signs.dds"); ddss.dds = {}; local dds = ddss.dds ---@module "signs.dds"
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
@@ -46,23 +45,22 @@ local IDs, roles, landed = _G.Muse.IDs, _G.Muse.roles, _G.Muse.landed
 
 function dds.ID(role) --:: dds.roleID(role: ":") -> _ID for a Muse role (qualified if need be)_ -> `ID: #:` 
   local qualified = landed[role] and place.qualify(role) or role
-  return IDs[qualified]
+  return IDs[qualified], qualified
 end
 
-function dds.role(ID) return roles[ID] end --:: dds.role(ID: #:) ->  _Muse role (label) for a computer ID_ -> `role: ":"`
+function dds.role(id) return roles[id] end --:: dds.role(id: #:) ->  _Muse role (label) for a computer ID_ -> `role: ":"`
 
 function dds.join(role, id) 
-  --:: dds.join(role: ":", id: #:) -> _Qualify ID role association (label), id given by player._ -> `name: ":"`
+  --:: dds.join(role: ":", id: #:) -> _Sets qualified ID role association (label), id given by player._ -> `name: ":"`
   --:+ _On player to join a turtle to network and give it a role (and then over network through_ `lib/map` _to turtle)_
-  local qualified = landed[role] and place.qualify(role) or role -- qualify landed
-  IDs[qualified] = id; roles[id] = qualified   -- each site can have its own landed turtles
+  local _, qualified = dds.ID(role); IDs[qualified] = id; roles[id] = qualified   -- each site can have its own landed turtles
   return qualified 
 end  
 
-function dds.site(site) -- on turtle to site it (or player to change site)
+function dds.site(site) -- on turtle to site it persistently  (or player to change site)
   --:: dds.site(site: ":"?) -> _Write (new) site file, set site and return it_ -> sited: ":"
   local handle = assert(io.open(_G.Muse.data.."site.txt", "w"), "dds site: can't write site.txt")
-  local sited = site or place.site(); handle:write(sited.."\n"); handle:close()
+  local sited = place.site(site); handle:write(sited.."\n"); handle:close()
   return sited
 end
 
@@ -70,7 +68,7 @@ function dds.qualify(site)
   --:: dds.qualify(site: ":"?) -> _Create site file (default current site) if needed, set site, return role_ -> `qualified: ":"`
   local role, handle = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") 
   local sited = not handle and dds.site(site) or (handle and handle:read()) -- if no site file, write one
-  place.site(sited); return place.qualify(role) 
+  place.site(sited); return landed[role] and place.qualify(role) or role
 end
 --[[
 ```

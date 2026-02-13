@@ -32,27 +32,27 @@ local  motion, move, step = {}, {}, {}
 ---@alias situation.fuel  number # Simulated fuel level checked against reported fuel to validate dead reckoning
 
 
--- situation.level:  `"same"|"rise"|"fall"`
+-- detail.name:  `":"`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias situation.level  "same" | "rise" | "fall" # For tracking
+---@alias detail.name  string # Prepended by the mod name `"minecraft:"`.
 
 
 -- recovery:  `[call: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]`
 ---@alias recovery [  string,   string,   number,   xyzf,   direction,   string] # For some errors
 
 
--- detail.count:  `#:`
+-- situation.level:  `"same"|"rise"|"fall"`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias detail.count  number # Available in inventory
+---@alias situation.level  "same" | "rise" | "fall" # For tracking
 
 
 -- situations:  `situation[]`
 ---@alias situations  situation[] # Tracking history
 
 
--- detail.name:  `":"`
+-- detail.count:  `#:`
 ---@diagnostic disable-next-line: duplicate-doc-alias
----@alias detail.name  string # Prepended by the mod name `"minecraft:"`.
+---@alias detail.count  number # Available in inventory
 
 
 -- Count 0: just turn, 1: default
@@ -121,11 +121,11 @@ function move.north() end
 ---@type fun( theSituation:situation?):   xyzf 
 function move.at() end
 
--- Set position, optionally rest of situation.
--- move.set(x: #:, y: #:, z: #:, f: facing?, fuels: #:??, level: ":"???):  `nil` <-
+-- (Current) position and facing string (`""` in game if not turtle).
+-- move.ats(theSituation:situation?):  `xyzf: ":"` <-
 
----@type fun( x: number,  y: number,  z: number,  f: facing?,  fuels: number?,  level: string?):   nil 
-function move.set() end
+---@type fun( theSituation:situation?):   xyzf: string 
+function move.ats() end
 
 -- Count 0: just turn, 1: default
 -- move.up(count: #:?):   `"done", remaining: #:, xyzf: ":", direction &!recovery`  <-
@@ -145,23 +145,11 @@ function move.west() end
 ---@type fun( count: number?):    "done",  remaining: number,  xyzf: string,  direction 
 function move.east() end
 
--- (Current) position and facing string (`""` in game if not turtle).
--- move.ats(theSituation:situation?):  `xyzf: ":"` <-
+-- Returns GPS results if available. If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.
+-- move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?):  `x: #:, y: #:, z: #:, facing: ":", ok: #:|^:` <-
 
----@type fun( theSituation:situation?):   xyzf: string 
-function move.ats() end
-
--- Count 0: just turn, 1: default
--- move.south(count: #:?):   `"done", remaining: #:, xyzf: ":", direction &!recovery`  <-
-
----@type fun( count: number?):    "done",  remaining: number,  xyzf: string,  direction 
-function move.south() end
-
--- Count 0: just turn, 1: default
--- move.moves(count: #:?):   `"done", remaining: #:, xyzf: ":", direction &!recovery`  <-
-
----@type fun( count: number?):    "done",  remaining: number,  xyzf: string,  direction 
-function move.moves() end
+---@type fun( tx: number?,  ty: number?,  tz: number?,  tf: string?):   x: number,  y: number,  z: number,  facing: string,  ok: number | boolean 
+function move.where() end
 
 -- Clone current situation
 -- move.situation():  situation <-
@@ -169,11 +157,23 @@ function move.moves() end
 ---@type fun():  situation 
 function move.situation() end
 
--- Returns GPS results if available. If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.
--- move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?):  `x: #:, y: #:, z: #:, facing: ":", ok: #:|^:` <-
+-- Count 0: just turn, 1: default
+-- move.moves(count: #:?):   `"done", remaining: #:, xyzf: ":", direction &!recovery`  <-
 
----@type fun( tx: number?,  ty: number?,  tz: number?,  tf: string?):   x: number,  y: number,  z: number,  facing: string,  ok: number | boolean 
-function move.where() end
+---@type fun( count: number?):    "done",  remaining: number,  xyzf: string,  direction 
+function move.moves() end
+
+-- Count 0: just turn, 1: default
+-- move.south(count: #:?):   `"done", remaining: #:, xyzf: ":", direction &!recovery`  <-
+
+---@type fun( count: number?):    "done",  remaining: number,  xyzf: string,  direction 
+function move.south() end
+
+-- Set position, optionally rest of situation.
+-- move.set(x: #:, y: #:, z: #:, f: facing?, fuels: #:??, level: ":"???):  `nil` <-
+
+---@type fun( x: number,  y: number,  z: number,  f: facing?,  fuels: number?,  level: string?):   nil 
+function move.set() end
 
 -- Default current situation.
 -- move.get(:situation:?):  `x: #:?, y: #:?, z: #:?, facing: ":", fuel: #:, level: ":" <-
@@ -242,14 +242,14 @@ function step.forward() end
 function step.north() end
 
 -- Iterator (default 1 step)
--- step.down(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
-
----@type fun( count: number?):  fun():  "done",  remaining: number,  xyzf,  direction 
-function step.down() end
-
--- Iterator (default 1 step)
 -- step.steps(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
 
 ---@type fun( count: number?):  fun():  "done",  remaining: number,  xyzf,  direction 
 function step.steps() end
+
+-- Iterator (default 1 step)
+-- step.down(count: #:?):  `(): "done", remaining: #:, xyzf, direction &!recovery` <-
+
+---@type fun( count: number?):  fun():  "done",  remaining: number,  xyzf,  direction 
+function step.down() end
 return { motion =  motion, move = move, step = step}

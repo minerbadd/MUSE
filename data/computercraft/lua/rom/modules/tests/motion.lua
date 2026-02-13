@@ -51,19 +51,19 @@ test.part("to 100 150 200 west", move.to, {100, 150, 200, "west"})
 
 --:# **Test simple `step` operations**
 for code, remaining, ats in step.east(3) do 
-  test.part("step.east(3)", check.echo, code, remaining, ats)
+  test.part("step.east(3)", core.echo, code, remaining, ats)
 end
 
 for code, remaining, ats in step.south(3) do
-  test.part("step.south(3)", check.echo, code, remaining, ats)
+  test.part("step.south(3)", core.echo, code, remaining, ats)
 end
 
 for code, remaining, ats in step.west(3) do
-  test.part("step.west(3)", check.echo, code, remaining, ats)
+  test.part("step.west(3)", core.echo, code, remaining, ats)
 end
 
 for code, remaining, ats in step.north(3) do 
-  test.part("step.north(3)", check.echo, code, remaining, ats)
+  test.part("step.north(3)", core.echo, code, remaining, ats)
 end
 
 --:# Test `step` iterator exhaustion
@@ -75,14 +75,14 @@ test.part("steps 4 forward 3", more, move.ats())
 
 --:# Check "step.to 105 156 207 west")
 for code, remaining, at, direction, all in step.to({105, 156, 207}) do 
-  test.part(move.ats(), check.echo, code, remaining, core.string(at), direction, all)
+  test.part(move.ats(), core.echo, code, remaining, core.string(at), direction, all)
 end; 
 
-test.part("stepped to", check.echo, core.ats())
+test.part("stepped to", core.echo, core.ats())
 
 local function blockedStep(target) -- so `step.to` is protected in `test.part` `pcall`
   for code, remaining, at, direction, all in step.to(target) do 
-    test.part(move.ats(), check.echo, code, remaining, at, direction, all)
+    test.part(move.ats(), core.echo, code, remaining, at, direction, all)
   end 
 end
 

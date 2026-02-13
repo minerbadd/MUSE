@@ -44,11 +44,11 @@ function place.count() end
 ---@type fun( name: string?,  index: number?):   xyzf?,  order: number? 
 function place.xyzf() end
 
--- Sets situation position, can start tracking for trail.
--- place.fix(:xyzf:, track: ^:?):  `xyzf`  <-
+-- Manhattan: abs(delta x) + abs(delta y) + abs(delta z).
+-- place.distance(a: xyzf, b: xyzf):  `distance: #:` <-
 
----@type fun( xyzf: xyzf,  track: boolean?):   xyzf  
-function place.fix() end
+---@type fun( a: xyzf,  b: xyzf):   distance: number 
+function place.distance() end
 
 -- Unpack place
 -- place.matched(:place:):  `name: ":"`, `label: ":"`, `:situations:`, `:features:?` <-
@@ -62,11 +62,11 @@ function place.matched() end
 ---@type fun( name: string):   name: string?,  label: string?,  situations: situations? 
 function place.track() end
 
--- Sorted
--- place.nearby(:xyzf:?, :cardinals:?):  `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:][]` <-
+-- Set or return local `site` (isolates global).
+-- place.site(value: ":"?):  `":"` <-
 
----@type fun( xyzf: xyzf?,  cardinals: cardinals?):  [  number,   string,   string,   string,   xyzf][]
-function place.nearby() end
+---@type fun( value: string?):   string 
+function place.site() end
 
 -- Lookup place qualified by site, return_ `nil` _if not found.
 -- place.match(name: ":"):  `order: #:?, place: place?` <-
@@ -74,29 +74,29 @@ function place.nearby() end
 ---@type fun( name: string):   order: number?,  place: place? 
 function place.match() end
 
--- Add situation to situations of an existing place.
--- place.add(name: ":", :situation:):  `serialized: ":"?, order: #:?` <-
-
----@type fun( name: string,  situation: situation):   serialized: string?,  order: number? 
-function place.add() end
-
 -- Return already sited name, otherwise prepend site to name
 -- place.qualify(name: ":"):  `sitedName: ":"` <-
 
 ---@type fun( name: string):   sitedName: string 
 function place.qualify() end
 
--- Set or return local `site` (isolates global).
--- place.site(value: ":"?):  `":"` <-
+-- Add situation to situations of an existing place.
+-- place.add(name: ":", :situation:):  `serialized: ":"?, order: #:?` <-
 
----@type fun( value: string?):   string 
-function place.site() end
+---@type fun( name: string,  situation: situation):   serialized: string?,  order: number? 
+function place.add() end
 
--- Manhattan: abs(delta x) + abs(delta y) + abs(delta z).
--- place.distance(a: xyzf, b: xyzf):  `distance: #:` <-
+-- Sorted
+-- place.nearby(:xyzf:?, :cardinals:?):  `[distance: #:, name: ":", label: ":", cardinal: ":", :xyzf:][]` <-
 
----@type fun( a: xyzf,  b: xyzf):   distance: number 
-function place.distance() end
+---@type fun( xyzf: xyzf?,  cardinals: cardinals?):  [  number,   string,   string,   string,   xyzf][]
+function place.nearby() end
+
+-- Sets situation position, can start tracking for trail.
+-- place.fix(:xyzf:, track: ^:?):  `xyzf`  <-
+
+---@type fun( xyzf: xyzf,  track: boolean?):   xyzf  
+function place.fix() end
 
 -- Make or update place. Include current situation or optionally supplied situation in places. Optionally update features with key = value. Return order of situation in global places and the serialized situation including its features.
 -- place.name(name: ":", label: ":", supplied: situation?, :features:??):  `":", #:` <-

@@ -14,8 +14,6 @@ local tests = arg[0]:match('.*[/\\]') --:# Get path to calling executable
 local checks = tests.."checks/" --:# Assumes tests directory structure as `tests/checks`
 _G.Muse.data = tests.."data/" -- separate from game when testing
 
-function check.echo(...) return ... end -- so `check.part` has some function to apply
-
 --[[
 ```
 <a id="tests"></a>

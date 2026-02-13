@@ -11,9 +11,9 @@
 
 --:: dds.roleID(role: ":") -> _ID for a Muse role (qualified if need be)_ -> `ID: #:`   
 
---:: dds.role(ID: #:) ->  _Muse role (label) for a computer ID_ -> `role: ":"`  
+--:: dds.role(id: #:) ->  _Muse role (label) for a computer ID_ -> `role: ":"`  
 
---:: dds.join(role: ":", id: #:) -> _Qualify ID role association (label), id given by player._ -> `name: ":"`    
+--:: dds.join(role: ":", id: #:) -> _Sets qualified ID role association (label), id given by player._ -> `name: ":"`    
 --:+ _On player to join a turtle to network and give it a role (and then over network through_ `lib/map` _to turtle)_  
 
 --:: dds.site(site: ":"?) -> _Write (new) site file, set site and return it_ -> sited: ":"  

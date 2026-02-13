@@ -22,8 +22,6 @@ local tests = arg[0]:match('.*[/\\]') --:# Get path to calling executable
 local checks = tests.."checks/" --:# Assumes tests directory structure as <code>tests/checks</code>
 _G.Muse.data = tests.."data/" -- separate from game when testing
 
-function check.echo(...) return ... end -- so <code>check.part</code> has some function to apply
-
 </code></pre>
 <a id="tests"></a>
 There's an example here, <code>check.open</code>, of what's called <i>a poor man's object</i>. The function creates what can be thought of as a <code>check</code> object with the context needed to save (and compare) results by the <code>part</code> "method" for each part of a given test. Those <i>expected</i> results are compared with actuals during a regression validation. There's a cleanup operation to <code>close</code> the opened <code>check</code> object. 
