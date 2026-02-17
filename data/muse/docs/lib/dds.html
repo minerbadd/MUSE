@@ -21,12 +21,13 @@
 
 --:: dds.role(id: #:) ->  <i>Muse role (label) for a computer ID</i> -> <code>role: ":"</code>  
 
---:: dds.join(role: ":", id: #:) -> <i>Sets qualified ID role association (label), id given by player.</i> -> <code>name: ":"</code>    
---:+ <i>On player to join a turtle to network and give it a role (and then over network through</i> <code>lib/map</code> <i>to turtle)</i>  
+--:: dds.join(role: ":", id: #:) -> <i>Sets qualified ID role association (label), id? given by player.</i> -> <code>role: ":"</code>    
+--:+ <i>On player to join a turtle to network and give it a role (and then over network through</i> <code>lib/map</code> <i>to turtle)</i>    
+--:+ <i>Each site can have its own landed turtles with their own qualfied roles.</i>  
 
---:: dds.site(site: ":"?) -> <i>Write (new) site file, set site and return it</i> -> sited: ":"  
+--:: dds.site(site: ":"?) -> <i>Write (new) site file, set new qualified IDs[role, set site and return it</i> -> <code>role: ":"</code>  
 
---:: dds.qualify(site: ":"?) -> <i>Create site file (default current site) if needed, set site, return role</i> -> <code>qualified: ":"</code>  
+--:: dds.qualify(site: ":"?) -> <i>Set site, return (qualified) role; if needed, create site file (default current)</i> -> <code>role: ":"</code>  
 
 --:: dds.playerID(id: #:?) -> <i>Isolate global</i> -> #:  
 

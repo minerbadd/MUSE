@@ -120,7 +120,7 @@ net["store"] = op(map.op, "store"); as["store "] = map.hints["store"]; hints[pat
 net["join"] = op(map.op, "join"); as["join "] = map.hints["join"]; hints[path.."join.lua"] = map.hints["join"] --:= join:
 
 --:# <b>GPS Launch Command</b> (e.g., <code>rover launch gantry ....</code>)
-net["launch"] = op(launch.op, "launch"); as["launch "] = gps.hints["launch "] --:= launch:
+net["launch"] = op(launch.op, "launch"); as["launch "] = launch.hints["launch "] --:= launch:
 --<a id="mine"></a>
 --:# <b>Remote Mining Operation Commands</b> (e.g. <code>miner shaft ....</code>)
 net["shaft"] = op(mine.op, "shaft"); as["shaft "] = mine.hints["shaft"] --:= shaft:

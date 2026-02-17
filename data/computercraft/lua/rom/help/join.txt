@@ -1,6 +1,6 @@
 
 
-join id role ?site
+join role id ?site
  
 Join nameplate id'd turtle to network with specified role and site.
 

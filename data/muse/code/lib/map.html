@@ -286,11 +286,9 @@ The <code>site</code> operation is for when the <code>player</code> or the <code
 
 local function site(name) 
   --:- site name? -> <i>Remote operation to report or change site (persistently) after, e.g., moving</i> <code>rover</code> <i>to a new site</i>.
-  if not name then return place.site() end -- just report
-  -- use dds to change qualified role for landed turtle
+  if not name then return place.site() end -- just report, use dds to change qualified role for landed turtle
   local role = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$")
-  dds.site(name); dds.join(role, core.getComputerID())
-  return place.site(name) 
+  dds.site(name); dds.join(role); return place.site(name) 
 end; map.hints["site"] = {["?name"] = {} }
 
 local function join(qualified, id, siteName) -- on turtle
@@ -482,7 +480,7 @@ Just a big dispatch table, easily amended and extended. The CLI is just a thin l
 <pre><code class="language-lua">
 local ops = { --:# <b>Command Line Interface</b> 
   erase = erase, store = store, sync = sync, point = point, range = range, -- for all
-  view = view, site = site, chart = chart, join - join, -- for all
+  view = view, site = site, chart = chart, join = join, -- for all
   near = near, at = at, where = where, headings = headings, -- position relative to places for players and turtles
   fix = fix, trail = trail,  -- just for turtles
 }

@@ -42,6 +42,8 @@ function place.site(value) if value then _G.Muse.site = value end; return _G.Mus
 --:: place.site(value: ":"?) -> _Set or return local `site` (isolates global)._ -> `":"`
 function place.qualify(name) return name and (string.find(name, "%.") and name or place.site().."."..name) end
 --:: place.qualify(name: ":") -> _Return already sited name, otherwise prepend site to name_ -> `sitedName: ":"`
+function place.base(name) return string.match(name, ".-%.([_%a]*)") or name end
+--:: place.base(name: ":") -> _Return name without site prefix_ -> `base: ":"`
 function place.distance(a,b)  
 --:: place.distance(a: xyzf, b: xyzf) -> _Manhattan: abs(delta x) + abs(delta y) + abs(delta z)._ -> `distance: #:`
   local ax, ay, az = table.unpack(a); local bx, by, bz = table.unpack(b)

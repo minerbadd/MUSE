@@ -16,4 +16,8 @@
 
 --:# **Join and lookup qualified roles for IDs**  
 
---:# **Check site file writes and clean up**  
+--:# **Change site for turtle, check site file writes and clean up**  
+
+--:# **Cleanup** `site.txt` **to empty string**  
+
+--:# Close test object, report completion if we got here without errors  

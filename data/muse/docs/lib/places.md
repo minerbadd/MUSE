@@ -22,6 +22,8 @@
 
 --:: place.qualify(name: ":") -> _Return already sited name, otherwise prepend site to name_ -> `sitedName: ":"`  
 
+--:: place.base(name: ":") -> _Return name without site prefix_ -> `base: ":"`  
+
 --:: place.distance(a: xyzf, b: xyzf) -> _Manhattan: abs(delta x) + abs(delta y) + abs(delta z)._ -> `distance: #:`  
 
 --:: place.match(name: ":") -> _Lookup place qualified by site, return_ `nil` _if not found._ -> `order: #:?, place: place?`  

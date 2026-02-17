@@ -31,37 +31,44 @@ local test = check.open(testName, text, regression) --:# Create the test object 
 
 --:# <b>Set</b> <code>place.site</code> <b>and lookup roles</b>
 test.part("set site", place.site, "testing 1")
-test.part("check site", place.qualify, "tester")
-test.part("check site", place.qualify, "testing 1.tester")
+test.part("check site unqualfied", place.qualify, "tester")
+test.part("check site qualified", place.qualify, "testing 1.tester")
 test.part("player", dds.role, 0)
 test.part("porter", dds.role, 1)
 test.part("rover", dds.role, 5)
-test.part("miner", dds.role, 6)
+test.part("miner", dds.role, 6) -- need this role for testing
 test.part("unknown", dds.role, 2)
+for role, id in dds.map() do test.part("map roles", core.echo, role, id) end
 
 --:# <b>Join and lookup qualified roles for IDs</b>
-test.part("join player", dds.join, 10, "player")
+test.part("join player", dds.join, "player", 10)
 test.part("new player id", dds.ID, "player")
-test.part("rejoin player", dds.join, 0, "player")
-test.part("join miner", dds.join, 16, "miner")
+for role, id in dds.map() do test.part("map player 10", core.echo, role, id) end
+test.part("rejoin player", dds.join, "player", 0)
+for role, id in dds.map() do test.part("map player 0", core.echo, role, id) end
+test.part("join miner", dds.join, "miner", 16)
 test.part("new miner id", dds.ID, "miner")
-test.part("rejoin miner", dds.join, 6, "miner")
-for role, id in dds.map() do test.part("map", core.echo, role, id) end
-  
---:# <b>Check site file writes and clean up</b>
-core.setComputerLabel("miner")
-do local ok, message = os.remove(_G.Muse.data.."site.txt"); assert(ok, message) end
+for role, id in dds.map() do test.part("map miner 16", core.echo, role, id) end
+test.part("rejoin miner", dds.join, "miner", 6)
+for role, id in dds.map() do test.part("map miner 6", core.echo, role, id) end
+--:# <b>Change site for turtle, check site file writes and clean up</b>
+--assert(os.remove(_G.Muse.data.."site.txt"))
+
+test.part("set site testing 2", dds.site, "testing 2")
 test.part("qualify write", dds.qualify, "testing 2")
-test.part("sited miner", dds.ID, "miner")
+test.part("sited miner testing 2", dds.ID, "miner")
+for role, id in dds.map() do test.part("map miner testing 2", core.echo, role, id) end
 test.part("sited logger?", dds.ID, "logger")
+for role, id in dds.map() do test.part("map logger unsited", core.echo, role, id) end
 test.part("resite", dds.site, "testing 3")
 test.part("resited miner", dds.ID, "miner")
-test.part("qualify miner", dds.qualify, "miner")
-test.part("qualify player", dds.qualify, "player")
-for role, id in dds.map() do test.part("map", core.echo, role, id) end
-do local ok, message = os.remove(_G.Muse.data.."site.txt"); assert(ok, message) end
+for role, id in dds.map() do test.part("map miner testing 3", core.echo, role, id) end
 
+--:# <b>Cleanup</b> <code>site.txt</code> <b>to empty string</b>
+test.part("empty string site", dds.site)
 
+--:# Close test object, report completion if we got here without errors
+test.close("Test "..testName.." complete") 
 
   </body> 
 </html>

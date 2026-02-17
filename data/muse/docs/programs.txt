@@ -16,7 +16,7 @@ farmer command argument...: See <a href="../lib/net.html" target="_blank">/lib/n
 
 headings rate? place? count??: Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds).
 
-join id role ?site: Join nameplate id'd turtle to network with specified role and site.join: Set network mapping with id from turtle nameplate, update turtlelib/map` **call over network persists site on turtle then makes turtle dance and sets its situation using gps
+join role id ?site: Join nameplate id'd turtle to network with specified role and site.join: Set network mapping with id from turtle nameplate, update turtlelib/map` **call over network persists site on turtle then makes turtle dance and sets its situation using gps
 
 locate name label?: Create launch point having Minecraft coordinates above `porter`.
 

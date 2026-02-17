@@ -25,17 +25,19 @@ local player = _G.pocket -- only the player has the (only) pocket computer
 
 --[[
 ```
-The library deals with identity. As mentioned, this is in terms of the correspondence between roles and IDs. For _landed_ turtles, roles are _qualified_ by the _site_ where the landed turtle is found. Sometimes it's convenient to refer to a landed turtle without the qualifying site information. The `dds.ID` function supplies that as needed. Functions are provided for the player to `join` a newly hatched turtle to the network and once connected for it to persist its `qualified role` and its `site` in its local storage.
+The library deals with identity. As mentioned, this is in terms of the correspondence between roles and IDs. For _landed_ turtles, roles are _qualified_ by the _site_ where the landed turtle is found. Sometimes it's convenient to refer to a landed turtle without the qualifying site information. The `dds.ID` function supplies that as needed. Functions are provided for the player to `join` a newly hatched turtle to the network and once connected for it to use `dds.qualify` to persist its `qualified role` and its `site` in its local storage. Turtles can be moved to a new site with `dds.site`.
+
+
 ```Lua
 --]]
 
-_G.Muse.IDs = _G.Muse.IDs or -- for out-game 
+_G.Muse.IDs = #_G.Muse.IDs > 0 and _G.Muse.IDs or -- for out-game 
 --:> IDs: _Dictionary of ComputerCraft computer IDs keyed by MUSE role_ -> `[role]: ID`
 --:> ID: _ComputerCraft computer ID_ -> `#:`
 ---@diagnostic disable-next-line: undefined-field
 (_G.rednet and {} or {player = 0, porter = 1, rover = 5, miner = 6, logger = 7, farmer = 8}) 
 
-_G.Muse.roles = _G.Muse.roles or -- for out-game
+_G.Muse.roles = #_G.Muse.roles > 0 and _G.Muse.roles or -- for out-game
 ---@diagnostic disable-next-line: undefined-field
 (_G.rednet and {} or {[0] = "player", [1] = "porter", [5] = "rover", [6] = "miner", [7] = "logger", [8] = "farmer"})
 --:> roles: _Sparse array of Computercraft labels for MUSE roles indexed by Computercraft IDs_ -> `role[]`
@@ -44,31 +46,42 @@ _G.Muse.roles = _G.Muse.roles or -- for out-game
 local IDs, roles, landed = _G.Muse.IDs, _G.Muse.roles, _G.Muse.landed
 
 function dds.ID(role) --:: dds.roleID(role: ":") -> _ID for a Muse role (qualified if need be)_ -> `ID: #:` 
-  local qualified = landed[role] and place.qualify(role) or role
-  return IDs[qualified], qualified
+  local qrole = landed[role] and place.qualify(role) or role
+  return IDs[qrole], qrole
 end
 
 function dds.role(id) return roles[id] end --:: dds.role(id: #:) ->  _Muse role (label) for a computer ID_ -> `role: ":"`
 
 function dds.join(role, id) 
-  --:: dds.join(role: ":", id: #:) -> _Sets qualified ID role association (label), id given by player._ -> `name: ":"`
+  --:: dds.join(role: ":", id: #:) -> _Sets qualified ID role association (label), id? given by player._ -> `role: ":"`
   --:+ _On player to join a turtle to network and give it a role (and then over network through_ `lib/map` _to turtle)_
-  local _, qualified = dds.ID(role); IDs[qualified] = id; roles[id] = qualified   -- each site can have its own landed turtles
-  return qualified 
-end  
+  --:+ _Each site can have its own landed turtles with their own qualfied roles._
+  local currentRole = roles[id]; if currentRole then roles[id] = nil; IDs[currentRole] = nil end  -- wipe current role
+  IDs[role] = id; roles[id] = role; core.setComputerLabel(role) -- all needed for new role
+  return role
+end
 
-function dds.site(site) -- on turtle to site it persistently  (or player to change site)
-  --:: dds.site(site: ":"?) -> _Write (new) site file, set site and return it_ -> sited: ":"
+function dds.site(site) -- on turtle to site it persistently (or player to change site)
+  --:: dds.site(site: ":"?) -> _Write (new) site file, set new qualified IDs[role, set site and return it_ -> `role: ":"`
   local handle = assert(io.open(_G.Muse.data.."site.txt", "w"), "dds site: can't write site.txt")
-  local sited = place.site(site); handle:write(sited.."\n"); handle:close()
-  return sited
+  if not site then handle:write(""); handle:close() return "" end -- remove `site.txt` for testing
+  local siting = site and place.site(site).."\n" or ""; handle:write(siting); handle:close()
+  local id, base = IDs[core.getComputerLabel()], place.base(core.getComputerLabel()); -- id and base don't change
+  place.site(site); local _, role = dds.ID(base); return dds.join(role, id) -- new qualified role for site, same id
+end
+
+local function get(site)
+  local handle = io.open(_G.Muse.data.."site.txt", "r") 
+  if not handle then return dds.site(site) end -- if no site file, write one
+  local data, message = handle:read("L")
+  assert(data, "dds.qualify: can't read ".._G.Muse.data.."site.txt".." "..(message or ""))
+  return data == "" and dds.site(site) or data -- if empty site file, write one
 end
 
 function dds.qualify(site)
-  --:: dds.qualify(site: ":"?) -> _Create site file (default current site) if needed, set site, return role_ -> `qualified: ":"`
-  local role, handle = core.getComputerLabel(), io.open(_G.Muse.data.."site.txt", "r") 
-  local sited = not handle and dds.site(site) or (handle and handle:read()) -- if no site file, write one
-  place.site(sited); return landed[role] and place.qualify(role) or role
+  --:: dds.qualify(site: ":"?) -> _Set site, return (qualified) role; if needed, create site file (default current)_ -> `role: ":"`
+  local role = core.getComputerLabel(); local id = IDs[role]; place.site(get(site));  -- get might make a site file
+  local _, qrole = dds.ID(role); return dds.join(qrole, id)
 end
 --[[
 ```
@@ -95,9 +108,9 @@ All computers other than the player's pocket computer wait to `respond`. If a re
 local function respond()  
   local id, playerSite = rednet.receive("MQ"); dds.playerID(assert(id, "dds respond: no id")) -- set global on remote responder
   assert(id and playerSite, "dds respond: id and player site not received")
-  local qualified = dds.qualify(tostring(playerSite))
-  core.report(1, "MQT "..id.." "..qualified); -- DDS Turtle now sited
-  rednet.send(id, qualified, "MQ") -- need to send `count` messages 
+  local qrole = dds.qualify(tostring(playerSite))
+  core.report(1, "MQT "..id.." "..qrole); -- DDS Turtle now sited
+  rednet.send(id, qrole, "MQ") -- need to send `count` messages 
 end
 --[[
 ```

@@ -10,15 +10,15 @@
 <h2> Command to Join MQ with Role (Label) and Player's Site (on Player)</h2>
 <pre><code class="language-markdown">
 --:? rom/help/join.txt <- <b>Join Command Line Interface</b> -> muse/docs/programs/join.md  
---:- join id role ?site -> <i>Join nameplate id'd turtle to network with specified role and site.</i>
+--:- join role id ?site -> <i>Join nameplate id'd turtle to network with specified role and site.</i>
 </code></pre>
 <pre><code class="language-lua">
 local ddss = require("ddsa"); local dds = ddss.dds ---@module "signs.dds"
 local remotes = require("remote"); local remote = remotes.remote ---@module "signs.remote"
 
 local role, id, siting = ...; --:- join  -> <i>Set network mapping with id from turtle nameplate, update turtle</i>
-local qualified = dds.join(role, tonumber(id)) -- on player as, e.g., <code>join rover</code> 3 or <code>join farmer 4 baylands</code>
-local message = remote.call(qualified, "join", {qualified, id, siting}) -- <code>dds.join</code> connected turtle to network
+local roleq = dds.join(role, tonumber(id)) -- on player as, e.g., <code>join rover</code> 3 or <code>join farmer 4 baylands</code>
+local message = remote.call(roleq, "join", {roleq, id, siting}) -- <code>dds.join</code> connected turtle to network
 --:# <code>lib/map</code> <b>call over network persists site on turtle then makes turtle dance and sets its situation using gps</b>
 print(message)
 print("Need to sync map?")
