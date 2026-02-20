@@ -73,7 +73,7 @@ function check.open(testName, text, regression) -- create check object with cont
     local _, results = part(note.." <", remote.apply, 0, request)
     local _, result = table.unpack(results)
     -- remote.clientResult(serverID: #:, result: ":", callback{}) -> <code>nil</code>
-    part(note.." =", remote.return, serverID, result, callback)
+    part(note.." =", remote.returns, serverID, result, callback)
   end
 
   local function message(...) if not this.regression then print(...) end end

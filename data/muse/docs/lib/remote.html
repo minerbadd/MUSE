@@ -18,13 +18,13 @@
 
 --:# <b>Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)</b>  
 
---:: <code>remote.return(serverID: #:, resultString: ":", callback: ():)</code> -> <i>Apply callback to deserialized client result.</i> -> <code>any</code>  
+--:: <code>remote.returns(serverID: #:, resultString: ":", callback: ():)</code> -> <i>Apply callback to deserialized client result.</i> -> <code>any</code>  
 
 --:: <code>remote.marshall(server: ":", command: ":", arguments: any[])</code> -> <i>Serialize server request.</i> -> <code>serverID: #:, request: ":" &: &!</code>  
 
 --:: remote.call(server: ":", command: ":", arguments: any[], callback: ():?) -> <i>RPC:</i> -> <code>any &: &!</code>    
 --:+ <i>Form serialized request table from command string and arguments. Get server ID from server name.</i>    
---:+ <i>Send request to server, wait for result, return call (default <code>remote.return</code>) callback function to result.</i>  
+--:+ <i>Send request to server, wait for result, return call (default <code>remote.returns</code>) callback function to result.</i>  
 
 --:: remote.callback(results: any[]) -> <i>Default client side handling of server response: just print results as string.</i> -> <code>nil</code>  
 
