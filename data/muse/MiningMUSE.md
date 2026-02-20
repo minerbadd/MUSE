@@ -179,21 +179,25 @@ Here's how it works. Roles and sites are established when Computercraft starts u
 
 So the first thing that needs to be done is to resolve the server's identity. We know servers by their names. Computercraft knows servers by their numbers. We need to get the server's number. For convenience we often refer to servers by their unqualified names, that is without reference to any site at which they may be landed. For landed turtles then, we need to qualify the name. There may be, for instance a `miner` turtle at a number of sites. The assumption is that an unqualified name for a landed turtle can be qualified by the current, that is, the player's, site.
 
-We need to note that name servers come in different flavors with different capabilities. The MUSE distributed discovery service, `DDS`, is only a distant cousin of one real world system, the <a href="https://en.wikipedia.org/wiki/Domain_Name_System" target="_blank"> Domain Name System (DNS)</a>. DNS also basically associates names with numbers. But it deals with millions of computers managed with the barest minimum of coordination over the entire world. Our little DDS does not begin to consider such scale or distribution of control. However it does model approaches to the sort of <a href="https://en.wikipedia.org/wiki/Service_discovery" target="_blank"> service discovery </a> provided for small scale home or local office networks.
+We need to note that name servers come in different flavors with different capabilities. The MUSE distributed discovery service, `DDS`, is only a distant cousin of one real world system, the <a href="https://en.wikipedia.org/wiki/Domain_Name_System" target="_blank"> Domain Name System (DNS)</a>. DNS also basically associates names with numbers. But it deals with millions of computers managed with the barest minimum of coordination over the entire world. Our little DDS does not begin to consider such scale or distribution of control. However it does model approaches to the sort of <a href="https://en.wikipedia.org/wiki/Service_discovery" target="_blank"> service discovery </a> provided for small scale home or local office networks. 
 
 <a href="code/lib/dds.html" target="_blank">
-<IMG SRC="drawings/04ATree.jpg" ALIGN="left" hspace ="10"/></a>
-Given a way to associate names wth numbers with <a href="code/lib/dds.html" target="_blank">lib/dds</a>, we can provide a way to get a service request from a client to a server. The other part of what is needed is a way to actually provide the service. That's a job for Remote Procedure Call, an action hero you may (or may not) have heard of. 
-</br></br>
+<IMG SRC="drawings/04ATree.jpg" ALIGN="left" hspace="10"/></a> 
+
+
+Given a way to associate names wth numbers with <a href="code/lib/dds.html" target="_blank">lib/dds</a>, we can provide a way to get a service request from a client to a server. The other part of what is needed is a way to actually provide the service. That's a job for that action hero: **RPCman**, the Remote Procedure Call. 
+<a id="Chapter4RPC"></a>  
+
 The design of the MUSE RPC makes use of MUSE <a href="code/lib/core.html#serialize" target="_blank"> serialization </a> and Lua's `load` facilities to package and unpackage procedure arguments for network transmission and reception. As a development exercise, this could be generalized to use language independent formatting such as <a href="https://en.wikipedia.org/wiki/JSON" target="_blank"> JSON </a>. There are a number of such <a href="https://www.google.com/search?q=json+lua" target="_blank"> implementations</a>.  
-</br></br>
+ 
 But that seemed to be a distraction from our goals. Even so, supporting our goals, the design is more general than is strictly needed. As we'll see, it is built to handle environments that could be bothered by unfriendly, rogue actors. This is not MUSE but it seemed useful to explore. 
-</br></br>
+
 It is also designed to be testable outside its intended deployment. This kind of design certainly _is_ relevant to MUSE and might be important in more than just the MUSE environment. In addition to the debugging benefit, working in a development sandbox means that getting errors when trying stuff has limited consequences.
 
 <a href="drawings/04RemoteProcedures.pdf" target="_blank">
 <IMG SRC="drawings/04RemoteProcedures.png" ALIGN="right" hspace ="10"/></a>
-</br>
+
+
 The <a href="docs/lib/remote.html" target="_blank"> lib/remote</a>, <a href="docs/lib/dds.html" target="_blank"> `lib/dds`</a>, and <a href="docs/lib/net.html" target="_blank"> lib/net </a> libraries provide the interfaces for the facilities we've been discussing. The drawing shows <a href="drawings/04RemoteProcedures.pdf" target="_blank"> how they fit </a> in the overall context of MUSE. 
 
 <a href="code/lib/remote.html" target="_blank">
@@ -202,8 +206,7 @@ The <a href="docs/lib/remote.html" target="_blank"> lib/remote</a>, <a href="doc
 
 Look first at <a href="code/lib/remote.html" target="_blank"> lib/remote </a> to see how RPCs work. 
 Then look at how <a href="code/lib/net.html" target="_blank"> lib/net </a>  actually creates (and documents) the remote CLI we said this chapter would discuss. 
-</br>
-</br>
+
 The generated documentation for the remote CLI is <a href="docs/lib/net.html" target="_blank">here</a>. The information in libraries, kept close to the implementation, was all that was needed to generate it. Note that `lib/net` calls on the same dispatch operations in the targeted libraries as used by local commands.
 </br>
 </br>

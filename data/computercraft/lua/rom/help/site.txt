@@ -1,5 +1,5 @@
 
 
-site name?
+site siting?
  
 Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.

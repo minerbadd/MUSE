@@ -21,10 +21,7 @@ local text = "Beginning "..testName..".lua test at "..move.ats()
 
 local test = check.open(testName, text, regression) --:# Create the test object for this test
 
---:# **Set** `place.site` **and lookup roles**
-test.part("set site", place.site, "testing 1")
-test.part("check site unqualfied", place.qualify, "tester")
-test.part("check site qualified", place.qualify, "testing 1.tester")
+--:# **Set** `place.site` **and lookup roles for simple identity**
 test.part("player", dds.role, 0)
 test.part("porter", dds.role, 1)
 test.part("rover", dds.role, 5)
@@ -32,33 +29,41 @@ test.part("miner", dds.role, 6) -- need this role for testing
 test.part("unknown", dds.role, 2)
 for role, id in dds.map() do test.part("map roles", core.echo, role, id) end
 
---:# **Join and lookup qualified roles for IDs**
+--:# **Join and lookup unqualified roles for IDs**
 test.part("join player", dds.join, "player", 10)
 test.part("new player id", dds.ID, "player")
 for role, id in dds.map() do test.part("map player 10", core.echo, role, id) end
 test.part("rejoin player", dds.join, "player", 0)
 for role, id in dds.map() do test.part("map player 0", core.echo, role, id) end
+
+--:# **Make sure** `place.site` **and** `place.qualify` **ok**
+test.part("set site", place.site, "testing 1")
+test.part("check site unqualfied", place.qualify, "tester")
+test.part("check site qualified", place.qualify, "testing 1.tester")
+
+--:# **Join newly hatched (landed) miner, not persistent** 
 test.part("join miner", dds.join, "miner", 16)
 test.part("new miner id", dds.ID, "miner")
 for role, id in dds.map() do test.part("map miner 16", core.echo, role, id) end
+
+--:# **Site turtle and persist it (no prior site file)**
 test.part("rejoin miner", dds.join, "miner", 6)
 for role, id in dds.map() do test.part("map miner 6", core.echo, role, id) end
---]]
---:# **Change site for turtle, check site file writes and clean up**
---assert(os.remove(_G.Muse.data.."site.txt"))
-
-test.part("set site testing 2", dds.site, "testing 2")
-test.part("qualify write", dds.qualify, "testing 2")
-test.part("sited miner testing 2", dds.ID, "miner")
+os.remove(_G.Muse.data.."site.txt")
+test.part("get site testing 2", dds.get, "testing 2")
+test.part("ID testing 2", dds.ID, "miner")
 for role, id in dds.map() do test.part("map miner testing 2", core.echo, role, id) end
+
 test.part("sited logger?", dds.ID, "logger")
 for role, id in dds.map() do test.part("map logger unsited", core.echo, role, id) end
-test.part("resite", dds.site, "testing 3")
+
+--:# **Change site for miner**
+test.part("set site", dds.set, "testing 3")
 test.part("resited miner", dds.ID, "miner")
 for role, id in dds.map() do test.part("map miner testing 3", core.echo, role, id) end
 
 --:# **Cleanup** `site.txt` **to empty string**
-test.part("empty string site", dds.site)
+test.part("empty string site", dds.set)
 
 --:# Close test object, report completion if we got here without errors
 test.close("Test "..testName.." complete") 

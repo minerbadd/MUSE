@@ -1,7 +1,7 @@
 --[[
 ## Command to Set or Get Local Site (Local)
 ```md
---:? rom/help/site.txt <- **Command Line Interface for** `site` -> muse/docs/programs/site.md  
+--:? rom/help/site.txt <- **Command Line Interface (on player) for** `site` -> muse/docs/programs/site.md  
 ```
 ```Lua
 --]]

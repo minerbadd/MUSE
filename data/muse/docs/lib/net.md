@@ -81,7 +81,7 @@
 
 --:- sync -> _Muse Update (MU) broadcast local map to (MQ) registered units._  
 
---:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
+--:- site siting? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
 
 --:- store name? -> _Persists site `name` in local store and loads local map._ -> `report: ":"`  
 

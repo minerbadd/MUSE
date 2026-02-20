@@ -25,9 +25,7 @@ local player = _G.pocket -- only the player has the (only) pocket computer
 
 --[[
 ```
-The library deals with identity. As mentioned, this is in terms of the correspondence between roles and IDs. For _landed_ turtles, roles are _qualified_ by the _site_ where the landed turtle is found. Sometimes it's convenient to refer to a landed turtle without the qualifying site information. The `dds.ID` function supplies that as needed. Functions are provided for the player to `join` a newly hatched turtle to the network and once connected for it to use `dds.qualify` to persist its `qualified role` and its `site` in its local storage. Turtles can be moved to a new site with `dds.site`.
-
-
+The library deals with identity. As mentioned, this is in terms of the correspondence between roles and IDs. For _landed_ turtles, roles are _qualified_ by the _site_ where the landed turtle is found. Sometimes it's convenient to refer to a landed turtle without the qualifying site information. The `place.base` function supplies that as needed. Functions are provided for the player to `dds.join` a newly hatched turtle to the network and once connected for it to use `dds.get` to persist its `qualified role` and its `site` in its local storage if it's not there already. Turtles and the `player` can be moved to a new site with `dds.set`. For clarity, the work of actually dealing with the file system is done in separated functions.
 ```Lua
 --]]
 
@@ -45,48 +43,56 @@ _G.Muse.roles = #_G.Muse.roles > 0 and _G.Muse.roles or -- for out-game
 
 local IDs, roles, landed = _G.Muse.IDs, _G.Muse.roles, _G.Muse.landed
 
-function dds.ID(role) --:: dds.roleID(role: ":") -> _ID for a Muse role (qualified if need be)_ -> `ID: #:` 
-  local qrole = landed[role] and place.qualify(role) or role
-  return IDs[qrole], qrole
-end
+local function qualify(role) return landed[role] and place.qualify(role) or role end
+
+function dds.ID(role) local qrole = qualify(role); return IDs[qrole], qrole end
+--:: dds.roleID(role: ":") -> _ID for a Muse role (qualified if need be)_ -> `ID: #:` 
 
 function dds.role(id) return roles[id] end --:: dds.role(id: #:) ->  _Muse role (label) for a computer ID_ -> `role: ":"`
 
 function dds.join(role, id) 
-  --:: dds.join(role: ":", id: #:) -> _Sets qualified ID role association (label), id? given by player._ -> `role: ":"`
+  --:: dds.join(role: ":", id: #:) -> _Sets (non-persistent) qualified ID role (label), id given by player._ -> `role: ":"`
   --:+ _On player to join a turtle to network and give it a role (and then over network through_ `lib/map` _to turtle)_
   --:+ _Each site can have its own landed turtles with their own qualfied roles._
   local currentRole = roles[id]; if currentRole then roles[id] = nil; IDs[currentRole] = nil end  -- wipe current role
-  IDs[role] = id; roles[id] = role; core.setComputerLabel(role) -- all needed for new role
-  return role
+  local qrole = qualify(role); IDs[qrole] = id; roles[id] = qrole; core.setComputerLabel(qrole) -- all needed for new role
+  return qrole
 end
 
-function dds.site(site) -- on turtle to site it persistently (or player to change site)
-  --:: dds.site(site: ":"?) -> _Write (new) site file, set new qualified IDs[role, set site and return it_ -> `role: ":"`
+local function set(site)
   local handle = assert(io.open(_G.Muse.data.."site.txt", "w"), "dds site: can't write site.txt")
   if not site then handle:write(""); handle:close() return "" end -- remove `site.txt` for testing
   local siting = site and place.site(site).."\n" or ""; handle:write(siting); handle:close()
-  local id, base = IDs[core.getComputerLabel()], place.base(core.getComputerLabel()); -- id and base don't change
-  place.site(site); local _, role = dds.ID(base); return dds.join(role, id) -- new qualified role for site, same id
+  return site
 end
 
 local function get(site)
   local handle = io.open(_G.Muse.data.."site.txt", "r") 
-  if not handle then return dds.site(site) end -- if no site file, write one
-  local data, message = handle:read("L")
+  if not handle then return set(site) end -- if no site file, write one
+---@diagnostic disable-next-line: param-type-mismatch
+  local data, message = handle:read("*line") -- `*line` is currently required
   assert(data, "dds.qualify: can't read ".._G.Muse.data.."site.txt".." "..(message or ""))
-  return data == "" and dds.site(site) or data -- if empty site file, write one
+  return data == "" and set(site) or data -- if empty site file, write one
 end
 
-function dds.qualify(site)
-  --:: dds.qualify(site: ":"?) -> _Set site, return (qualified) role; if needed, create site file (default current)_ -> `role: ":"`
-  local role = core.getComputerLabel(); local id = IDs[role]; place.site(get(site));  -- get might make a site file
-  local _, qrole = dds.ID(role); return dds.join(qrole, id)
+function dds.get(site)
+  --:: dds.site(site: ":") -> _Set site, return (qualified) role; only create site file (default current) if needed_ -> `role: ":"`
+  local role = core.getComputerLabel(); local id = IDs[role]; -- id won't change
+  place.site(get(site)); local qrole = qualify(place.base(role))  -- get might make a site file but won't if one exists
+  return dds.join(qrole, id)
+end
+
+function dds.set(site) -- on turtle to change site persistently (or player to change site)
+  --:: dds.set(site: ":"?) -> _Write (new) site file, set new qualified IDs[role, set site and return it_ -> `role: ":"`
+  if not site then set() end -- for testing, write file with no lines
+  local role = core.getComputerLabel(); local id, base = IDs[role], place.base(role); -- id and base don't change
+  place.site(set(site)); local qrole = qualify(base);
+  return dds.join(qrole, id) -- new qualified role for site, same id
 end
 --[[
 ```
 <a id="request"></a> 
-Te main work of the library creating relationships between labeled roles and computer IDs starts here. The player sends a `request` for MUSE roles (as ComputerCraft labels) to all computers registered as `MQ protocol hosts and gets a count of them. It's useful to keep in mind where (player or turtle) the work is being done at each step of this process.
+The main work of the library creating relationships between labeled roles and computer IDs starts here. The player sends a `request` for MUSE roles (as ComputerCraft labels) to all computers registered as `MQ protocol hosts and gets a count of them. It's useful to keep in mind where (player or turtle) the work is being done at each step of this process.
 ```Lua
 --]]
 
@@ -108,7 +114,7 @@ All computers other than the player's pocket computer wait to `respond`. If a re
 local function respond()  
   local id, playerSite = rednet.receive("MQ"); dds.playerID(assert(id, "dds respond: no id")) -- set global on remote responder
   assert(id and playerSite, "dds respond: id and player site not received")
-  local qrole = dds.qualify(tostring(playerSite))
+  local qrole = dds.get(tostring(playerSite)) -- for hatchlings: only writes site file if there isn't one
   core.report(1, "MQT "..id.." "..qrole); -- DDS Turtle now sited
   rednet.send(id, qrole, "MQ") -- need to send `count` messages 
 end
@@ -153,3 +159,7 @@ The table of associations between labels (MUSE roles) and ComputerCraft computer
 function dds.map() return pairs(IDs) end --:: dds.map() -> Iterator from Muse roles to ComputerCraft IDs_ -> `():`, `{:}, `nil`
 
 return {dds = dds}
+--[[
+```
+Look at <a href="../tests/dds.html" target = "_blank"> `tests/dds </a> and <a href="check.html" target = "_blank"> `lib/check`</a>` to see how testing works for this module. Then return to <a href="../../MiningMUSE.html#Chapter4RPC"> MiningMUSE</a> to continue the exploration.
+--]]

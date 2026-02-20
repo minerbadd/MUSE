@@ -40,7 +40,7 @@ function place.count() return #_G.Muse.places end
 --:: place.count() -> _Returns number of places._ -> `#:`
 function place.site(value) if value then _G.Muse.site = value end; return _G.Muse.site end -- isolate global
 --:: place.site(value: ":"?) -> _Set or return local `site` (isolates global)._ -> `":"`
-function place.qualify(name) return name and (string.find(name, "%.") and name or place.site().."."..name) end
+function place.qualify(name) return name and (string.find(name, "%.") and name or (place.site() or "").."."..name) end
 --:: place.qualify(name: ":") -> _Return already sited name, otherwise prepend site to name_ -> `sitedName: ":"`
 function place.base(name) return string.match(name, ".-%.([_%a]*)") or name end
 --:: place.base(name: ":") -> _Return name without site prefix_ -> `base: ":"`

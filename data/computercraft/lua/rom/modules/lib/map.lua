@@ -303,19 +303,18 @@ The `site` operation is for when the `player` or the `rover` is moved to a diffe
 ```Lua
 --]]
 
-local function site(name) 
-  --:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.
-  if not name then return place.site() end -- just report, use dds to change qualified role for landed turtle
-  local role = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$")
-  dds.site(name); dds.join(role); return place.site(name) 
-end; map.hints["site"] = {["?name"] = {} }
+local function site(siting) 
+  --:- site siting? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.
+  if not siting then return place.site() end -- just report, use dds to change qualified role for landed turtle
+  local base = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$") -- just the base role
+  dds.set(siting); dds.join(base); return place.site(siting) 
+end; map.hints["site"] = {["?siting"] = {} }
 
-local function join(qualified, id, siteName) -- on turtle
+local function join(qrole, id, siteName) -- on turtle
   --:# join: set qualified role as label, set local site as named and persist it, set dead reckoning position from GPS
-  core.setComputerLabel(qualified)
-  local sited = site(siteName); place.site(sited)
-  local position = fix()
-  return qualified..": "..id.." at "..sited..": "..position
+  core.setComputerLabel(qrole); local sited = site(siteName); place.site(sited)
+  local position = fix() -- turtle dances with gps
+  return qrole..": "..id.." at "..sited..": "..position
 end
 
 local function store(name) 

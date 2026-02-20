@@ -44,7 +44,7 @@
 
 --:- fix trail? -> _Set and report GPS turtle position for dead reckoning. Optionally begin named trailhead._  
 
---:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
+--:- site siting? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
 
 --:# join: set qualified role as label, set local site as named and persist it, set dead reckoning position from GPS  
 

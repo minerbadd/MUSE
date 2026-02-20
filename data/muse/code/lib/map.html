@@ -284,19 +284,18 @@ end map.hints["fix"] = {["??trailname"] = {} }
 The <code>site</code> operation is for when the <code>player</code> or the <code>rover</code> is moved to a different site. The <code>join</code> operation ties a landed turtle (<code>farmer</code>, <code>miner</code>, or <code>logger</code>) to a site. (We'll get to the implementation of <code>dds.join</code> when we discuss <code>lib/remote</code>.) The <code>store</code> operation is used by <code>_start</code> to persist the <code>site</code> and load a clean map remotely.
 <pre><code class="language-lua">
 
-local function site(name) 
-  --:- site name? -> <i>Remote operation to report or change site (persistently) after, e.g., moving</i> <code>rover</code> <i>to a new site</i>.
-  if not name then return place.site() end -- just report, use dds to change qualified role for landed turtle
-  local role = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$")
-  dds.site(name); dds.join(role); return place.site(name) 
-end; map.hints["site"] = {["?name"] = {} }
+local function site(siting) 
+  --:- site siting? -> <i>Remote operation to report or change site (persistently) after, e.g., moving</i> <code>rover</code> <i>to a new site</i>.
+  if not siting then return place.site() end -- just report, use dds to change qualified role for landed turtle
+  local base = string.match(core.getComputerLabel(), "[^%.]-%.(.*)$") -- just the base role
+  dds.set(siting); dds.join(base); return place.site(siting) 
+end; map.hints["site"] = {["?siting"] = {} }
 
-local function join(qualified, id, siteName) -- on turtle
+local function join(qrole, id, siteName) -- on turtle
   --:# join: set qualified role as label, set local site as named and persist it, set dead reckoning position from GPS
-  core.setComputerLabel(qualified)
-  local sited = site(siteName); place.site(sited)
-  local position = fix()
-  return qualified..": "..id.." at "..sited..": "..position
+  core.setComputerLabel(qrole); local sited = site(siteName); place.site(sited)
+  local position = fix() -- turtle dances with gps
+  return qrole..": "..id.." at "..sited..": "..position
 end
 
 local function store(name) 

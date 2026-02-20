@@ -12,11 +12,17 @@
 
 --:# Create the test object for this test  
 
---:# **Set** `place.site` **and lookup roles**  
+--:# **Set** `place.site` **and lookup roles for simple identity**  
 
---:# **Join and lookup qualified roles for IDs**  
+--:# **Join and lookup unqualified roles for IDs**  
 
---:# **Change site for turtle, check site file writes and clean up**  
+--:# **Make sure** `place.site` **and** `place.qualify` **ok**  
+
+--:# **Join newly hatched (landed) miner, not persistent**   
+
+--:# **Site turtle and persist it (no prior site file)**  
+
+--:# **Change site for miner**  
 
 --:# **Cleanup** `site.txt` **to empty string**  
 

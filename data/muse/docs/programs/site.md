@@ -1,3 +1,3 @@
---:? rom/help/site.txt <- **Command Line Interface for** `site` -> muse/docs/programs/site.md    
+--:? rom/help/site.txt <- **Command Line Interface (on player) for** `site` -> muse/docs/programs/site.md    
 
---:- site name? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
+--:- site siting? -> _Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.  
