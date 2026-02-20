@@ -58,16 +58,16 @@ function check.open(testName, text, regression) -- create check object with cont
     if not this.regression then this.priors[partID] = report; print(note, report); return report, results end --> 
   end
 
-  local function call(note, server, command, arguments)
+  local function call(note, server, command, arguments, callback)
     --:# call(note: ":", server: ":", command: ":", arguments: any[]): -> _Test remote calls without network_ -> `nil`
     -- remote.prepareCall(server: ":", command: ":", {arguments: ":"[]} -> serverID: #:, request: ":"
-    local _, returns = part(note.." >", remote.prepareCall, server, command, arguments)
+    local _, returns = part(note.." >", remote.marshall, server, command, arguments)
     local _, serverID, request = table.unpack(returns)
     -- remote.serverCall(clientID: ":", request: ":") -> result: ":"
-    local _, results = part(note.." <", remote.serverCall, 0, request)
+    local _, results = part(note.." <", remote.apply, 0, request)
     local _, result = table.unpack(results)
     -- remote.clientResult(serverID: #:, result: ":", callback{}) -> `nil`
-    part(note.." =", remote.clientResult, serverID, result, function(result) return core.string(result) end)
+    part(note.." =", remote.return, serverID, result, callback)
   end
 
   local function message(...) if not this.regression then print(...) end end

@@ -31,144 +31,144 @@ local nets = require("net"); local net = nets.net ---@module "signs.net"
 
 local rednet, parallel = _G.rednet, _G.parallel -- to supress static analysis lint warnings
 </code></pre>
-<a id="dance"/a>As promised: the dance. It all starts, of course, with <code>remote.call</code>. The arguments to the call are evaluated by the client and then packaged up into strings that can be sent over the network by <code>prepareCall</code>. (Which is testable out of game.) This lot is sent along to the chosen server by <code>clientSend</code> as an <code>MC</code> protocol message. The client thread then waits for an <code>MR</code> protocol message in <code>clientReceive</code>.
+<a id="dance"/a>As promised: the dance. It all starts, of course, with <code>remote.call</code>. The arguments to the call are evaluated by the client and then packaged up into strings that can be sent over the network by <code>remote.marshall</code>. (Which is testable out of game.) This lot is sent along to the chosen server by <code>clientSend</code> as an <code>MC</code> protocol message. The client thread then waits for an <code>MR</code> protocol message in <code>clientResult</code>.
 <p>
-The selected server, waiting for an <code>MC</code> protocol message as we've said, gets one. It kicks off a series of steps by calling <code>serverSend</code>. This calls <code>serverRequest</code> which calls <code>serverCall</code> which passes the actual work over to a library through a dispatch in <code>lib/net</code> as promised. The call chain then gets unwound: the computed result of doing the work gets returned to <code>serverRequest</code> which turns the computed result into strings that can be passed over the network. (Out-of-game, the steps from <code>serverRequest</code> to <code>serverCall</code> are testable with no need to deal with the network.) The return to <code>serverSend</code> sends a <code>MR</code> protocol message back to the client waiting in <code>clientReceive</code>. The call stack is then popped back to its caller, <code>remote.wait</code>. This is where we (or at least the server) came in. The server's work here is done.
+The selected server, waiting for an <code>MC</code> protocol message as we've said, gets one. It kicks off a series of steps by calling <code>serverApply</code> (which will eventually send the result of the call back to the client). To get that result it calls <code>remote.apply</code> which calls <code>apply</code>. This delegates the actual work over to a library through a dispatch in <code>lib/net</code> as promised. The return from that dispatch is the result for the call. The result call chain then gets unwound: the computed result of doing the work gets returned to <code>remote.apply</code> which turns the computed result into strings that can be passed over the network. (Out-of-game, <code>remote.apply</code> is testable with no need to deal with the network.) The return to <code>serverApply</code> sends a <code>MR</code> protocol message back to the client waiting in <code>clientResult</code>. The call stack is then popped back to its caller, <code>remote.wait</code>. This is where we (or at least the server) came in. The server's work here is done.
 <p>
-Receiving the <code>MR</code> protocol message in <code>clientReceive</code>, the client deserializes the strings from the computed result on the server and returns the result to the caller of <code>remote.call</code> by calling <code>clientResult</code> (testable out-of-game). Yeah, it's as simple as that. So much for the overview. The details, God being in them or not, follow.
+Receiving the <code>MR</code> protocol message in <code>clientResult</code>, the client deserializes the strings from the computed result on the server and returns the result to the caller of <code>remote.call</code> by calling <code>remote.return</code> (testable out-of-game). Yeah, it's as simple as that. So much for the overview. The details, God being in them or not, follow.
 <p>
-<h3>Server Request: The End of the Beginning</h3>
-<a id="serverRequest"/a> The most important part of the RPC work is done by a function that can be tested out-of-game: <code>serverRequest</code>. It's the first one we'll look at even though it's one of the last in the call chain for an RPC. It runs on the server and calls <code>serverCall</code> to do the work on the server. Its <code>request</code> argument is a serialized table whose first element is a string representing a command and whose second element is a table of strings representing the arguments of that command. (We can send strings over the network.) Execution of the function supporting the command has been deferred until it will be applied to the arguments at the remote server computer. The arguments themselves are evaluated locally at the client caller before being packaged up, that is, serialized, for transmission.
+<h3>Server Apply: The End of the Beginning</h3>
+<a id="apply"/a> The most important part of the RPC work is done by a function that, as we said, can be tested out-of-game: <code>remote.apply</code>. It's the first one we'll look at even though it's one of the last in the call chain for an RPC. It runs on the server and calls <code>apply</code> to do the work on the server. Its <code>request</code> argument is a serialized table whose first element is a string representing a command and whose second element is a table of strings representing the arguments of that command. (We can send strings over the network.) Execution of the function supporting the command has been deferred until it will be applied to the arguments at the remote server computer. The arguments themselves are evaluated locally at the client caller before being packaged up, that is, <a href="https://en.wikipedia.org/wiki/Marshalling<i>(computer</i>science)" target="_blabk"> marshalled</a>, for transmission.
 <p>
 Lua's <code>load</code> function creates a deserializing function (or an indication of error). Calling that function creates the command (string) and a table of arguments for actual execution of the remote procedure. The command string is a key index dispatching into the table of functions exported by <a href="net.html" target="_blank"> <code>lib/net</code> </a> for remote execution. The function retrieved from that table of functions (<code>net[command]</code>) is applied on the server to the instantiated argument table to get (and return) a serialized table of computed <code>results</code>. For compatibility and safety, the table of functions includes only those functions that have been provided for execution in the remote (server) environment.
 <pre><code class="language-lua">
 --:# <b>Server Side Remote Call Operations: Protocols to Receive Muse Calls (MC), Send Muse Responses (MR)</b>
-local function serverCall(command, argumentTable) -- <b>execute the call on the server</b>
+local function apply(command, argumentTable) -- <b>execute the call on the server</b>
   local netCall = net[command]; if not netCall then return "remote: No operation defined for "..command end
   local results = netCall(argumentTable); -- <b>TADA..actually execute call: index into net functions applied to arguments</b> 
   return results
 end
 
-function _remote.serverRequest(clientID, request) -- test as <code>remote.testRequest</code>
-  --:: <code>_remote.serverRequest(clientID: #:, request: ":")</code> -> <i>Request string to request table, return serialized result</i>. -> <code>result: ":"</code>
+function remote.apply(clientID, request) -- test through <code>lib/net</code> for server execution
+  --:: <code>remote.apply(clientID: #:, request: ":")</code> -> <i>Request string to request table, return serialized result</i>. -> <code>result: ":"</code>
   local requestLoad, requestError = load(request) -- TODO: replace <code>load</code> and <code>core.serialize</code> with JSON compatible equivalents
-  local client = dds.role(clientID) or clientID -- fallback: <code>join</code> done but no reboot yet, clientID is just a stringified number
+  local client = dds.role(clientID) or clientID -- fallback if no role: <code>clientID</code> is just a stringified number
   core.status(5, "remote", "MR Request", request, "from", client) -- seen on turtle, can we instantiate command, argument table?
   if not requestLoad then error("remote.request: Can't instantiate "..request.." from "..client.." "..requestError) end
   local command, argumentTable = table.unpack(requestLoad()) -- <code>command: ":"</code> for dispatch into net RPC functions
   core.status(3, "remote", "MR Dispatch", command, "from", client, "for", argumentTable)
-  return core.serialize(serverCall(command, argumentTable)) -- call executed, result table serialized as string
-end; remote.testRequest = <i>remote.serverRequest; -- Test through</i> <code>lib/net</code> _for server execution
+  return core.serialize(apply(command, argumentTable)) -- call executed, result table serialized as string
+end
 </code></pre>
 Note that there's deliberately no executable representation for functions in the serialized argument table. It's just a string. The function arguments are just a serialized table (recursively) of strings. In principle, any way of (recursively) serializing tables of strings would be fine. MUSE happens to operate in a homogeneous execution environment. We get away with letting Lua's <code>load</code> function do the deserialization. That's not a good assumption in the real world. 
 <p>
 There are no untrusted actors in the MUSE environment. In other environments passing executable representations of functions could create an exposure that rogue actors could exploit. There is <a href="core.html#serialize" target="_blank"> special attention</a> paid in serialization of strings that could be evaluated to create such exposures. All that as given however, only rogue wary functions are good for server side execution. We're looking at you, <code>map.chart</code>. (You'll see why in the tawdry exposé of <code>lib/map</code> to follow.)
 <p>
-<h3>Server Send: The Server's Work Here Is Done</h3>
-<a id="serverSend"></a> Because of testing considerations, the actual (instrumented) network operations are handled by relatively simple implementations. The <code>serverSend</code> function just calls <code>serverRequest</code>, the function we've just discussed, and sends the serialized result back to the client using the <code>MR</code> (Muse Response) protocol to the requesting client (which will be the player's pocket computer). The <code>remote.wait</code> loop (<code>while true do</code>) patiently waits for <code>MC</code> (Muse Call) protocol messages and calls <code>serverSend</code> function whenever it receives one.
+<h3>Server Wait: The Server's Work Here Is Done</h3>
+<a id="serverWait"></a> Because of testing considerations, the actual (instrumented) network operations are handled by relatively simple implementations. The <code>serverApply function just calls remote.apply</code>, the function we've just discussed, and sends the serialized result back to the client using the <code>MR</code> (Muse Response) protocol to the requesting client (which will be the player's pocket computer). The <code>remote.wait</code> loop (<code>while true do</code>) patiently waits for <code>MC</code> (Muse Call) protocol messages and calls the <code>serverApply</code> function whenever it receives one.
 <pre><code class="language-lua">
-local function serverSend(clientID, request) -- send serialized response from server execution of call
+local function serverApply(clientID, request) -- get and send serialized response from server execution of call
   core.status(4, "remote", "MC Server", request, "from", clientID)
-  local result = _remote.serverRequest(clientID, request)
+  local result = remote.apply(clientID, request)
   core.status(4, "remote", "MR Server", result, "for", clientID)
-  rednet.send(clientID, result, "MR") -- result back to player as <code>clientReceive()</code>
+  rednet.send(clientID, result, "MR") -- result back to player seen by <code>clientReceive()</code>
 end -- server is done; remote.<code>wait()</code> for the next MuseCall ("MC") rednet message
 
 function remote.wait() -- in-game turtle servers wait for MC calls and send MR results
 --:: remote.wait() -> <i>Setup turtle to repeatedly wait for MC network requests, send MR results.</i> -> <code>nil</code>
   print("MC: Waiting On Call"); while true do -- Muse Call and Response
     local clientID, request = rednet.receive("MC")  -- Muse Call ("MC")
-    serverSend(clientID, request) -- by Muse Response ("MR")
+    serverApply(clientID, request) -- by Muse Response ("MR")
   end
 end
 </code></pre>
 The  <a href="../programs/wait.html" target="_blank"> <code>wait</code> command </a> can be executed locally on a turtle to get a turtle waiting again for <code>MC</code> network messages after it has had an uncaught error. This is just a development convenience.
 <p>
-<h3>Client Result: The End of the End</h3>
-<a id="clientResult"></a> 
-Back on the client that called for the RPC, the <code>clientResult</code> and <code>clientReceive</code> functions handle the return value from the remote call server. In the same way as done for the server side functions, <code>clientResult</code> can be tested out-of-game. It uses Lua's <code>load</code> function as <code>serverRequest</code> does. In this case, to deserialize the <code>result</code> from the serialized table sent over the network by the server. It applies a supplied <a href="https://en.wikipedia.org/wiki/Callback<i>(computer</i>programming)" target="_blank"> _deferred <code>callback</code>_ </a> function to the deserialized result table and saves the value <code>returned</code> by applying that function in a variable local to the library.
+<h3>Client Return: The End of the End</h3>
+<a id="clientReturn"></a> 
+Back on the client that called for the RPC, the <code>remote.return</code> and <code>clientReturn</code> functions handle the return value from the remote call server. In the same way as done for the server side functions, <code>remote.return</code> can be tested out-of-game. It uses Lua's <code>load</code> function as <code></code>remote.apply<code> does. In this case, to deserialize the </code>result<code> from the serialized table sent over the network by the server. It applies a supplied <a href="https://en.wikipedia.org/wiki/Callback<i>(computer</i>programming)" target="_blank"> _deferred </code>callback<code>_ </a> function to the deserialized result table and saves the value (as </code>returned<code>) by applying that function to the </code>result`.
 <pre><code class="language-lua">
 --:# <b>Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)</b>
-function _remote.clientResult(serverID, resultString, callback) -- test as <code>remote.testResult</code>
-  --:: <code>_remote.clientResult(serverID: #:, resultString: ":", callback: ():)</code> -> <i>Apply callback to deserialized client result.</i> -> <code>any</code>
+function remote.return(serverID, resultString, callback) 
+  --:: <code>remote.return(serverID: #:, resultString: ":", callback: ():)</code> -> <i>Apply callback to deserialized client result.</i> -> <code>any</code>
   core.status(3, "remote", "MR Client", resultString, "from", dds.role(serverID)) -- on player
   local resultFunction, resultError = load(resultString) -- unserialized for execution
   if resultFunction then local result = resultFunction(); return callback(result) end -- specified by caller of <code>remote.call</code> 
   error("remote.result: Can't load "..resultString.." from "..dds.role(serverID).." "..resultError) -- on player
-end; remote.testResult = _remote.clientResult; -- export for testing
+end 
 
-local returned -- result of applying callback to deserialized response from server
+local returned -- by applying callback to deserialized response from server
 
-local function clientReceive(callback) -- receive result from "MR" protocol, apply callback to deserialized result
+local function clientReturn(callback) -- receive result from "MR" protocol, apply callback to deserialized result
   core.status(4, "remote", "MR Client Waiting")
   local serverID, resultString = rednet.receive("MR") -- <b>waiting for result from server</b>
   assert(serverID and resultString, "remote client receive missing serverID or result string")
   core.status(4, "remote", "MR Client Received", resultString, "from", dds.role(serverID)) -- on player
-  returned =  _remote.clientResult(serverID, tostring(resultString), callback) -- gets the value from calling the callback
+  returned =  remote.return(serverID, tostring(resultString), callback) -- gets the value from calling the callback
 end
 </code></pre>
 If you haven't been on that part of the tour yet, the MUSE DDS facilities called on above <a href="dds.html" target="_blank"> are worth an excursion</a>. They map a MUSE role to a ComputerCraft computer ID by calling <code>dds.ID</code> and back again calling <code>dds.role</code>. This abstracts away the need to be concerned with the detail of which ComputerCraft computer IDs happen to be assigned to which turtles performing which MUSE roles in a Minecraft world.
 <p>
-<h3>Client Send: The Beginning of the Beginning</h3>
-<a id="clientSend"/a> Working backwards toward the origin of the remote call, let's look at <code>prepareCall</code>, testable in the out-of-game environment. It serializes a table that has the command as the first element and a table of arguments for the command as its second. The serialized <code>request</code> and the ID for the turtle server are returned to <code>clientSend</code> which, in the same pattern we've seen above, does the actual network operations to kick off the RPC.  In this case, the client player waits with <code>parallelWaitForAny</code> for a network event. When it receives the kind it's waiting for, it invokes an anonymous closure calling <code>clientReceive</code> with a <code>callback</code> argument.
+<h3>Client Send: Marshall, The Beginning of the Beginning</h3>
+<a id="clientSend"/a> Working backwards toward the origin of the remote call, let's look at <code>remote.marshall</code>, testable in the out-of-game environment. It serializes a table that has the command as the first element and a table of arguments for the command as its second. The serialized <code>request</code> and the ID for the turtle server are returned to <code>clientSend</code> which, in the same pattern we've seen above, does the actual network operations to kick off the RPC. In this case, the client player waits with <code>parallelWaitForAny</code> for a network event. When it receives the kind it's waiting for, it invokes an anonymous closure calling <code>clientReceive</code> with a <code>callback</code> argument.
 <pre><code class="language-lua">
 -- <i>Send serialized string from <code>remote.call</code> to network and wait for result from server</i>
-function _remote.prepareCall(server, command, arguments) -- test as <code>remote.testCall</code>
---:: <code>_remote.prepareCall(server: ":", command: ":", arguments: any[])</code> -> <i>Serialize server request.</i> -> <code>serverID: #:, request: ":" &: &!</code>
+function remote.marshall(server, command, arguments) -- test as <code>remote.testCall</code>
+--:: <code>remote.marshall(server: ":", command: ":", arguments: any[])</code> -> <i>Serialize server request.</i> -> <code>serverID: #:, request: ":" &: &!</code>
   local serialOK, request = core.pass(pcall(core.serialize, {command, arguments})) -- TODO: use JSON compatible serialization
-  if not serialOK then error("remote.call: Can't serialize "..command.." for".." "..request) end
+  if not serialOK then error("remote.marshall: Can't serialize "..command.." for".." "..request) end
   local serverID = dds.roleID(server); if not serverID then error("remote.call: unknown target "..server) end
   return serverID, request -- on player client for send to turtle server
-end; remote.testCall = _remote.prepareCall
+end
 
 local function clientSend(serverID, request, callback) 
   core.status(3, "remote", "MC Sending", request, "to", serverID..":"..dds.role(serverID)) -- on player
-  rednet.send(serverID, request, "MC" ); 
-  parallel.waitForAny(function() clientReceive(callback) end)
-  return returned -- side effect of clientReceive (parallel.waitForAny in CC:Tweaked returns <code>nil</code>)
+  rednet.send(serverID, request, "MC" ); -- the essential inner loop for the client
+  parallel.waitForAny(function() clientReturn(callback) end)
+  return returned -- side effect of clientReturn (parallel.waitForAny in CC:Tweaked returns <code>nil</code>)
 end
 
 local function localCall(clientID, serverID, request, callback) -- no need for network: client and server are the same
-  local resultString = _remote.serverRequest(clientID, request)
-  returned =  _remote.clientResult(serverID, resultString, callback)
+  local resultString = remote.apply(clientID, request)
+  returned =  remote.result(serverID, resultString, callback)
 end
 </code></pre>
 <h3>Calling It</h3>
-<a id="call"/a>The client's <code>remote.call</code> function makes use of all the pieces we've looked at above. Together they prepare and send a <code>request</code> with the <code>command</code> together with its client evaluated <code>argumentsTable</code> to the named turtle server. The remotely supplied function supporting the command is remotely applied to its arguments and the result packaged up for the client.
-<p>
-The <code>remote.returns</code> function is the default <code>callback</code> function handling the result back on the client. 
+<a id="call"/a>The client's <code>remote.call</code> function makes use of all the pieces we've looked at above. Together they prepare and send a <code>request</code> with the <code>command</code> together with its client evaluated and marshalled <code>argumentsTable</code> to the named turtle server. The remotely supplied function supporting the command is applied to its arguments on the server and the result packaged up for the client. The client receives the package, unpackages it, and applies the callback to return, at long last, what was asked for. (The <code>remote.callback</code> function is the default client side <code>callback</code> function.)
 <pre><code class="language-lua">
 function remote.call(server, command, arguments, callback) -- client command line: command, arguments
   --:: remote.call(server: ":", command: ":", arguments: any[], callback: ():?) -> <i>RPC:</i> -> <code>any &: &!</code>
   --:+ <i>Form serialized request table from command string and arguments. Get server ID from server name.</i>
   --:+ <i>Send request to server, wait for result, return call (default <code>remote.return</code>) callback function to result.</i>
-  callback = callback or remote.returns -- a default (see below) if no <code>callback</code> argument
-  local serverID, request = _remote.prepareCall(server, command, arguments); local clientID = core.getComputerID(0)
+  callback = callback or remote.callback -- a default (see below) if no <code>callback</code> argument
+  local serverID, request = remote.marshall(server, command, arguments); local clientID = core.getComputerID(0)
   if dds.ID(server) ==  clientID then return localCall(clientID, serverID, request, callback) end -- short circuit
-  local callOK, report = core.pass(pcall(clientSend, serverID, request, callback)) -- send and wait
+  local callOK, report = core.pass(pcall(clientSend, serverID, request, callback)) -- send and wait for <code>returned</code>
   if not callOK then error("remote.call: Sending "..command.." request to "..server.." failed".." "..report) 
   end; return report
 end
 
-function remote.returns(results) print(core.string(results)) end 
---:: remote.returns(results: any[]) -> <i>Default client side handling of server response: just print results as string.</i> -> <code>nil</code>
+function remote.callback(results) print(core.string(results)) end 
+--:: remote.callback(results: any[]) -> <i>Default client side handling of server response: just print results as string.</i> -> <code>nil</code>
 </code></pre>
 <h3>Come Hither</h3>
 <a id="come"/a>That's all that seems to need saying about how <code>remote.call</code> works. Next, let's see a couple of ways of how it's used.
 <p>
 The <code>remote.come</code> and <code>remote.tail</code> functions locally evaluate <a href="core.html#where" target="_blank"> <code>where</code> </a> the player is, its <code>x</code>, <code>y</code>, <code>z</code> coordinates, and make a <code>remote.call</code> to the turtle server to perform a <code>command</code>, namely, <code>come</code> or <code>tail</code>. The <code>come</code> and <code>tail</code> entries in the <code>lib/net</code> dispatch table reference the server side functions, <code>roam.come</code> and <code>roam.tail</code>, which actually move the turtle.
+<p>
+And then that's it. As usual, we end by exporting bindings.
 <pre><code class="language-lua">
 --:# <b>Turtle fetch functions:</b> <code>come</code> <b>(once) and</b> <code>tail</code> <b>(repeatedly) to player</b>
-function _remote.prepareCome(turtle, command) -- <b>TEST</b> as much as possible done for out-game test
-  --:: <code>_remote.testCome(turtle: ":", command: ":")</code> -> <i>On client:</i> -> <code>turtle: ":", command: ":", xyz, ^:</code>
+function remote.prepareHither(turtle, command) -- <b>TEST</b> as much as possible done for out-game test
+  --:: <code>_remote.prepareHither(turtle: ":", command: ":")</code> -> <i>On client:</i> -> <code>turtle: ":", command: ":", xyz, ^:</code>
   --:+ <i>Prepare remote call to server turtle by getting player xyz position and forming argument table.</i>
   local x, y, z, ok = move.where(); return turtle, command, {x, y, z}, ok -- player position, everything needed for <code>call</code>
-end; remote.testCome = _remote.prepareCome
+end
 
 function remote.come(turtle) -- <b>needs GPS</b>
   --:: remote.come(turtle: ":") -> <i>Towards GPS player position.</i> -> <code>report: ":"</code>
   --:- come -> <i>Turtle towards GPS player position.</i>
-  local server, command, xyz, ok = _remote.prepareCome(turtle, "tail")
+  local server, command, xyz, ok = remote.prepareHither(turtle, "tail")
   if not ok then error("remote.come: GPS failed") end
   local report = remote.call(server, command, xyz) or ""
   core.status(3, "remote", "come", report)
@@ -183,20 +183,17 @@ function remote.tail(turtle, _, rates) --  <b>needs GPS</b>; turtle tails player
     core.status(5, "remote", "tail", result or "", report or ""); core.sleep(rate)
   end
 end
-</code></pre>
-<h3>Exporting the Test Bindings</h3>
-<a id="test"/a>The last part of <code>lib/remote</code> exports bindings for functions that can be used in-game and those that can be used to test the library in the out-of-game environment.
-<pre><code class="language-lua">
+
 return {remote = remote}
 </code></pre>
 <h3>Excursions</h3>
-Finally, in distributed operations, the kind of reporting that <code>core.status</code> and its close relatives provide can make clear what otherwise is very difficult to figure out. With all we're up to, it's time to follow the <a href="core.html#status" target="_blank"> link for an excursion</a> into that deferred discussion of the implementation of <code>core.status</code>. 
+In distributed operations, the kind of reporting that <code>core.status</code> and its close relatives provide can make clear what otherwise is very difficult to figure out. With all we're up to, it's time to follow the <a href="core.html#status" target="_blank"> link for an excursion</a> into that deferred discussion of the implementation of <code>core.status</code>. 
 <p>
-Look at <a href="../tests/remote.html" target = "_blank"> <code>tests/remote </a> and <a href="check.html" target = "_blank"> </code>lib/check<code></a></code> to see how testing works for this module. 
+Do look at <a href="../tests/remote.html" target = "_blank"> <code>tests/remote</code> </a> and especially <a href="check.html" target = "_blank"> <code>lib/check</code></a>` to see how testing works for this module. 
 <p>
-Then look at how <a href="net.html" target="_blank"> <code>lib/net</code></a> actually creates the remote CLI we said we would discuss.
+Then look to see how <a href="net.html" target="_blank"> <code>lib/net</code></a> actually creates the remote CLI we said is generated.
 <p>
-Or you can return to the next chapter of <i>MiningMUSE</i> with this <a href="../../MiningMUSE.html#Chapter5" target="_blank"> link</a> to use turtle storage for <i>persistence</i>.
+Or you can return to the next chapter of <i>MiningMUSE</i> with this <a href="../../MiningMUSE.html#Chapter5" target="_blank"> link</a> to see how to use turtle storage for <i>persistence</i>.
 <p>
   </body> 
 </html>
