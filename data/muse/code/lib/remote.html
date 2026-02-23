@@ -21,8 +21,7 @@ At the dance waiting to be asked, all but the player's pocket computer (and the 
 We'll get to more about the dancing in a bit but first, the expected library introduction. Loading <code>lib/net</code> generates a dispatch table with references to the libraries that actually do the work of the remote call. More on that in a bit.
 <pre><code class="language-lua">
 ---@diagnostic disable: duplicate-set-field
-local remotes = require("signs.remote"); remotes.remote, remotes._remote = {}, {}; 
-local remote, <i>remote = remotes.remote, remotes.</i>remote ---@module "signs.remote" 
+local remotes = require("signs.remote"); remotes.remote = {}; local remote = remotes.remote ---@module "signs.remote" 
 
 local cores = require("core"); local core = cores.core ---@module "signs.core"
 local motion = require("motion"); local move = motion.move ---@module "signs.motion"
@@ -159,8 +158,8 @@ The <code>remote.come</code> and <code>remote.tail</code> functions locally eval
 And then that's it. As usual, we end by exporting bindings.
 <pre><code class="language-lua">
 --:# <b>Turtle fetch functions:</b> <code>come</code> <b>(once) and</b> <code>tail</code> <b>(repeatedly) to player</b>
-function remote.prepareHither(turtle, command) -- <b>TEST</b> as much as possible done for out-game test
-  --:: <code>_remote.prepareHither(turtle: ":", command: ":")</code> -> <i>On client:</i> -> <code>turtle: ":", command: ":", xyz, ^:</code>
+function remote.hither(turtle, command) -- <b>TEST</b> as much as possible done for out-game test
+  --:: remote.hither(turtle: ":", command: ":")<code> -> <i>On client:</i> -> </code>turtle: ":", command: ":", xyz, ^:`
   --:+ <i>Prepare remote call to server turtle by getting player xyz position and forming argument table.</i>
   local x, y, z, ok = move.where(); return turtle, command, {x, y, z}, ok -- player position, everything needed for <code>call</code>
 end
@@ -168,7 +167,7 @@ end
 function remote.come(turtle) -- <b>needs GPS</b>
   --:: remote.come(turtle: ":") -> <i>Towards GPS player position.</i> -> <code>report: ":"</code>
   --:- come -> <i>Turtle towards GPS player position.</i>
-  local server, command, xyz, ok = remote.prepareHither(turtle, "tail")
+  local server, command, xyz, ok = remote.hither(turtle, "tail")
   if not ok then error("remote.come: GPS failed") end
   local report = remote.call(server, command, xyz) or ""
   core.status(3, "remote", "come", report)
@@ -179,7 +178,7 @@ function remote.tail(turtle, _, rates) --  <b>needs GPS</b>; turtle tails player
   --:: remote.tail(turtle: ":", _ : "tail", rates: ":"?) -> _Repeatedly towards player position, default rate _G.Muse.rates.tail seconds -> <code>nil</code> 
   --:- tail rate? -> <i>Turtle every rate seconds towards player.</i>
   local rate = tonumber(rates) or _G.Muse.rates.tail; while true do -- assume good GPS
-    local result, report = remote.call(_remote.prepareCome(turtle, "come")) -- server, command, xyz
+    local result, report = remote.call(remote.hither(turtle, "come")) -- server, command, xyz
     core.status(5, "remote", "tail", result or "", report or ""); core.sleep(rate)
   end
 end

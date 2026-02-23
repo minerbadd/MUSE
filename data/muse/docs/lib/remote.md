@@ -20,7 +20,9 @@
 
 --:: remote.callback(results: any[]) -> _Default client side handling of server response: just print results as string._ -> `nil`  
 
---:# **Turtle fetch functions:** `come` **(once) and** `tail` **(repeatedly) to player**    
+--:# **Turtle fetch functions:** `come` **(once) and** `tail` **(repeatedly) to player**  
+
+--:: remote.hither(turtle: ":", command: ":")` -> _On client:_ -> `turtle: ":", command: ":", xyz, ^:`    
 --:+ _Prepare remote call to server turtle by getting player xyz position and forming argument table._  
 
 --:: remote.come(turtle: ":") -> _Towards GPS player position._ -> `report: ":"`  

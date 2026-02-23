@@ -5,7 +5,7 @@
 --:| net: _Command Line Library providing turtle operations used by remote library (effectively the UI for Muse)._ -> net
 --:# _Remote commands for turtles need prefixing by `farmer`, `miner`, `logger`,`porter`,  or `rover` roles._
 ```
-When this module is loaded it populates its exported table, the `net` library, as a dispatch table used by `remote.call`. Each entry in the table defines a _remote command_. Only the operations performed by these commands are available for remote execution. Together these create the remote CLI for MUSE. It also sets up hints as shell completions for ComputerCraft's CraftOS `shell.setCompletionFunction`. This is invoked at MUSE session start by <a href="../.start.html#complete" target="_blank"> `.start.lua` </a> running `core.completer`
+When this module is loaded it populates its exported table, the `net` library, as a dispatch table used by `remote.call`. Each entry in the table defines a _remote command_. Only the operations performed by these commands are available for remote execution. Together these create the remote CLI for MUSE. It also sets up hints as shell completions for ComputerCraft's CraftOS `shell.setCompletionFunction`. This is invoked at MUSE session start by <a href="../.start.html#complete" target="_blank"> `.start.lua` </a> running `core.completer`. And the library sets up documentation for the CLI.
 
 As you'll see, it's all about that exported table.
 ```Lua
