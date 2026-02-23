@@ -39,7 +39,7 @@ function core.optionals() end
 -- Produce function equivqlent to sucessive application of argument functions
 -- core.compose(...: ():):  (): <-
 
----@type fun( ...: function):  function
+---@type fun( ...: function):  function 
 function core.compose() end
 
 -- Appends (status) message to log file on player.
@@ -150,7 +150,7 @@ function core.status() end
 -- Register command completions for shell
 -- core.completer(completions: {:}):  `():` <-
 
----@type fun( completions: table):  function
+---@type fun( completions: table):  function 
 function core.completer() end
 
 -- Executable string to instantiate input.
@@ -191,7 +191,7 @@ function core.string() end
 -- Iterator for (factorial) permutations of array
 -- core.permute(array: any[]):  `():` <-
 
----@type fun( array: any[]):  function
+---@type fun( array: any[]):  function 
 function core.permute() end
 
 -- Pass input but report string if not ok.

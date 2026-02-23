@@ -57,7 +57,7 @@
 
 --:: move.ats(theSituation:situation?) -> <i>(Current) position and facing string (<code>""</code> in game if not turtle).</i> -> <code>xyzf: ":"</code>  
 
---:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ok: #:|^:</code>    
+--:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ok: ^:</code>    
 --:+ <i>If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.</i>  
 
 --:> recovery: <i>For some errors</i> -> <code>[call: ":", cause: ":", remaining: #:, :xyzf:, :direction:, operation: ":"]</code>  

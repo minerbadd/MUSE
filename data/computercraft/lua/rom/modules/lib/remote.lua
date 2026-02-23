@@ -2,7 +2,7 @@
 ## Remote Procedure Calls, RPCs: lib/remote, Client Side `come` and `tail`
 ```md
 --:! {remote: [":"]: ():} <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md  
---:| remote: _Client and server side support for RPCs and client (player) side support for_ `come` _and_ `tail`. -> remote, _remote
+--:| remote: _Client and server side support for RPCs and client (player) side support for_ `come` _and_ `tail`. -> remote
 --:+ **Test functions are provided for out-of-game operations without a network.**
 
 ```
@@ -139,7 +139,7 @@ end
 ```Lua
 --]]
 function remote.call(server, command, arguments, callback) -- client command line: command, arguments
-  --:: remote.call(server: ":", command: ":", arguments: any[], callback: ():?) -> _RPC:_ -> `any &: &!`
+  --:: remote.call(server: ":", command: ":", arguments: any[], callback: ():?) -> _RPC:_ -> `any` `&: &!`
   --:+ _Form serialized request table from command string and arguments. Get server ID from server name._
   --:+ _Send request to server, wait for result, return call (default `remote.returns`) callback function to result._
   callback = callback or remote.callback -- a default (see below) if no `callback` argument
@@ -167,7 +167,7 @@ And then that's it. As usual, we end by exporting bindings.
 function remote.hither(turtle, command) -- **TEST** as much as possible done for out-game test
   --:: remote.hither(turtle: ":", command: ":")` -> _On client:_ -> `turtle: ":", command: ":", xyz, ^:`
   --:+ _Prepare remote call to server turtle by getting player xyz position and forming argument table._
-  local x, y, z, ok = move.where(); return turtle, command, {x, y, z}, ok -- player position, everything needed for `call`
+  local x, y, z, _, ok = move.where(); return turtle, command, {x, y, z}, ok -- player position, everything needed for `call`
 end
 
 function remote.come(turtle) -- **needs GPS**

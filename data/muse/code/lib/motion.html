@@ -217,11 +217,11 @@ core.ats = move.ats -- protect from override
 Look at the <a href="core.html#where" target="_blank"> implementation </a> of <code>core.where</code> to see how function bindings are used to handle in-game and out-game environments.
 <pre><code class="language-lua">
 function move.where(tx, ty, tz, tf) -- where's the turtle?
---:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ok: #:|^:</code>
+--:: move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?) -> <i>Returns GPS results if available.</i> -> <code>x: #:, y: #:, z: #:, facing: ":", ok: ^:</code>
 --:+ <i>If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.</i>
   local px, py, pz, pf = table.unpack(move.at()); local gx, gy, gz = core.where() -- gx is nil if GPS fails or no GPS
 ---@diagnostic disable-next-line: undefined-field
-  return gx or tx or px, gy or ty or py, gz or tz or pz, tf or pf, (gx or not _G.gps) -- ok if no GPS (out-game)
+  return gx or tx or px, gy or ty or py, gz or tz or pz, tf or pf, (type(gx) == "number" or not _G.gps) -- ok if no GPS (out-game)
 end
 </code></pre>
 <a id="tables"></a>

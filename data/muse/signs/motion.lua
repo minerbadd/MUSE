@@ -146,9 +146,9 @@ function move.west() end
 function move.east() end
 
 -- Returns GPS results if available. If no GPS, returns the optional (testing) parameters or, if not supplied, current dead reckoning position in situation.
--- move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?):  `x: #:, y: #:, z: #:, facing: ":", ok: #:|^:` <-
+-- move.where(tx: #:?, ty: #:?, tz: #:?, tf: ":"?):  `x: #:, y: #:, z: #:, facing: ":", ok: ^:` <-
 
----@type fun( tx: number?,  ty: number?,  tz: number?,  tf: string?):   x: number,  y: number,  z: number,  facing: string,  ok: number | boolean 
+---@type fun( tx: number?,  ty: number?,  tz: number?,  tf: string?):   x: number,  y: number,  z: number,  facing: string,  ok: boolean 
 function move.where() end
 
 -- Clone current situation
