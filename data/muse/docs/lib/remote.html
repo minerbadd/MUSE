@@ -8,7 +8,8 @@
 
 --:! {remote: [":"]: ():} <- <b>Functions Library for Remote Procedure Calls</b> -> muse/docs/lib/remote.md      
 --:| remote: <i>Client and server side support for RPCs and client (player) side support for</i> <code>come</code> <i>and</i> <code>tail</code>. -> remote    
---:+ <b>Test functions are provided for out-of-game operations without a network.</b>  
+--:+ <b>Multiple returns are not supported. Errors are caught on servers and provided as error string to clients.</b>    
+--:+ <i>For testing out-of-game, if client and server are the same, there are no network operations.</i>  
 
 --:# <b>Server Side Remote Call Operations: Protocols to Receive Muse Calls (MC), Send Muse Responses (MR)</b>  
 

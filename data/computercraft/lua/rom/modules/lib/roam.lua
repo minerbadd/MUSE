@@ -165,7 +165,7 @@ end; roam.hints["go"] = {["?chain n e s w u p r l f b"] = {}}
 <a id="op"></a> 
 #Dispatch and Done
 Just a simple dispatch, some error handling, and our work here is done.  As mentioned, this is the first CLL we've run across. 
-The design pattern is worth looking at. All the interesting stuff is done here in the library so that the CLI itself, the command program, is dead simple. Look at what goes before to see how.
+The design pattern is worth looking at. All the interesting stuff is done here in the library so that the CLI itself, the command program, is dead simple. Look at what goes before to see how. It's worth noting that the dispatch deals with error handling: errors are caught here and reported rather than propogated back to callers. This turns out to be important when, as we'll see, we discuss networking.
 ```Lua
 --]]
 local ops = {go = go, to = to, trace = trace, } 

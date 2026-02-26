@@ -176,7 +176,7 @@ local function put(...)
   function task.op(commands) 
     --:: task.op (commands: [ op: ":", arguments: ":"[] ] ) -> _Execute tasks for low level turtle operations:_ -> `":" &:`
     local ok, report = core.pass(pcall(ops[commands[1]], table.unpack(commands, 2)))
-    if ok then return report else return "task: "..core.string(report) end -- report failure for error
+    return ok and report or "task: "..core.string(report) 
   end 
 
   return {task = task}
