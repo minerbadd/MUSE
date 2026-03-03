@@ -45,15 +45,15 @@
 
 --:# Logging and Quit Control Globals  
 
---:- quit message -> Set quit flag to message; next core.status throws error to abort operations.  
+--:- quit message -> Set quit flag to message; next core.report throws error to abort operations.  
 
 -- :> core.log: Closure variable -> {level: closing, file: closing, handle: closing}  
 
--- :: core.status(level: #:, ...: any) -> If level less than (elimination) threshold, then report rest as string. -> nil    
+-- :: core.report(level: #:, ...: any) -> If level less than (elimination) threshold, then report rest as string. -> nil    
 --:+ If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol.    
 --:+ If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.  
 
--- :: core.report(level: #:, ...: any) -> If level less than status threshold, report rest as string. -> nil  
+-- :: core.message(level: #:, ...: any) -> If level less than status threshold, report rest as string. -> nil  
 
 -- :: core.logging(arguments: {level: #:, filename: ":"}) -> Set threshold level [and local log file] for status reports -> nil  
 

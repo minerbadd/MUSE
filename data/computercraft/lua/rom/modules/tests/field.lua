@@ -87,3 +87,32 @@ map.point: TF.fenceES {140, 64, 317}  {100, 20, 300}, north
 map.point: TF.fenceSE {140, 64, 318}  {100, 20, 300}, north
 --]]
 
+
+--:# **Field Operations** (Simple Ones First)
+map.op {"test", "farm00", "testing", "90", "20", "290", "west"}
+map.op {"test", "farm30", "testing", "100", "20", "300", "west"}
+map.op {"range", "farm3000", "testing", "farm30", "farm00", "fences"}
+roam.op {"trace", "farm3000"} -- range as really short trail
+
+test(40, "farmer", "cut", {"farm30", "farm00"})
+test(41, "farmer", "fill", {"farm30", "farm00", "dirt"})
+test(41.1, "farmer", "fill", {"farm30", "farm00","potato", "dirt"})
+test(42, "farmer", "till", {"farm30", "farm00", "dirt", "potato"})
+
+test(43, "farmer", "fence", {"farm3000"})
+test(43.1, "farmer", "fence", {"farm3000", "birch"})
+map.op {"test", "farm40SE", "testing", "100", "20", "300", "east"}
+map.charts(_G.Muse.path.."charts/"); map.op {"chart", "farm40", "farm40SE", "SE", "64"}; 
+test(43.2, "farmer", "fence", {"farm40SE:east", "birch"})
+
+test(44, "farmer", "path", {"farm40SE:pens", "2", "2"})
+test(44.1, "farmer", "quarry", {"farm40SE:trees", "2", "2"})
+test(44.2, "farmer", "layer", {"farm40SE:trees", "2", "2"})
+test(44.3, "farmer", "quarry", {"farm40SE:trees", "2", "2"})
+test(44.4, "farmer", "cover", {"farm40SE:trees", "2", "2"})
+test(44.5, "farmer", "finish", {"farm40SE:trees", "2", "2"})
+test(44.6, "farmer", "harvest", {"farm40SE:trees", "2", "2"})
+
+test(45, "farmer", "field", {"harvest", "farm40SE:trees", "2", "2"})
+
+

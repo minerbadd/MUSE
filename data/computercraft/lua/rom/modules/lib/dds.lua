@@ -101,7 +101,7 @@ function dds.playerID(id) if id then _G.Muse.playerID = id end; return _G.Muse.p
 
 local function request() -- player sends its ID and site to all computers registered as `MQ` protocol hosts.
   dds.playerID(core.getComputerID(0)) -- out-game force ID = 0
-  local hosts = {rednet.lookup("MQ")}; core.report(1, "Hosting "..#hosts)
+  local hosts = {rednet.lookup("MQ")}; core.message(1, "Hosting "..#hosts)
   for _, id in pairs(hosts) do rednet.send(id, place.site(), "MQ") end 
   return #hosts
 end
@@ -115,7 +115,7 @@ local function respond()
   local id, playerSite = rednet.receive("MQ"); dds.playerID(assert(id, "dds respond: no id")) -- set global on remote responder
   assert(id and playerSite, "dds respond: id and player site not received")
   local qrole = dds.get(tostring(playerSite)) -- for hatchlings: only writes site file if there isn't one
-  core.report(1, "MQT "..id.." "..qrole); -- DDS Turtle now sited
+  core.message(1, "MQT "..id.." "..qrole); -- DDS Turtle now sited
   rednet.send(id, qrole, "MQ") -- need to send `count` messages 
 end
 --[[
@@ -130,7 +130,7 @@ local function receive(count) -- on player for each DDS host
     local ddsLabel = (ddsID == dds.playerID()) and "player" or received -- player sends garbage to self
     assert(ddsID and ddsLabel, " dds receive: need id and label")
     IDs[ddsLabel] = ddsID; roles[ddsID] = ddsLabel -- **the point of it all**
-    core.report(1, "MQ "..ddsID.." "..ddsLabel) -- DDS Player
+    core.message(1, "MQ "..ddsID.." "..ddsLabel) -- DDS Player
     rednet.send(ddsID, "DDS OK on "..core.getComputerLabel(), "MS") -- to .status
   end 
 end

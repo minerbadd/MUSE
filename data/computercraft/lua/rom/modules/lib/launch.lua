@@ -39,9 +39,9 @@ os.reboot();
 function _launch.equip(direction) -- assembles computer, modem, drive, and floppy
   --:: `_launch.equip(direction: facing)` -> _Assemble parts._ -> ":"
   --:- equip direction -> _Assemble computer, modem, drive, and floppy for direction named GPS launch (for testing)._
-  core.report(2, "Equipping host at ", move.ats(), direction)
+  core.message(2, "Equipping host at ", move.ats(), direction)
   move.back(1) -- because positions are computer positions
-  core.report(2, "Equiping host "..direction)
+  core.message(2, "Equiping host "..direction)
   assert(turtle.find({computer}), "launch: no computer") -- select computer
   turtle.puts["front"]() -- place computer in front of turtle
   move.back(1) -- move back to place modem
@@ -80,13 +80,13 @@ function _launch.actuate(commands)
   move.up(1) -- up to left of computer still facing away from computer in plane in front of drive
   move.right(1) -- turn right toward computer and then forward into plane of computer
   move.right(0) --turn right to face computer on the side of the computer where there's no modem
-  core.report(2, "Actuating " .. direction, move.ats())
+  core.message(2, "Actuating " .. direction, move.ats())
   if peripheral then peripheral.call("front", "turnOn") end-- boot computer in game
   move.down(1) -- adjacent to drive
-  core.report(2, "Retrieving floppy from ".. direction.." installation")
+  core.message(2, "Retrieving floppy from ".. direction.." installation")
   turtle.sucks["front"]() -- retrieve floppy disk into a turtle slot (doesn't matter where)
   move.down(3) -- get away down from installation: clearance = 3
-  core.report(2, "Actuated ".. direction.." installation at", move.ats())
+  core.message(2, "Actuated ".. direction.." installation at", move.ats())
   return "Actuated "..direction.." GPS host"
 end
 
@@ -98,7 +98,7 @@ end
 local displacements = {north = {0, 0, -3}, south = {0, 0, 3}, east = {3, -3, 0}, west = {-3, -3, 0}, }
 
 local function makePositions(xyzLocation, yDistance) -- positions for GPS computers
-  core.report(2, "Deploy positions from", xyzLocation, yDistance)
+  core.message(2, "Deploy positions from", xyzLocation, yDistance)
   local xb, yb, zb = table.unpack(xyzLocation); local yGPS = math.min(253, yb + yDistance); 
   local xyzGPS = {xb, yGPS, zb} -- xyz for GPS = spot + y displacement
   local positions = {}; for direction, displacement in pairs(displacements) do
@@ -135,12 +135,12 @@ function _launch.launch(commands) -- use `locate` to give a `place` a `location`
   local xyzLocation = place.xyzf(location); yD = yD or 255; local positions = makePositions(xyzLocation, yD)
   
   for _, direction in ipairs(order) do local position = positions[direction]; 
-    core.report(2, "GPS "..direction.." host to "..core.xyzfs(position)) 
+    core.message(2, "GPS "..direction.." host to "..core.xyzfs(position)) 
     move.to(position); _launch.equip(direction); install(position); _launch.actuate({"actuate", direction}) -- **do the work**
-  end; core.report(2, "Returning to launch location"); move.to(xyzLocation)
+  end; core.message(2, "Returning to launch location"); move.to(xyzLocation)
   
   local xb, yb, zb = table.unpack(xyzLocation); local x, y, z = move.where(); 
-  if not x then core.status(1, "launch", "GPS Locate Failed") end
+  if not x then core.report(1, "launch", "GPS Locate Failed") end
   return "GPS "..x..", "..y..", "..z.." for "..xb..", "..yb..", "..zb
 end launch.hints["launch "] = {["?location "] = {["??yDelta"] = {}}}
 

@@ -37,7 +37,7 @@ local penWidth = (vWidth - runFences - alleyWidth) / 2
 if penWidth <= 0 then error("pen: Can't be "..penWidth.." blocks wide") end
 
 local fences = (runFences <i> vLength) + (2 </i> penWidth) + (2 * (vWidth - 2))
-core.status(2, "pen", slots.quarry, "slots each plot", fences, "fences")
+core.report(2, "pen", slots.quarry, "slots each plot", fences, "fences")
 </code></pre>
 The field is parcelled into <code>plots</code> appropriate to each <i>field operation</i>. Each <code>plot</code> is generated referencing the virtual <code>stride</code> and  <code>run</code> axes. If there is no <code>turn</code> property, <code>orient</code> performs no transform.  The <code>stride</code> axis is then simply west to east in game coordinates and operations will <code>run</code> along north to south game coordinates.
 <a id="plots"><IMG SRC="../../drawings/07Pen.png" ALIGN="center" hspace="10"/>
@@ -65,19 +65,19 @@ Each <code>operation</code> supported by this field (<code>quarry</code>, <code>
 <pre><code class="language-lua">
 local function quarryOp(index)
   local quarryResult = field.plan("quarry", {plots.quarry[index]}) -- from, to
-  core.status(2, "pen", "quarrying", index, quarryResult)
+  core.report(2, "pen", "quarrying", index, quarryResult)
   return quarryResult
 end
 
 local function layerOp(index)
   local layerResult = field.plan("layer", {plots.layer[index], "dirt"})
-  core.status(2, "pen", "layering", index, layerResult)
+  core.report(2, "pen", "layering", index, layerResult)
   return layerResult
 end
 
 local function finishPath(index, offset, plan)
   local finishResult = field.plan(plan, {plots.finish[index], "fence"}, offset)
-  core.status(2, "pen", "finishingPath", index, finishResult)
+  core.report(2, "pen", "finishingPath", index, finishResult)
   return finishResult
 end
 

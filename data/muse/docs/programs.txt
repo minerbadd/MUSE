@@ -20,6 +20,8 @@ join role id ?site: Join nameplate id'd turtle to network with specified role an
 
 locate name label?: Create launch point having Minecraft coordinates above `porter`.
 
+log level [filename]: Set reporting hurdle and optionally save reporting in log file.The log level controls reporting: the higher the level the more detailed the reports.Log files are stored locally in a computer's `muse` directory.
+
 logger command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
 
 miner command argument...: See <a href="../lib/net.html" target="_blank">/lib/net</a> for the remote command line interface.
@@ -40,7 +42,7 @@ rover command argument...: See <a href="../lib/net.html" target="_blank">/lib/ne
 
 site siting?: Remote operation to report or change site (persistently) after, e.g., moving_ `rover` _to a new site_.
 
-status level [filename]: Set reporting hurdle and optionally save reporting in log file.The status level controls reporting: the higher the level the more detailed the reports.Log files are stored locally in a computer's `muse` directory.
+log level [filename]: Set reporting hurdle and optionally save reporting in log file.The log level controls reporting: the higher the level the more detailed the reports.Log files are stored locally in a computer's `muse` directory.
 
 sync: Muse Update (MU) broadcast local map to (MQ) registered units.
 

@@ -41,7 +41,7 @@ local function lost(plan, pathOperations, index, direction, remaining, at, movem
 end
 
 local function blocked(plan, pathOperations, index, direction, remaining, at, movement, motion) -- attempt unblock
-  core.status(3, "worker", "blocked so unblocking at", at, "for", plan.name,  movement, motion) 
+  core.report(3, "worker", "blocked so unblocking at", at, "for", plan.name,  movement, motion) 
   turtle.unblock(direction); move[direction](0) -- unblocking failure raises error, <code>operate</code> if unblocked
   -- turned in original direction, work not done, continue current operation for remaining blocks
   turtle.blocking(false) -- for out-game operation, imagine that the blockage has been removed
@@ -53,7 +53,7 @@ The <code>operateStep</code> function sets up <code>workStep</code>, catches its
 <pre><code class="language-lua">
 local function workStep(plan, stepItem, direction, distance) -- <code>stepItem</code> is iterator (closure)
   for code, remaining in stepItem(distance) do -- errors to <code>stepOperation</code> if lost, empty, or blocked
-    core.status(5, "work", "step to work", direction, "over", distance, "blocks", code, remaining) 
+    core.report(5, "work", "step to work", direction, "over", distance, "blocks", code, remaining) 
     if plan.work then plan.work(plan, direction) end-- <b>do the work here</b>, errors to <code>stepOperation</code> 
   end; return "done", 0, move.at() -- successfully steped work through path in plan
 end
@@ -65,7 +65,7 @@ local failures = {blocked = blocked, lost = lost, empty = empty, bedrock = bedro
 local function operateStep(elements, plan, index, pathOperations, more) -- step (and work), recovery for failures
   local _, stepItem, direction, distance  = table.unpack(elements) -- <code>stepItem</code> is iterator (closure)
   local domore = more or distance; -- <code>more</code> from recovered operation
-  core.status(5, "work", "step", direction, "more", domore, plan.name) 
+  core.report(5, "work", "step", direction, "more", domore, plan.name) 
   local stepOK, result, condition = core.pass(pcall(workStep, plan, stepItem, direction, domore)) -- <b>work</b>
 
   if stepOK then return operate(plan, pathOperations, index + 1) end -- ok, continue to <code>operate</code> next path operation
@@ -81,7 +81,7 @@ end
 
 local function operateMark(elements, plan, index, pathOperations)
   local _, marks = table.unpack(elements); local markerName, markerLabel = plan.mark(plan, marks); 
-  core.status(3, "worker", "marker", markerName, markerLabel, "added in", plan.name)
+  core.report(3, "worker", "marker", markerName, markerLabel, "added in", plan.name)
   return operate(plan, pathOperations, index + 1)
 end
 
@@ -106,19 +106,19 @@ local operations = {step = operateStep, mark = operateMark, put = operatePut}
 function operate(plan, pathOperations, index, more) -- <code>more</code> to continue <code>operate</code> from error condition <code>remaining</code>
   if index > #pathOperations then return finishOperations(plan) end
   local elements = pathOperations[index]; local operation = table.unpack(elements)
-  core.status(4, "work", "operate on", index, "of", #pathOperations, "in", plan.name)
+  core.report(4, "work", "operate on", index, "of", #pathOperations, "in", plan.name)
   return operations[operation](elements, plan, index, pathOperations, more) -- <b>do</b> <code>step</code>, <code>mark</code>, <code>put</code> 
 end; 
 
 --:: worker.execute(plan, pathOperations, fuelOK: ^:, pathDistance: #:) -> <i>Do plan.</i> ->  <code>"done", report: ":" &: &!</code>
 --:+ <i>Attempt recovery for</i> <code>blocked</code> <i>or</i> <code>lost</code> <i>conditions; raise error for</i> <code>empty</code> <i>or</i> <code>bedrock</code> <i>or if recovery fails.</i>
 function worker.execute(plan, pathOperations, fuelOK, pathDistance)
-  core.status(4, "worker", "execute plan", fuelOK, pathDistance, "blocks")
+  core.report(4, "worker", "execute plan", fuelOK, pathDistance, "blocks")
   if not fuelOK then error("worker.execute: insufficient fuel for "..pathDistance.." block plan") end 
 
   if plan.base then local moveOK, report = core.pass(pcall(moves.to, plan.base)) -- start from base
     if not moveOK then error("worker.execute: failed at "..move.ats().." for "..plan.name.." because "..report) end
-    core.status(2, "work", "at plan base") 
+    core.report(2, "work", "at plan base") 
   end
   
   return operate(plan, pathOperations, 1); -- <b>do it all</b> (uncaught errors thrown if anything fails)

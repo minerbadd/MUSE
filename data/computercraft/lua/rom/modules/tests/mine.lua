@@ -23,3 +23,13 @@ do local success, inventory = mine.op {"ores", "neathe:03:N03"}
 end
 
 
+
+--:# **Mining Operations**
+map.write(map.map()); map.op {"test", "neathe", "testing", 100, 70, 200, "east"}; map.write(map.map())
+test(36, "miner", "shaft", {"neathe", "4", "snake"})
+test(37, "miner", "bore", {"neathe:03", "cross"})
+test(38, "miner", "post", {"neathe:03"})
+test(38.1, "miner", "post", {"neathe:03:SW21"})
+test(39, "miner", "ores", {"neathe:03:N03"})
+
+

@@ -59,7 +59,7 @@
 
 --:: turtle.category(name: ":") -> _Names in category or fencings matching `name` or_ `{"minecraft:"..name}`. -> `":"[]`   
 
---:- fueling -> _Returns energy available in turtle slots._  
+--:- fuel -> _Returns energy available in turtle slots._  
 
 --:: turtle.fuel() -> _Total energy actually available in turtle slots plus turtle fuel level._ -> `fuelTotal: #:`    
 --:+ _Returns "done, "undug" if dig attempt was for air, water, or lava. Raises error for bedrock or dig limit reached._    

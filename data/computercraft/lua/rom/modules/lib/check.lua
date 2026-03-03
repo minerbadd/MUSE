@@ -41,23 +41,27 @@ local function expected(testName) --:# Find results (if any) from a previous tes
 end
 
 --:# The poor man's object.... encapsulates but provides no inheritance facilities (didn't see the need to go there)
-function check.open(testName, text, regression) -- create check object with context variables
+function check.open(testName, text, regression, server) -- create check object with context variables
   --:: check.open(testName:":", text: ":") -> _Return `check` object(closure)_ -> `{part:():, message:():, call: ():, close:():}` 
   print(text); local priors = not regression and {} or assert(expected(testName), "No prior results for "..testName)
-  local partID = 0; local this = {priors = priors, testName = testName, regression = regression, partID = partID} 
+  local partID = 0; local this = {priors = priors, testName = testName, regression = regression, partID = partID, server = server} 
+  this.server = server; core.setComputerLabel(this.server)
 
   --:# Access functions for the `check` object, each check object is independent in itself
   local function part(note, fun, ...) -- at each part of the test
-    --:# part(partID: ":", note: ":", fun: ():, ...: any): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`
+    --:# part(partID: ":", note: ":", fun: ():, ...: any): -> _Collect ... results for part, save/compare (for regression)_ -> `nil`
     partID = partID + 1; local partName, prior = tostring(partID), this.priors[partID]
     local ok, results = core.past(pcall(fun, ...)) -- **execute the test part deferred till now (with protection)**
-    local text = core.string(table.unpack(results))
-    local failure = ("ERROR "..this.testName..".lua part "..partName..": "..note.." failed: "..text)
+    local returns = core.string(table.unpack(results))
+    local failure = ("ERROR "..this.testName..".lua part "..partName..": "..note.." failed: "..returns)
     local report = ok and text or failure
     if (this.regression and report ~= prior) then error(report.." ~= "..prior or ''.. " in "..this.testName..": "..note) end
     if not this.regression then this.priors[partID] = report; print(note, report); return report, results end --> 
   end
 
+  function check.remote(note, command, arguments) part(note,  remote.call, this.server, command, arguments or {}, core.echo) end
+
+--[[
   local function call(note, server, command, arguments, callback)
     --:# call(note: ":", server: ":", command: ":", arguments: any[]): -> _Test remote calls without network_ -> `nil`
     -- remote.prepareCall(server: ":", command: ":", {arguments: ":"[]} -> serverID: #:, request: ":"
@@ -69,20 +73,21 @@ function check.open(testName, text, regression) -- create check object with cont
     -- remote.clientResult(serverID: #:, result: ":", callback{}) -> `nil`
     part(note.." =", remote.returns, serverID, result, callback)
   end
+--]]
 
   local function message(...) if not this.regression then print(...) end end
   --:# message(..: ":"): -> _Print ... if not regression_ -> `nil`
 
-  local function close(text) -- at end of test
+  local function close(final) -- at end of test
     --:# close(text: ":"): -> _Print text if regression, otherwise save results in_ `checks` _directory for test_ -> `nil`
-    if this.regression then print(text); this = nil; return end
+    if this.regression then print(final); this = nil; return end
     directories(); local serialized, path = core.serialize(this.priors), checks..testName..".lua"
     local handle = assert(io.open(path, "w"), "Can't open "..path.." in tests/check")
     handle:write(serialized); handle:close(); this = nil -- for gc
     print(text, checks..testName..".lua")
   end
 
-  return {part = part, call = call, message = message, close = close}
+  return {part = part, remote = remote, message = message, close = close}
 
 end -- check object created by `check.open`
 

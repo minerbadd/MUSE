@@ -111,3 +111,52 @@ test.part("chart", map.op, {"chart", "TX", "fancy echo", {charted = "table"}, "s
 
 --:# Close test object, report completion if we got here without errors
 test.close("Test "..testName.." complete") 
+
+
+
+--:# **Remote Turtle Motion Commands** (e.g., `farmer go`)
+map.op {"test", "london", "home", "199", "66", "262", "south"}  -- setup
+map.op {"test", "paris", "away", "299", "166", "362", "north"}
+map.op {"range", "trip", "eurostar", "london", "paris", "visa", "brexit", "schengen"}
+
+-- to name | x y z [face] -> To named place or position and face. Retry for different first direction.
+test(15, "farmer", "to", {"paris"})
+-- go (first letter of) directions followed by optional counts, e.g. r 10 u east 3 u 4 d n -> Chained movement.
+-- Movements are r[ight], l[eft], f[orward], b[ack], u[p], d[own], n[orth], e[ast], s[outh], w[est].
+test(16, "rover", "go", {"up", "1"})
+-- trace trailname -> Move along situations in named trail from one end of trail to the other.
+test(17, "farmer", "trace", {"trip"})
+-- roam.come({xyz}) -> Move turtle (close to) player's GPS xyz from remote.roam. -> &! &:
+print(18, core.string(remote.testCome("farmer", "come")))
+
+--:# **Remote Map Operations for Turtles and Player.**
+
+--:# Map File Operations
+--:- sync -> Muse Update (MU) broadcast local map to units at current site.
+test(19, "rover", "sync")
+--:- erase name -> Remove named place and broadcast Muse eXcise (MX) to units at current site.
+test(20, "porter", "erase", {"paris"}); test(20.1, "porter", "erase", {"paris"}, "expected fail")
+--:- site [name] -> _Remote operation to report or change site after, e.g., porting `rover`._test(23, "logger", "site")
+test(21, "logger", "site", {"happyplace"}); test(21.1, "logger", "site")
+
+--:# Places - Points, Trails, and Ranges of Maps
+--:- point name label -> Add named and labeled point, broadcast updated map with (MU) Muse Update. (Player needs GPS.)
+test(22, "miner", "point", {"paris", "france"}); test(22.1, "miner", "point", {"london", "england"})
+--:- trail name -> Include named point at head and (current situation) tail of a new trail, update map.
+test(23, "miner", "trail", {"eurostar", "outgoing"})
+--:- range name label point point key value -> Define volume by named points, specify key and value of range property.
+test(24, "miner", "range", {"excursion", "views", "london", "paris", "sights", "Dover", "Calais"})
+
+map.charts(_G.Muse.path.."tests/charts/")
+--:- chart chartfilename ... -> _Loads and runs named chart file in `charts` directory to create named point and associated ranges._
+test(25, "miner", "chart", {"TX", "charted", "something", {charted = "table"}}) -- ... gets returned
+
+--:# Navigation in Maps: Where Are We, What's Nearby, and Where Are We Heading?
+--:- at -> Report current (dead reckoning) turtle position and facing or player GPS position.
+test(26, "farmer", "at")
+--:- where [place] [count = 3] -> Report movement direction, distance to named place, and to count closest places.
+test(27, "farmer", "where", {"paris", "2"})
+--:- near [place] [span] -> Report points within span blocks (or all) of named place (or current player or turtle position).
+test(28, "farmer", "near", {"paris", "10"}); test(28.1, "farmer", "near", {"paris"}); test(28.2, "farmer", "near")
+--:- view place -> Report place details including all situations and properties.
+test(29, "farmer", "view", {"excursion"})

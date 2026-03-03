@@ -141,7 +141,7 @@ function turtle.category(name) return name and (categories[name] or {fencings[na
 local fuelEnergy = 
 {["minecraft:coal"] = 80, ["minecraft:coal_block"] = 800, ["minecraft:charcoal"] = 80, ["minecraft:lava"] = 1000} 
 
-function turtle.fuel() --:- fueling -> _Returns energy available in turtle slots._
+function turtle.fuel() --:- fuel -> _Returns energy available in turtle slots._
   --:: turtle.fuel() -> _Total energy actually available in turtle slots plus turtle fuel level._ -> `fuelTotal: #:`
   local fuelTotal =  0; for i = 1, slots do local detail = mock.getItemDetail(i) -- from turtle if in game
     if detail then local energy = fuelEnergy[detail.name] or 0; fuelTotal = fuelTotal + (energy * detail.count) end
@@ -159,7 +159,7 @@ local function attemptDig(direction) -- "done" if air or the undug, else attack 
   local inspectOK, found = turtle.inspects[direction](); if found and found.name == "minecraft:bedrock" then 
     error("turtle.attemptDig: Bedrock at "..move.ats().." "..direction) -- no recovery
   end; local untarget = turtle.check(undug, found); -- water or lava?
-  if untarget then core.status(4, "turtle", "attempt dig", found, "undug:", untarget) end
+  if untarget then core.report(4, "turtle", "attempt dig", found, "undug:", untarget) end
   if not inspectOK or untarget then return "done", "undug" end -- air, water, or lava
   turtle.attacks[direction](); local dug, report = turtle.digs[direction](); return dug, report or found.name
 end 
@@ -170,7 +170,7 @@ local function unblock(direction, limit, attempts) -- returns "done" or raises a
   if attempts > limit then error("turtle.unblock: Failed at "..move.ats().." "..direction)
   end; -- failed: not air, water, lava, bedrock, sand, gravel (or succesful attack of mobs)
   local done, report = attemptDig(direction); if done == "done" then return done, report end -- **dig succeeded**
-  core.status(2, "turtle", "Unblocking", direction, attempts) -- report blockage
+  core.report(2, "turtle", "Unblocking", direction, attempts) -- report blockage
   core.sleep(0.5); -- wait for gravel or sand to finish falling... and then try again
   return unblock(direction, limit, attempts + 1) -- try again, dig failure or the undug?
 end
@@ -195,19 +195,19 @@ function turtle.digTo(xyzf, limit)
   --:+ _Also catch and raise error (string) if attempt to dig to unblock failed for bedrock or other reason._
   --:+ _Normally return just what a successful move would: "done", 0 remaining, current position._
   local moveOK, result, condition = core.pass(pcall(move.to, xyzf)); if moveOK then return result end
-  core.status(2, "turtle", "bad move", xyzf, result, condition)
+  core.report(2, "turtle", "bad move", xyzf, result, condition)
   if type(condition) ~= "table" then error("turtle.digTo: Unblock failed because "..result) end
   local _, report, fail, remaining, _, direction, from = table.unpack(condition) -- failures: `blocked`, `lost`, `empty`
   if fail ~= "blocked" then error("turtle.digTo: Unblock "..remaining.." failed because "..report) end
   if not direction then error("turtle.digTo: no direction for unblock "..from.." "..report) end
-  core.status(3, "turtle", "Unblocking move", direction, "to", xyzf)
+  core.report(3, "turtle", "Unblocking move", direction, "to", xyzf)
   return continue(direction, xyzf, limit)  -- returns true or an error is raised (and a report for bedrock) 
 end
 
 function turtle.digAround(orientation, diggings, name)
   --:: turtle.digAround(orientation: ":", diggings: ":"[], name: ":"?) -> _Unblocking dig._ -> `"done" &: &!`
   --:+ _Dig (unblocking) in diggings directions, catch failure and raise error(string) re-orienting in original orientation._
-  for _, digging in ipairs(diggings) do core.status(5, "turtle", "around", orientation, diggings)
+  for _, digging in ipairs(diggings) do core.report(5, "turtle", "around", orientation, diggings)
     local ok, fail = core.pass(pcall(turtle.unblock, digging)); if not ok then -- restore initial orientation
       move[orientation](0); error("turtle.digAround: "..name or "".." "..digging.." failed, "..fail..", refacing "..orientation)
     end

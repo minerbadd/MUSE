@@ -55,13 +55,13 @@ function farm.logs(seedlings, direction) -- direction of movement
   turtle.digAround(direction, sides[direction], "logs"); 
   if not turtle.find(seedlings) then error("farm.logs: Can't find "..core.string(seedlings)) end
   local plantOK, failure = turtle.puts["down"](); local report = plantOK and "done" or failure
-  core.status(4, "farm", direction, "tree planting", report); return report
+  core.report(4, "farm", direction, "tree planting", report); return report
 end
 
 function farm.plant(planting) --:: farm.plant(planting: ":") -> <i>Tills and plants found planting.</i> -> <code>report: ":" &!</code> 
   turtle.digs["down"](); if not turtle.find({planting}) then error("farm.plant: Can't find "..planting) end
   local plantOK, failure = turtle.puts["down"](); local report = plantOK and "done" or failure
-  core.status(5, "farm:planting", planting, report); return report
+  core.report(5, "farm:planting", planting, report); return report
 end
 
 function farm.put(putAim, item) -- <code>putAim</code> not direction of travel
@@ -69,7 +69,7 @@ function farm.put(putAim, item) -- <code>putAim</code> not direction of travel
   local items = type(item) == "table" and item or turtle.category(item) -- turtle.find side effects for put
   if not turtle.find(items) then error("farm.put: Can't find "..core.string(items)) end 
   local putOK, failure = turtle.puts[putAim](); local report = putOK and "done" or failure
-  core.status(5, "farm:put", item, report); return report
+  core.report(5, "farm:put", item, report); return report
 end
 
 local function replace(direction, putAim, item) 

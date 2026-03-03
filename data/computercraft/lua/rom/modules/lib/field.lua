@@ -68,15 +68,15 @@ function field.plot(commands, fieldsOp, fieldOpName, plots, offset) -- `field.ma
 --:> field.plotSpan: _`{}` spans all plots; if only first, default plots after first ->_ `[_:, _:, first: #:?, last: #:??]`
   local first, last = table.unpack(commands, 3); local hx, hy, hz = table.unpack(place.xyzf())
   if not (hx and hy and hz) then error("field.plot: No home") end
-  core.status(4, "field", "plot start", hx, hy, hz, fieldOpName, first, last, plots, offset) 
+  core.report(4, "field", "plot start", hx, hy, hz, fieldOpName, first, last, plots, offset) 
   local possibleFirstPlot, possibleLastPlot = tonumber(first) or 1, tonumber(last) or plots 
   local firstPlot, lastPlot = math.min(possibleFirstPlot, plots), math.min(possibleLastPlot, plots)
   assert (firstPlot >= 1 and lastPlot >= 1, "field: "..plots.." selected plots less than 1")
   local results = {}; for i = firstPlot, lastPlot do -- field file provides `fieldsOp` in call to `field.plot` 
-    core.status(4, "field", fieldOpName, "plot", i, "begun")
+    core.report(4, "field", fieldOpName, "plot", i, "begun")
     local ok, fieldResult = core.pass(pcall(fieldsOp, i, offset)); -- **run field's operation** (`fieldsOp` which calls `field.plan`)
     if not ok then return home({hx, hy, hz}, "Plot "..i.." failed: "..fieldResult) end -- go back home
-    core.status(4, "field", fieldOpName, "plot", i, "done") 
+    core.report(4, "field", fieldOpName, "plot", i, "done") 
     results[#results + 1] = "Plot "..i.." of "..plots.." "..fieldResult.." done"  
   end; return home({hx, hy, hz}, table.concat(results, "\n")) -- unblocks as needed, done, back to home 
 end
@@ -98,13 +98,13 @@ function field.plan(planName, fielding, offset) -- `fieldsOp` calls `field.plan`
   local ox, oy, oz = table.unpack(offset or {0, 0, 0}) -- offset is optional
   local start, finish = {sx + ox, sy + oy, sz + oz}, {fx + ox, fy + oy, fz + oz}
   local xyzfstart, xyzfFinish = core.xyzfs(start), core.xyzfs(finish) 
-  core.status(4, "field", "plan", planName, xyzfstart, "to", xyzfFinish)
+  core.report(4, "field", "plan", planName, xyzfstart, "to", xyzfFinish)
   local moveOK, moveReport = core.pass(pcall(move.to, start, "y")) 
-  if not moveOK then core.status(2, "field", "plan move.to", moveReport); return moveReport end
+  if not moveOK then core.report(2, "field", "plan move.to", moveReport); return moveReport end
   local planFile = _G.Muse.path.."plans/"..planName..".lua"; 
   local planFunction = assert(loadfile(planFile), "field.plan: "..planFile.." failed") -- TODO: cache?
   local plans, yDelta = planFunction(fielding) -- **prototype plan file** calls `field.paths` utility
-  local levels = math.abs(yDelta) + 1; core.status(4, "field", "starting", planName, levels, "levels")
+  local levels = math.abs(yDelta) + 1; core.report(4, "field", "starting", planName, levels, "levels")
   return _field.execute(plans, levels, fielding, planName)
 end
 --[[
@@ -120,7 +120,7 @@ local function executePlan(thisPlan, level) -- executePlan(thisPlan: plan, level
     local operation, _, direction = table.unpack(pathOperations[1]) -- direction if "step" operation
     if operation == "step" and thisPlan.work then thisPlan.work(thisPlan, direction) end 
   end; local fuel = fuelOK and "fuel OK" or "empty!"
-  core.status(4, "field", "executing", thisPlan.name, "at", level, "for", #pathOperations, "of", pathDistance, fuel)
+  core.report(4, "field", "executing", thisPlan.name, "at", level, "for", #pathOperations, "of", pathDistance, fuel)
   --for debug: core.pass(xpcall(worker.execute, core.trace, thisPlan, pathOperations, fuelOK, pathDistance));
   return core.pass(pcall(worker.execute,thisPlan, pathOperations, fuelOK, pathDistance)) -- ok, completion or failure report
 end

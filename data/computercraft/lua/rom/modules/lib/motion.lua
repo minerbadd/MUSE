@@ -409,7 +409,7 @@ fueledMotion = function (way, count, direction) -- for one block motion from mov
   if turtle.getFuelLevel() > 0 then return xyzMotion(way) end -- **Move the turtle one block!**
   local detail, slot = move.findItems(fuels); local slotq = slot or "_none_"
   local detailName = detail and detail.name or "_no fuel_"
-  core.status(4, "motion", "Refueling?", detailName, "in slot", slotq)
+  core.report(4, "motion", "Refueling?", detailName, "in slot", slotq)
   return detail and refuel(way, count, direction) or "empty" 
   -- if fuel found, try refueling (and try moving the turtle)
 end
@@ -417,7 +417,7 @@ end
 function refuel(way, count, direction) -- 
   if turtle.refuel() then setFuel(turtle.getFuelLevel()) end 
   local fueled = fuel(); if fueled > 0 then  -- use new fuel level
-    core.status(5, "motion", "Refueling "..tostring(fueled))
+    core.report(5, "motion", "Refueling "..tostring(fueled))
     return xyzMotion(way); --now that there's fuel, try the way from fueledMotion
   end
   error("motion.refuel: Empty with "..count.." remaining at "..move.ats().." "..direction) -- no recovery
@@ -425,7 +425,7 @@ end
 --[[
 ```
 <a id="status"></a>
-Calls to `core.status` make use of the MUSE <a href="core.html#status" target="_blank">monitoring</a> facilities that provide support for debugging in-game.
+Calls to `core.report` make use of the MUSE <a href="core.html#status" target="_blank">monitoring</a> facilities that provide support for debugging in-game.
 ```
 <a id="motion"></a>
 #Motion! (Finally)
@@ -450,7 +450,7 @@ function xyzMotion(way) -- move the turtle using `way` table
 
   if not (moved and depletion) then return moved and "lost" or "blocked" end -- moved but no depletion: `lost`; else `blocked`
 
-  core.status(5, "motion", direction, level, preFuel, postFuel) -- moved and depleted: ok
+  core.report(5, "motion", direction, level, preFuel, postFuel) -- moved and depleted: ok
   return xyzUpdate(movement, level) -- normal case, update situation and tracking, no problem: "done" 
 end
 
@@ -479,7 +479,7 @@ trackMotion = function(current) -- from turn operations and xyzUpdate, add a sit
 end
 
 resetTrack = function (current) -- dealing with tracking overflow
-  core.status(3, "motion", "Trail reset, was longer than", _G.Muse.tracking.limit)
+  core.report(3, "motion", "Trail reset, was longer than", _G.Muse.tracking.limit)
   situations({current}); return "done"
 end
 --[[
@@ -554,7 +554,7 @@ function move.to(xyzf, first) -- no navigation, y last unless `first` specified
   local xD, xOp = dx < 0 and "west" or "east", dx < 0 and move.west or move.east; local adx = math.abs(dx)
   local yD, yOp = dy < 0 and "down" or "up", dy < 0 and move.down or move.up; local ady = math.abs(dy)
   local zD, zOp = dz < 0 and "north" or "south", dz < 0 and move.north or move.south; local adz = math.abs(dz)
-  core.status(4, "motion", "move.to", xD, yD, zD, "to", xyzf)
+  core.report(4, "motion", "move.to", xD, yD, zD, "to", xyzf)
   local movement = not first and moving.x or moving[first]; -- pick the function for `moving`
   if not movement then error("motion.move.to: first to "..first.." not supported") end
   movement(xOp, adx, zOp, adz, yOp, ady); if face then turnFacing(faced) end  -- call the `moving` function
@@ -582,7 +582,7 @@ function step.to(xyzf, theSituation) -- iterator closure returns nil only if all
   local xD, xOp, adx = dx < 0 and "west" or "east", dx < 0 and step.west or step.east, math.abs(dx)
   local zD, zOp, ady = dz < 0 and "north" or "south", dz < 0 and step.north or step.south, math.abs(dy)
   local yD, yOp, adz = dy < 0 and "down" or "up", dy < 0 and step.down or step.up, math.abs(dz) 
-  core.status(4, "motion", "step.to", xD, yD, zD, "to", xyzf)
+  core.report(4, "motion", "step.to", xD, yD, zD, "to", xyzf)
   local iterators, dxyz = {xOp(adx), zOp(adz), yOp(ady)}, adx + ady + adz; -- total distance 
 --[[
 ```
@@ -594,7 +594,7 @@ But wait, there's more.  So far, we've just setup the upvalues. The `step.to` fu
   return function() -- iterators throw errors if code not "done", return nil when steps in direction complete
     for index, iterator in ipairs(iterators) do 
       for code, remaining, at, direction in iterator do -- iterator returns nil if complete or exhausted
-        core.status(3, "motion", "step.to", index, code, remaining, at, direction, xyzf)
+        core.report(3, "motion", "step.to", index, code, remaining, at, direction, xyzf)
         if code then dxyz = dxyz - 1; return code, remaining, at, direction, dxyz end 
       end; 
     end; if face then turnFacing(faced) end; return nil end; -- end of iterator closure

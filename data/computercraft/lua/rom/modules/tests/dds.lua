@@ -1,7 +1,7 @@
 --[[
 ##Test: `tests/dds` for the turtle operation command library 
 ```md
---:? muse/docs/tests/dds.txt <- **Test `lib/task`** -> muse/docs/tests/dds.md 
+--:? muse/docs/tests/dds.txt <- **Test `lib/dds`** -> muse/docs/tests/dds.md 
 --:# Test attack, change, find, look, drop, suck, dig, put, and compare commands
 
 ```Lua

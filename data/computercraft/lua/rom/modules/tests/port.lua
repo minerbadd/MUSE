@@ -24,3 +24,22 @@ port.available(inventory01)
 test(4, port.book("testBooking", "testing", "fromPlace", "toPlace", 1, orderB)) -- use testing interface
 test(5, port.op {"port", "testBooking"} )
 port.available({})
+
+--:# **Command Computer Position and Port Commands** (e.g., `porter locate gantry launch``)
+
+--:- kit "base"|"site" -> _Kit up player for specifed `set` of items._
+test(30, "porter", "kit", {"base", "testing"}); test(30.1, "porter", "kit", {"site", "testing"})
+--:- locate name label -> _Create point having Minecraft coordinates above `porter` Command Computer_
+test(31, "porter", "locate", {"gantry", "located", 100, 200, 300, {nbt = {Label = "rover"}, state = {facing = "north"}}})
+--:- activate range -> _Add bounds from west and north to east and south of range for forceload._
+test(32, "porter", "activate", {"excursion"})
+--]]
+
+---use map.test instead
+map.point("fromPlace", "from", {100, 200, 300, "east"}); map.point("toPlace", "to", {600, 300, 700, "north"}) 
+port.available({iron = 200, gold = 50, redstone = 100, coal = 400})
+
+--:- book name label from to [span [item ...] ] -> _Spanned range with (default) items as properties; return cost less bank._
+test(33, "porter", "book", {"testBooking", "testing", "fromPlace", "toPlace", "1", "iron", "gold", "redstone"})
+--:- port booking -> _As laid out in booking, consume player inventory to teleport entities from one area to another._
+test(34, "porter", "port", {"testBooking"}); port.available({})

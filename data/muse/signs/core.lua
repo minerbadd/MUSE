@@ -8,11 +8,11 @@ local  core = {}
 ---@type fun( ...: table):   table 
 function core.merge() end
 
--- Returns specially formatted string for `xyzf`.
--- core.xyzfs(:xyzf:):  `":"` <-
+-- Executable string to instantiate input.
+-- core.serialize(input: any):  `"return "..":" &!` <-
 
----@type fun( xyzf: xyzf):   string 
-function core.xyzfs() end
+---@type fun( input: any):   "return "..string 
+function core.serialize() end
 
 -- Unpack position and facing
 -- core.xyzf(:xyzf:): `x: #:`, `y: #:`, `z: #:`, `facing: ":"?` <-
@@ -98,7 +98,7 @@ function core.getComputerID() end
 ---@alias closing fun( value: any):   value: any # Returns value or sets it and optional table entry to non `nil` `value`.
 
 
--- If level less than `status` threshold, report `rest` as string.
+-- If level less than (elimination) threshold, then report rest as string. If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol. If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.
 -- core.report(level: #:, ...: any):  `nil` <-
 
 ---@type fun( level: number,  ...: any):   nil 
@@ -109,9 +109,9 @@ function core.report() end
 
 
 -- Set threshold level [and local log file] for status reports
--- core.logging(arguments: {level: #:, filename: ":"}):  `nil` <-
+-- core.logging(arguments: {level: #:?, filename: ":"?}):  `nil` <-
 
----@type fun( arguments: { level: number,  filename: string}):   nil 
+---@type fun( arguments: { level: number?,  filename: string?}):   nil 
 function core.logging() end
 
 -- core.log:  `{level: closing, file: closing, handle: closing}`
@@ -129,11 +129,11 @@ function core.logging() end
 ---@type fun( start: bounds,  addend: xyz,  number: number,  partial: bounds?):   bounds[]
 function core.vectorPairs() end
 
--- GPS location if available.
--- core.where():  `x: #:|false, y: #:|false, z: #:|false` <-
+-- Find first matching item in pair of item tables.
+-- core.match(tableA: any[], tableB: any[]):  `nil` | `any` <-
 
----@type fun():  x: number | false,  y: number | false,  z: number | false 
-function core.where() end
+---@type fun( tableA: any[],  tableB: any[]):   nil  |  any 
+function core.match() end
 
 -- Deep copy source table or return source if not table.
 -- core.clone(source: {:}|any):  `{:}|any` <-
@@ -141,11 +141,11 @@ function core.where() end
 ---@type fun( source: table | any):   table | any 
 function core.clone() end
 
--- If level less than (elimination) threshold, then report rest as string. If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol. If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.
--- core.status(level: #:, ...: any):  `nil` <-
+-- Returns specially formatted string for `xyzf`.
+-- core.xyzfs(:xyzf:):  `":"` <-
 
----@type fun( level: number,  ...: any):   nil 
-function core.status() end
+---@type fun( xyzf: xyzf):   string 
+function core.xyzfs() end
 
 -- Register command completions for shell
 -- core.completer(completions: {:}):  `():` <-
@@ -153,17 +153,17 @@ function core.status() end
 ---@type fun( completions: table):  function 
 function core.completer() end
 
--- Executable string to instantiate input.
--- core.serialize(input: any):  `"return "..":" &!` <-
+-- If level less than `status` threshold, report `rest` as string.
+-- core.message(level: #:, ...: any):  `nil` <-
 
----@type fun( input: any):   "return "..string 
-function core.serialize() end
+---@type fun( level: number,  ...: any):   nil 
+function core.message() end
 
--- Find first matching item in pair of item tables.
--- core.match(tableA: any[], tableB: any[]):  `nil` | `any` <-
+-- GPS location if available.
+-- core.where():  `x: #:|false, y: #:|false, z: #:|false` <-
 
----@type fun( tableA: any[],  tableB: any[]):   nil  |  any 
-function core.match() end
+---@type fun():  x: number | false,  y: number | false,  z: number | false 
+function core.where() end
 
 -- core.faces:  "north"|"south"|"east"|"west"|"up"|"down"|"rotate"
 ---@diagnostic disable-next-line: duplicate-doc-alias

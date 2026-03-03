@@ -47,25 +47,25 @@ Each `operation` supported by this field (`quarry`, `layer`, `finish`, `harvest`
 --]]
 local function quarryOp(index)
   local quarryResult = field.plan("quarry", {plots.quarry[index]})
-  core.status(3, "crop", "quarrying", index, slots, quarryResult)
+  core.report(3, "crop", "quarrying", index, slots, quarryResult)
   return quarryResult
 end
 
 local function layerOp(index)
   local layerResult = field.plan("layer", {plots.layer[index], {"minecraft:dirt"}})
-  core.status(3, "crop", "layering", index, slots, layerResult)
+  core.report(3, "crop", "layering", index, slots, layerResult)
   return layerResult
 end
 
 local function finishOp(index)
   local finishResult = field.plan("till", {plots.finish[index], index}) -- index is plot number
-  core.status(3, "crop", "finishing", index, slots, finishResult)
+  core.report(3, "crop", "finishing", index, slots, finishResult)
   return finishResult
 end
 
 local function harvestPath(index, plan)
   local harvestResult = field.plan(plan, {plots.harvest[index], index})
-  core.status(3, "crop", "harvestPath", index, slots, harvestResult)
+  core.report(3, "crop", "harvestPath", index, slots, harvestResult)
   return harvestResult
 end
 

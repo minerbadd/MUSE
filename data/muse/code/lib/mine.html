@@ -82,7 +82,7 @@ local function atWork(plan, head, level, key, value)
   --:: <code>_mine.atWork(:plan:, head: ":", level: #:, key: ":", value: any)</code> -> <i>Make, fill in, execute at level.</i> -> <code>":", ":" &: &!</code>
   local pathOperations, fuelOK, pathDistance = planner.make(plan)  -- <b>instantiate plan</b> if no errors thrown
   plan.head = head; plan.level = level; plan.key = key; plan.value = value -- <i>add fields for execution</i>
-  core.status(3, "mine at work", plan.name, pathDistance, #pathOperations)
+  core.report(3, "mine at work", plan.name, pathDistance, #pathOperations)
   local workOK, result, report = core.pass(pcall(worker.execute, plan, pathOperations, fuelOK, pathDistance))
   if workOK then return result, report end 
   error("mine: Failed working at "..level.." in "..head.." mine because "..result)
@@ -97,7 +97,7 @@ local function mineHead(mineheadName) -- move to minehead
   if not place then error("mine.mineHead: Can't find minehead "..mineheadName) end
   local moveOK, headCode, remaining, ats = core.pass(pcall(moves.to, mineheadName))
   if not moveOK then error("mine.mineHead", "Can't move to "..mineheadName.." because "..headCode) end
-  core.status(5, "mine", "At", mineheadName)
+  core.report(5, "mine", "At", mineheadName)
   return headCode, remaining, ats
 end
 
@@ -108,10 +108,10 @@ function _mine.down(mineheadName, targetLevel, shaftPlansDown, shaftPlansName)
   mineHead(mineheadName); for level = 0, targetLevel do -- marks minehead 00
     local plan = (level % 2) == 0 and shaftPlansDown.even or shaftPlansDown.odd; 
     local planResult = atWork(plan, mineheadName, level, "shaft", shaftPlansName) -- "shaft" key and value
-    core.status(5, "mine", "down", mineheadName, plan.name, "plan", planResult, "at level", level)
+    core.report(5, "mine", "down", mineheadName, plan.name, "plan", planResult, "at level", level)
   end; local plan = shaftPlansDown.last; -- finish shaft with marker one level below the target level
   local planResult = atWork(plan, mineheadName, targetLevel + 1, "shaft", shaftPlansName) -- "shaft" key and value
-  core.status(4, "mine", "down", mineheadName, plan.name, "plan"..planResult.."done at level", targetLevel + 1)
+  core.report(4, "mine", "down", mineheadName, plan.name, "plan"..planResult.."done at level", targetLevel + 1)
   return "done", planResult
 end
 
@@ -122,7 +122,7 @@ function _mine.back(mineheadName, targetLevel, shaftPlansBack, shaftPlansName)
   local workResult, workReport; for level = targetLevel + 1, 1, -1 do -- end up shaft from level 1 to 0
     local plan = (level % 2) == 0 and shaftPlansBack.even or shaftPlansBack.odd
     workResult, workReport = atWork(plan, mineheadName, level, "shaft", shaftPlansName) -- "shaft" key and value
-    core.status(4, "mine", mineheadName.." "..plan.name.." level "..level.." "..move.ats().." "..workResult)  
+    core.report(4, "mine", mineheadName.." "..plan.name.." level "..level.." "..move.ats().." "..workResult)  
   end return workResult, workReport
 end
 
@@ -134,13 +134,13 @@ function _mine.shaftOp(mineheadName, levels, shaftPlans)
   local downResult, downReport = _mine.down(mineheadName, levels, shaftPlans.down, shaftPlans.name)--down.even/down.odd
   -- go to <mineheadName> using <code>place.to</code> then dig down (marking and furnishing) the shaft <levels> as dug
   local downInventory = turtle.inventory() -- as a result of digging down
-  core.report(2, "Inventory digging down ", downInventory, downResult, downReport)
+  core.message(2, "Inventory digging down ", downInventory, downResult, downReport)
 
   move.up(1) -- back up at one block above markers
 
   local backResult, backReport = _mine.back(mineheadName, levels, shaftPlans.back, shaftPlans.name) 
   local backInventory = turtle.inventory() -- as a result of getting back up shaft to minehead
-  core.report(2, "Inventory digging back ", downInventory)
+  core.message(2, "Inventory digging back ", downInventory)
   return backResult, backReport, #backInventory -- back at minehead, returns <code>"done"</code> and inventory table size
 end; mine.hints["shaft"] = { ["?minehead "] = {["?levels "] = {["?shaftplans" ] = {}}}}
 </code></pre>
@@ -154,12 +154,12 @@ local function changeLevel(directionPlans, direction, thisLevel, targetLevel)
   local finallyFrom = targetLevel - (1 * movement) -- last level before target
 
   for level = thisLevel, finallyFrom, movement do -- each level to next in appropriate direction
-    core.status(4, "mine change level", level, finallyFrom, movement)
+    core.report(4, "mine change level", level, finallyFrom, movement)
     local operations, fuel, distance = table.unpack(level % 2 == 0 and even or odd)
     local plan = level % 2 == 0 and directionPlans.even or directionPlans.odd
     OK, result, report = core.pass(pcall(worker.execute, plan, operations, fuel, distance))
     if not OK then error("mine.changeLevel: Failed move to "..targetLevel.." from "..thisLevel.." because "..result) end
-  end; core.status(4, "mine change level done", result, report)
+  end; core.report(4, "mine change level done", result, report)
 
   return result, report, #turtle.inventory() -- successfully moved to level (but not to post)
 end
@@ -169,11 +169,11 @@ local function checkLevel(markerName, borePlans, shaftPlans, markers)
   assert(targetLevel, "mine checkLevel: missing "..markerName)
   local thisShaft, thisLevel, thisTag = planner.mark(markers.target)
   assert(thisShaft and thisLevel and thisTag, "mine checkLevel unknown level")
-  core.status(3, "mine check level", thisLevel, thisTag, "in", thisShaft)
+  core.report(3, "mine check level", thisLevel, thisTag, "in", thisShaft)
   -- if target marker is at a different level than current level, turtle has been moved to shaft
   local lower, higher = targetLevel > thisLevel, targetLevel < thisLevel
 
-  if not (higher or lower) then core.status(3, "mine check level at", thisLevel, markerName)
+  if not (higher or lower) then core.report(3, "mine check level at", thisLevel, markerName)
     return "post" , "At "..markerName.." "..borePlans.bores.name, thisLevel 
   end -- already at post
 
@@ -189,7 +189,7 @@ function _mine.toPost(markerName, borePlans, shaftPlans)
   if not place.match(markerName) then error("mine.toPost: "..markerName.." not found") end
   local markers = borePlans.bores.post(markerName, borePlans); -- navigation to shaft (or post) 
   local levelDone, levelReport, doneLevel= checkLevel(markerName, borePlans, shaftPlans, markers) 
-  core.status(3, "mine", "level", levelDone, levelReport)
+  core.report(3, "mine", "level", levelDone, levelReport)
   if levelDone == "post" then return "done", levelReport, doneLevel end-- already at level and thus at post
   -- Not at level. Go there to get to post
   markers = borePlans.bores.post(markerName, borePlans)-- at shaft target, effect navigation to post -- was , shaftPlans)

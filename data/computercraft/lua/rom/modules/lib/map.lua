@@ -82,7 +82,7 @@ function map.write(thisMap) --:: map.write(thisMap: ":"?) -> _Delete old, write 
 
   local closeMap, closeReport = io.close(createMap) -- close and report
   if not closeMap then error("map.write: Can't close "..thisMap.." because "..closeReport) end
-  core.report(1, tostring(place.count()).." places in "..thisMap) 
+  core.message(1, tostring(place.count()).." places in "..thisMap) 
 end
 --[[
 ```
@@ -97,7 +97,7 @@ function map.update(serial) --:: map.update(serial: ":") -> _Append received ins
   end; local file, openReport = io.open(thisMap, "a") -- map exists, open for append
   if not file then error("map.update: Can't open "..thisMap.. " to add place ".. openReport) end
   local appendOK, appendReport = file:write(serial, "\n") -- **do it**
-  core.status(4, "map update:", place.count(), "places") 
+  core.report(4, "map update:", place.count(), "places") 
   if not appendOK then error("map.update: Failed for "..thisMap.." "..appendReport) end
 end
 
@@ -130,7 +130,7 @@ function map.put(name, key, value)
   local index, namedPlace = place.match(name); if not (index and namedPlace) then return nil end
   local _, label, situations, features = place.matched(namedPlace); features[key] = value or true;
   local serial = place.name(name, label, situations, features); update(serial) -- all MU correspondents
-  core.status(4, "map put", place.qualify(name), key, value); return key, value or true
+  core.report(4, "map put", place.qualify(name), key, value); return key, value or true
 end
 
 map.puts = map.put 
@@ -182,7 +182,7 @@ To ease testing, there's a function to make a point and
 --]]
 function map.test(name, label, trail, x, y, z, facing, key, value) -- makes named place for coordinates, sets turtle position
   --:- test name, label, x, y, z, facing, key?, value??} -> _Force mapped position, optionally feature and value for `point`._
-  core.status(4, "map", "test", place.qualify(name), label, x, y, z, facing, key, value)
+  core.report(4, "map", "test", place.qualify(name), label, x, y, z, facing, key, value)
   assert(name and label and tonumber(x) and tonumber(y) and tonumber(z) and facing, "map.test: bad arguments for test")
   local _, index = map.point(name, label, trail, x, y, z, facing); if key then map.put(name, key, value) end 
   return "As "..place.qualify(name).." "..move.ats().." ("..index..")"
@@ -199,7 +199,7 @@ iterator, the local `sync` function `MU` broadcasts all the places known by the 
 --:# **Map File Operations**
 local function sync() --:- sync -> _Muse Update (MU) broadcast local map to (MQ) registered units._
   if rednet then for name, _, _, index, situations, serial in place.near() do 
-    core.status(4, "map", "sync", name, #situations, index)
+    core.report(4, "map", "sync", name, #situations, index)
     rednet.broadcast(serial, "MU"); core.sleep(0) -- need to yield for each broadcast!
   end; return tostring(place.count()).." places" end 
 end
@@ -375,7 +375,7 @@ local function range(name, label, nameA, nameB, key, value) -- -> "report", inde
   assert(rangePlace, "map range: unknown range "..rangePlace)
   local _, _, _, features = place.matched(rangePlace); if key then features[key] = value or true end
   local serial, index = place.add(name, situationB) -- range had everything but second place
-  core.status(5, "map range: "..place.qualify(name).." from "..place.qualify(nameA).." to "..place.qualify(nameB))
+  core.report(5, "map range: "..place.qualify(name).." from "..place.qualify(nameA).." to "..place.qualify(nameB))
   update(serial); return "Range "..place.qualify(name).." at "..index.. " in places", index -- append serialized range;
 end; map.hints["range"] = {["?name "] = {["?label "] = {["?from "] = {["?to "] = {["??key "] = {["???value"] = {}}}}}}}
 --[[
@@ -471,8 +471,8 @@ end; map.hints["where"] =  {["?place "] = {["??count"] = {}}}
 local function headings(rate, ...)
   --:- headings rate? place? count?? -> _Repeated movement report at specified rate (or every _G.Muse.rates.headings) seconds)._
   local rateNumber = tonumber(rate); local rest = rateNumber and {...} or {rate, ...}; rateNumber = rateNumber or 5
-  core.report(1, "Headings", rateNumber, table.unpack(rest)) --rateNumber, rate,
-  while true do core.report(1, where(table.unpack(rest))); core.sleep(rateNumber) end
+  core.message(1, "Headings", rateNumber, table.unpack(rest)) --rateNumber, rate,
+  while true do core.message(1, where(table.unpack(rest))); core.sleep(rateNumber) end
 end; map.hints["headings"] = {["??place "] = {["??rate "] = {["???#lines"] = {}}}}
 --[[
 ```
@@ -493,7 +493,7 @@ local function near(placeName, span) -- list places near span (or all) near plac
 
   for i = 1, #report do local distance, text = table.unpack(report[i]); report[i] = tostring(distance)..text end
 
-  local result= "Found "..itemCount.." near\n"..table.concat(report, "\n"); core.status(4, "map.near", result); return result
+  local result= "Found "..itemCount.." near\n"..table.concat(report, "\n"); core.report(4, "map.near", result); return result
 end; map.hints["near"] = {["?place "] = {["??span"] = {}}}
 
 local function view(target)

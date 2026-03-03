@@ -143,20 +143,20 @@ end
 In-game examination of the call stack on errors is provided by <code>core.trace</code>. Desperate times, desperate measures.
 <pre><code class="language-lua">
 --:: core.trace(err: any) -> <i>Reports traceback for xpcalls.</i> -> <code>err: any</code>
-function core.trace(err) core.status(1, "core", "trace", debug.traceback()) return err end -- for <code>xpcall</code>
+function core.trace(err) core.report(1, "core", "trace", debug.traceback()) return err end -- for <code>xpcall</code>
 </code></pre>
-<a id="status"></a>
-<h3>Monitoring Status, Logging, Quitting</h3>
+<a id="report"></a>
+<h3>Reporting Status, Logging, Quitting</h3>
 Reporting and logging on-going turtle status is an essential part of in-game debug (and useful in the out-of-game test environment as well). Providing a way to record status in a file allows off-line examination of suspect operation.
 <p>
 The <code>log</code> table controls the level of status detail reported and potentially logged (<code>log.level</code>), the file name for log records (<code>log.file</code>), if any, in the computer's <code>muse</code> directory, and the file handle (<code>log.handle</code>) for file log operations. The table is bound to a global reference so it is guaranteed to stick around through session garbage collections but, for the usual reasons, no access to the global is made outside <code>lib/core</code>. Instead a closure is provided <a href="#state"> using <code>core.state</code> </a> to access each of the <code>log</code> fields.
 <p>
-There's a <a href="../status.html" target="_blank"> truly paper thin command line interface (<i>CLI</i>)</a> for setting the <code>core.log.level</code> and setting up the <code>core.log.file</code> and <code>core.log.handle</code> to record status. It just packages the arguments, whatever they are, into a table of strings. The arguments from this CLI are passed directly to <code>core.logging</code> which sets up the filename and file handle for <code>core.record</code> which is called by the <code>.status</code> <a href = "https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank"> 
+There's a <a href="../log.html" target="_blank"> truly paper thin command line interface (<i>CLI</i>)</a> for setting the <code>core.log.level</code> and setting up the <code>core.log.file</code> and <code>core.log.handle</code> to record status. It just packages the arguments, whatever they are, into a table of strings. The arguments from this CLI are passed directly to <code>core.logging</code> which sets up the filename and file handle for <code>core.record</code> which is called by the <code>.status</code> <a href = "https://en.wikipedia.org/wiki/Daemon_(computing)" target="_blank"> 
 <i>daemon</i> </a>. For convenience, <a href="../.start.html" target="_blank">startup operations </a> set up defaults.
 <p>
-In-game, a status message (a string including the current dead-reckoning position) is sent over the <code>rednet</code> network to the player as a "MS", Muse Status protocol, message. MUSE uses the <code>.status</code> daemon, to print <code>MS</code> messages received by the player's pocket computer. Follow the <a href="../.status.html" target="_blank">link to take a look at the implementation</a>. It's just an endless loop responding to selected network events, receipt of <code>MS</code> protocol messages, by printing and potentially recording those messages.
+In-game, a status message (a string including the current dead-reckoning position) is sent over the <code>rednet</code> network to the player as a "MS", Muse Status Report protocol, message. MUSE uses the <code>.status</code> daemon, to print <code>MS</code> messages received by the player's pocket computer. Follow the <a href="../.status.html" target="_blank">link to take a look at the implementation</a>. It's just an endless loop responding to selected network events, receipt of <code>MS</code> protocol messages, by printing and potentially recording those messages.
 <p>
-As a piece of <a href="https://www.drdobbs.com/defensive-programming/184401915" target="_blank"> <i>defensive programming</i> </a>, <code>status</code> operations use the GPS and the <code>reckon</code> function to see if a turtle is where it's expected to be. If it isn't it resets the turtle's position according to the GPS and tacks a (really loud) notice onto the status message. The <code>core.report</code> function does much of the same thing for operations where turtle position isn't relevant.
+As a piece of <a href="https://www.drdobbs.com/defensive-programming/184401915" target="_blank"> <i>defensive programming</i> </a>, <code>report</code> operations use the GPS and the <code>reckon</code> function to see if a turtle is where it's expected to be. If it isn't it resets the turtle's position according to the GPS and tacks a (really loud) notice onto the report message. The <code>core.message</code> function does much of the same thing for operations where turtle position isn't relevant.
 <p>
 <a id="where"></a>
 The <code>core.where</code> implementation binds a dummy function, <code>function() end</code> (which returns <code>nil</code>), to <code>gpslocate</code> in the out-of-game environment. This takes the place of the in-game function <code>gps.locate</code>. Follow the <a href="places.html#nearby" target="_blank"> link to see another example of this technique </a> which uses a dummy (null) function as a default. An optional function argument only implementable at the higher level overrides the dummy default when calling the lower level function.
@@ -193,7 +193,7 @@ _G.Muse.quit, _G.Muse.log = false, _G.Muse.log or {};  -- log controls
 function core.quit(value) if value then _G.Muse.quit = value end return _G.Muse.quit end
 local function resume() _G.Muse.quit = false end
 
---:- quit message -> <i>Set <code>quit</code> flag to message; next <code>core.status</code> throws <code>error</code> to abort operations.</i>
+--:- quit message -> <i>Set <code>quit</code> flag to message; next <code>core.report</code> throws <code>error</code> to abort operations.</i>
 local function quitting() -- actually quitting, send notice to player
   local message = "Quitting: "..core.quit(); resume();
   if rednet then rednet.send(_G.Muse.playerID, message, "MS") else print(message) end
@@ -203,25 +203,27 @@ end
 local logs = {}; --:> core.log: <i>Closure variable</i> -> <code>{level: closing, file: closing, handle: closing}</code>
 core.log = {level = core.state(logs, "level"), file = core.state(logs, "file"), handle = core.state(logs, "handle")} --closures
 
-function core.status(level, ...) -- selected messages to player (lower levels are more important, higher are more detailed)
-  --:: core.status(level: #:, ...: any) -> <i>If level less than (elimination) threshold, then report rest as string.</i> -> <code>nil</code>
+local function status(gpsCheck, level, ...)
+  if core.log.level() and level < core.log.level() then
+    local rest = core.string(...) .. " " .. core.ats()
+    if rednet then rednet.send(_G.Muse.playerID, gpsCheck(rest), "MS") else print(rest) end
+  end; return _G.Muse.quit and quitting()
+end
+
+function core.report(level, ...) -- selected messages to player (lower levels are more important, higher are more detailed)
+  --:: core.report(level: #:, ...: any) -> <i>If level less than (elimination) threshold, then report rest as string.</i> -> <code>nil</code>
   --:+ <i>If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol.</i>
   --:+ <i>If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.</i>
-  if core.log.level() and level < core.log.level() then
-    local message = core.string(...) .. " " .. core.ats()
-    if rednet then rednet.send(_G.Muse.playerID, reckon(message), "MS") else print(message) end
-  end; return _G.Muse.quit and quitting()
-end; core.hints["status "] = { ["?level ??file"] = {} }
-
-function core.report(level, ...) -- skip looking at dead reckoning vs. gps
-  --:: core.report(level: #:, ...: any) -> <i>If level less than <code>status</code> threshold, report <code>rest</code> as string.</i> -> <code>nil</code>
-  if core.log.level() and level < core.log.level() then
-    local rest = core.string(...); if rednet then rednet.send(_G.Muse.playerID, rest, "MS") else print(rest) end
-  end; return _G.Muse.quit and quitting()
+  return status(reckon, level, ...)
 end; core.hints["report "] = { ["?level ??file"] = {} }
 
+function core.message(level, ...) -- skip looking at dead reckoning vs. gps
+  --:: core.message(level: #:, ...: any) -> <i>If level less than <code>status</code> threshold, report <code>rest</code> as string.</i> -> <code>nil</code>
+  return status(function(rest) return rest end, level, ...)
+end; core.hints["message "] = { ["?level ??file"] = {} }
+
 function core.logging(arguments)
-  --:: core.logging(arguments: {level: #:, filename: ":"}) -> <i>Set threshold level [and local log file] for status reports</i> -> <code>nil</code>
+  --:: core.logging(arguments: {level: #:?, filename: ":"?}) -> <i>Set threshold level [and local log file] for status reports</i> -> <code>nil</code>
   local level, filename = table.unpack(arguments); level = tonumber(level)
   if not level then return "Status "..core.log.level().." > "..(core.log.file() or "~") end -- <b>just reporting</b>
   core.log.level(level); local handled = core.log.handle() -- set level, get handle for open log file if any
@@ -235,7 +237,7 @@ function core.logging(arguments)
   local filehandle, createReport = io.open(logfile, "a")       --write file cleaned by read
   if not filehandle then error("core.logging: Can't create new ".. logfile.. " because "..createReport) end
   core.log.handle(filehandle); -- save the file handle for use by .status daemon call on core.record
-end
+end; core.hints["log "] = { ["?level ??file"] = {} }
 
 function core.record(message) -- file status messages used by <code>.status</code> daemon
   --:: core.record(message: ":") -> <i>Appends (status) message to log file on player.</i> -> <code>nil & !</code>
@@ -393,9 +395,11 @@ core.sleep = os.sleep or function() return nil end  -- luacheck: globals os
 ---@diagnostic disable-next-line: undefined-field
 core.getComputerID = os.computerID or function(id) return id end -- luacheck: globals os 
 
+local mockLabel = function(label) return label or _G.Muse.label or "unknown" end
+
 --:: core.getComputerLabel(label: ":"?) -> <i>Out of game returns label; label ignored in game.</i> -> <code>label: ":"</code>
 ---@diagnostic disable-next-line: undefined-field
-core.getComputerLabel = os.computerLabel or function(label) return label or _G.Muse.label or "unknown" end 
+core.getComputerLabel = os.getComputerLabel or mockLabel -- luacheck: globals os
 
 --:: core.setComputerLabel(label: ":") -> <i>Sets (out-of game global) label</i> -> <code>label: ":"</code>
 ---@diagnostic disable-next-line: undefined-field 

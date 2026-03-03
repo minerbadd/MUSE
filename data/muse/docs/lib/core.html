@@ -47,17 +47,17 @@
 
 --:# <b>Logging and Quit Control Globals</b>  
 
---:- quit message -> <i>Set <code>quit</code> flag to message; next <code>core.status</code> throws <code>error</code> to abort operations.</i>  
+--:- quit message -> <i>Set <code>quit</code> flag to message; next <code>core.report</code> throws <code>error</code> to abort operations.</i>  
 
 --:> core.log: <i>Closure variable</i> -> <code>{level: closing, file: closing, handle: closing}</code>  
 
---:: core.status(level: #:, ...: any) -> <i>If level less than (elimination) threshold, then report rest as string.</i> -> <code>nil</code>    
+--:: core.report(level: #:, ...: any) -> <i>If level less than (elimination) threshold, then report rest as string.</i> -> <code>nil</code>    
 --:+ <i>If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol.</i>    
 --:+ <i>If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.</i>  
 
---:: core.report(level: #:, ...: any) -> <i>If level less than <code>status</code> threshold, report <code>rest</code> as string.</i> -> <code>nil</code>  
+--:: core.message(level: #:, ...: any) -> <i>If level less than <code>status</code> threshold, report <code>rest</code> as string.</i> -> <code>nil</code>  
 
---:: core.logging(arguments: {level: #:, filename: ":"}) -> <i>Set threshold level [and local log file] for status reports</i> -> <code>nil</code>  
+--:: core.logging(arguments: {level: #:?, filename: ":"?}) -> <i>Set threshold level [and local log file] for status reports</i> -> <code>nil</code>  
 
 --:: core.record(message: ":") -> <i>Appends (status) message to log file on player.</i> -> <code>nil & !</code>  
 

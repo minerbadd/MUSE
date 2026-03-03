@@ -1,17 +1,100 @@
 
-Remote Status Logging Control in lib/core
+Test remote commands for lib/task and lib/roam to test local operations of lib/remote
 
-Remote turtle operations not subsumed by lib/task
+Set configuration globals for tests by loading `lib/check
 
+Bind `regression` parameter `true` from call by `check.regression` in `lib/check`; otherwise `nil
 
-fuel
- 
-Returns energy available in turtle slots.
+Set log level default. Set lower to report less, higher to report more
+
+Bind `testName` as the last word (without extension) in the execution path
+
+Create the test object for this test
+
+Remote Turtle and Task Operations** (for turtle API operations, e.g., `rover find`)
 
 
 items
  
-Returns items in turtle inventory.
+Returns items in turtle inventory as string.
+
+
+find name...?
+ 
+Report and select first slot found [or if no name, just report inventory].
+
+Directions are  _`u`p, `d`own, `n`orth, `e`ast, `w`est, `s`outh, `f`orward
+
+
+suck direction quantity?
+ 
+Suck quantity items [or all] into available slot.
+
+
+drop item direction quantity?
+ 
+Drop quantity of selected items [or all].
+
+
+look direction
+ 
+Detect and inspect direction, return report.
+
+
+compare item direction...
+ 
+Named item matches block in any of specified directions?
+
+
+attack direction
+ 
+Attempts attack in specified direction.
+
+
+dig direction distance hoeing...
+ 
+Direction and distance to (possibly blocked) move, hoeings directions to hoe.
+
+
+put filling direction distance putting...
+ 
+Direction, distance to move, placing filling in puttings directions.
+
+
+change target filling direction distance putting...
+ 
+Move distance in direction replacing target with filling.
+
+Remote Turtle Motion Commands** (e.g., `farmer come`)
+
+
+to place | x y z face?
+ 
+To named place or position and face. Retry permutation for different first direction.
+
+
+go _(first letter of) directions followed by optional counts, e.g. `r 10 u east 3 u 4 d n`.
+ 
+Chained movement.
+
+
+trace trailname
+ 
+Move turtle along traced situations in named trail from one end of trail to the other.
+
+
+come
+ 
+rover turtle towards GPS player position.
+
+
+tail rate?
+ 
+Move `rover` every rate (default 5) seconds towards GPS player position.
+
+Remote Status Logging Control in lib/core
+
+Remote turtle operations not subsumed by lib/task
 
 Remote Low Level Turtle Operations in lib/task
 

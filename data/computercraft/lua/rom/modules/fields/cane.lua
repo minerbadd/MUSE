@@ -22,7 +22,7 @@ local orient = function(xyzAB) return turn and core.orient(xyzAB) or xyzAB end -
 
 local bottom, top = bounds.bottom, bounds.top 
 
-core.status(2, "cane", slots, "slots each plot")
+core.report(2, "cane", slots, "slots each plot")
 --[[
 ```
 <a id="plots"><IMG SRC="../../drawings/07Cane.png" ALIGN="right" hspace="10" /></a> 
@@ -40,7 +40,7 @@ local plots = {-- layer dirt, cover sand, finish cane; allowing water strip betw
   harvest = vPairs(orient { {vW, bottom, vN}, {vW, bottom, vS}}, striding.harvest, nplots.harvest + 1), -- harvest
   path = vPairs(orient { {vW, bottom, vN}, {vW, bottom, vS}}, striding.harvest, nplots.harvest + 1), -- path
 }
-core.status(2, "cane", slots, "slots each plot")
+core.report(2, "cane", slots, "slots each plot")
 --[[
 ```
 <a id="ops"></a> 
@@ -49,19 +49,19 @@ Each `operation` supported by this field (`quarry`, `layer`, `cover`, `finish`, 
 --]]
 local function quarryOp(index) -- called by `field.make`
   local result = field.plan("quarry", {plots.quarry[index]})
-  core.status(4, "cane", "quarry", index, result)
+  core.report(4, "cane", "quarry", index, result)
   return result
 end
 
 local function layerOp(index) -- called by `field.make`
   local result = field.plan("layer", {plots.layer[index], {"minecraft:dirt"}})
-  core.status(4, "cane", "layer", index, result)
+  core.report(4, "cane", "layer", index, result)
   return result
 end
 
 local function coverOp(index) -- called by `field.make`
   local result = field.plan("layer", {plots.cover[index], {"minecraft:sand"}})
-  core.status(4, "cane", "cover", index, result)
+  core.report(4, "cane", "cover", index, result)
   return result
 end
 
@@ -69,14 +69,14 @@ local function finishOp(index) -- called by `field.make`
   local crops = {"minecraft:kelp", "minecraft:reeds", "minecraft:reeds"}; local crop = crops[(index % #crops) + 1]
   local offsets = { {0, 0, 0}, {0, 1, 0}, {0, 1, 0} }; local offset = offsets[(index % #offsets) + 1]
   local result = field.plan("layer", {plots.finish[index], {crop} }, offset)
-  core.status(4, "cane", "finish", index, result)
+  core.report(4, "cane", "finish", index, result)
   return result
 end
 
 local function harvestPath(index, plan) -- called by `field.make`; harvest one plot of cane field
   local offsets = { {0, 1, 0}, {0, 4, 0}, {0, 4, 0} }; local offset = offsets[(index % #offsets) + 1]
   local result = field.plan(plan, {plots.harvest[index]}, offset)
-  core.status(4, "cane", "harvestPath", index, result)
+  core.report(4, "cane", "harvestPath", index, result)
   return result
 end
 

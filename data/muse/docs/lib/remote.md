@@ -1,6 +1,6 @@
 --:! {remote: [":"]: ():} <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md      
 --:| remote: _Client and server side support for RPCs and client (player) side support for_ `come` _and_ `tail`. -> remote    
---:+ **Multiple returns are not supported. Errors are caught on servers and provided as error string to clients.**    
+--:+ **Multiple returns are not supported. Errors are caught on servers and provided as error strings to clients.**    
 --:+ _For testing out-of-game, if client and server are the same, there are no network operations._  
 
 --:# **Server Side Remote Call Operations: Protocols to Receive Muse Calls (MC), Send Muse Responses (MR)**  

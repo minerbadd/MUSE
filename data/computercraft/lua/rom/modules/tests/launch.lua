@@ -15,3 +15,8 @@ map.op({"test", "rome", "home", "-1532", "63", "324", "west"})
 
 -- IF THERE'S NO DATA DIRECTORY, MAKE ONE
 print(core.string(gps.op({"launch", "rome"})))
+
+
+
+--:# **GPS Positioning**
+test(35, "rover", "launch", {"paris"})

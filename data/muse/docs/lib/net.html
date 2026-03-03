@@ -11,21 +11,19 @@
 
 --:# <i>Remote commands for turtles need prefixing by <code>farmer</code>, <code>miner</code>, <code>logger</code>,<code>porter</code>,  or <code>rover</code> roles.</i>  
 
---:# <b>Dispatcher <code>op</code> catches net operations that raise exceptions so turtles report errors, ready for new commandsa.</b>  
-
 --:# <b>Testing, Monitoring, and Control</b> (e.g., <code>farmer echo something something</code>)  
 
---:- status level [filename] -> <i>Set reporting hurdle and optionally save reporting in log file.</i>  
+--:- log level [filename] -> <i>Set reporting hurdle and optionally save reporting in log file.</i>  
 
 --:- echo arguments ... -> <i>For testing: just returns its arguments.</i>  
 
---:- quit message -> <i>Set <code>quit</code> flag to message; next <code>core.status</code> throws <code>error</code> to abort operations.</i>  
+--:- quit message -> <i>Set <code>quit</code> flag to message; next <code>core.report</code> throws <code>error</code> to abort operations.</i>  
 
 --:# <b>Remote Turtle and Task Operations</b> (for turtle API operations, e.g., <code>rover find</code>)  
 
---:- fueling -> <i>Returns energy available in turtle slots.</i>  
+--:- fuel -> <i>Returns energy available in turtle slots.</i>  
 
---:- items -> <i>Returns items in turtle inventory.</i>  
+--:- items -> <i>Returns items in turtle inventory as string.</i>  
 
 --:- find name...? -> Report and select first slot found [or if no name, just report inventory].  
 

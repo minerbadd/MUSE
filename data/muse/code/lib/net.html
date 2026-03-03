@@ -13,7 +13,7 @@
 --:| net: <i>Command Line Library providing turtle operations used by remote library (effectively the UI for Muse).</i> -> net
 --:# <i>Remote commands for turtles need prefixing by <code>farmer</code>, <code>miner</code>, <code>logger</code>,<code>porter</code>,  or <code>rover</code> roles.</i>
 </code></pre>
-When this module is loaded it populates its exported table, the <code>net</code> library, as a dispatch table used by <code>remote.call</code>. Each entry in the table defines a <i>remote command</i>. Only the operations performed by these commands are available for remote execution. Together these create the remote CLI for MUSE. It also sets up hints as shell completions for ComputerCraft's CraftOS <code>shell.setCompletionFunction</code>. This is invoked at MUSE session start by <a href="../.start.html#complete" target="_blank"> <code>.start.lua</code> </a> running <code>core.completer</code>. And the library sets up documentation for the CLI.
+When this module is loaded it populates its exported table, the <code>net</code> library, as a dispatch table used by <code>remote.call</code>. Each entry in the table defines a <i>remote command</i>. Only the operations performed by these commands are available for remote execution. Together these create the remote CLI for MUSE. It also sets up hints as shell completions for ComputerCraft's CraftOS <code>shell.setCompletionFunction</code>. This is invoked at MUSE session start by <a href="../.start.html#complete" target="_blank"> <code>.start.lua</code> </a> running <code>core.completer</code>. The library also sets up documentation for the CLI. Both hints and documentation are copied from what was defined in implementations supplied by other libraries. You'll come across these when you explore those.
 <p>
 As you'll see, it's all about that exported table.
 <pre><code class="language-lua">
@@ -30,7 +30,7 @@ hints[path.."logger.lua"] = as; hints[path.."miner.lua"] = as
 hints[path.."porter.lua"] = as; 
 </code></pre>
 <a id="dispatch"></a> 
-The <code>net</code> table dispatches commands for each <code>remote.call</code> into server libraries. The <code>exec</code> and <code>port</code> libraries are used by the command computer. The <code>core</code> library is for debug.
+The <code>net</code> table dispatches commands for each <code>remote.call</code> into server libraries. The <code>exec</code> and <code>port</code> libraries are used by the command computer. The <code>core</code> library is used here for debug.
 <pre><code class="language-lua">
 local cores = require("core"); local core = cores.core  ---@module "signs/core"
 local turtles = require("turtle"); local turtle = turtles.turtle ---@module "signs.turtle"
@@ -46,15 +46,10 @@ local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
 </code></pre>
 <a id="op"></a> 
 <h3>Operation Dispatch</h3>
-Some libraries export a dispatcher function that uses a string, its first argument, to pick one of its defined functions to operate on the rest of the arguments provided. The <code>op</code> function fits remote commands to this pattern. It returns a function that makes a protected call on a <code>dispatcher</code> function in a target library. The returned function included in the <code>net</code> table calls this <code>dispatcher</code> on a table it creates. The table packages up the <code>command</code>, the remote command, along with the arguments which are sent on the <code>remote.call</code>. 
+Some libraries export a dispatcher function that uses a string, its first argument, to pick one of its defined functions to operate on the rest of the arguments provided. The <code>op</code> function fits remote commands to this pattern. It returns a function that makes a call on a <code>dispatcher</code> function in a target library. The returned function included in the <code>net</code> table calls this <code>dispatcher</code> on a table it creates. The table packages up the <code>command</code>, the remote command, along with the arguments which are sent with the <code>remote.call</code>. 
 <pre><code class="language-lua">
---:# <b>Dispatcher <code>op</code> catches net operations that raise exceptions so turtles report errors, ready for new commandsa.</b>
 local function op(dispatcher, command) --TODO: use for all net operations
-  return function(arguments)
-    local ok, report = core.pass(pcall(dispatcher, {command, table.unpack(arguments or {})}))
-    if not ok then core.status(1, "net", report, command, arguments) end
-    return report
-  end
+  return function(arguments) return dispatcher({command, table.unpack(arguments or {})) end
 end
 </code></pre>
 <a id="hints"></a> 
@@ -71,12 +66,12 @@ Just as is done for hints, CLI summary <a href="../../docs/lib/net.html" table="
 This then below defines the remote CLI: hints, docs, and all. It's dense, very repetitive, and easily changed as experience suggests the CLI needs to evolve. 
 <pre><code class="language-lua">
 --:# <b>Testing, Monitoring, and Control</b> (e.g., <code>farmer echo something something</code>)
-net["status"] = core.logging; as["status "] = core.hints["status"]; hints[path.."status.lua"] = core.hints["status"] --:= status:
+net["log"] = core.logging; as["log "] = core.hints["log"]; hints[path.."log.lua"] = core.hints["log"] --:= log:
 net["echo"] = core.echo; as["echo "] = core.hints["echo"]; hints[path.."echo.lua"] = core.hints["echo"] --:= echo:
 net["quit"] = core.quit; as["quit "] = core.hints["quit"] --:= quit:
 
 --:# <b>Remote Turtle and Task Operations</b> (for turtle API operations, e.g., <code>rover find</code>)
-net["fuel"] = turtle.fuel; as["fuel"] = turtle.hints["fuel"] --:= fueling: fuel
+net["fuel"] = turtle.fuel; as["fuel"] = turtle.hints["fuel"] --:= fuel:
 net["items"] = turtle.items; as["items"] = turtle.hints["items"] --:= items:
 net["find"] = op(task.op, "find"); as["find "] = task.hints["find"] --:= find:
 --:= Directions:

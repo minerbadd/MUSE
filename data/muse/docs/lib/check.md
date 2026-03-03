@@ -13,7 +13,7 @@
 
 --:# Access functions for the `check` object, each check object is independent in itself  
 
---:# part(partID: ":", note: ":", fun: ():, ...: any): -> _Collect ... results for part, save or compare (for regression)_ -> `nil`  
+--:# part(partID: ":", note: ":", fun: ():, ...: any): -> _Collect ... results for part, save/compare (for regression)_ -> `nil`  
 
 --:# call(note: ":", server: ":", command: ":", arguments: any[]): -> _Test remote calls without network_ -> `nil`  
 

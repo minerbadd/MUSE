@@ -36,7 +36,7 @@ local function inventory() --return a report of turtle inventory and fuel availa
   end; return table.concat(items, "\n").."\nFuel: "..tostring(turtle.fuel())
 end
 
-local function find(target) --:- find name...? -> _Report and select first slot found [or if no name, just report inventory]._
+local function find(target) --:- find name ...? -> _Report and select first slot found [or if no name, just report inventory]._
   if not target then return inventory() end
   local targets = turtle.category(target); local detail = turtle.find(targets) 
   return detail and core.string(detail)   -- _Selects found slot_ -> ({name = ":", count = #: damage = #:})?

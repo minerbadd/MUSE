@@ -5,7 +5,7 @@
 --:| net: _Command Line Library providing turtle operations used by remote library (effectively the UI for Muse)._ -> net
 --:# _Remote commands for turtles need prefixing by `farmer`, `miner`, `logger`,`porter`,  or `rover` roles._
 ```
-When this module is loaded it populates its exported table, the `net` library, as a dispatch table used by `remote.call`. Each entry in the table defines a _remote command_. Only the operations performed by these commands are available for remote execution. Together these create the remote CLI for MUSE. It also sets up hints as shell completions for ComputerCraft's CraftOS `shell.setCompletionFunction`. This is invoked at MUSE session start by <a href="../.start.html#complete" target="_blank"> `.start.lua` </a> running `core.completer`. And the library sets up documentation for the CLI.
+When this module is loaded it populates its exported table, the `net` library, as a dispatch table used by `remote.call`. Each entry in the table defines a _remote command_. Only the operations performed by these commands are available for remote execution. Together these create the remote CLI for MUSE. It also sets up hints as shell completions for ComputerCraft's CraftOS `shell.setCompletionFunction`. This is invoked at MUSE session start by <a href="../.start.html#complete" target="_blank"> `.start.lua` </a> running `core.completer`. The library also sets up documentation for the CLI. Both hints and documentation are copied from what was defined in implementations supplied by other libraries. You'll come across these when you explore those.
 
 As you'll see, it's all about that exported table.
 ```Lua
@@ -20,13 +20,12 @@ The `as` table accumulates `hints` for the `rover`, `porter`, `farmer`, `logger`
 ```Lua
 --]]
 net.hints = {}; local hints = net.hints
-hints[path.."rover.lua"] = as; hints[path.."farmer.lua"] = as
-hints[path.."logger.lua"] = as; hints[path.."miner.lua"] = as
-hints[path.."porter.lua"] = as; 
+hints[path.."farmer.lua"] = as; hints[path.."logger.lua"] = as; hints[path.."miner.lua"] = as
+hints[path.."rover.lua"] = as; hints[path.."porter.lua"] = as; 
 --[[
 ```
 <a id="dispatch"></a> 
-The `net` table dispatches commands for each `remote.call` into server libraries. The `exec` and `port` libraries are used by the command computer. The `core` library is for debug.
+The `net` table dispatches commands for each `remote.call` into server libraries. The `exec` and `port` libraries are used by the command computer. The `core` library is used here for debug.
 ```Lua
 --]]
 local cores = require("core"); local core = cores.core  ---@module "signs/core"
@@ -44,16 +43,11 @@ local farms = require("farm"); local farm = farms.farm ---@module "signs.farm"
 ```
 <a id="op"></a> 
 #Operation Dispatch
-Some libraries export a dispatcher function that uses a string, its first argument, to pick one of its defined functions to operate on the rest of the arguments provided. The `op` function fits remote commands to this pattern. It returns a function that makes a protected call on a `dispatcher` function in a target library. The returned function included in the `net` table calls this `dispatcher` on a table it creates. The table packages up the `command`, the remote command, along with the arguments which are sent on the `remote.call`. 
+Some libraries export a dispatcher function that uses a string, its first argument, to pick one of its defined functions to operate on the rest of the arguments provided. The `op` function fits remote commands to this pattern. It returns a function that makes a call on a `dispatcher` function in a target library. The returned function included in the `net` table calls this `dispatcher` on a table it creates. The table packages up the `command`, the remote command, along with the arguments which are sent with the `remote.call`. 
 ```Lua
 --]]
---:# **Dispatcher `op` catches net operations that raise exceptions so turtles report errors, ready for new commandsa.**
 local function op(dispatcher, command) --TODO: use for all net operations
-  return function(arguments)
-    local ok, report = core.pass(pcall(dispatcher, {command, table.unpack(arguments or {})}))
-    if not ok then core.status(1, "net", report, command, arguments) end
-    return report
-  end
+  return function(arguments) return dispatcher({command, table.unpack(arguments or {})}) end
 end
 --[[
 ```
@@ -72,13 +66,13 @@ This then below defines the remote CLI: hints, docs, and all. It's dense, very r
 ```Lua
 --]]
 --:# **Testing, Monitoring, and Control** (e.g., `farmer echo something something`)
-net["status"] = core.logging; as["status "] = core.hints["status"]; hints[path.."status.lua"] = core.hints["status"] --:= status:
+net["log"] = core.logging; as["log "] = core.hints["log"]; hints[path.."log.lua"] = core.hints["log"] --:= log:
 net["echo"] = core.echo; as["echo "] = core.hints["echo"]; hints[path.."echo.lua"] = core.hints["echo"] --:= echo:
 net["quit"] = core.quit; as["quit "] = core.hints["quit"] --:= quit:
 
 --:# **Remote Turtle and Task Operations** (for turtle API operations, e.g., `rover find`)
-net["fuel"] = turtle.fuel; as["fuel"] = turtle.hints["fuel"] --:= fueling: fuel
-net["items"] = turtle.items; as["items"] = turtle.hints["items"] --:= items:
+net["fuel"] = turtle.fuel; as["fuel"] = turtle.hints["fuel"] --:= fuel:
+--net["items"] = turtle.items; as["items"] = turtle.hints["items"] -- := items:
 net["find"] = op(task.op, "find"); as["find "] = task.hints["find"] --:= find:
 --:= Directions:
 net["suck"] = op(task.op, "suck"); as["suck "] = task.hints["suck"] --:= suck:
@@ -122,6 +116,20 @@ net["join"] = op(map.op, "join"); as["join "] = map.hints["join"]; hints[path.."
 
 --:# **GPS Launch Command** (e.g., `rover launch gantry ....`)
 net["launch"] = op(launch.op, "launch"); as["launch "] = launch.hints["launch "] --:= launch:
+
+--:# **Command Computer Setup and Port Commands** (e.g., `locate gantry launch`)
+net["locate"] = op(exec.op, "locate"); --:= locate:
+as["locate "] = exec.hints["locate"]; hints[path.."locate.lua"] = exec.hints["locate"] 
+
+net["activate"] = op(exec.op, "activate"); --:= activate:
+as["activate "] = exec.hints["activate"] 
+
+net["book"] = op(port.op, "book")  --:= book:
+as["book "] = port.hints["book"]; hints[path.."book.lua"] = port.hints["book"] 
+
+net["port"] = op(port.op, "port") --:= port:
+as["port "] = port.hints["port"]; hints[path.."port.lua"] = port.hints["port"] 
+
 --<a id="mine"></a>
 --:# **Remote Mining Operation Commands** (e.g. `miner shaft ....`)
 net["shaft"] = op(mine.op, "shaft"); as["shaft "] = mine.hints["shaft"] --:= shaft:
@@ -148,19 +156,5 @@ net["cover"] = op(field.make, "cover"); as["cover "] = farm.hints["cover"]  --:=
 net["finish"] = op(field.make, "finish"); as["finish "] = farm.hints["finish"]  --:= finish:
 net["harvest"] = op(field.make, "harvest"); as["harvest "] = farm.hints["harvest"] --:= harvest:
 net["path"] = op(field.make, "path"); as["path "] = farm.hints["path"] --:= path:
-
-
---:# **Command Computer Setup and Port Commands** (e.g., `locate gantry launch`)
-net["locate"] = op(exec.op, "locate"); --:= locate:
-as["locate "] = exec.hints["locate"]; hints[path.."locate.lua"] = exec.hints["locate"] 
-
-net["activate"] = op(exec.op, "activate"); --:= activate:
-as["activate "] = exec.hints["activate"] 
-
-net["book"] = op(port.op, "book")  --:= book:
-as["book "] = port.hints["book"]; hints[path.."book.lua"] = port.hints["book"] 
-
-net["port"] = op(port.op, "port") --:= port:
-as["port "] = port.hints["port"]; hints[path.."port.lua"] = port.hints["port"] 
 
 return {net = net}

@@ -14,7 +14,7 @@ Logging and Quit Control Globals
 
 quit message
  
-Set quit flag to message; next core.status throws error to abort operations. If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol. If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.
+Set quit flag to message; next core.report throws error to abort operations. If player, status report is printed and potentially logged. Otherwise sent to player using Muse Status (MS) protocol. If for in-game turtle with GPS and the dead reckoning and GPS disagree, include that in report.
 
 User interface utilities
 

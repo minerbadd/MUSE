@@ -3,10 +3,10 @@
 ```md
 --:! {remote: [":"]: ():} <- **Functions Library for Remote Procedure Calls** -> muse/docs/lib/remote.md  
 --:| remote: _Client and server side support for RPCs and client (player) side support for_ `come` _and_ `tail`. -> remote
---:+ **Multiple returns are not supported. Errors are caught on servers and provided as error string to clients.**
+--:+ **Multiple returns are not supported. Errors are caught on servers and provided as error strings to clients.**
 --:+ _For testing out-of-game, if client and server are the same, there are no network operations._
 ```
-The library for MUSE support of remote procedure calls (RPC) is `lib/remote`. To do an RPC there are a bunch of steps choreographed between the `client`, generally the player's pocket computer, and the `server`, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff. They ran their own startup files not `.start`. ) 
+The library for MUSE support of remote procedure calls (RPC) is `lib/remote`. To do an RPC there are a bunch of steps choreographed between the `client`, uniformly the player's pocket computer, and the `server`, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff. They ran their own startup files not `.start`. ) 
 
 At the dance waiting to be asked, all but the player's pocket computer (and the GPS computers) are running `remote.wait` which finishes up their execution of the `.start` file. They'll wait to receive a `rednet` MUSE Call (`MC`) protocol message. After doing the work requested by the call, they'll answer the call with a `rednet` MUSE Return (`MR`) protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
 
@@ -51,10 +51,10 @@ local function serverApply(clientID, request) -- test through `lib/net` for serv
   --:: `serverApply(clientID: #:, request: ":")` -> _Request string to request table, return serialized result_. -> `result: ":"`
   local requestLoad, requestError = load(request) -- TODO: replace `load` and `core.serialize` with JSON compatible equivalents
   local client = dds.role(clientID) or clientID -- fallback if no role: `clientID` is just a stringified number
-  core.status(5, "remote", "MR Request", request, "from", client) -- seen on turtle, can we instantiate command, argument table?
+  core.message(5, "remote", "MR Request", request, "from", client) -- seen on turtle, instantiate command, argument table?
   if not requestLoad then error("remote.request: Can't instantiate "..request.." from "..client.." "..requestError) end
   local command, argumentTable = table.unpack(requestLoad()) -- `command: ":"` for dispatch into net RPC functions
-  core.status(3, "remote", "MR Dispatch", command, "from", client, "for", argumentTable)
+  core.message(3, "remote", "MR Dispatch", command, "from", client, "for", argumentTable)
   local ok, result = apply(command, argumentTable)
   return core.serialize({ok, result}) -- call executed, result table serialized as string
 end; remote.apply = serverApply
@@ -71,9 +71,9 @@ The `serverApply` function just calls `apply`, the function we've just discussed
 ```Lua
 --]]
 local function serverSend(clientID, request) -- get and send serialized response from server execution of call
-  core.status(4, "remote", "MC Server", request, "from", clientID)
+  core.message(4, "remote", "MC Server", request, "from", clientID)
   local result = serverApply(clientID, request)
-  core.status(4, "remote", "MR Server", result, "for", clientID)
+  core.message(4, "remote", "MR Server", result, "for", clientID)
   rednet.send(clientID, result, "MR") -- result back to player seen by `clientReceive`
 end -- server is done; `remote.`wait` for the next MuseCall ("MC") rednet message
 
@@ -96,7 +96,7 @@ Back on the client that called for the RPC, the `clientReceive` and `clientRetur
 --:# **Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)**
 local function clientReturn(serverID, resultString, callback) 
   --:: `clientReturn(serverID: #:, resultString: ":", callback: ():)` -> _Apply callback to deserialized client result._ -> `any`
-  core.status(3, "remote", "MR Client", resultString, "from", dds.role(serverID)) -- on player
+  core.message(3, "remote", "MR Client", resultString, "from", dds.role(serverID)) -- on player
   local resultFunction, resultError = load(resultString) -- deserialized 
   if not resultFunction then error("remote: Can't load "..resultString.." from "..dds.role(serverID).." "..resultError) end
   local ok, result = table.unpack(resultFunction()) -- `ok` if no error on server
@@ -107,10 +107,10 @@ end; remote.returns = clientReturn
 local returned -- by applying callback to deserialized response from server
 
 local function clientReceive(callback) -- receive result from "MR" protocol, apply callback to deserialized result
-  core.status(4, "remote", "MR Client Waiting")
+  core.message(4, "remote", "MR Client Waiting")
   local serverID, resultString = rednet.receive("MR") -- **waiting for result from server**
   assert(serverID and resultString, "remote client receive is missing serverID or result string")
-  core.status(4, "remote", "MR Client Received", resultString, "from", dds.role(serverID)) -- on player
+  core.message(4, "remote", "MR Client Received", resultString, "from", dds.role(serverID)) -- on player
   returned =  clientReturn(serverID, tostring(resultString), callback) -- gets the value from calling the callback
   return returned
 end
@@ -125,7 +125,7 @@ _If you haven't been on that part of the tour yet, the MUSE DDS facilities calle
 -- _Send serialized string from `remote.call` to network and wait for result from server_
 
 local function clientSend(serverID, request, callback) 
-  core.status(3, "remote", "MC Sending", request, "to", serverID..":"..dds.role(serverID)) -- on player
+  core.message(3, "remote", "MC Sending", request, "to", serverID..":"..dds.role(serverID)) -- on player
   rednet.send(serverID, request, "MC" ); -- the essential inner loop for the client
   local returnedValue = parallel.waitForAny(function() return clientReceive(callback) end)
   return returnedValue or returned -- TODO: ?side effect of clientReturn (because `parallel.waitForAny` in CC:Tweaked returns `nil`)
@@ -188,7 +188,7 @@ function remote.come(turtle) -- **needs GPS**
   local server, command, xyz, ok = remote.hither(turtle, "tail")
   if not ok then error("remote.come: GPS failed") end
   local report = remote.call(server, command, xyz) or ""
-  core.status(3, "remote", "come", report)
+  core.message(3, "remote", "come", report)
   return report 
 end
 
@@ -197,7 +197,7 @@ function remote.tail(turtle, _, rates) --  **needs GPS**; turtle tails player by
   --:- tail rate? -> _Turtle every rate seconds towards player._
   local rate = tonumber(rates) or _G.Muse.rates.tail; while true do -- assume good GPS
     local result, report = remote.call(remote.hither(turtle, "come")) -- server, command, xyz
-    core.status(5, "remote", "tail", result or "", report or ""); core.sleep(rate)
+    core.message(5, "remote", "tail", result or "", report or ""); core.sleep(rate)
   end
 end
 
@@ -205,7 +205,7 @@ return {remote = remote}
 --[[
 ```
 #Excursions
-In distributed operations, the kind of reporting that `core.status` and its close relatives provide can make clear what otherwise is very difficult to figure out. With all we're up to, it's time to follow the <a href="core.html#status" target="_blank"> link for an excursion</a> into that deferred discussion of the implementation of `core.status`. 
+In distributed operations, the kind of reporting that `core.message` and its close relatives provide can make clear what otherwise is very difficult to figure out. With all we're up to, it's time to follow the <a href="core.html#report" target="_blank"> link for an excursion</a> into that deferred discussion of the implementation of `core.message`. 
 
 Do look at <a href="../tests/remote.html" target = "_blank"> `tests/remote` </a> and especially <a href="check.html" target = "_blank"> `lib/check</a>` to see how testing works for this module. 
 

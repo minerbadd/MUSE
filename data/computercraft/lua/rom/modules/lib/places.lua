@@ -97,7 +97,7 @@ function place.name(name, label, supplied, features) -- newSituation(s) is from 
 
   local candidate = {place.qualify(name), label, situations, matchedfeatures} 
   local indexed = order or #_G.Muse.places + 1; _G.Muse.places[indexed] = candidate -- replace or new place
-  core.report(4, "places", "name ", indexed, candidate)
+  core.message(4, "places", "name ", indexed, candidate)
   return core.serialize(candidate), indexed -- serialized for disk or net 
 end
 --[[

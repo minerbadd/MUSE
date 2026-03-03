@@ -3,21 +3,19 @@
 
 --:# _Remote commands for turtles need prefixing by `farmer`, `miner`, `logger`,`porter`,  or `rover` roles._  
 
---:# **Dispatcher `op` catches net operations that raise exceptions so turtles report errors, ready for new commandsa.**  
-
 --:# **Testing, Monitoring, and Control** (e.g., `farmer echo something something`)  
 
---:- status level [filename] -> _Set reporting hurdle and optionally save reporting in log file._  
+--:- log level [filename] -> _Set reporting hurdle and optionally save reporting in log file._  
 
 --:- echo arguments ... -> _For testing: just returns its arguments._  
 
---:- quit message -> _Set `quit` flag to message; next `core.status` throws `error` to abort operations._  
+--:- quit message -> _Set `quit` flag to message; next `core.report` throws `error` to abort operations._  
 
 --:# **Remote Turtle and Task Operations** (for turtle API operations, e.g., `rover find`)  
 
---:- fueling -> _Returns energy available in turtle slots._  
+--:- fuel -> _Returns energy available in turtle slots._  
 
---:- items -> _Returns items in turtle inventory._  
+--:- items -> _Returns items in turtle inventory as string._  
 
 --:- find name...? -> Report and select first slot found [or if no name, just report inventory].  
 

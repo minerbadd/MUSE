@@ -1,4 +1,4 @@
---:? rom/help/status.txt <- **Status Level and Status Logging Command Line Interface** -> muse/docs/programs/status.md    
+--:? rom/help/log.txt <- **Status Level and Status Logging Command Line Interface** -> muse/docs/programs/log.md    
 
 --:- log level [filename] -> _Set reporting hurdle and optionally save reporting in log file._  
 

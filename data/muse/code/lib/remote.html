@@ -11,10 +11,10 @@
 <pre><code class="language-markdown">
 --:! {remote: [":"]: ():} <- <b>Functions Library for Remote Procedure Calls</b> -> muse/docs/lib/remote.md  
 --:| remote: <i>Client and server side support for RPCs and client (player) side support for</i> <code>come</code> <i>and</i> <code>tail</code>. -> remote
---:+ <b>Multiple returns are not supported. Errors are caught on servers and provided as error string to clients.</b>
+--:+ <b>Multiple returns are not supported. Errors are caught on servers and provided as error strings to clients.</b>
 --:+ <i>For testing out-of-game, if client and server are the same, there are no network operations.</i>
 </code></pre>
-The library for MUSE support of remote procedure calls (RPC) is <code>lib/remote</code>. To do an RPC there are a bunch of steps choreographed between the <code>client</code>, generally the player's pocket computer, and the <code>server</code>, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff. They ran their own startup files not <code>.start</code>. ) 
+The library for MUSE support of remote procedure calls (RPC) is <code>lib/remote</code>. To do an RPC there are a bunch of steps choreographed between the <code>client</code>, uniformly the player's pocket computer, and the <code>server</code>, pretty much any other computer, turtle or otherwise. (Not the GPS computers though; they're busy doing GPS stuff. They ran their own startup files not <code>.start</code>. ) 
 <p>
 At the dance waiting to be asked, all but the player's pocket computer (and the GPS computers) are running <code>remote.wait</code> which finishes up their execution of the <code>.start</code> file. They'll wait to receive a <code>rednet</code> MUSE Call (<code>MC</code>) protocol message. After doing the work requested by the call, they'll answer the call with a <code>rednet</code> MUSE Return (<code>MR</code>) protocol message. And then, in what we can think of as the RPC thread, go back to waiting.
 <p>
@@ -56,10 +56,10 @@ local function serverApply(clientID, request) -- test through <code>lib/net</cod
   --:: <code>serverApply(clientID: #:, request: ":")</code> -> <i>Request string to request table, return serialized result</i>. -> <code>result: ":"</code>
   local requestLoad, requestError = load(request) -- TODO: replace <code>load</code> and <code>core.serialize</code> with JSON compatible equivalents
   local client = dds.role(clientID) or clientID -- fallback if no role: <code>clientID</code> is just a stringified number
-  core.status(5, "remote", "MR Request", request, "from", client) -- seen on turtle, can we instantiate command, argument table?
+  core.message(5, "remote", "MR Request", request, "from", client) -- seen on turtle, instantiate command, argument table?
   if not requestLoad then error("remote.request: Can't instantiate "..request.." from "..client.." "..requestError) end
   local command, argumentTable = table.unpack(requestLoad()) -- <code>command: ":"</code> for dispatch into net RPC functions
-  core.status(3, "remote", "MR Dispatch", command, "from", client, "for", argumentTable)
+  core.message(3, "remote", "MR Dispatch", command, "from", client, "for", argumentTable)
   local ok, result = apply(command, argumentTable)
   return core.serialize({ok, result}) -- call executed, result table serialized as string
 end; remote.apply = serverApply
@@ -74,9 +74,9 @@ For deserialization, MUSE happens to operate in a homogeneous execution environm
 The <code>serverApply</code> function just calls <code>apply</code>, the function we've just discussed, and sends the serialized result back to the client using the <code>MR</code> (Muse Response) protocol to the requesting client (which will be the player's pocket computer). The <code>remote.wait</code> loop (<code>while true do</code>) patiently waits for <code>MC</code> (Muse Call) protocol messages and calls the <code>serverSend</code> function whenever it receives one. The rest will be history. And that's all for the server operations.
 <pre><code class="language-lua">
 local function serverSend(clientID, request) -- get and send serialized response from server execution of call
-  core.status(4, "remote", "MC Server", request, "from", clientID)
+  core.message(4, "remote", "MC Server", request, "from", clientID)
   local result = serverApply(clientID, request)
-  core.status(4, "remote", "MR Server", result, "for", clientID)
+  core.message(4, "remote", "MR Server", result, "for", clientID)
   rednet.send(clientID, result, "MR") -- result back to player seen by <code>clientReceive</code>
 end -- server is done; <code>remote.</code>wait` for the next MuseCall ("MC") rednet message
 
@@ -97,7 +97,7 @@ Back on the client that called for the RPC, the <code>clientReceive</code> and <
 --:# <b>Client Side Remote Call Operations: Protocols to Send Muse Calls (MC), Receive Muse Responses (MR)</b>
 local function clientReturn(serverID, resultString, callback) 
   --:: <code>clientReturn(serverID: #:, resultString: ":", callback: ():)</code> -> <i>Apply callback to deserialized client result.</i> -> <code>any</code>
-  core.status(3, "remote", "MR Client", resultString, "from", dds.role(serverID)) -- on player
+  core.message(3, "remote", "MR Client", resultString, "from", dds.role(serverID)) -- on player
   local resultFunction, resultError = load(resultString) -- deserialized 
   if not resultFunction then error("remote: Can't load "..resultString.." from "..dds.role(serverID).." "..resultError) end
   local ok, result = table.unpack(resultFunction()) -- <code>ok</code> if no error on server
@@ -108,10 +108,10 @@ end; remote.returns = clientReturn
 local returned -- by applying callback to deserialized response from server
 
 local function clientReceive(callback) -- receive result from "MR" protocol, apply callback to deserialized result
-  core.status(4, "remote", "MR Client Waiting")
+  core.message(4, "remote", "MR Client Waiting")
   local serverID, resultString = rednet.receive("MR") -- <b>waiting for result from server</b>
   assert(serverID and resultString, "remote client receive is missing serverID or result string")
-  core.status(4, "remote", "MR Client Received", resultString, "from", dds.role(serverID)) -- on player
+  core.message(4, "remote", "MR Client Received", resultString, "from", dds.role(serverID)) -- on player
   returned =  clientReturn(serverID, tostring(resultString), callback) -- gets the value from calling the callback
   return returned
 end
@@ -124,7 +124,7 @@ end
 -- <i>Send serialized string from <code>remote.call</code> to network and wait for result from server</i>
 
 local function clientSend(serverID, request, callback) 
-  core.status(3, "remote", "MC Sending", request, "to", serverID..":"..dds.role(serverID)) -- on player
+  core.message(3, "remote", "MC Sending", request, "to", serverID..":"..dds.role(serverID)) -- on player
   rednet.send(serverID, request, "MC" ); -- the essential inner loop for the client
   local returnedValue = parallel.waitForAny(function() return clientReceive(callback) end)
   return returnedValue or returned -- TODO: ?side effect of clientReturn (because <code>parallel.waitForAny</code> in CC:Tweaked returns <code>nil</code>)
@@ -183,7 +183,7 @@ function remote.come(turtle) -- <b>needs GPS</b>
   local server, command, xyz, ok = remote.hither(turtle, "tail")
   if not ok then error("remote.come: GPS failed") end
   local report = remote.call(server, command, xyz) or ""
-  core.status(3, "remote", "come", report)
+  core.message(3, "remote", "come", report)
   return report 
 end
 
@@ -192,14 +192,14 @@ function remote.tail(turtle, _, rates) --  <b>needs GPS</b>; turtle tails player
   --:- tail rate? -> <i>Turtle every rate seconds towards player.</i>
   local rate = tonumber(rates) or _G.Muse.rates.tail; while true do -- assume good GPS
     local result, report = remote.call(remote.hither(turtle, "come")) -- server, command, xyz
-    core.status(5, "remote", "tail", result or "", report or ""); core.sleep(rate)
+    core.message(5, "remote", "tail", result or "", report or ""); core.sleep(rate)
   end
 end
 
 return {remote = remote}
 </code></pre>
 <h3>Excursions</h3>
-In distributed operations, the kind of reporting that <code>core.status</code> and its close relatives provide can make clear what otherwise is very difficult to figure out. With all we're up to, it's time to follow the <a href="core.html#status" target="_blank"> link for an excursion</a> into that deferred discussion of the implementation of <code>core.status</code>. 
+In distributed operations, the kind of reporting that <code>core.message</code> and its close relatives provide can make clear what otherwise is very difficult to figure out. With all we're up to, it's time to follow the <a href="core.html#report" target="_blank"> link for an excursion</a> into that deferred discussion of the implementation of <code>core.message</code>. 
 <p>
 Do look at <a href="../tests/remote.html" target = "_blank"> <code>tests/remote</code> </a> and especially <a href="check.html" target = "_blank"> <code>lib/check</a></code> to see how testing works for this module. 
 <p>

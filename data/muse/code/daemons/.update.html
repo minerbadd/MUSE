@@ -22,7 +22,7 @@ local maps = require("map"); local map = maps.map ---@module "signs.core"
 
 local function update()
   while true do local id, message = rednet.receive("MU"); 
-    core.report(3, ".update", "MU from "..dds.role(id))
+    core.message(3, ".update", "MU from "..dds.role(id))
     map.place(message); map.update(message); 
     -- update pocket/turtle local map and persistent map
   end

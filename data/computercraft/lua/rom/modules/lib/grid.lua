@@ -44,7 +44,7 @@ local function bin(targetBase, xyzTarget, placeName, placeLabel, xyzPlace, names
   -- bin: set `names.target`, `names.inner`, or `names`.outer` to place being tried
   -- only if it's `reachable` from where the turtle is currently `at` and `closer` than whatever is currently in that `name` 
   if not mineLabels[placeLabel] or not reachable(xyzPlace) then return end -- of all the places, disqualify this
-  core.status(5, "grid reachable", placeName, placeLabel, names) -- try this place
+  core.report(5, "grid reachable", placeName, placeLabel, names) -- try this place
   local _, _, placeBase = planner.mark(placeName) -- parse marker; if found target, nice, but `binMarkers` continues
   if targetBase == placeBase or placeLabel == "shaft" then names.target = placeName; return names end
   if closer(placeName, names[placeLabel], xyzTarget) then names[placeLabel] = placeName end -- `inner` or `outer`
@@ -64,7 +64,7 @@ end
 
 function grid.post(markerName, borePlans) -- in level, **specified by bore plan**, `mine.post` interface --:= mine.post:: grid.post
   local names = binMarkers(markerName) -- target (shaft or base), inner, and outer marker names
-  core.status(4, "grid", "binned markers for", markerName, names) 
+  core.report(4, "grid", "binned markers for", markerName, names) 
   if names.target then moves.to(names.target, "y"); return names -- **at specified post (base) or at shaft within this level**
   elseif names.inner then moves.to(names.inner, "y"); return grid.post(markerName, borePlans) -- move and try for shaft|base
   elseif names.outer then moves.to(names.outer, "y"); return grid.post(markerName, borePlans) -- move and try for inner
@@ -95,7 +95,7 @@ local function digInspect(ores, direction) -- direction to check, dig if air, wa
   local notAir, detail = turtle.inspects[direction](); -- `notAir` `false` for air 
   local ore, liquid = turtle.check(ores, detail), turtle.check(liquids, detail); 
   if notAir and not (liquid or ore) then return false end -- not air, water, lava, or ore
-  digIn(direction); core.status(3, "grid", "inspected ore", ore, direction, notAir, liquid)
+  digIn(direction); core.report(3, "grid", "inspected ore", ore, direction, notAir, liquid)
   return ore or not notAir, notAir; -- found ore or air: return `true`, `notAir` (not `nil` if ore, water, or lava)
 end
 
@@ -110,7 +110,7 @@ local function backOut(direction) -- use `opposites` to back out of digging for 
 end
 
 local function digDeep(more, digMore, ores) -- dig and go in `more` direction, then dig around from there
-  digIn(more); moveIn(more); core.status(3, "grid deep", more, digMore) -- not air
+  digIn(more); moveIn(more); core.report(3, "grid deep", more, digMore) -- not air
   for _, direction in ipairs(digMore) do digInspect(ores, direction) -- dig out any ore in digMore directions
   end; backOut(more); 
 end
@@ -122,11 +122,11 @@ end
 
 local function mineCut(plan, direction, cut, ores) 
   local look, dig, lookMore, digMore = table.unpack(cut); local digIt, something = digInspect(ores, look)
-  if digIt then moveIn(look); core.status(3, "grid in vein", digIt, look, dig) -- `digIt`: ore|lava|water|air
+  if digIt then moveIn(look); core.report(3, "grid in vein", digIt, look, dig) -- `digIt`: ore|lava|water|air
     for _, direction in ipairs(dig) do digInspect(ores, direction) end -- excavate into vein
     if something then digDeep(lookMore, digMore, ores) end -- found ore|lava|water, dig deeper for potentailly more ore
     backOut(look) -- back out of excavating cut, cut is done
-  end; core.status(5, "grid cut done", direction, plan.name, look, lookMore)
+  end; core.report(5, "grid cut done", direction, plan.name, look, lookMore)
   local moving = move[direction] --[[@as function]] -- `move` is a table of functions
   local moveOK, code = core.pass(pcall(moving, 0)) -- need to face in the original direction 
   if not moveOK then error("grid.mineVein: Can't return "..direction.." while digging because "..code) end
